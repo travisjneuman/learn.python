@@ -1,203 +1,193 @@
-# 01 — Roadmap: Zero → Python SME (Automation + Dashboards + Excel/SQL/SolarWinds)
+# 01 - Roadmap: Zero Experience -> Python SME (Enterprise Automation and Dashboards)
+Home: [README](./README.md)
 
-Generated: **Monday, February 16, 2026, 2:11 PM (America/Detroit)**
+## Who this is for
+- You have zero coding, scripting, or programming experience.
+- You need practical outcomes in an enterprise operations environment.
+- You learn best by doing real work, not passive studying.
 
-## What “Python SME” means (concrete outcomes)
-By the end, you can:
-- Build **reliable automation tools** that run unattended (scheduled tasks) and are safe to rerun.
-- Build **repeatable reporting pipelines**: Excel → transform → SQL → dashboard/report.
-- Integrate with **SolarWinds Orion** via API (read metrics, alerts; write/ack where permitted).
-- Ship **internal web GUIs / dashboards** for non-technical teammates.
-- Use modern team standards: **virtual environments, dependency pinning, formatting, linting, tests, logging, packaging**.
-- Teach others: docs, examples, code reviews, patterns, “pitfall” guidance.
+## What you will build
+- Reliable Python automations for files, Excel, SQL, and monitoring data.
+- Repeatable ETL workflows using MSSQL as a reporting backbone.
+- SolarWinds Orion and DPA data ingestion jobs.
+- Browser-based dashboards for non-technical stakeholders.
 
-## The optimal learning order (why this order)
-1. **Foundations**: logic + reading code + debugging (otherwise everything else is random memorization).
-2. **Professional workflow**: venv/pip, git, lint/format, tests, logging (so you don’t build fragile scripts).
-3. **Data + IO**: files + Excel (fastest path to real business value).
-4. **SQL**: data persistence + reporting pipeline.
-5. **SolarWinds**: apply APIs + query language + auth + data modeling.
-6. **Dashboards**: UI + data access patterns + caching + security basics.
-7. **CI/CD + packaging**: how you ship repeatably (even if corporate is locked down, you will understand it).
+## Prerequisites
+- Windows 11 machine.
+- Permission to install Python and VS Code.
+- Access path for MSSQL credentials (non-SSO SQL auth is supported in this plan).
+- Read-only API access to Orion and DPA to start.
 
-## Time model (flexible)
-- Baseline: **6–8 hours/week**
-- Typical: **9–12 months** to “team-trusted SME” if you consistently ship small tools.
-- Faster path: 10–12 hours/week + weekly capstone increments.
+## Program overview (8-10 hrs/week default)
+- Phase 0 (Week 1): environment setup and first script.
+- Phase 1 (Weeks 2-6): Python foundations.
+- Phase 2 (Weeks 7-10): quality tooling and team-ready workflow.
+- Phase 3 (Weeks 11-16): file and Excel automation.
+- Phase 4 (Weeks 17-22): SQL-first ETL pipelines.
+- Phase 5 (Weeks 23-28): Orion and DPA integration.
+- Phase 6 (Weeks 29-38): dashboard delivery for browser users.
+- Phase 7 (Weeks 39+): release process, governance, and handoff maturity.
 
-You progress by **deliverables**, not by time spent.
+## Step-by-step lab pack
 
----
+### Phase 0 - Setup (Week 1)
+Weekly outcome:
+- Local Python environment works reliably.
 
-# Phase 0 — Setup (Week 1)
-**Goal:** Your environment is predictable and professional.
+Minimum deliverables:
+- `python --version` works.
+- `.venv` created and activated.
+- First script runs.
+- First test passes.
 
-Do: **[03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md)** (exact steps)
+Done means done:
+- You can repeat setup in a fresh folder without guessing.
 
-Deliverables:
-- A folder called `python_sme/` with:
-  - `templates/` (project template)
-  - `notes/` (your learning notes)
-  - `projects/` (each project gets its own folder)
-- You can:
-  - create a venv
-  - install packages with pip
-  - run a script
-  - run tests
+Fail/recover guidance:
+- If activation fails, use the troubleshooting section in [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).
 
----
+### Phase 1 - Foundations (Weeks 2-6)
+Weekly outcomes:
+- Week 2: variables, types, conditionals.
+- Week 3: loops and collections.
+- Week 4: functions and modular thinking.
+- Week 5: file IO and paths.
+- Week 6: debugging and code reading.
 
-# Phase 1 — Foundations (Weeks 2–6)
-**Goal:** You can read and write basic programs without copying blindly.
+Minimum deliverables:
+- 15 micro-scripts.
+- One debugging diary file.
 
-Study backbone:
-- **Automate the Boring Stuff (3rd ed)** (Ch. 1–11) citeturn0search12turn0search19
-- Python tutorial for reinforcement (esp. functions, modules) citeturn0search1
+Done means done:
+- You can explain each script out loud in plain language.
 
-What you must master:
-- Types: int/float/str/bool/None
-- Data structures: list/dict/set/tuple
-- Control: if/elif/else, for/while, break/continue
-- Functions: parameters, return values, “small composable functions”
-- Debugging: reading tracebacks, printing, using VS Code debugger
-- Files: read/write text safely (encoding), paths, directories
+Fail/recover guidance:
+- If stuck, reduce problem size and rebuild with toy data.
 
-Deliverables:
-- 12–20 “micro scripts” (each 30–120 lines) that do one thing well
-- A personal “pitfalls” note (truthiness, mutability, off-by-one)
+### Phase 2 - Quality and workflow (Weeks 7-10)
+Weekly outcomes:
+- toolchain setup, formatting, linting, tests, logging.
 
-Guide: **[04_FOUNDATIONS.md](./04_FOUNDATIONS.md)**
+Minimum deliverables:
+- reusable project template with `pyproject.toml`, tests, logging, and README.
 
----
+Done means done:
+- Any teammate can run your tool using documented steps.
 
-# Phase 2 — Professional workflow (Weeks 7–10)
-**Goal:** Your code is usable by others (consistent, tested, logged).
+Fail/recover guidance:
+- If tooling feels heavy, keep features tiny and run checks per feature.
 
-Core:
-- `venv` + `pip` + dependency pinning citeturn0search5turn0search9
-- `pyproject.toml` as the single config hub citeturn2search1
-- Lint/format: Ruff + Black citeturn0search2
-- Tests: pytest citeturn2search2
-- Logging: Python logging module
+### Phase 3 - Files and Excel automation (Weeks 11-16)
+Weekly outcomes:
+- robust ingestion of multiple spreadsheets with validation.
 
-Deliverables:
-- A reusable **tool template**:
-  - `src/` layout
-  - CLI entrypoint
-  - config loading
-  - structured logging
-  - tests
-  - lint/format scripts
+Minimum deliverables:
+- Capstone A baseline complete.
 
-Guide: **[09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md)** + **[02_GLOSSARY.md](./02_GLOSSARY.md)**
+Done means done:
+- malformed inputs are rejected safely with clear logs.
 
----
+Fail/recover guidance:
+- Start with a 2-file sample dataset and scale gradually.
 
-# Phase 3 — Files + Excel reporting (Weeks 11–16)
-**Goal:** Immediate business value: repeatable reporting from spreadsheets.
+### Phase 4 - SQL ETL (Weeks 17-22)
+Weekly outcomes:
+- clean table design and idempotent pipeline loads.
 
-Tools:
-- `pathlib`, `csv`, `json`
-- `openpyxl` (Excel) and optionally `pandas` (transformations)
+Minimum deliverables:
+- staging and reporting tables + ETL job + daily summary query.
 
-Capstone Project A: **Excel Merger + Validator + Report**
-- Input: folder of Excel files
-- Output: `Master_Report.xlsx` + `Master_Report.csv`
-- Features:
-  - schema validation (required columns)
-  - normalization (header mismatches)
-  - highlight “Critical” rows
-  - separate “Critical” tab
-  - logs + error summary
-  - safe reruns (versioned output)
+Done means done:
+- rerunning ETL does not duplicate records.
 
-Guide: **[05_AUTOMATION_FILES_EXCEL.md](./05_AUTOMATION_FILES_EXCEL.md)**
+Fail/recover guidance:
+- freeze schema changes until test dataset passes end-to-end.
 
----
+### Phase 5 - Orion and DPA integration (Weeks 23-28)
+Weekly outcomes:
+- read-only ingestion from Orion and DPA into cache tables.
 
-# Phase 4 — SQL integration (Weeks 17–22)
-**Goal:** Build “data pipelines” rather than “one-off reports”.
+Minimum deliverables:
+- one daily ingestion job from each source.
 
-Tools:
-- SQL basics: SELECT/JOIN/GROUP BY
-- Python DB access (pyodbc and/or SQLAlchemy)
-- Migrations concept (optional early, important later)
+Done means done:
+- data contract documented, ingestion stable, errors logged.
 
-Capstone Project B: **Ingest + Transform + Load**
-- Read Excel/CSV → validate → write to SQL staging → promote to reporting table
-- Idempotency key (reruns don’t duplicate)
-- Reject file output (bad rows)
+Fail/recover guidance:
+- enforce read-only endpoints first and short polling windows.
 
-Guide: **[06_SQL.md](./06_SQL.md)**
+### Phase 6 - Dashboard delivery (Weeks 29-38)
+Weekly outcomes:
+- browser-consumable dashboard with filters and exports.
 
----
+Minimum deliverables:
+- working dashboard with data freshness indicator.
 
-# Phase 5 — SolarWinds Orion integration (Weeks 23–28)
-**Goal:** Automate monitoring/reporting workflows using Orion data.
+Done means done:
+- non-technical user can answer core ops questions without SQL access.
 
-You will learn:
-- Orion platform API basics (SWIS, SWQL concepts)
-- Read nodes/interfaces/alerts/events
-- Produce “daily health” reports
-- (If allowed) acknowledge/annotate alerts
+Fail/recover guidance:
+- fallback to SQL-only cache mode when source APIs are slow.
 
-References:
-- Orion SDK repo citeturn0search23
-- orionsdk-python client citeturn0search3
+### Phase 7 - Shipping and governance (Weeks 39+)
+Weekly outcomes:
+- release process, support runbook, handoff standards.
 
-Capstone Project C: **SolarWinds Daily Ops Report**
-- Pull top alerts, down interfaces, capacity metrics
-- Output: Excel + HTML dashboard page
-- Optional: push summary to email/Teams webhook
+Minimum deliverables:
+- release checklist and operational runbook.
 
-Guide: **[07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md)**
+Done means done:
+- another engineer can operate and troubleshoot your tools.
 
----
+Fail/recover guidance:
+- capture every incident and convert it into checklist updates.
 
-# Phase 6 — Web GUIs / Dashboards (Weeks 29–38)
-**Goal:** Put your reports behind a usable internal UI.
+## Milestone gates
+- Gate A: setup + first script + first passing test.
+- Gate B: Capstone A supports safe reruns and rejects.
+- Gate C: SQL ETL is idempotent and logged.
+- Gate D: Orion/DPA ingestion proof into MSSQL cache.
+- Gate E: browser dashboard available to stakeholders.
 
-Recommended order for beginners:
-1. **Streamlit** (fastest to working dashboards) citeturn1search0turn1search14
-2. **Dash** (more “app-like” dashboards; strong data grids) citeturn1search1
-3. **FastAPI** (when you need a real backend API) citeturn1search2
+## If you fall behind (catch-up plan)
+1. Keep only one active project at a time.
+2. Finish minimum deliverables before adding features.
+3. Switch to 45-minute sessions with explicit goals.
+4. Use Hybrid mode until momentum returns.
 
-Capstone Project D: **Ops Dashboard**
-- Tabs: Excel reports, SQL summaries, SolarWinds health
-- Filters: customer/site, date range, severity
-- Caching to avoid hammering SolarWinds/SQL
-- Auth strategy appropriate for your environment (documented)
+## Learning-style options (Play/Build/Dissect/Teach-back)
+- Play: tweak example scripts and observe behavior changes.
+- Build: implement full milestone checklists exactly.
+- Dissect: read unfamiliar scripts and annotate line-by-line intent.
+- Teach-back: explain one concept weekly to another person or a written journal.
 
-Guide: **[08_DASHBOARDS.md](./08_DASHBOARDS.md)**
+## Expected output
+- A complete progression from beginner to enterprise-capable Python practitioner.
+- A portfolio of capstones tied to your real data systems.
 
----
+## Break/fix drills
+- Break path assumptions by renaming input folders.
+- Break schema assumptions by removing required columns.
+- Break API assumptions by forcing timeout values.
 
-# Phase 7 — Shipping: CI/CD + Packaging + Governance (Weeks 39+)
-**Goal:** Make your work easy to run, update, audit, and hand off.
+## Troubleshooting
+- If learning stalls: reduce scope, keep daily continuity, and ship smaller increments.
+- If project complexity spikes: return to the previous gate and stabilize.
 
-You will learn (plain-English definitions in glossary):
-- CI/CD (automate test/build/release) citeturn1search3turn1search10
-- PyPI and “internal package indexes” citeturn2search0turn2search7
-- Packaging and distribution options citeturn2search3
+## Mastery check
+You are ready to advance when you can:
+- describe your current phase deliverable in one sentence,
+- run it end-to-end,
+- explain where it fails and how to recover.
 
-Deliverables:
-- A “release checklist”
-- A “deployment modes” guide: zip deploy vs wheel vs internal index
-- A “security baseline”: secrets, least privilege, dependency hygiene
+## Primary Sources
+- [Python Tutorial](https://docs.python.org/3/tutorial/)
+- [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
+- [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
 
-Guide: **[11_CHECKLISTS.md](./11_CHECKLISTS.md)** + **[02_GLOSSARY.md](./02_GLOSSARY.md)**
+## Optional Resources
+- [Exercism Python](https://exercism.org/tracks/python)
+- [Real Python](https://realpython.com/tutorials/python/)
 
----
-
-# How you will be evaluated (by your team)
-You become the SME when you can consistently:
-- take ambiguous automation/reporting requests
-- clarify requirements
-- deliver tools with:
-  - good defaults
-  - safe behavior
-  - logs + tests
-  - docs
-  - predictable deploy/run steps
-
-Next: **[03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md)**
+## Next
+Go to [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).

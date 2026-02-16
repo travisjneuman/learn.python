@@ -1,58 +1,99 @@
-# 08 — Web GUIs / Dashboards (Internal Tools)
+# 08 - Web GUIs and Dashboards (Browser-First Delivery)
+Home: [README](./README.md)
 
-## Goal
-Build dashboards that:
-- pull from SQL + SolarWinds (directly or via SQL cache)
-- render charts/tables
-- allow filtering and drill-down
-- run locally and (optionally) on an internal server
+## Who this is for
+- Learners ready to deliver operational insights to non-technical users.
+- Teams that need browser-only access to reporting and health data.
 
----
+## What you will build
+- A browser-consumable dashboard backed by MSSQL cache tables.
+- Filters, exports, and freshness indicators usable by operations teams.
 
-## Recommended order (beginner → advanced)
-### 1) Streamlit (fastest path)
-- Run apps with: `streamlit run your_script.py` citeturn1search14
-- Great for internal dashboards without writing HTML/JS.
-Docs:
-- Get started citeturn1search0
+## Prerequisites
+- Cache tables and summaries from [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md).
+- Clean SQL summary outputs from [06_SQL.md](./06_SQL.md).
 
-### 2) Dash (more structured dashboards)
-- Strong layout + callbacks model
-- Great data grids (AG Grid) for “reporting portals”
-Docs:
-- “Dash in 20 Minutes” citeturn1search1
+## Step-by-step lab pack
 
-### 3) FastAPI (when you need a backend API)
-- If you want:
-  - authentication integration
-  - background jobs
-  - a clean API for multiple frontends
-Docs:
-- FastAPI tutorial citeturn1search2
+### Step 1 - Define dashboard user stories
+Examples:
+- "Show top critical alerts by site in last 24 hours."
+- "Show database instance health for all monitored environments."
+- "Export filtered results to CSV."
 
----
+### Step 2 - Build Streamlit baseline (beginner-first)
+- Use [Streamlit get started](https://docs.streamlit.io/get-started).
+- Create one page with:
+  - date range filter,
+  - severity filter,
+  - site/customer filter,
+  - table and chart outputs,
+  - export button.
 
-## Capstone D: Ops Dashboard (end-to-end)
-Pages/Tabs:
-1. Excel Reports (latest outputs + download links)
-2. SQL Summary (daily/weekly metrics)
-3. SolarWinds Health (alerts, down interfaces, capacity)
+### Step 3 - Add cache and data freshness
+- Query MSSQL cache first, not live APIs per request.
+- Display `last_refresh_utc` on every page.
+- Warn user when data is stale.
 
-Core features:
-- date range filters
-- site/customer filter
-- severity filter
-- caching (avoid hammering Orion)
-- export buttons (CSV/XLSX)
+### Step 4 - Add advanced option (Dash)
+- Implement same features in Dash for more app-like structure.
+- Use [Dash tutorial](https://dash.plotly.com/tutorial).
 
----
+### Step 5 - Add optional service layer (FastAPI)
+Use when you need:
+- auth integration,
+- controlled API surface,
+- multiple frontends.
 
-## Deployment options (corporate constraints friendly)
-1. **Local-only** (you run it on your laptop)
-2. **Internal server** (Windows/Linux VM; service account)
-3. **Container** (if allowed)
-4. **Reverse proxy** (if required) + auth front-door (depends on org)
+Reference: [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/).
 
-You will document your org’s constraints in the Capstone writeup.
+### Step 6 - Deployment path options
+1. Local-only developer run.
+2. Internal server deployment for team use.
+3. Future option: host with existing MSSQL/ASP.NET server ecosystem if architecture and security review approves.
 
-Next: **[10_CAPSTONE_PROJECTS.md](./10_CAPSTONE_PROJECTS.md)**
+## Expected output
+- A dashboard accessible in browser with reliable and understandable data.
+- A simple deployment and support model documented for your environment.
+
+## Break/fix drills
+1. Disable one cache source and validate graceful degradation.
+2. Simulate stale data and verify warning banners.
+3. Test extremely large result sets and confirm pagination/limits.
+
+## Troubleshooting
+- slow page loads:
+  - pre-aggregate summary tables,
+  - use query limits,
+  - add caching.
+- confusing UX:
+  - remove non-essential charts,
+  - prioritize filters and key metrics.
+- source outages:
+  - serve last known snapshot with explicit timestamp.
+
+## Mastery check
+You are done when a non-technical user can:
+- open dashboard in browser,
+- filter by date/site/severity,
+- export needed views,
+- trust freshness indicators.
+
+## Learning-style options (Play/Build/Dissect/Teach-back)
+- Play: redesign one dashboard view and test usability.
+- Build: implement full baseline with Streamlit first.
+- Dissect: review SQL query flow from UI event to data return.
+- Teach-back: demo dashboard operation to ops stakeholders.
+
+## Primary Sources
+- [Streamlit get started](https://docs.streamlit.io/get-started)
+- [Dash tutorial](https://dash.plotly.com/tutorial)
+- [Dash deployment](https://dash.plotly.com/deployment)
+- [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/)
+- [FastAPI security basics](https://fastapi.tiangolo.com/tutorial/security/first-steps/)
+
+## Optional Resources
+- [Real Python](https://realpython.com/tutorials/python/)
+
+## Next
+Go to [10_CAPSTONE_PROJECTS.md](./10_CAPSTONE_PROJECTS.md).

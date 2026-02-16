@@ -1,50 +1,72 @@
-# 11 — Checklists (Runbooks you will actually use)
+# 11 - Checklists and Runbooks (Operate Like an SME)
+Home: [README](./README.md)
 
-## A) New project checklist (copy/paste)
-- [ ] Create folder from template
-- [ ] Create `.venv` and activate it citeturn0search5
-- [ ] Install dependencies with pip citeturn0search9
-- [ ] Add `pyproject.toml` config citeturn2search1
-- [ ] Add Ruff + Black citeturn0search2
-- [ ] Add pytest and at least 3 tests citeturn2search2
-- [ ] Add logging to file
-- [ ] Add README “how to run”
-- [ ] Git init + first commit
+## Project startup checklist
+- [ ] Create project from standard template.
+- [ ] Create and activate `.venv`.
+- [ ] Install dependencies.
+- [ ] Configure `pyproject.toml`.
+- [ ] Add initial tests.
+- [ ] Add logging setup.
+- [ ] Add README run instructions.
+- [ ] Commit baseline.
 
-## B) Automation safety checklist
-- [ ] Explicit input/output paths
-- [ ] Never overwrite outputs without versioning
-- [ ] Handle malformed input (skip + log)
-- [ ] Timeouts on network calls
-- [ ] Retries for transient failures
-- [ ] Idempotency for DB loads
+## Pre-run checklist
+- [ ] Confirm input path and format.
+- [ ] Confirm output path does not overwrite critical data.
+- [ ] Confirm credentials are loaded from secure source.
+- [ ] Confirm DB/API connectivity tests pass.
+- [ ] Confirm dry-run or small-sample run completed.
 
-## C) Dashboard checklist
-- [ ] Fast startup (cache heavy queries)
-- [ ] Filters are obvious
-- [ ] Export available (CSV/XLSX)
-- [ ] Auth story documented (even if “local only”)
-- [ ] Error messages are actionable
+## Post-run validation checklist
+- [ ] Logs contain start/end timestamps.
+- [ ] Row/file counts match expectations.
+- [ ] Reject file generated and reviewed.
+- [ ] Output artifacts versioned and discoverable.
+- [ ] Data freshness timestamps updated.
 
-## D) Release/shipping checklist (CI/CD concepts)
-CI/CD is automated build/test/release/deploy. citeturn1search3turn1search10
+## Incident triage checklist
+- [ ] Capture exact error message and stack trace.
+- [ ] Classify impact (none, degraded, outage).
+- [ ] Pause unsafe writes if integrity is at risk.
+- [ ] Identify blast radius (files/tables/users).
+- [ ] Roll forward or rollback with documented action.
+- [ ] Add permanent prevention check after incident.
 
-Even without formal CI/CD, you simulate it locally:
-- [ ] `ruff check .`
-- [ ] `black .`
-- [ ] `pytest`
-- [ ] run end-to-end once on a sample dataset
-- [ ] produce a versioned release artifact (zip) with README
+## Release and handoff checklist
+- [ ] `ruff check .` passes.
+- [ ] `black .` applied.
+- [ ] `pytest` passes.
+- [ ] End-to-end sample run documented.
+- [ ] Versioned artifact prepared.
+- [ ] Runbook updated.
+- [ ] Support owner and escalation path assigned.
 
-## E) What PyPI is (and why you care)
-PyPI is the public repository for Python packages. citeturn2search0
-Your org may block direct PyPI installs; if so, you will use an internal mirror/index.
+## Dashboard UX checklist (non-technical users)
+- [ ] Filters are obvious and labeled in plain language.
+- [ ] Refresh timestamp is visible.
+- [ ] Empty-state messages are actionable.
+- [ ] Export path is obvious.
+- [ ] Performance is acceptable on common queries.
 
----
+## SME conversation prep checklist
+Use before architecture reviews with experienced engineers:
+- [ ] Can explain your data flow in under 2 minutes.
+- [ ] Can justify staging vs reporting schema design.
+- [ ] Can explain idempotency strategy.
+- [ ] Can explain Orion/DPA cache strategy.
+- [ ] Can explain security posture for credentials and access.
+- [ ] Can explain dashboard fallback behavior during outages.
 
-If you want, the next iteration of these docs can include:
-- a complete project template folder
-- example `pyproject.toml`
-- example CLI scaffold (Typer)
-- example logging config
-- sample Excel files + expected outputs
+## Primary Sources
+- [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
+- [Ruff docs](https://docs.astral.sh/ruff/)
+- [Black docs](https://black.readthedocs.io/en/stable/)
+- [GitHub Git basics](https://docs.github.com/en/get-started/getting-started-with-git)
+
+## Optional Resources
+- [Pro Git Book](https://git-scm.com/book/en/v2.html)
+- [Real Python](https://realpython.com/tutorials/python/)
+
+## Next
+Return to [README.md](./README.md) and start your next iteration.

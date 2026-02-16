@@ -1,60 +1,116 @@
-# 06 — SQL Integration (Excel/Reports → Database → Reports/Dashboards)
+# 06 - SQL Integration (MSSQL-First ETL for Reporting and Dashboards)
+Home: [README](./README.md)
 
-## Goal
-You will move from “report scripts” to “pipelines”:
-- ingest spreadsheets
-- clean + validate
-- load into SQL
-- query for reporting and dashboards
+## Who this is for
+- Learners moving from file automation to data pipelines.
+- Teams with MSSQL as a reporting backbone.
 
----
+## What you will build
+- A Python ETL pipeline that ingests validated records into MSSQL.
+- Staging and reporting tables with idempotent loads.
+- A daily summary query output for dashboard use.
 
-## SQL basics you must learn (in this order)
-1. SELECT + WHERE
-2. ORDER BY
-3. GROUP BY + aggregates (COUNT/SUM/AVG)
-4. JOIN (combine tables)
-5. INSERT/UPDATE (write data)
-6. Transactions (avoid partial writes)
+## Prerequisites
+- Capstone A outputs from [05_AUTOMATION_FILES_EXCEL.md](./05_AUTOMATION_FILES_EXCEL.md).
+- Basic SQL query familiarity.
+- DB credentials with insert/select access in target schema.
 
----
+## Step-by-step lab pack
 
-## Python connectivity options
-### Option A (common in enterprises): pyodbc
-- Direct ODBC driver access to SQL Server.
-- Good when you just need to connect and run SQL quickly.
+### Lab 1 - SQL fundamentals in strict order
+1. `SELECT` and `WHERE`.
+2. `GROUP BY` aggregates.
+3. `JOIN` across lookup tables.
+4. `INSERT` and `UPDATE` basics.
+5. transactions with commit/rollback.
 
-### Option B (recommended long-term): SQLAlchemy
-- Lets you write more maintainable code and swap DB backends.
-- Strong tutorial path exists in official docs. citeturn1search2
+### Lab 2 - Table design
+Create tables:
+- `staging_alerts`
+- `alerts_reporting`
 
-Start with A if needed, but design your code so SQL is centralized and testable.
+Minimum metadata fields:
+- `source_file`
+- `ingested_at_utc`
+- `idempotency_key`
 
----
+### Lab 3 - Python connection strategy
+Preferred start: `pyodbc`.
+Optional scaling path: SQLAlchemy.
 
-## Capstone B: Ingest + Transform + Load (ETL)
+Connection requirements:
+- no hardcoded secrets,
+- explicit timeout,
+- retry for transient failures,
+- structured error logging.
 
-### Tables
-- `staging_alerts` (raw ingest)
-- `alerts` (cleaned reporting table)
+### Lab 4 - Load strategy
+1. Load raw validated rows into `staging_alerts`.
+2. Promote clean rows into `alerts_reporting`.
+3. Use `idempotency_key` to prevent duplicates.
 
-### Workflow
-1. Read Excel/CSV output from Capstone A
-2. Validate + normalize (same rules as before)
-3. Insert into staging
-4. Promote to reporting table (dedupe by idempotency key)
-5. Generate a “daily summary” query output
+### Lab 5 - Daily summary output
+Generate query output by:
+- date,
+- severity,
+- customer/site.
 
-### Idempotency key (critical)
-If you ingest the same row twice, you should not duplicate it.
-A common key:
-- hash(Customer + Site + TicketID + Opened)
+Export summary to `output/daily_summary.csv` for dashboard consumption.
 
----
+### Lab 6 - Custom reporting backend integration
+For your contractor-built MSSQL reporting DB:
+- identify existing table contracts,
+- map your ETL output to existing schema,
+- avoid direct writes to unmanaged tables until schema ownership is clear.
 
-## Dashboard readiness
-Once data is in SQL:
-- dashboards and reports query SQL (fast, stable)
-- SolarWinds can be polled less frequently; SQL becomes your cache
+### Lab 7 - Optional Oracle extension
+If Oracle sources are added later:
+- ingest to staging only first,
+- normalize data types to MSSQL-compatible forms,
+- preserve source system metadata.
 
-Next: **[07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md)**
+## Expected output
+- Repeatable ETL job with clean staging-to-reporting flow.
+- No duplicate records on reruns.
+- Usable CSV summary artifacts for dashboards.
+
+## Break/fix drills
+1. Force duplicate ingest and prove idempotency key blocks duplicates.
+2. Simulate DB timeout and confirm retries/logging.
+3. Insert malformed rows in staging and verify promotion filter blocks them.
+
+## Troubleshooting
+- connection failures:
+  - confirm driver installation,
+  - validate host, db name, user,
+  - test least-privilege account manually.
+- duplicate rows:
+  - inspect key generation and unique constraint.
+- poor query performance:
+  - add indexes on date, severity, idempotency key.
+
+## Mastery check
+You are ready for SolarWinds ingestion when you can:
+- explain your table contract,
+- rerun ETL safely,
+- recover from transient DB failures,
+- produce daily summaries without manual edits.
+
+## Learning-style options (Play/Build/Dissect/Teach-back)
+- Play: test different idempotency key designs.
+- Build: implement full staging -> reporting pipeline.
+- Dissect: explain query plans and table role boundaries.
+- Teach-back: present ETL data flow and failure strategy.
+
+## Primary Sources
+- [SQL Server Python drivers overview](https://learn.microsoft.com/en-gb/sql/connect/python/python-driver-for-sql-server)
+- [MSSQL Python quickstart](https://learn.microsoft.com/en-us/sql/connect/python/mssql-python/python-sql-driver-mssql-python-quickstart?view=sql-server-ver17)
+- [ODBC connection strings](https://learn.microsoft.com/en-us/sql/connect/odbc/dsn-connection-string-attribute?view=sql-server-ver17)
+- [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
+
+## Optional Resources
+- [pyodbc project](https://github.com/mkleehammer/pyodbc)
+- [python-oracledb docs](https://python-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html)
+
+## Next
+Go to [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md).
