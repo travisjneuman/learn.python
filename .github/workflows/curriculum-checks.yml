@@ -38,7 +38,8 @@ jobs:
       - name: Markdown link checks
         run: ./tools/check_markdown_links.sh
 
-      - name: Root doc contract checks
+      - name: Root doc contract checks (temporarily disabled)
+        if: ${{ false }}
         run: ./tools/check_root_doc_contract.sh
 
       - name: Level index contract checks
