@@ -59,6 +59,10 @@ expected_files=(
 
 fail=0
 
+normalize_line() {
+  sed -e 's/\r$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
 expected_next() {
   case "$1" in
     README.md) echo "01_ROADMAP.md" ;;
@@ -166,14 +170,14 @@ for file in "${expected_files[@]}"; do
     continue
   fi
 
-  home_line="$(sed -n '2p' "$path")"
+  home_line="$(awk 'NF{count++; if(count==2){print; exit}}' "$path" | normalize_line)"
   if [[ "$home_line" != "Home: [README](./README.md)" ]]; then
     echo "bad home line: $file"
     fail=1
   fi
 
   # Ensure Next is the final heading.
-  last_heading="$(rg '^## ' "$path" | tail -n1 || true)"
+  last_heading="$(rg '^## ' "$path" | tail -n1 | normalize_line || true)"
   if [[ "$last_heading" != "## Next" ]]; then
     echo "last heading is not ## Next: $file"
     fail=1
@@ -186,14 +190,14 @@ for file in "${expected_files[@]}"; do
   path="$ROOT_DIR/$file"
   [[ -f "$path" ]] || continue
 
-  next_header_line="$(rg -n '^## Next$' "$path" | tail -n1 | cut -d: -f1 || true)"
+  next_header_line="$(rg -n '^## Next\r?$' "$path" | tail -n1 | cut -d: -f1 || true)"
   if [[ -z "$next_header_line" ]]; then
     echo "missing ## Next: $file"
     fail=1
     continue
   fi
 
-  next_target="$(tail -n +$((next_header_line + 1)) "$path" | rg -n '^(Go to|Return to) \[[^]]+\]\(\./[^)]+\)' | head -n1 | sed -E 's#.*\(\./([^)]+)\).*#\1#' || true)"
+  next_target="$(tail -n +$((next_header_line + 1)) "$path" | normalize_line | rg -n '^(Go to|Return to) \[[^]]+\]\(\./[^)]+\)' | head -n1 | sed -E 's#.*\(\./([^)]+)\).*#\1#' || true)"
   expected_target="$(expected_next "$file")"
 
   if [[ -z "$next_target" ]]; then
@@ -215,11 +219,11 @@ for file in "${expected_files[@]}"; do
   path="$ROOT_DIR/$file"
   [[ -f "$path" ]] || continue
 
-  if ! rg -n '^## Primary Sources$' "$path" >/dev/null; then
+  if ! rg -n '^## Primary Sources\r?$' "$path" >/dev/null; then
     echo "missing Primary Sources: $file"
     fail=1
   fi
-  if ! rg -n '^## Optional Resources$' "$path" >/dev/null; then
+  if ! rg -n '^## Optional Resources\r?$' "$path" >/dev/null; then
     echo "missing Optional Resources: $file"
     fail=1
   fi
