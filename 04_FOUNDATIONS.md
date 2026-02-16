@@ -1,102 +1,119 @@
-# 04 — Foundations (Learn the logic, not just syntax)
+# 04 - Foundations (Build Real Python Muscle)
+Home: [README](./README.md)
 
-## Purpose
-Before automating Excel/SQL/SolarWinds, you must be able to:
-- read code you didn’t write
-- debug errors without guessing
-- break problems into steps
+## Who this is for
+- Beginners who can run Python but still feel lost reading code.
+- Learners who need repeated, hands-on drills.
 
-Primary study backbone:
-- Automate the Boring Stuff (3rd edition), Ch. 1–11 citeturn0search12turn0search19
+## What you will build
+- A set of foundational scripts that solve small, real tasks.
+- A debugging notebook that captures mistakes and fixes.
 
-Secondary reference:
-- Python official tutorial (venv chapter is also useful later) citeturn0search1
+## Prerequisites
+- Setup complete from [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).
+- Working `.venv` and pytest.
 
----
+## Step-by-step lab pack
 
-## Daily workflow (beginner-friendly)
-Each learning session:
-1. **Read** (20–30 min)
-2. **Type the code yourself** (do not copy-paste)
-3. **Change it** (make it break, then fix it)
-4. **Write a micro script** (30–120 lines)
-5. **Write 5 bullet notes**: what was confusing + what clicked
+### Lab 1 - Inputs, outputs, and types
+Goal:
+- Understand `str`, `int`, `float`, `bool`, and `None`.
 
----
+Task:
+- Write a script that reads text values and converts them safely.
 
-## Core skills and the “why” (you are building muscle memory)
+Minimum script behaviors:
+- Convert `"42"` to integer and add 10.
+- Reject invalid number text with a clear error message.
 
-### 1) Variables and types
-What to learn:
-- numbers (int/float), strings, booleans, None
-Why it matters:
-- “5” (text) is not 5 (a number). Mixing them causes bugs.
+### Lab 2 - Conditionals and decisions
+Goal:
+- Build confidence with `if`, `elif`, `else`.
 
-Micro exercise:
-- parse a text number `"42"` into an int and add 10
-- format results into a string message
+Task:
+- Evaluate an alert severity string and print an action:
+  - `Critical` -> `Page On-Call`
+  - `Warning` -> `Create Ticket`
+  - else -> `Log Only`
 
-### 2) Flow control
-What to learn:
-- if/elif/else
-Why it matters:
-- automation is “if condition then action else other action”
+### Lab 3 - Loops and collections
+Goal:
+- Process many records with predictable logic.
 
-Micro exercise:
-- if severity is CRITICAL, print “page me” else “log only”
+Task:
+- Iterate over a list of alert dictionaries.
+- Print a one-line summary for each.
+- Count critical alerts.
 
-### 3) Loops
-What to learn:
-- for, while
-Why it matters:
-- you process rows, files, servers, alerts, tickets… in loops
+### Lab 4 - Functions and reuse
+Goal:
+- Break logic into testable units.
 
-Micro exercise:
-- loop through a list of filenames and print a report line per file
+Task:
+- Implement:
+  - `normalize_status(text: str) -> str`
+  - `is_critical(status: str) -> bool`
+- Add pytest tests for both functions.
 
-### 4) Lists and dictionaries (critical)
-Why it matters:
-- lists: rows, ordered collections
-- dicts: records like {"customer": "KION", "status": "Critical"}
+### Lab 5 - Files and paths
+Goal:
+- Read and write files safely with `pathlib`.
 
-Micro exercise:
-- build a list of dicts representing 5 “alerts” and filter critical ones
+Task:
+- Read a text file of events.
+- Write a summary file containing counts by severity.
 
-### 5) Functions (SME accelerator)
-Goal behavior:
-- never write the same logic twice
-- functions are *named chunks* you can test
+### Lab 6 - Debugging drills
+Goal:
+- Read tracebacks and isolate root cause quickly.
 
-Micro exercise:
-- write `normalize_status(text: str) -> str` that maps variants to standard values
+Task:
+- Trigger and fix:
+  - `KeyError`
+  - `TypeError`
+  - `FileNotFoundError`
 
-### 6) Debugging
-What to learn:
-- read tracebacks (error line, error type, message)
-- use the debugger (breakpoints)
-Why it matters:
-- SMEs don’t “guess”; they reduce uncertainty fast.
+Record each incident in `notes/debug_journal.md` with:
+- error message,
+- root cause,
+- fix,
+- prevention rule.
 
-Micro exercise:
-- intentionally create a `KeyError`, then fix by using `.get()` or validation
+## Expected output
+- 15+ micro-scripts in a dedicated foundations project.
+- 20+ passing tests across key logic helpers.
+- Debug journal with repeated failure patterns and fixes.
 
-### 7) Files and paths
-What to learn:
-- open/read/write
-- use pathlib for Windows-safe paths
-Why it matters:
-- reporting starts with files and ends with files.
+## Break/fix drills
+1. Delete a required dict key and handle it safely.
+2. Change a numeric input to text and validate before math.
+3. Rename an input file and recover with clear error handling.
 
-Micro exercise:
-- read a text file, count lines, write a summary file
+## Troubleshooting
+- If loops confuse you: print intermediate values each iteration.
+- If functions confuse you: write expected input/output examples first.
+- If tests confuse you: test one function at a time with tiny data.
 
----
+## Mastery check
+You are ready for the next phase when you can:
+- write and test small functions from scratch,
+- explain tracebacks in plain English,
+- process list-of-dict data without guesswork.
 
-## Minimum mastery checklist (before moving on)
-You can confidently:
-- write a function with inputs/outputs
-- loop through records and filter them
-- read/write files
-- explain what a traceback is telling you
+## Learning-style options (Play/Build/Dissect/Teach-back)
+- Play: mutate examples aggressively and observe behavior.
+- Build: complete every lab in order and commit after each lab.
+- Dissect: read a peer script and refactor it into smaller functions.
+- Teach-back: explain one lab weekly in writing or a recorded walkthrough.
 
-Next: **[09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md)**
+## Primary Sources
+- [Python Tutorial](https://docs.python.org/3/tutorial/)
+- [pathlib](https://docs.python.org/3/library/pathlib.html)
+- [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
+
+## Optional Resources
+- [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
+- [Exercism Python](https://exercism.org/tracks/python)
+
+## Next
+Go to [09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md).

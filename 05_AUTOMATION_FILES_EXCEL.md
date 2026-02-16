@@ -1,121 +1,161 @@
-# 05 — Automation: Files + Excel Reporting (Step-by-step)
+# 05 - Automation: Files and Excel Reporting (Capstone A Build Guide)
+Home: [README](./README.md)
 
-## Goal
-You will build scripts that:
-- scan folders
-- read multiple Excel files
-- validate columns
-- merge data
-- generate outputs (Excel + CSV + log)
+## Who this is for
+- Learners ready to produce business-value automation from spreadsheets.
+- Teams that need repeatable reporting with validation and auditability.
 
-This is where you start producing work that others can use immediately.
+## What you will build
+A full Excel ingestion pipeline that:
+- scans `input/` for `.xlsx` files,
+- normalizes headers,
+- validates rows,
+- writes `Master_Report.xlsx`, `Master_Report.csv`, and `rejects.csv`,
+- writes a run log with summary counts.
 
----
+## Prerequisites
+- Foundations phase complete.
+- Quality tooling baseline from [09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md).
+- Installed packages: `openpyxl`, optional `pandas`.
 
-## Concepts you must understand first
-- Paths and files (`pathlib`)
-- Loops (processing many files)
-- Dictionaries (rows as key/value records)
-- Functions (parse → validate → transform → output)
-- Logging (runs unattended)
-- Virtual environments + pip
+## Step-by-step lab pack
 
-If you’re shaky, revisit **[04_FOUNDATIONS.md](./04_FOUNDATIONS.md)**.
+### Step 1 - Project scaffolding
+Create structure:
+```text
+excel_merger/
+  input/
+  output/
+  logs/
+  src/
+    excel_merger/
+      __init__.py
+      main.py
+      schema.py
+      normalize.py
+      validate.py
+      io_excel.py
+      io_csv.py
+  tests/
+```
 
----
+### Step 2 - Define schema contract
+Required columns:
+- `Customer`
+- `Site`
+- `Status`
+- `Opened`
+- `TicketID`
 
-## Library choices
-### Excel I/O
-- **openpyxl**: reliable Excel reading/writing for .xlsx
-### Transformations
-- **pandas**: powerful for cleaning/merging tables
+Define allowed status values and date rules.
 
-Recommendation:
-- Start with openpyxl to understand “cells/sheets”.
-- Use pandas once you understand the data model.
+### Step 3 - Header normalization rules
+Implement `normalize_header(text)` rules:
+- trim whitespace,
+- lowercase,
+- remove `_`, `-`, and extra spaces,
+- map known aliases (for example `ticket id`, `ticket_id`, `ticketid`).
 
----
+### Step 4 - Workbook ingestion (`openpyxl` path)
+- Detect header row.
+- Build row dictionaries by normalized headers.
+- Capture source filename and row number.
 
-## Capstone A: Excel Merger + Validator + Report (enterprise version)
+### Step 5 - Row validation
+Implement `validate_row(row)` checks:
+- missing required fields,
+- invalid status,
+- invalid date format,
+- duplicate TicketID in same file.
 
-### Inputs
-- Folder: `input/`
-- 3–20 Excel files
-- Expected columns (example):
-  - `Customer`
-  - `Site`
-  - `Status`
-  - `Opened`
-  - `TicketID`
+Write failures to `rejects.csv` with reason codes.
 
-### Outputs
-- `output/Master_Report.xlsx`
+### Step 6 - Merge and transform
+- Combine valid rows from all files.
+- Add metadata fields:
+  - `source_file`
+  - `ingested_at_utc`
+
+### Step 7 - Write outputs
 - `output/Master_Report.csv`
-- `logs/run_YYYYMMDD_HHMM.log`
-- `output/rejects.csv` (rows that fail validation)
+- `output/Master_Report.xlsx`
+  - worksheet `AllRows`
+  - worksheet `CriticalRows`
+  - highlight critical rows.
 
-### Step-by-step build plan
-#### Step 1 — Project scaffolding
-Create project folder with the template structure from **[09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md)**.
+### Step 8 - Logging standards
+- one log file per run: `logs/run_YYYYMMDD_HHMMSS.log`
+- include:
+  - files discovered,
+  - rows accepted/rejected,
+  - final output paths,
+  - fatal errors with traceback.
 
-#### Step 2 — Define your schema
-Create a Python list of required columns:
-- required = ["Customer", "Site", "Status", "Opened", "TicketID"]
+### Step 9 - Optional `pandas` path
+After `openpyxl` baseline works:
+- load dataframes,
+- apply vectorized transforms,
+- compare results to baseline outputs.
 
-#### Step 3 — Header normalization
-Real spreadsheets have:
-- `ticket id`, `Ticket_ID`, `TicketId`
+### Step 10 - CLI wrapper
+Implement command:
+```bash
+python -m excel_merger.main --input ./input --output ./output --log-dir ./logs
+```
 
-Write a function:
-- `normalize_header(text: str) -> str`
-that:
-- trims whitespace
-- makes consistent casing
-- removes punctuation like `_`
+## Expected output
+- A rerunnable tool that handles malformed files safely.
+- Clear output artifacts and rejects report.
+- Deterministic behavior when rerun on same input.
 
-#### Step 4 — Read workbooks
-Write `read_rows_from_excel(path) -> list[dict]`
-- load workbook
-- find header row
-- map each row to dict by header
+## Break/fix drills
+1. Remove `TicketID` column in one file and confirm it lands in rejects.
+2. Introduce mixed header styles and confirm normalization works.
+3. Add a corrupted workbook and confirm pipeline continues with logging.
 
-#### Step 5 — Validate rows
-Write `validate_row(row) -> (is_ok, reason)`
-- missing required fields?
-- invalid status?
-- invalid date?
+## Troubleshooting
+- Missing package errors:
+  - activate `.venv` and reinstall dependencies.
+- Date parsing errors:
+  - normalize date formats before validation.
+- Excel formatting issues:
+  - verify workbook writes happen after data transforms, not before.
 
-Bad rows go to rejects.
+## Mastery check
+You are ready for SQL integration when you can:
+- process 20 files with mixed quality,
+- produce clean master outputs,
+- explain every reject reason,
+- rerun without duplicate or conflicting outputs.
 
-#### Step 6 — Merge all data
-Combine into a single list of dicts.
-Add metadata:
-- `SourceFile`
-- `IngestedAt`
+## Learning-style options (Play/Build/Dissect/Teach-back)
+- Play: modify header aliases and test edge cases.
+- Build: follow steps exactly and track completion.
+- Dissect: inspect one malformed file and explain why it failed.
+- Teach-back: present schema and validation rules to a teammate.
 
-#### Step 7 — Write outputs
-- Write CSV for easy consumption
-- Write Excel:
-  - main sheet: AllRows
-  - second sheet: CriticalRows
-  - highlight critical
+## Acceptance checklist and rubric
+Pass criteria:
+- functional: all required outputs generated.
+- reliability: malformed data does not crash full run.
+- traceability: each rejected row has a reason.
+- maintainability: tests exist for normalization and validation.
 
-#### Step 8 — Tests
-Write tests for:
-- normalize_header
-- status normalization
-- validate_row
+Scoring rubric (0-2 each):
+- correctness,
+- resilience,
+- logging quality,
+- test coverage,
+- usability of CLI.
 
-#### Step 9 — CLI wrapper
-Add commands like:
-- `excelmerge run --input input --output output`
+## Primary Sources
+- [openpyxl tutorial](https://openpyxl.readthedocs.io/en/stable/tutorial.html)
+- [pandas 10 minutes](https://pandas.pydata.org/docs/user_guide/10min.html)
+- [pandas.read_excel](https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html)
 
----
+## Optional Resources
+- [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
+- [Real Python Excel articles](https://realpython.com/tutorials/python/)
 
-## What “good” looks like
-- It processes 20 files even if 1 is malformed.
-- It never overwrites outputs without versioning.
-- It logs counts per file and totals.
-- It produces rejects with reasons.
-
-Next: **[06_SQL.md](./06_SQL.md)**
+## Next
+Go to [06_SQL.md](./06_SQL.md).
