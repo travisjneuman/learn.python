@@ -95,5 +95,9 @@ You are done when a non-technical user can:
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
+## Navigation support
+- If you want faster progress through this phase with less friction:
+  - [14_NAVIGATION_AND_STUDY_WORKFLOW.md](./14_NAVIGATION_AND_STUDY_WORKFLOW.md)
+
 ## Next
 Go to [10_CAPSTONE_PROJECTS.md](./10_CAPSTONE_PROJECTS.md).

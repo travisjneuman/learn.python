@@ -58,6 +58,16 @@ Use before architecture reviews with experienced engineers:
 - [ ] Can explain security posture for credentials and access.
 - [ ] Can explain dashboard fallback behavior during outages.
 
+## Screenshot and checkpoint checklist
+- [ ] Capture one setup screenshot per major milestone.
+- [ ] Capture one failure screenshot and one fix screenshot per week.
+- [ ] Write 3 checkpoint reflections after each study session:
+  - what I changed,
+  - what broke,
+  - what I fixed.
+- [ ] Keep screenshots and notes organized by phase and date.
+- [ ] Use [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md) as the standard template.
+
 ## Primary Sources
 - [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
 - [Ruff docs](https://docs.astral.sh/ruff/)

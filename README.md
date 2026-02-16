@@ -68,6 +68,22 @@ Reference support file (use anytime):
 - Gate D: Orion + DPA data is ingested into MSSQL cache tables.
 - Gate E: Browser dashboard for non-technical users is delivered.
 
+## Project lab ladder (level 0 -> level 10)
+- Hands-on projects live in [`./projects`](./projects).
+- There are 11 levels: `level-0` through `level-10`.
+- Each level includes 15 projects designed to be altered, broken, fixed, and extended.
+- Start here:
+  - [`./projects/README.md`](./projects/README.md)
+  - [`./projects/level-0/README.md`](./projects/level-0/README.md)
+
+## Second-pass support packs
+- Screenshot checkpoints and study prompts:
+  - [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md)
+- Enterprise sample schemas (MSSQL + Orion + DPA):
+  - [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
+- Navigation and editorial workflow guide:
+  - [14_NAVIGATION_AND_STUDY_WORKFLOW.md](./14_NAVIGATION_AND_STUDY_WORKFLOW.md)
+
 ## Sources Library
 
 ### Official and vendor documentation (primary)

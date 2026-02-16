@@ -122,5 +122,9 @@ Advance when you can:
 - [DPA Getting Started](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_getting_started_guide.htm)
 - [DPA Administrator Guide](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_administrator_guide.htm)
 
+## Enterprise sample schemas
+- Use this schema pack for Orion/DPA cache and downstream marts:
+  - [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
+
 ## Next
 Go to [08_DASHBOARDS.md](./08_DASHBOARDS.md).
