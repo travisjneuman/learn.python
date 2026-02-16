@@ -1,31 +1,31 @@
-# Level 6 - Intermediate Plus
+# Level 6 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-deliver idempotent SQL-friendly pipelines
+Design SQL-friendly ETL patterns with idempotency and operational safeguards.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-mssql-connection-simulator](./01-mssql-connection-simulator/README.md) - MSSQL Connection Simulator
+- [02-staging-table-loader](./02-staging-table-loader/README.md) - Staging Table Loader
+- [03-idempotency-key-builder](./03-idempotency-key-builder/README.md) - Idempotency Key Builder
+- [04-upsert-strategy-lab](./04-upsert-strategy-lab/README.md) - Upsert Strategy Lab
+- [05-transaction-rollback-drill](./05-transaction-rollback-drill/README.md) - Transaction Rollback Drill
+- [06-query-performance-checker](./06-query-performance-checker/README.md) - Query Performance Checker
+- [07-sql-summary-publisher](./07-sql-summary-publisher/README.md) - SQL Summary Publisher
+- [08-data-lineage-capture](./08-data-lineage-capture/README.md) - Data Lineage Capture
+- [09-incremental-load-simulator](./09-incremental-load-simulator/README.md) - Incremental Load Simulator
+- [10-table-drift-detector](./10-table-drift-detector/README.md) - Table Drift Detector
+- [11-dead-letter-row-handler](./11-dead-letter-row-handler/README.md) - Dead Letter Row Handler
+- [12-etl-health-dashboard-feed](./12-etl-health-dashboard-feed/README.md) - ETL Health Dashboard Feed
+- [13-batch-window-controller](./13-batch-window-controller/README.md) - Batch Window Controller
+- [14-sql-runbook-generator](./14-sql-runbook-generator/README.md) - SQL Runbook Generator
+- [15-level6-mini-capstone](./15-level6-mini-capstone/README.md) - Level 6 Mini Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-7](../level-7/README.md) if available.
+- Continue to [level-7](../level-7/README.md).
 - Return to [projects index](../README.md).

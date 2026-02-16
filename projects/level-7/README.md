@@ -1,31 +1,31 @@
-# Level 7 - Advanced
+# Level 7 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-create config-driven maintainable tools
+Integrate multi-source telemetry with contracts, caching, and policy guardrails.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-orion-query-adapter](./01-orion-query-adapter/README.md) - Orion Query Adapter
+- [02-dpa-api-adapter](./02-dpa-api-adapter/README.md) - DPA API Adapter
+- [03-unified-cache-writer](./03-unified-cache-writer/README.md) - Unified Cache Writer
+- [04-source-field-mapper](./04-source-field-mapper/README.md) - Source Field Mapper
+- [05-polling-cadence-manager](./05-polling-cadence-manager/README.md) - Polling Cadence Manager
+- [06-token-rotation-simulator](./06-token-rotation-simulator/README.md) - Token Rotation Simulator
+- [07-stale-data-detector](./07-stale-data-detector/README.md) - Stale Data Detector
+- [08-ingestion-observability-kit](./08-ingestion-observability-kit/README.md) - Ingestion Observability Kit
+- [09-contract-version-checker](./09-contract-version-checker/README.md) - Contract Version Checker
+- [10-multi-source-reconciler](./10-multi-source-reconciler/README.md) - Multi Source Reconciler
+- [11-pipeline-feature-flags](./11-pipeline-feature-flags/README.md) - Pipeline Feature Flags
+- [12-incident-mode-switch](./12-incident-mode-switch/README.md) - Incident Mode Switch
+- [13-service-account-policy-check](./13-service-account-policy-check/README.md) - Service Account Policy Check
+- [14-cache-backfill-runner](./14-cache-backfill-runner/README.md) - Cache Backfill Runner
+- [15-level7-mini-capstone](./15-level7-mini-capstone/README.md) - Level 7 Mini Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-8](../level-8/README.md) if available.
+- Continue to [level-8](../level-8/README.md).
 - Return to [projects index](../README.md).

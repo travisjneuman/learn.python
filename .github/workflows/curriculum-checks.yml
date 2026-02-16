@@ -1,0 +1,78 @@
+name: Curriculum Checks
+
+on:
+  push:
+    paths:
+      - '**.md'
+      - 'projects/**'
+      - 'tools/**'
+      - '.github/workflows/curriculum-checks.yml'
+  pull_request:
+    paths:
+      - '**.md'
+      - 'projects/**'
+      - 'tools/**'
+      - '.github/workflows/curriculum-checks.yml'
+  workflow_dispatch:
+    inputs:
+      full_smoke:
+        description: 'Run full smoke suite (all 165 projects)'
+        required: false
+        default: 'false'
+  schedule:
+    # Quarterly on Jan/Apr/Jul/Oct 1st at 06:00 UTC
+    - cron: '0 6 1 1,4,7,10 *'
+
+jobs:
+  quick-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Markdown link checks
+        run: ./tools/check_markdown_links.sh
+
+      - name: Root doc contract checks
+        run: ./tools/check_root_doc_contract.sh
+
+      - name: Level index contract checks
+        run: ./tools/check_level_index_contract.sh
+
+      - name: Project README contract checks
+        run: ./tools/check_project_readme_contract.sh
+
+      - name: Project python comment/docstring contract checks
+        run: ./tools/check_project_python_comment_contract.sh
+
+      - name: Portable path contract checks
+        run: ./tools/check_portable_paths.sh
+
+      - name: Elite track contract checks
+        run: ./tools/check_elite_track_contract.sh
+
+      - name: Project quick smoke checks
+        run: ./projects/run_smoke_checks.sh
+
+      - name: Elite quick smoke checks
+        run: ./projects/run_elite_smoke_checks.sh
+
+  full-smoke:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.full_smoke == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Full curriculum checks
+        run: ./tools/run_all_curriculum_checks.sh --full

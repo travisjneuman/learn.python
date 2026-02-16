@@ -13,7 +13,7 @@ Home: [README](./README.md)
 - Browser-based dashboards for non-technical stakeholders.
 
 ## Prerequisites
-- Windows 11 machine.
+- One supported platform: Windows, macOS, Linux, Android, or iOS (desktop strongly recommended for full enterprise path).
 - Permission to install Python and VS Code.
 - Access path for MSSQL credentials (non-SSO SQL auth is supported in this plan).
 - Read-only API access to Orion and DPA to start.
@@ -27,6 +27,8 @@ Home: [README](./README.md)
 - Phase 5 (Weeks 23-28): Orion and DPA integration.
 - Phase 6 (Weeks 29-38): dashboard delivery for browser users.
 - Phase 7 (Weeks 39+): release process, governance, and handoff maturity.
+- Phase 8+ (Advanced): full-stack expert path and infinite mastery loop.
+- Phase 9+ (Elite): formal exams, architecture defenses, platform hardening, and world-class evidence loop.
 
 ## Step-by-step lab pack
 
@@ -44,7 +46,7 @@ Done means done:
 - You can repeat setup in a fresh folder without guessing.
 
 Fail/recover guidance:
-- If activation fails, use the troubleshooting section in [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).
+- If activation fails, use the troubleshooting section in [03_SETUP_ALL_PLATFORMS.md](./03_SETUP_ALL_PLATFORMS.md).
 
 ### Phase 1 - Foundations (Weeks 2-6)
 Weekly outcomes:
@@ -180,6 +182,42 @@ Fail/recover guidance:
 ## Expected output
 - A complete progression from beginner to enterprise-capable Python practitioner.
 - A portfolio of capstones tied to your real data systems.
+- A clear upgrade path to full-stack expert mastery:
+  - [21_FULL_STACK_MASTERY_PATH.md](./21_FULL_STACK_MASTERY_PATH.md)
+  - [22_SPECIALIZATION_TRACKS.md](./22_SPECIALIZATION_TRACKS.md)
+  - [23_RESOURCE_AND_CURRICULUM_MAP.md](./23_RESOURCE_AND_CURRICULUM_MAP.md)
+  - [24_MASTERY_SCORING_AND_GATES.md](./24_MASTERY_SCORING_AND_GATES.md)
+  - [25_INFINITY_MASTERY_LOOP.md](./25_INFINITY_MASTERY_LOOP.md)
+- A literal, no-assumptions execution path for absolute beginners:
+  - [26_ZERO_TO_MASTER_PLAYBOOK.md](./26_ZERO_TO_MASTER_PLAYBOOK.md)
+  - [27_DAY_0_TO_DAY_30_BOOTSTRAP.md](./27_DAY_0_TO_DAY_30_BOOTSTRAP.md)
+  - [28_LEVEL_0_TO_2_DEEP_GUIDE.md](./28_LEVEL_0_TO_2_DEEP_GUIDE.md)
+  - [29_LEVEL_3_TO_5_DEEP_GUIDE.md](./29_LEVEL_3_TO_5_DEEP_GUIDE.md)
+  - [30_LEVEL_6_TO_8_DEEP_GUIDE.md](./30_LEVEL_6_TO_8_DEEP_GUIDE.md)
+  - [31_LEVEL_9_TO_10_AND_BEYOND.md](./31_LEVEL_9_TO_10_AND_BEYOND.md)
+  - [32_DAILY_SESSION_SCRIPT.md](./32_DAILY_SESSION_SCRIPT.md)
+  - [33_WEEKLY_REVIEW_TEMPLATE.md](./33_WEEKLY_REVIEW_TEMPLATE.md)
+  - [34_FAILURE_RECOVERY_ATLAS.md](./34_FAILURE_RECOVERY_ATLAS.md)
+  - [35_CAPSTONE_BLUEPRINTS.md](./35_CAPSTONE_BLUEPRINTS.md)
+- A world-class elite extension path:
+  - [36_ELITE_ENGINEERING_TRACK.md](./36_ELITE_ENGINEERING_TRACK.md)
+  - [37_QUARTERLY_EXAMS_AND_DEFENSES.md](./37_QUARTERLY_EXAMS_AND_DEFENSES.md)
+  - [38_SYSTEM_DESIGN_AND_RFCS.md](./38_SYSTEM_DESIGN_AND_RFCS.md)
+  - [39_PRODUCTION_PLATFORM_LAB.md](./39_PRODUCTION_PLATFORM_LAB.md)
+  - [40_SECURITY_COMPLIANCE_HARDENING.md](./40_SECURITY_COMPLIANCE_HARDENING.md)
+  - [41_PERFORMANCE_ENGINEERING_LAB.md](./41_PERFORMANCE_ENGINEERING_LAB.md)
+  - [42_OPEN_SOURCE_CONTRIBUTION_LANE.md](./42_OPEN_SOURCE_CONTRIBUTION_LANE.md)
+  - [43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md](./43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md)
+  - [44_SME_INTERVIEW_AND_DEBATE_BANK.md](./44_SME_INTERVIEW_AND_DEBATE_BANK.md)
+  - [45_MASTERY_TELEMETRY_AND_REMEDIATION.md](./45_MASTERY_TELEMETRY_AND_REMEDIATION.md)
+- A universal learner-adaptive completion path:
+  - [46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md](./46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md)
+  - [47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md](./47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md)
+  - [48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md](./48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md)
+  - [49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md](./49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md)
+  - [50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md](./50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md)
+- Elite systems projects for advanced practice:
+  - [projects/elite-track/README.md](./projects/elite-track/README.md)
 
 ## Break/fix drills
 - Break path assumptions by renaming input folders.
@@ -206,4 +244,4 @@ You are ready to advance when you can:
 - [Real Python](https://realpython.com/tutorials/python/)
 
 ## Next
-Go to [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).
+Go to [02_GLOSSARY.md](./02_GLOSSARY.md).

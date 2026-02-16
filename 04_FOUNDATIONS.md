@@ -10,7 +10,7 @@ Home: [README](./README.md)
 - A debugging notebook that captures mistakes and fixes.
 
 ## Prerequisites
-- Setup complete from [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).
+- Setup complete from [03_SETUP_ALL_PLATFORMS.md](./03_SETUP_ALL_PLATFORMS.md).
 - Working `.venv` and pytest.
 
 ## Step-by-step lab pack

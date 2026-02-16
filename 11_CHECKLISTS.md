@@ -79,4 +79,4 @@ Use before architecture reviews with experienced engineers:
 - [Real Python](https://realpython.com/tutorials/python/)
 
 ## Next
-Return to [README.md](./README.md) and start your next iteration.
+Go to [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md).

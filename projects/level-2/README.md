@@ -1,31 +1,31 @@
-# Level 2 - Beginner Plus
+# Level 2 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-process lists/dicts and validate simple data
+Practice small data pipelines with dictionaries, validation, and transformations.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-dictionary-lookup-service](./01-dictionary-lookup-service/README.md) - Dictionary Lookup Service
+- [02-nested-data-flattener](./02-nested-data-flattener/README.md) - Nested Data Flattener
+- [03-data-cleaning-pipeline](./03-data-cleaning-pipeline/README.md) - Data Cleaning Pipeline
+- [04-error-safe-divider](./04-error-safe-divider/README.md) - Error Safe Divider
+- [05-text-report-generator](./05-text-report-generator/README.md) - Text Report Generator
+- [06-records-deduplicator](./06-records-deduplicator/README.md) - Records Deduplicator
+- [07-list-search-benchmark](./07-list-search-benchmark/README.md) - List Search Benchmark
+- [08-mini-inventory-engine](./08-mini-inventory-engine/README.md) - Mini Inventory Engine
+- [09-config-driven-calculator](./09-config-driven-calculator/README.md) - Config Driven Calculator
+- [10-mock-api-response-parser](./10-mock-api-response-parser/README.md) - Mock API Response Parser
+- [11-retry-loop-practice](./11-retry-loop-practice/README.md) - Retry Loop Practice
+- [12-csv-to-json-converter](./12-csv-to-json-converter/README.md) - CSV to JSON Converter
+- [13-validation-rule-engine](./13-validation-rule-engine/README.md) - Validation Rule Engine
+- [14-anomaly-flagger](./14-anomaly-flagger/README.md) - Anomaly Flagger
+- [15-level2-mini-capstone](./15-level2-mini-capstone/README.md) - Level 2 Mini Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-3](../level-3/README.md) if available.
+- Continue to [level-3](../level-3/README.md).
 - Return to [projects index](../README.md).
