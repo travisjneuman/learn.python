@@ -149,6 +149,22 @@ Fail/recover guidance:
 - Gate D: Orion/DPA ingestion proof into MSSQL cache.
 - Gate E: browser dashboard available to stakeholders.
 
+## Project ladder mapping (practice by skill level)
+- Use [`./projects`](./projects) continuously while progressing through phases.
+- Suggested mapping:
+  - Levels 0-2 during Phase 0-1
+  - Levels 3-5 during Phase 2-3
+  - Levels 6-7 during Phase 4
+  - Levels 8-9 during Phase 5-6
+  - Level 10 during Phase 7 and capstone hardening
+- Project index:
+  - [projects/README.md](./projects/README.md)
+
+## Screenshot and checkpoint workflow
+- Capture proof screenshots and reflections while learning:
+  - [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md)
+- Use this after each session to improve retention and speed up troubleshooting.
+
 ## If you fall behind (catch-up plan)
 1. Keep only one active project at a time.
 2. Finish minimum deliverables before adding features.

@@ -112,5 +112,9 @@ You are ready for SolarWinds ingestion when you can:
 - [pyodbc project](https://github.com/mkleehammer/pyodbc)
 - [python-oracledb docs](https://python-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html)
 
+## Enterprise sample schemas
+- Full schema pack for staging/reporting/cache/marts:
+  - [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
+
 ## Next
 Go to [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md).
