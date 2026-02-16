@@ -150,4 +150,4 @@ Use this file anytime you see unknown terms.
 - [Exercism Python](https://exercism.org/tracks/python)
 
 ## Next
-Go to [03_SETUP_WINDOWS11.md](./03_SETUP_WINDOWS11.md).
+Go to [03_SETUP_ALL_PLATFORMS.md](./03_SETUP_ALL_PLATFORMS.md).

@@ -1,0 +1,3 @@
+alpha,10,ok
+beta,7,warn
+gamma,2,critical

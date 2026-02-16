@@ -1,31 +1,31 @@
-# Level 8 - Advanced Plus
+# Level 8 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-add performance and retry discipline
+Harden dashboard/data services for performance, resilience, and observability.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-dashboard-kpi-assembler](./01-dashboard-kpi-assembler/README.md) - Dashboard KPI Assembler
+- [02-query-cache-layer](./02-query-cache-layer/README.md) - Query Cache Layer
+- [03-pagination-stress-lab](./03-pagination-stress-lab/README.md) - Pagination Stress Lab
+- [04-filter-state-manager](./04-filter-state-manager/README.md) - Filter State Manager
+- [05-export-governance-check](./05-export-governance-check/README.md) - Export Governance Check
+- [06-response-time-profiler](./06-response-time-profiler/README.md) - Response Time Profiler
+- [07-concurrency-queue-simulator](./07-concurrency-queue-simulator/README.md) - Concurrency Queue Simulator
+- [08-fault-injection-harness](./08-fault-injection-harness/README.md) - Fault Injection Harness
+- [09-graceful-degradation-engine](./09-graceful-degradation-engine/README.md) - Graceful Degradation Engine
+- [10-dependency-timeout-matrix](./10-dependency-timeout-matrix/README.md) - Dependency Timeout Matrix
+- [11-synthetic-monitor-runner](./11-synthetic-monitor-runner/README.md) - Synthetic Monitor Runner
+- [12-release-readiness-evaluator](./12-release-readiness-evaluator/README.md) - Release Readiness Evaluator
+- [13-sla-breach-detector](./13-sla-breach-detector/README.md) - SLA Breach Detector
+- [14-user-journey-tracer](./14-user-journey-tracer/README.md) - User Journey Tracer
+- [15-level8-mini-capstone](./15-level8-mini-capstone/README.md) - Level 8 Mini Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-9](../level-9/README.md) if available.
+- Continue to [level-9](../level-9/README.md).
 - Return to [projects index](../README.md).

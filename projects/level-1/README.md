@@ -1,31 +1,31 @@
-# Level 1 - Beginner
+# Level 1 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-use functions and conditionals predictably
+Strengthen input handling, branching logic, and simple file workflows.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-input-validator-lab](./01-input-validator-lab/README.md) - Input Validator Lab
+- [02-password-strength-checker](./02-password-strength-checker/README.md) - Password Strength Checker
+- [03-unit-price-calculator](./03-unit-price-calculator/README.md) - Unit Price Calculator
+- [04-log-line-parser](./04-log-line-parser/README.md) - Log Line Parser
+- [05-csv-first-reader](./05-csv-first-reader/README.md) - CSV First Reader
+- [06-simple-gradebook-engine](./06-simple-gradebook-engine/README.md) - Simple Gradebook Engine
+- [07-date-difference-helper](./07-date-difference-helper/README.md) - Date Difference Helper
+- [08-path-exists-checker](./08-path-exists-checker/README.md) - Path Exists Checker
+- [09-json-settings-loader](./09-json-settings-loader/README.md) - JSON Settings Loader
+- [10-ticket-priority-router](./10-ticket-priority-router/README.md) - Ticket Priority Router
+- [11-command-dispatcher](./11-command-dispatcher/README.md) - Command Dispatcher
+- [12-file-extension-counter](./12-file-extension-counter/README.md) - File Extension Counter
+- [13-batch-rename-simulator](./13-batch-rename-simulator/README.md) - Batch Rename Simulator
+- [14-basic-expense-tracker](./14-basic-expense-tracker/README.md) - Basic Expense Tracker
+- [15-level1-mini-automation](./15-level1-mini-automation/README.md) - Level 1 Mini Automation
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-2](../level-2/README.md) if available.
+- Continue to [level-2](../level-2/README.md).
 - Return to [projects index](../README.md).

@@ -1,31 +1,30 @@
-# Level 10 - SME Track
+# Level 10 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-operate, harden, and hand off production-grade tools
+Operate at SME level with enterprise controls, mentorship, and platform strategy.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-enterprise-python-blueprint](./01-enterprise-python-blueprint/README.md) - Enterprise Python Blueprint
+- [02-autonomous-run-orchestrator](./02-autonomous-run-orchestrator/README.md) - Autonomous Run Orchestrator
+- [03-policy-as-code-validator](./03-policy-as-code-validator/README.md) - Policy As Code Validator
+- [04-multi-tenant-data-guard](./04-multi-tenant-data-guard/README.md) - Multi Tenant Data Guard
+- [05-compliance-evidence-builder](./05-compliance-evidence-builder/README.md) - Compliance Evidence Builder
+- [06-resilience-chaos-workbench](./06-resilience-chaos-workbench/README.md) - Resilience Chaos Workbench
+- [07-high-risk-change-gate](./07-high-risk-change-gate/README.md) - High Risk Change Gate
+- [08-zero-downtime-migration-lab](./08-zero-downtime-migration-lab/README.md) - Zero Downtime Migration Lab
+- [09-strategic-architecture-review](./09-strategic-architecture-review/README.md) - Strategic Architecture Review
+- [10-executive-metrics-publisher](./10-executive-metrics-publisher/README.md) - Executive Metrics Publisher
+- [11-production-readiness-director](./11-production-readiness-director/README.md) - Production Readiness Director
+- [12-onboarding-accelerator-system](./12-onboarding-accelerator-system/README.md) - Onboarding Accelerator System
+- [13-legacy-modernization-planner](./13-legacy-modernization-planner/README.md) - Legacy Modernization Planner
+- [14-sme-mentorship-toolkit](./14-sme-mentorship-toolkit/README.md) - SME Mentorship Toolkit
+- [15-level10-grand-capstone](./15-level10-grand-capstone/README.md) - Level 10 Grand Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-
 - Return to [projects index](../README.md).

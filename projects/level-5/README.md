@@ -1,31 +1,31 @@
-# Level 5 - Intermediate
+# Level 5 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-build reliable automations with logging
+Build robust automation behavior with stronger reliability and reporting.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-schedule-ready-script](./01-schedule-ready-script/README.md) - Schedule Ready Script
+- [02-alert-threshold-monitor](./02-alert-threshold-monitor/README.md) - Alert Threshold Monitor
+- [03-multi-file-etl-runner](./03-multi-file-etl-runner/README.md) - Multi File ETL Runner
+- [04-config-layer-priority](./04-config-layer-priority/README.md) - Config Layer Priority
+- [05-plugin-style-transformer](./05-plugin-style-transformer/README.md) - Plugin Style Transformer
+- [06-metrics-summary-engine](./06-metrics-summary-engine/README.md) - Metrics Summary Engine
+- [07-resilient-json-loader](./07-resilient-json-loader/README.md) - Resilient JSON Loader
+- [08-cross-file-joiner](./08-cross-file-joiner/README.md) - Cross File Joiner
+- [09-template-report-renderer](./09-template-report-renderer/README.md) - Template Report Renderer
+- [10-api-polling-simulator](./10-api-polling-simulator/README.md) - API Polling Simulator
+- [11-retry-backoff-runner](./11-retry-backoff-runner/README.md) - Retry Backoff Runner
+- [12-fail-safe-exporter](./12-fail-safe-exporter/README.md) - Fail Safe Exporter
+- [13-operational-run-logger](./13-operational-run-logger/README.md) - Operational Run Logger
+- [14-change-detection-tool](./14-change-detection-tool/README.md) - Change Detection Tool
+- [15-level5-mini-capstone](./15-level5-mini-capstone/README.md) - Level 5 Mini Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-6](../level-6/README.md) if available.
+- Continue to [level-6](../level-6/README.md).
 - Return to [projects index](../README.md).

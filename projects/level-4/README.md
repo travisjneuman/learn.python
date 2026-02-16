@@ -1,31 +1,31 @@
-# Level 4 - Junior Plus
+# Level 4 Projects
 Home: [README](../../README.md)
 
 ## Level objective
-handle files and malformed input safely
+Handle real-world messy data safely with repeatable tooling patterns.
 
-## Projects in this level
-- [01-hello-ops-console](./01-hello-ops-console/README.md) - Hello Ops Console
-- [02-input-output-checker](./02-input-output-checker/README.md) - Input and Output Checker
-- [03-string-cleaning-lab](./03-string-cleaning-lab/README.md) - String Cleaning Lab
-- [04-condition-engine](./04-condition-engine/README.md) - Condition Engine
-- [05-loop-and-summarize](./05-loop-and-summarize/README.md) - Loop and Summarize
-- [06-function-toolkit](./06-function-toolkit/README.md) - Function Toolkit
-- [07-list-dict-mapper](./07-list-dict-mapper/README.md) - List/Dict Mapper
-- [08-file-health-scanner](./08-file-health-scanner/README.md) - File Health Scanner
-- [09-csv-normalizer](./09-csv-normalizer/README.md) - CSV Normalizer
-- [10-json-api-poller](./10-json-api-poller/README.md) - JSON API Poller
-- [11-sql-query-runner](./11-sql-query-runner/README.md) - SQL Query Runner
-- [12-excel-report-builder](./12-excel-report-builder/README.md) - Excel Report Builder
-- [13-scheduler-simulator](./13-scheduler-simulator/README.md) - Scheduler Simulator
-- [14-dashboard-data-feed](./14-dashboard-data-feed/README.md) - Dashboard Data Feed
-- [15-mini-pipeline-capstone](./15-mini-pipeline-capstone/README.md) - Mini Pipeline Capstone
+## Projects
+- [01-schema-validator-engine](./01-schema-validator-engine/README.md) - Schema Validator Engine
+- [02-excel-input-health-check](./02-excel-input-health-check/README.md) - Excel Input Health Check
+- [03-robust-csv-ingestor](./03-robust-csv-ingestor/README.md) - Robust CSV Ingestor
+- [04-data-contract-enforcer](./04-data-contract-enforcer/README.md) - Data Contract Enforcer
+- [05-path-safe-file-mover](./05-path-safe-file-mover/README.md) - Path Safe File Mover
+- [06-backup-rotation-tool](./06-backup-rotation-tool/README.md) - Backup Rotation Tool
+- [07-duplicate-record-investigator](./07-duplicate-record-investigator/README.md) - Duplicate Record Investigator
+- [08-malformed-row-quarantine](./08-malformed-row-quarantine/README.md) - Malformed Row Quarantine
+- [09-transformation-pipeline-v1](./09-transformation-pipeline-v1/README.md) - Transformation Pipeline V1
+- [10-run-manifest-generator](./10-run-manifest-generator/README.md) - Run Manifest Generator
+- [11-audit-log-enhancer](./11-audit-log-enhancer/README.md) - Audit Log Enhancer
+- [12-checkpoint-recovery-tool](./12-checkpoint-recovery-tool/README.md) - Checkpoint Recovery Tool
+- [13-reconciliation-reporter](./13-reconciliation-reporter/README.md) - Reconciliation Reporter
+- [14-configurable-batch-runner](./14-configurable-batch-runner/README.md) - Configurable Batch Runner
+- [15-level4-mini-capstone](./15-level4-mini-capstone/README.md) - Level 4 Mini Capstone
 
 ## Level workflow
-1. Run all 15 starter projects once.
-2. Pick 3 projects and complete the Alter/Break/Fix cycle deeply.
-3. Promote one project into a mini-capstone with stronger tests and docs.
+1. Run all 15 projects once.
+2. Deeply alter/break/fix at least 3 projects.
+3. Evolve one into a stronger mini-capstone.
 
 ## Next
-- Continue to [level-5](../level-5/README.md) if available.
+- Continue to [level-5](../level-5/README.md).
 - Return to [projects index](../README.md).
