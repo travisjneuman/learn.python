@@ -1,0 +1,14 @@
+{
+  "project_title": "Terminal Hello Lab",
+  "project_level": 0,
+  "project_focus": "print output, variables, and command execution basics",
+  "total_items": 5,
+  "unique_items": 5,
+  "preview": [
+    "critical_alert",
+    "warning_alert",
+    "site_latency_high",
+    "cpu_utilization_spike",
+    "disk_free_space_low"
+  ]
+}
