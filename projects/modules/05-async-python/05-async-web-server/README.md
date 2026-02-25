@@ -64,6 +64,16 @@ You can move on when you can:
 - explain why blocking calls hurt async servers,
 - stream data to clients with StreamingResponse.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Async Explained](../../../../concepts/async-explained.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Go back to [Module index](../README.md) or continue to [Module 06 — Databases & ORM](../../06-databases-orm/).

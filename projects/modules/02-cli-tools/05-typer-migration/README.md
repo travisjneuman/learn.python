@@ -87,6 +87,16 @@ You can move on when you can:
 - list two advantages of each library,
 - add a new subcommand to a Typer app without breaking existing ones.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Decorators Explained](../../../../concepts/decorators-explained.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Go back to [Module 02 index](../README.md) or continue to the next module.

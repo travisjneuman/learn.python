@@ -69,6 +69,16 @@ You can move on when you can:
 - Explain what shrinking means and why it helps debugging.
 - Describe when property-based testing is more valuable than example-based testing.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Decorators Explained](../../../../concepts/decorators-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 [Project 05 — Integration Testing](../05-integration-testing/)

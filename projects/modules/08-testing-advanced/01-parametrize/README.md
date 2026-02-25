@@ -75,6 +75,16 @@ You can move on when you can:
 - Add new test cases to an existing parametrized test in under a minute.
 - Read pytest's parametrize failure output and understand which case failed and why.
 
+---
+
+## Related Concepts
+
+- [Decorators Explained](../../../../concepts/decorators-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Decorators Explained](../../../../concepts/quizzes/decorators-explained-quiz.py)
+
 ## Next
 
 [Project 02 — Mocking](../02-mocking/)

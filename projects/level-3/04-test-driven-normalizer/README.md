@@ -56,5 +56,14 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Errors and Debugging](../../../concepts/errors-and-debugging.md)
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../concepts/how-loops-work.md)
+- [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
 ## Next
 Go back to [Level 3 index](../README.md).

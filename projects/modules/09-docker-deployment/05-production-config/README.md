@@ -130,6 +130,16 @@ You can move on when you can:
 - describe why containers should run as non-root users,
 - read structured logs and use them to diagnose issues.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [The Terminal Deeper](../../../../concepts/the-terminal-deeper.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: Files and Paths](../../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 
 You have completed Module 09 — Docker & Deployment. You now have the skills to containerize any Python application and deploy it with confidence. Consider continuing to [Module 10 — Django Full-Stack](../../10-django-fullstack/) or [Module 12 — Cloud Deployment](../../12-cloud-deploy/).

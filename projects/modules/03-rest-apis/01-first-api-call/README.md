@@ -75,6 +75,16 @@ You can move on when you can:
 - extract any field from a JSON response,
 - describe the difference between `.text` and `.json()`.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [Query Parameters](../02-query-parameters/).

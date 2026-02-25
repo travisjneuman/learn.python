@@ -83,6 +83,16 @@ You can move on when you can:
 - explain what CORS middleware does and when you need it,
 - describe why production APIs need custom error handlers.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 You have completed Module 04. You now know how to build, secure, and test a FastAPI web application.

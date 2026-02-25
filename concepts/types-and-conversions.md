@@ -81,3 +81,23 @@ float("3.14")  # 3.14 — use float() for decimal strings
 ## Related exercises
 - [Level 00, Exercise 05 — Numbers and Math](../projects/level-00-absolute-beginner/05-numbers-and-math/)
 - [Level 00, Exercise 07 — User Input](../projects/level-00-absolute-beginner/07-user-input/) (string to number conversion)
+
+---
+
+## Practice This
+
+- [Module: Elite Track / 03 Distributed Cache Simulator](../projects/elite-track/03-distributed-cache-simulator/README.md)
+- [Module: Elite Track / 09 Open Source Maintainer Simulator](../projects/elite-track/09-open-source-maintainer-simulator/README.md)
+- [Level 0 / 01 Terminal Hello Lab](../projects/level-0/01-terminal-hello-lab/README.md)
+- [Level 0 / 04 Yes No Questionnaire](../projects/level-0/04-yes-no-questionnaire/README.md)
+- [Level 0 / 07 First File Reader](../projects/level-0/07-first-file-reader/README.md)
+- [Level 0 / 08 String Cleaner Starter](../projects/level-0/08-string-cleaner-starter/README.md)
+- [Level 0 / 13 Alarm Message Generator](../projects/level-0/13-alarm-message-generator/README.md)
+- [Level 1 / 02 Password Strength Checker](../projects/level-1/02-password-strength-checker/README.md)
+- [Level 2 / 02 Nested Data Flattener](../projects/level-2/02-nested-data-flattener/README.md)
+- [Level 3 / 03 Logging Baseline Tool](../projects/level-3/03-logging-baseline-tool/README.md)
+
+**Quick check:** [Take the quiz](quizzes/types-and-conversions-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

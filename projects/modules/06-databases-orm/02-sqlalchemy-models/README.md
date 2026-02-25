@@ -88,6 +88,16 @@ You can move on when you can:
 - insert and query data through the ORM,
 - explain the difference between ORM queries and raw SQL.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [Quiz: Classes and Objects](../../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 
 [Project 03 — CRUD Operations](../03-crud-operations/)

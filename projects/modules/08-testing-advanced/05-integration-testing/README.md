@@ -70,6 +70,16 @@ You can move on when you can:
 - Test error responses and verify status codes.
 - Explain why test isolation matters for integration tests.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Congratulations — you have completed Module 08. You now have a professional-grade testing toolkit: parametrize for coverage, mocking for isolation, fixtures for setup, Hypothesis for edge cases, and integration tests for confidence. Go back to [Module Index](../README.md) and pick your next module.

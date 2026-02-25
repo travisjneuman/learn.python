@@ -93,3 +93,23 @@ def greet(name):
 
 ## Related exercises
 - [Level 00, Exercise 13 — Functions](../projects/level-00-absolute-beginner/13-functions/)
+
+---
+
+## Practice This
+
+- [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
+- [Level 0 / 03 Temperature Converter](../projects/level-0/03-temperature-converter/README.md)
+- [Level 0 / 12 Contact Card Builder](../projects/level-0/12-contact-card-builder/README.md)
+- [Level 1 / 01 Input Validator Lab](../projects/level-1/01-input-validator-lab/README.md)
+- [Level 1 / 02 Password Strength Checker](../projects/level-1/02-password-strength-checker/README.md)
+- [Level 1 / 03 Unit Price Calculator](../projects/level-1/03-unit-price-calculator/README.md)
+- [Level 1 / 04 Log Line Parser](../projects/level-1/04-log-line-parser/README.md)
+- [Level 1 / 05 Csv First Reader](../projects/level-1/05-csv-first-reader/README.md)
+- [Level 1 / 06 Simple Gradebook Engine](../projects/level-1/06-simple-gradebook-engine/README.md)
+- [Level 1 / 07 Date Difference Helper](../projects/level-1/07-date-difference-helper/README.md)
+
+**Quick check:** [Take the quiz](quizzes/functions-explained-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

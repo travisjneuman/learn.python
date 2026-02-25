@@ -107,6 +107,16 @@ You can move on when you can:
 - configure structured logging,
 - explain each item on the production checklist.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 Go back to [Module index](../README.md) or return to the [Modules overview](../../modules/README.md).

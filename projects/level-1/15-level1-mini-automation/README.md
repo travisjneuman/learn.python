@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../concepts/functions-explained.md)
+- [How Imports Work](../../../concepts/how-imports-work.md)
+- [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
+- [Quiz: Files and Paths](../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 Go back to [Level 1 index](../README.md).

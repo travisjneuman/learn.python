@@ -79,6 +79,16 @@ You can move on when you can:
 - explain what uvicorn does and why FastAPI needs it,
 - describe how type hints control validation.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [What is a Variable](../../../../concepts/what-is-a-variable.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [02-crud-api](../02-crud-api/).

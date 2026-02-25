@@ -90,6 +90,13 @@ You can move on when you can:
 - explain how Django's components fit together (MTV + DRF + auth),
 - describe what makes this a "full-stack" application.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Congratulations on completing Module 10! You now have full-stack Django skills.

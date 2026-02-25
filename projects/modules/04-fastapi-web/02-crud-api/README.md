@@ -77,6 +77,16 @@ You can move on when you can:
 - intentionally trigger a 422 validation error and explain the response body,
 - describe what status codes 200, 201, 204, 404, and 422 mean.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [03-database-backed](../03-database-backed/).

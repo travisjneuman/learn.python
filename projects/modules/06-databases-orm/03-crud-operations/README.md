@@ -88,6 +88,16 @@ You can move on when you can:
 - explain when to commit and when to rollback,
 - build an interactive program that maintains database state.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 04 — Migrations with Alembic](../04-migrations-alembic/)

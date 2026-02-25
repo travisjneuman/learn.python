@@ -100,3 +100,23 @@ path = Path("C:/Users/Travis/new_file.txt")  # Forward slashes work too
 
 ## Related exercises
 - [Level 00, Exercise 14 — Reading Files](../projects/level-00-absolute-beginner/14-reading-files/)
+
+---
+
+## Practice This
+
+- [Module: Elite Track / 05 Performance Profiler Workbench](../projects/elite-track/05-performance-profiler-workbench/README.md)
+- [Level 0 / 01 Terminal Hello Lab](../projects/level-0/01-terminal-hello-lab/README.md)
+- [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
+- [Level 0 / 03 Temperature Converter](../projects/level-0/03-temperature-converter/README.md)
+- [Level 0 / 04 Yes No Questionnaire](../projects/level-0/04-yes-no-questionnaire/README.md)
+- [Level 0 / 05 Number Classifier](../projects/level-0/05-number-classifier/README.md)
+- [Level 0 / 06 Word Counter Basic](../projects/level-0/06-word-counter-basic/README.md)
+- [Level 0 / 07 First File Reader](../projects/level-0/07-first-file-reader/README.md)
+- [Level 0 / 08 String Cleaner Starter](../projects/level-0/08-string-cleaner-starter/README.md)
+- [Level 0 / 09 Daily Checklist Writer](../projects/level-0/09-daily-checklist-writer/README.md)
+
+**Quick check:** [Take the quiz](quizzes/files-and-paths-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

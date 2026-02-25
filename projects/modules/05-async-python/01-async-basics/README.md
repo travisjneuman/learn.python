@@ -76,6 +76,16 @@ You can move on when you can:
 - predict the output order of concurrent tasks,
 - explain why `await` is required.
 
+---
+
+## Related Concepts
+
+- [Async Explained](../../../../concepts/async-explained.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Async Explained](../../../../concepts/quizzes/async-explained-quiz.py)
+
 ## Next
 
 [Project 02 — Concurrent Requests](../02-concurrent-requests/)

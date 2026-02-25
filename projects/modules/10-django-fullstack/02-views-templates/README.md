@@ -72,6 +72,15 @@ You can move on when you can:
 - explain why Django namespaces templates inside app subdirectories,
 - pass data from a view to a template using the context dictionary.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Files and Paths](../../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 
 Continue to [03-forms-auth](../03-forms-auth/).

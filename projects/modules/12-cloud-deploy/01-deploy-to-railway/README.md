@@ -109,6 +109,16 @@ You can move on when you can:
 - check deploy logs to debug issues,
 - explain the deploy workflow.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 02 — Deploy with Database](../02-deploy-with-database/)

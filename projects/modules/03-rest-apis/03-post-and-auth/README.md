@@ -81,6 +81,16 @@ You can move on when you can:
 - set custom headers on a request,
 - describe what `json=` does compared to `data=`.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [Error Handling](../04-error-handling/).

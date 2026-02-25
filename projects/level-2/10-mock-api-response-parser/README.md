@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../concepts/api-basics.md)
+- [Collections Explained](../../../concepts/collections-explained.md)
+- [Functions Explained](../../../concepts/functions-explained.md)
+- [How Loops Work](../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 Go back to [Level 2 index](../README.md).

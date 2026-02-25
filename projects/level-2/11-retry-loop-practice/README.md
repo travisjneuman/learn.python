@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../concepts/collections-explained.md)
+- [Decorators Explained](../../../concepts/decorators-explained.md)
+- [Errors and Debugging](../../../concepts/errors-and-debugging.md)
+- [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 Go back to [Level 2 index](../README.md).

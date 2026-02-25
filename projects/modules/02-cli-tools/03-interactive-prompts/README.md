@@ -82,6 +82,16 @@ You can move on when you can:
 - build an interactive flow that asks questions and acts on answers,
 - explain why `click.echo()` is preferred over `print()` in Click apps.
 
+---
+
+## Related Concepts
+
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [The Terminal Deeper](../../../../concepts/the-terminal-deeper.md)
+- [Quiz: Functions Explained](../../../../concepts/quizzes/functions-explained-quiz.py)
+
 ## Next
 
 Continue to [04 - File Processor CLI](../04-file-processor-cli/).

@@ -87,6 +87,16 @@ You can move on when you can:
 - add a new option, re-run `--help`, and confirm it appears,
 - break and recover in one session.
 
+---
+
+## Related Concepts
+
+- [Decorators Explained](../../../../concepts/decorators-explained.md)
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Quiz: Decorators Explained](../../../../concepts/quizzes/decorators-explained-quiz.py)
+
 ## Next
 
 Continue to [02 - Multi-Command CLI](../02-multi-command-cli/).

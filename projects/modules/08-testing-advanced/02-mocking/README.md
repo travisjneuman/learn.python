@@ -68,6 +68,16 @@ You can move on when you can:
 - Explain why mocking makes tests faster and more reliable.
 - Verify that a mock was called with specific arguments.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Classes and Objects](../../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 
 [Project 03 — Fixtures Advanced](../03-fixtures-advanced/)

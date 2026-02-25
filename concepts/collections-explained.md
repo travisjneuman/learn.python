@@ -81,3 +81,23 @@ items = [item for item in items if item != "remove_me"]
 ## Related exercises
 - [Level 00, Exercise 09 — Lists](../projects/level-00-absolute-beginner/09-lists/)
 - [Level 00, Exercise 12 — Dictionaries](../projects/level-00-absolute-beginner/12-dictionaries/)
+
+---
+
+## Practice This
+
+- [Level 0 / 06 Word Counter Basic](../projects/level-0/06-word-counter-basic/README.md)
+- [Level 0 / 09 Daily Checklist Writer](../projects/level-0/09-daily-checklist-writer/README.md)
+- [Level 0 / 10 Duplicate Line Finder](../projects/level-0/10-duplicate-line-finder/README.md)
+- [Level 0 / 12 Contact Card Builder](../projects/level-0/12-contact-card-builder/README.md)
+- [Level 1 / 05 Csv First Reader](../projects/level-1/05-csv-first-reader/README.md)
+- [Level 1 / 09 Json Settings Loader](../projects/level-1/09-json-settings-loader/README.md)
+- [Level 1 / 12 File Extension Counter](../projects/level-1/12-file-extension-counter/README.md)
+- [Level 10 / 11 Production Readiness Director](../projects/level-10/11-production-readiness-director/README.md)
+- [Level 2 / 01 Dictionary Lookup Service](../projects/level-2/01-dictionary-lookup-service/README.md)
+- [Level 2 / 02 Nested Data Flattener](../projects/level-2/02-nested-data-flattener/README.md)
+
+**Quick check:** [Take the quiz](quizzes/collections-explained-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

@@ -104,6 +104,15 @@ You can move on when you can:
 - demonstrate that data persists across restarts with named volumes,
 - describe what `depends_on` does and does not guarantee.
 
+---
+
+## Related Concepts
+
+- [The Terminal Deeper](../../../../concepts/the-terminal-deeper.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [What is a Variable](../../../../concepts/what-is-a-variable.md)
+- [Quiz: The Terminal Deeper](../../../../concepts/quizzes/the-terminal-deeper-quiz.py)
+
 ## Next
 
 Continue to [04-ci-github-actions](../04-ci-github-actions/).

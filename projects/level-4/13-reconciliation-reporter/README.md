@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../concepts/api-basics.md)
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [Http Explained](../../../concepts/http-explained.md)
+- [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
+- [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 Go back to [Level 4 index](../README.md).

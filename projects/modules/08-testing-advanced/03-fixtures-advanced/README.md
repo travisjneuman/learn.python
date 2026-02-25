@@ -69,6 +69,16 @@ You can move on when you can:
 - Use `tmp_path` to test code that reads and writes files.
 - Use `monkeypatch` to test code that depends on environment variables.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Files and Paths](../../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 
 [Project 04 — Property-Based Testing](../04-property-based/)

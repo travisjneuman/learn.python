@@ -76,6 +76,16 @@ You can move on when you can:
 - explain when to use `raise_for_status()` vs manual status checks,
 - handle errors without crashing or printing raw tracebacks.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [API Client Class](../05-api-client-class/).

@@ -90,6 +90,14 @@ You can move on when you can:
 - run tests against the installed package,
 - explain wheel vs sdist.
 
+---
+
+## Related Concepts
+
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: How Imports Work](../../../../concepts/quizzes/how-imports-work-quiz.py)
+
 ## Next
 
 [Project 03 — Publish to PyPI](../03-publish-to-pypi/)

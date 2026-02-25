@@ -53,5 +53,15 @@ You can move on when you can:
 - run and validate output without docs,
 - defend one design tradeoff with evidence.
 
+---
+
+## Related Concepts
+
+- [Async Explained](../../../concepts/async-explained.md)
+- [Classes and Objects](../../../concepts/classes-and-objects.md)
+- [Decorators Explained](../../../concepts/decorators-explained.md)
+- [How Loops Work](../../../concepts/how-loops-work.md)
+- [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
+
 ## Next
 Go back to [Elite track index](../README.md).

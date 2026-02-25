@@ -90,6 +90,16 @@ You can move on when you can:
 - explain why parameterized queries matter,
 - use `conn.commit()` and understand transactions.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [Quiz: Classes and Objects](../../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 
 [Project 02 — SQLAlchemy Models](../02-sqlalchemy-models/)

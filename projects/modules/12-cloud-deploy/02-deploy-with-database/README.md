@@ -113,6 +113,14 @@ You can move on when you can:
 - verify data persists across deploys,
 - explain why Postgres over SQLite in production.
 
+---
+
+## Related Concepts
+
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Http Explained](../../../../concepts/quizzes/http-explained-quiz.py)
+
 ## Next
 
 [Project 03 — Production Checklist](../03-production-checklist/)

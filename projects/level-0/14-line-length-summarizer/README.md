@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../concepts/classes-and-objects.md)
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../concepts/how-loops-work.md)
+- [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
+- [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 Go back to [Level 0 index](../README.md).

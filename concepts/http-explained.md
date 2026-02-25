@@ -138,3 +138,23 @@ requests.get(url, timeout=10)
 
 - [Module 03 — REST APIs](../projects/modules/03-rest-apis/) (consuming APIs)
 - [Module 04 — FastAPI](../projects/modules/04-fastapi-web/) (building APIs)
+
+---
+
+## Practice This
+
+- [Level 3 / 14 Service Simulator](../projects/level-3/14-service-simulator/README.md)
+- [Level 4 / 13 Reconciliation Reporter](../projects/level-4/13-reconciliation-reporter/README.md)
+- [Level 5 / 10 Api Polling Simulator](../projects/level-5/10-api-polling-simulator/README.md)
+- [Level 6 / 12 Etl Health Dashboard Feed](../projects/level-6/12-etl-health-dashboard-feed/README.md)
+- [Level 7 / 04 Source Field Mapper](../projects/level-7/04-source-field-mapper/README.md)
+- [Level 8 / 02 Query Cache Layer](../projects/level-8/02-query-cache-layer/README.md)
+- [Level 8 / 03 Pagination Stress Lab](../projects/level-8/03-pagination-stress-lab/README.md)
+- [Level 8 / 04 Filter State Manager](../projects/level-8/04-filter-state-manager/README.md)
+- [Level 8 / 05 Export Governance Check](../projects/level-8/05-export-governance-check/README.md)
+- [Level 8 / 06 Response Time Profiler](../projects/level-8/06-response-time-profiler/README.md)
+
+**Quick check:** [Take the quiz](quizzes/http-explained-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

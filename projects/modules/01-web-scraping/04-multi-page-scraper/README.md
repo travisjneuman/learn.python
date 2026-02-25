@@ -78,6 +78,16 @@ You can move on when you can:
 - Handle pages that fail to load without crashing the entire run.
 - Explain why rate limiting is an ethical requirement, not just a technical one.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 05 — Save to CSV](../05-save-to-csv/)

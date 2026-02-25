@@ -75,6 +75,16 @@ You can move on when you can:
 - handle empty results gracefully,
 - explain why the params dict is usually preferred.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [POST and Auth](../03-post-and-auth/).

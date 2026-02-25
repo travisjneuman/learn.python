@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Decorators Explained](../../../concepts/decorators-explained.md)
+- [Errors and Debugging](../../../concepts/errors-and-debugging.md)
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [How Imports Work](../../../concepts/how-imports-work.md)
+- [Quiz: Decorators Explained](../../../concepts/quizzes/decorators-explained-quiz.py)
+
 ## Next
 Go back to [Level 7 index](../README.md).

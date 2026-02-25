@@ -69,6 +69,16 @@ You can move on when you can:
 - implement login, logout, and registration using Django's auth system,
 - use `@login_required` to protect views from anonymous users.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Decorators Explained](../../../../concepts/decorators-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [04-rest-framework](../04-rest-framework/).

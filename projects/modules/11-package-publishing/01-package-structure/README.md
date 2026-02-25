@@ -80,6 +80,16 @@ You can move on when you can:
 - add a new module and export it from __init__.py,
 - write tests for your package.
 
+---
+
+## Related Concepts
+
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Errors and Debugging](../../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
 ## Next
 
 [Project 02 — Build and Test](../02-build-and-test/)

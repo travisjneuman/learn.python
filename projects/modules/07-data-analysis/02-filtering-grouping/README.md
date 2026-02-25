@@ -99,6 +99,16 @@ You can move on when you can:
 - Use `agg()` to apply multiple aggregation functions in one call.
 - Use `value_counts()` to see the distribution of a categorical column.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 [Project 03 — Data Cleaning](../03-data-cleaning/)

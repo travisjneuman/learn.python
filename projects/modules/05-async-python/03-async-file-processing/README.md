@@ -77,6 +77,16 @@ You can move on when you can:
 - process multiple files concurrently with gather(),
 - explain when async file I/O is beneficial.
 
+---
+
+## Related Concepts
+
+- [Async Explained](../../../../concepts/async-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Async Explained](../../../../concepts/quizzes/async-explained-quiz.py)
+
 ## Next
 
 [Project 04 — Producer-Consumer](../04-producer-consumer/)

@@ -117,3 +117,23 @@ requests.get(f"{BASE_URL}/users")
 - [Module 03 — REST APIs: Consuming](../projects/modules/03-rest-apis/)
 - [Module 04 — FastAPI Web Apps](../projects/modules/04-fastapi-web/)
 - [concepts/http-explained.md](./http-explained.md)
+
+---
+
+## Practice This
+
+- [Module: Elite Track / 04 Secure Auth Gateway](../projects/elite-track/04-secure-auth-gateway/README.md)
+- [Level 1 / 09 Json Settings Loader](../projects/level-1/09-json-settings-loader/README.md)
+- [Level 10 / 01 Enterprise Python Blueprint](../projects/level-10/01-enterprise-python-blueprint/README.md)
+- [Level 10 / 02 Autonomous Run Orchestrator](../projects/level-10/02-autonomous-run-orchestrator/README.md)
+- [Level 10 / 03 Policy As Code Validator](../projects/level-10/03-policy-as-code-validator/README.md)
+- [Level 10 / 04 Multi Tenant Data Guard](../projects/level-10/04-multi-tenant-data-guard/README.md)
+- [Level 10 / 05 Compliance Evidence Builder](../projects/level-10/05-compliance-evidence-builder/README.md)
+- [Level 10 / 06 Resilience Chaos Workbench](../projects/level-10/06-resilience-chaos-workbench/README.md)
+- [Level 10 / 07 High Risk Change Gate](../projects/level-10/07-high-risk-change-gate/README.md)
+- [Level 10 / 08 Zero Downtime Migration Lab](../projects/level-10/08-zero-downtime-migration-lab/README.md)
+
+**Quick check:** [Take the quiz](quizzes/api-basics-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

@@ -83,6 +83,15 @@ You can move on when you can:
 - wire viewsets to URLs using a router,
 - use the browsable API to test all CRUD operations.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [05-complete-app](../05-complete-app/).

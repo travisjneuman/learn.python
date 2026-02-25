@@ -102,6 +102,16 @@ You can move on when you can:
 - Create a summary visualization and save it to a file.
 - Export a text report that a non-technical person could read and understand.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 You have completed Module 07. Return to the [Module Index](../README.md) to choose your next module.

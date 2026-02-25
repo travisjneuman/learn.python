@@ -148,3 +148,23 @@ python3 -m venv .venv    # Use python3 explicitly if needed
 ## Related exercises
 
 - [Expansion Modules](../projects/modules/README.md) (each module uses a virtual environment)
+
+---
+
+## Practice This
+
+- [Level 2 / 03 Data Cleaning Pipeline](../projects/level-2/03-data-cleaning-pipeline/README.md)
+- [Level 2 / 15 Level2 Mini Capstone](../projects/level-2/15-level2-mini-capstone/README.md)
+- [Level 3 / 10 Dependency Boundary Lab](../projects/level-3/10-dependency-boundary-lab/README.md)
+- [Level 6 / 11 Dead Letter Row Handler](../projects/level-6/11-dead-letter-row-handler/README.md)
+- [Level 6 / 15 Level6 Mini Capstone](../projects/level-6/15-level6-mini-capstone/README.md)
+- [Level 7 / 08 Ingestion Observability Kit](../projects/level-7/08-ingestion-observability-kit/README.md)
+- [Level 9 / 08 Change Impact Analyzer](../projects/level-9/08-change-impact-analyzer/README.md)
+- [Module: 04 Fastapi Web / 03 Database Backed](../projects/modules/04-fastapi-web/03-database-backed/README.md)
+- [Module: 07 Data Analysis / 05 Analysis Report](../projects/modules/07-data-analysis/05-analysis-report/README.md)
+- [Module: 09 Docker Deployment / 01 First Dockerfile](../projects/modules/09-docker-deployment/01-first-dockerfile/README.md)
+
+**Quick check:** [Take the quiz](quizzes/virtual-environments-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

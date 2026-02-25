@@ -71,6 +71,15 @@ You can move on when you can:
 - add a new column to the model and update all layers (model, schema, endpoint),
 - delete the database and recover by restarting the server.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [04-authentication](../04-authentication/).

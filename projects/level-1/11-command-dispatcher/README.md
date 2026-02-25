@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Errors and Debugging](../../../concepts/errors-and-debugging.md)
+- [Functions Explained](../../../concepts/functions-explained.md)
+- [How Imports Work](../../../concepts/how-imports-work.md)
+- [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
+- [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
 ## Next
 Go back to [Level 1 index](../README.md).

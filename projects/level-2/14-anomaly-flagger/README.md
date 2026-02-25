@@ -56,5 +56,14 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../concepts/collections-explained.md)
+- [Functions Explained](../../../concepts/functions-explained.md)
+- [How Loops Work](../../../concepts/how-loops-work.md)
+- [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 Go back to [Level 2 index](../README.md).

@@ -87,6 +87,16 @@ You can move on when you can:
 - add a new subcommand without breaking existing ones,
 - handle missing-file errors gracefully.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 Continue to [03 - Interactive Prompts](../03-interactive-prompts/).

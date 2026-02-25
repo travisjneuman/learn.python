@@ -70,6 +70,16 @@ You can move on when you can:
 - add error handling per-request in a batch,
 - use a semaphore to limit concurrency.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Async Explained](../../../../concepts/async-explained.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 03 — Async File Processing](../03-async-file-processing/)

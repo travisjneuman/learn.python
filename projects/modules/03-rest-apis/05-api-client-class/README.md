@@ -89,6 +89,16 @@ You can move on when you can:
 - add a new endpoint method to the client without guidance,
 - write a test that exercises the client against the real API.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Errors and Debugging](../../../../concepts/errors-and-debugging.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Go back to the [Module 03 index](../README.md). If you are ready for more, continue to [Module 04 — FastAPI Web Apps](../../04-fastapi-web/).

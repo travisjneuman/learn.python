@@ -72,6 +72,15 @@ You can move on when you can:
 - Handle both HTTP errors (404) and connection errors (no internet) gracefully.
 - Describe what `response.text` contains.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 02 — Parse HTML](../02-parse-html/)

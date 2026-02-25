@@ -101,6 +101,15 @@ You can move on when you can:
 - describe what `needs` does and how it controls execution order,
 - interpret the Actions tab on GitHub to diagnose a failed pipeline.
 
+---
+
+## Related Concepts
+
+- [The Terminal Deeper](../../../../concepts/the-terminal-deeper.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: The Terminal Deeper](../../../../concepts/quizzes/the-terminal-deeper-quiz.py)
+
 ## Next
 
 Continue to [05-production-config](../05-production-config/).

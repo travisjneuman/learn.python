@@ -56,5 +56,15 @@ You can move on when you can:
 - break and recover in one session,
 - keep tests passing after your change.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../concepts/classes-and-objects.md)
+- [Errors and Debugging](../../../concepts/errors-and-debugging.md)
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [Types and Conversions](../../../concepts/types-and-conversions.md)
+- [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 Go back to [Level 5 index](../README.md).

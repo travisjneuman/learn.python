@@ -31,3 +31,34 @@ Plain-language explanations of Python concepts. Use these when you need to under
 - Read the concept page before or during a project
 - Each page has: explanation, code example, common mistakes
 - Come back to these whenever you forget how something works
+
+---
+
+## Practice Tools
+
+| Tool | Description | How to use |
+|------|-------------|------------|
+| **Concept Quizzes** | Interactive terminal quizzes for each concept | `python concepts/quizzes/<name>-quiz.py` |
+| **Flashcard Decks** | Spaced repetition cards organized by level | `python practice/flashcards/review-runner.py` |
+| **Coding Challenges** | Short focused exercises (beginner + intermediate) | See `practice/challenges/README.md` |
+| **Diagnostic Assessments** | Test your readiness before starting a level | `python tools/diagnose.py` |
+
+### Available Quizzes
+
+Each concept doc has a matching quiz in `concepts/quizzes/`:
+
+- [Api Basics](quizzes/api-basics-quiz.py)
+- [Async Explained](quizzes/async-explained-quiz.py)
+- [Classes And Objects](quizzes/classes-and-objects-quiz.py)
+- [Collections Explained](quizzes/collections-explained-quiz.py)
+- [Decorators Explained](quizzes/decorators-explained-quiz.py)
+- [Errors And Debugging](quizzes/errors-and-debugging-quiz.py)
+- [Files And Paths](quizzes/files-and-paths-quiz.py)
+- [Functions Explained](quizzes/functions-explained-quiz.py)
+- [How Imports Work](quizzes/how-imports-work-quiz.py)
+- [How Loops Work](quizzes/how-loops-work-quiz.py)
+- [Http Explained](quizzes/http-explained-quiz.py)
+- [The Terminal Deeper](quizzes/the-terminal-deeper-quiz.py)
+- [Types And Conversions](quizzes/types-and-conversions-quiz.py)
+- [Virtual Environments](quizzes/virtual-environments-quiz.py)
+- [What Is A Variable](quizzes/what-is-a-variable-quiz.py)

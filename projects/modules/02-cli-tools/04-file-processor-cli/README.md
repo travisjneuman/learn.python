@@ -86,6 +86,16 @@ You can move on when you can:
 - write a CLI that reads from a directory and writes a report,
 - handle missing or unreadable files without crashing.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Files and Paths](../../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 
 Continue to [05 - Typer Migration](../05-typer-migration/).

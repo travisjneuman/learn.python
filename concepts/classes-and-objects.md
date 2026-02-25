@@ -153,3 +153,23 @@ class Good:
 
 - [Module 03, Project 05 — API Client Class](../projects/modules/03-rest-apis/05-api-client-class/)
 - [Module 06 — Databases & ORM](../projects/modules/06-databases-orm/) (SQLAlchemy models use classes)
+
+---
+
+## Practice This
+
+- [Module: Elite Track / 01 Algorithms Complexity Lab](../projects/elite-track/01-algorithms-complexity-lab/README.md)
+- [Module: Elite Track / 02 Concurrent Job System](../projects/elite-track/02-concurrent-job-system/README.md)
+- [Module: Elite Track / 03 Distributed Cache Simulator](../projects/elite-track/03-distributed-cache-simulator/README.md)
+- [Module: Elite Track / 04 Secure Auth Gateway](../projects/elite-track/04-secure-auth-gateway/README.md)
+- [Module: Elite Track / 05 Performance Profiler Workbench](../projects/elite-track/05-performance-profiler-workbench/README.md)
+- [Module: Elite Track / 06 Event Driven Architecture Lab](../projects/elite-track/06-event-driven-architecture-lab/README.md)
+- [Module: Elite Track / 07 Observability Slo Platform](../projects/elite-track/07-observability-slo-platform/README.md)
+- [Module: Elite Track / 08 Policy Compliance Engine](../projects/elite-track/08-policy-compliance-engine/README.md)
+- [Module: Elite Track / 09 Open Source Maintainer Simulator](../projects/elite-track/09-open-source-maintainer-simulator/README.md)
+- [Module: Elite Track / 10 Staff Engineer Capstone](../projects/elite-track/10-staff-engineer-capstone/README.md)
+
+**Quick check:** [Take the quiz](quizzes/classes-and-objects-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

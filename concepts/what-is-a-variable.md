@@ -56,3 +56,17 @@ print(score)     # Now it works
 
 ## Related exercises
 - [Level 00, Exercise 04 — Variables](../projects/level-00-absolute-beginner/04-variables/)
+
+---
+
+## Practice This
+
+- [Module: 04 Fastapi Web / 01 Hello Fastapi](../projects/modules/04-fastapi-web/01-hello-fastapi/README.md)
+- [Module: 05 Async Python / 04 Producer Consumer](../projects/modules/05-async-python/04-producer-consumer/README.md)
+- [Module: 07 Data Analysis / 01 Pandas Basics](../projects/modules/07-data-analysis/01-pandas-basics/README.md)
+- [Module: 09 Docker Deployment / 03 Docker Compose](../projects/modules/09-docker-deployment/03-docker-compose/README.md)
+
+**Quick check:** [Take the quiz](quizzes/what-is-a-variable-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

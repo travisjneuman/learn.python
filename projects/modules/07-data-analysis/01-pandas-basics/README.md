@@ -103,6 +103,16 @@ You can move on when you can:
 - Select one or more columns from a DataFrame.
 - Sort a DataFrame by any column, ascending or descending.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [What is a Variable](../../../../concepts/what-is-a-variable.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 [Project 02 — Filtering & Grouping](../02-filtering-grouping/)

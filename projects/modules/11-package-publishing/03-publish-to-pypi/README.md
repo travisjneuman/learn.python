@@ -109,6 +109,16 @@ You can move on when you can:
 - bump the version and publish an update,
 - explain the full publish workflow.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Go back to [Module index](../README.md) or continue to [Module 12 — Cloud Deployment](../../12-cloud-deploy/).

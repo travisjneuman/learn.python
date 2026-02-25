@@ -88,6 +88,16 @@ You can move on when you can:
 - add an index and verify it with EXPLAIN,
 - explain the tradeoffs of indexing (read speed vs write speed).
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Classes and Objects](../../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 
 You have completed Module 06. You now understand how Python applications store, retrieve, and manage relational data. Consider Module 04 (FastAPI) to build a web API backed by a database, or Module 10 (Django) for a full-stack application.

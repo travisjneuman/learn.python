@@ -100,6 +100,15 @@ You can move on when you can:
 - access the admin interface and add/edit objects,
 - describe what `settings.py` controls and find any setting by name.
 
+---
+
+## Related Concepts
+
+- [Async Explained](../../../../concepts/async-explained.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Quiz: Async Explained](../../../../concepts/quizzes/async-explained-quiz.py)
+
 ## Next
 
 Continue to [02-views-templates](../02-views-templates/).

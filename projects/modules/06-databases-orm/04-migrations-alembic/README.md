@@ -130,6 +130,16 @@ You can move on when you can:
 - rollback a migration with `downgrade`,
 - explain why `create_all()` is not enough for production.
 
+---
+
+## Related Concepts
+
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Quiz: Classes and Objects](../../../../concepts/quizzes/classes-and-objects-quiz.py)
+
 ## Next
 
 [Project 05 — Query Optimization](../05-query-optimization/)

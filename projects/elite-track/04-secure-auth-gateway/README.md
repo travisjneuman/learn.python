@@ -53,5 +53,15 @@ You can move on when you can:
 - run and validate output without docs,
 - defend one design tradeoff with evidence.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../concepts/api-basics.md)
+- [Async Explained](../../../concepts/async-explained.md)
+- [Classes and Objects](../../../concepts/classes-and-objects.md)
+- [Decorators Explained](../../../concepts/decorators-explained.md)
+- [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 Go back to [Elite track index](../README.md).

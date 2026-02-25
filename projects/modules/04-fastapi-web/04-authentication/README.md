@@ -87,6 +87,16 @@ You can move on when you can:
 - describe the three parts of a JWT token (header, payload, signature),
 - add a new protected endpoint from memory.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Http Explained](../../../../concepts/http-explained.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 Continue to [05-full-app](../05-full-app/).

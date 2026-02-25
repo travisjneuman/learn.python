@@ -75,6 +75,16 @@ You can move on when you can:
 - Open and verify a CSV file you created.
 - Explain why `csv.DictWriter` handles edge cases (commas, quotes) that manual string joining does not.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 You have completed Module 01. Go back to the [Module Index](../README.md) or continue to the next module from the [Modules Overview](../../README.md).

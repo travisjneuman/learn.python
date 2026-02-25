@@ -73,6 +73,16 @@ You can move on when you can:
 - Extract both text content and attributes from elements.
 - Handle the case where an element is not found on the page.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Imports Work](../../../../concepts/how-imports-work.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 03 — Extract Structured Data](../03-extract-structured-data/)

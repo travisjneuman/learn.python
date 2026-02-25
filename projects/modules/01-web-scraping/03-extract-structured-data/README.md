@@ -72,6 +72,16 @@ You can move on when you can:
 - Handle missing or unexpected values without crashing.
 - Print structured data in a readable table format.
 
+---
+
+## Related Concepts
+
+- [Api Basics](../../../../concepts/api-basics.md)
+- [Classes and Objects](../../../../concepts/classes-and-objects.md)
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [Quiz: Api Basics](../../../../concepts/quizzes/api-basics-quiz.py)
+
 ## Next
 
 [Project 04 — Multi-Page Scraper](../04-multi-page-scraper/)

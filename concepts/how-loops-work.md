@@ -85,3 +85,23 @@ good_items = [item for item in my_list if item != "bad"]
 ## Related exercises
 - [Level 00, Exercise 10 — For Loops](../projects/level-00-absolute-beginner/10-for-loops/)
 - [Level 00, Exercise 11 — While Loops](../projects/level-00-absolute-beginner/11-while-loops/)
+
+---
+
+## Practice This
+
+- [Module: Elite Track / 07 Observability Slo Platform](../projects/elite-track/07-observability-slo-platform/README.md)
+- [Level 0 / 01 Terminal Hello Lab](../projects/level-0/01-terminal-hello-lab/README.md)
+- [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
+- [Level 0 / 03 Temperature Converter](../projects/level-0/03-temperature-converter/README.md)
+- [Level 0 / 04 Yes No Questionnaire](../projects/level-0/04-yes-no-questionnaire/README.md)
+- [Level 0 / 05 Number Classifier](../projects/level-0/05-number-classifier/README.md)
+- [Level 0 / 06 Word Counter Basic](../projects/level-0/06-word-counter-basic/README.md)
+- [Level 0 / 07 First File Reader](../projects/level-0/07-first-file-reader/README.md)
+- [Level 0 / 08 String Cleaner Starter](../projects/level-0/08-string-cleaner-starter/README.md)
+- [Level 0 / 09 Daily Checklist Writer](../projects/level-0/09-daily-checklist-writer/README.md)
+
+**Quick check:** [Take the quiz](quizzes/how-loops-work-quiz.py)
+
+**Review:** [Flashcard decks](../practice/flashcards/README.md)
+**Practice reps:** [Coding challenges](../practice/challenges/README.md)

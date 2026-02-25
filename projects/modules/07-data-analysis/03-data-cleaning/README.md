@@ -104,6 +104,16 @@ You can move on when you can:
 - Merge two DataFrames on a shared column.
 - Explain the cleaning decisions you made and why.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 [Project 04 — Visualization](../04-visualization/)

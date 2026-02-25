@@ -105,6 +105,15 @@ You can move on when you can:
 - explain why layer order matters for build caching,
 - describe the difference between EXPOSE and `-p`.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [The Terminal Deeper](../../../../concepts/the-terminal-deeper.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: Files and Paths](../../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 
 Continue to [02-multi-stage-build](../02-multi-stage-build/).

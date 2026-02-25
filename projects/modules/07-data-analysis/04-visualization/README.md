@@ -80,6 +80,16 @@ You can move on when you can:
 - Save a figure to a PNG file.
 - Explain the difference between figure, axes, and plot.
 
+---
+
+## Related Concepts
+
+- [Collections Explained](../../../../concepts/collections-explained.md)
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [Types and Conversions](../../../../concepts/types-and-conversions.md)
+- [Quiz: Collections Explained](../../../../concepts/quizzes/collections-explained-quiz.py)
+
 ## Next
 
 [Project 05 — Analysis Report](../05-analysis-report/)

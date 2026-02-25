@@ -70,6 +70,16 @@ You can move on when you can:
 - shut down workers gracefully with sentinel values,
 - explain when to use the producer-consumer pattern.
 
+---
+
+## Related Concepts
+
+- [Async Explained](../../../../concepts/async-explained.md)
+- [Functions Explained](../../../../concepts/functions-explained.md)
+- [How Loops Work](../../../../concepts/how-loops-work.md)
+- [What is a Variable](../../../../concepts/what-is-a-variable.md)
+- [Quiz: Async Explained](../../../../concepts/quizzes/async-explained-quiz.py)
+
 ## Next
 
 [Project 05 — Async Web Server](../05-async-web-server/)

@@ -92,6 +92,15 @@ You can move on when you can:
 - create a `.dockerignore` file with appropriate exclusions,
 - describe what `COPY --from=<stage>` does.
 
+---
+
+## Related Concepts
+
+- [Files and Paths](../../../../concepts/files-and-paths.md)
+- [The Terminal Deeper](../../../../concepts/the-terminal-deeper.md)
+- [Virtual Environments](../../../../concepts/virtual-environments.md)
+- [Quiz: Files and Paths](../../../../concepts/quizzes/files-and-paths-quiz.py)
+
 ## Next
 
 Continue to [03-docker-compose](../03-docker-compose/).
