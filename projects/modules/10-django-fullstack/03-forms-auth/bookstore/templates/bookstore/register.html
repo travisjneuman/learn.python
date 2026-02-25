@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register — Bookstore</title>
+</head>
+<body>
+    <h1>Create an Account</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!--
+        The RegistrationForm includes: username, email, password1, password2.
+        Django's UserCreationForm adds password validation automatically:
+        - Password must be at least 8 characters
+        - Password cannot be entirely numeric
+        - Password cannot be too similar to the username
+        - Password cannot be a commonly used password
+
+        If any validation fails, form.as_p includes the error messages.
+        -->
+        {{ form.as_p }}
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+</body>
+</html>

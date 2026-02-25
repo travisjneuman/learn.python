@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }} — Bookstore</title>
+</head>
+<body>
+    <h1>{{ book.title }}</h1>
+
+    <!--
+    Display the book's details using Django template variables.
+    Each {{ book.field }} accesses a model attribute.
+    -->
+    <table>
+        <tr>
+            <th>Author</th>
+            <td>{{ book.author }}</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <!--
+            The |floatformat filter controls decimal display.
+            |floatformat:2 ensures exactly 2 decimal places.
+            -->
+            <td>${{ book.price|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <th>Published</th>
+            <td>
+                {% if book.published_date %}
+                    <!--
+                    The |date filter formats date objects.
+                    "F j, Y" produces: "January 15, 2024"
+                    See Django docs for all format characters.
+                    -->
+                    {{ book.published_date|date:"F j, Y" }}
+                {% else %}
+                    <em>Unknown</em>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <!--
+    {% url 'book_list' %} generates the URL for the book_list view.
+    No arguments needed because book_list does not take any parameters.
+    -->
+    <a href="{% url 'book_list' %}">&larr; Back to all books</a>
+</body>
+</html>

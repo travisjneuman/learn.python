@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }} — Bookstore</title>
+</head>
+<body>
+    <h1>{{ book.title }}</h1>
+
+    <table>
+        <tr><th>Author</th><td>{{ book.author }}</td></tr>
+        <tr><th>Price</th><td>${{ book.price|floatformat:2 }}</td></tr>
+        <tr>
+            <th>Published</th>
+            <td>
+                {% if book.published_date %}
+                    {{ book.published_date|date:"F j, Y" }}
+                {% else %}
+                    <em>Unknown</em>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <a href="{% url 'book_list' %}">&larr; Back to all books</a>
+</body>
+</html>

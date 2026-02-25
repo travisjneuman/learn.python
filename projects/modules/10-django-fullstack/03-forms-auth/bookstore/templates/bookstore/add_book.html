@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Book — Bookstore</title>
+</head>
+<body>
+    <h1>Add a New Book</h1>
+
+    <!--
+    Django forms render as HTML when you use {{ form.as_p }}.
+    as_p wraps each field in a <p> tag. Other options:
+    - {{ form.as_table }} — wraps each field in a <tr>
+    - {{ form.as_div }} — wraps each field in a <div> (Django 5.0+)
+    - {{ form.as_ul }} — wraps each field in a <li>
+
+    You can also render fields individually for full control:
+      {{ form.title.label_tag }} {{ form.title }} {{ form.title.errors }}
+
+    The <form> tag must include:
+    - method="post": sends data in the request body (not the URL)
+    - {% csrf_token %}: required for all POST forms in Django (CSRF protection)
+    -->
+    <form method="post">
+        {% csrf_token %}
+
+        <!--
+        {{ form.as_p }} renders all form fields. If the form has errors
+        (from a failed validation), they appear above each field automatically.
+        -->
+        {{ form.as_p }}
+
+        <button type="submit">Save Book</button>
+    </form>
+
+    <br>
+    <a href="{% url 'book_list' %}">&larr; Cancel</a>
+</body>
+</html>

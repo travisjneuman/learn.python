@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore — All Books</title>
+</head>
+<body>
+    <h1>Bookstore</h1>
+
+    <!--
+    Django Template Language (DTL) Basics:
+
+    {{ variable }}     — Output a variable's value (auto-escaped for safety)
+    {% tag %}          — Execute a template tag (logic, loops, conditions)
+    {# comment #}      — A template comment (not rendered in HTML)
+    {{ var|filter }}   — Apply a filter to a variable (e.g., |upper, |date)
+    -->
+
+    {% if books %}
+        <!--
+        {% for %} loops over a queryset or list.
+        Inside the loop, you can access each item's attributes with dot notation.
+        Django also provides special loop variables:
+          forloop.counter   — current iteration (1-indexed)
+          forloop.first     — True if this is the first iteration
+          forloop.last      — True if this is the last iteration
+        -->
+        <ul>
+        {% for book in books %}
+            <li>
+                <!--
+                {% url 'book_detail' book.pk %} generates the URL for the
+                book_detail view with this book's primary key. This is better
+                than hardcoding "/books/1/" because:
+                1. If you change the URL pattern, all links update automatically
+                2. No risk of typos in URL paths
+                3. Works even if the URL prefix changes
+                -->
+                <a href="{% url 'book_detail' book.pk %}">
+                    <strong>{{ book.title }}</strong>
+                </a>
+                by {{ book.author }}
+                — ${{ book.price }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <!--
+        {% else %} inside {% if %} runs when the condition is falsy.
+        An empty queryset is falsy in Django templates.
+        -->
+        <p>No books found. Add some through the <a href="/admin/">admin interface</a>.</p>
+    {% endif %}
+</body>
+</html>

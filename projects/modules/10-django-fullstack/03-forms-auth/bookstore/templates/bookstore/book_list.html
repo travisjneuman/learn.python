@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore</title>
+</head>
+<body>
+    <h1>Bookstore</h1>
+
+    <!--
+    request.user is available in all templates because of the
+    "django.contrib.auth.context_processors.auth" context processor.
+    It contains the currently logged-in user, or an AnonymousUser if not logged in.
+    -->
+    <p>
+        {% if user.is_authenticated %}
+            Logged in as <strong>{{ user.username }}</strong> |
+            <a href="{% url 'logout' %}">Log out</a> |
+            <a href="{% url 'add_book' %}">Add a book</a>
+        {% else %}
+            <a href="{% url 'login' %}">Log in</a> |
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </p>
+
+    <hr>
+
+    {% if books %}
+        <ul>
+        {% for book in books %}
+            <li>
+                <a href="{% url 'book_detail' book.pk %}">
+                    <strong>{{ book.title }}</strong>
+                </a>
+                by {{ book.author }} — ${{ book.price }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No books found.</p>
+    {% endif %}
+</body>
+</html>
