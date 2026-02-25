@@ -1,0 +1,142 @@
+{
+  "deck": "Module 04 — FastAPI Web Apps",
+  "description": "FastAPI basics, Pydantic models, path/query params, dependency injection, JWT auth, uvicorn",
+  "cards": [
+    {
+      "id": "m04-01",
+      "front": "How do you create a minimal FastAPI application?",
+      "back": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/')\ndef root():\n    return {'message': 'Hello, world!'}\n\nRun with: uvicorn main:app --reload\n\nAutomatic docs at: http://localhost:8000/docs\n\n--reload watches for file changes during development.",
+      "concept_ref": "projects/modules/04-fastapi-web/01-hello-fastapi/README.md",
+      "difficulty": 1,
+      "tags": ["fastapi", "basics", "setup"]
+    },
+    {
+      "id": "m04-02",
+      "front": "What is a Pydantic model and how does FastAPI use it?",
+      "back": "A Pydantic model defines the shape and types of data, with automatic validation.\n\nfrom pydantic import BaseModel\n\nclass Item(BaseModel):\n    name: str\n    price: float\n    in_stock: bool = True  # default value\n\n@app.post('/items')\ndef create_item(item: Item):  # FastAPI validates the request body\n    return item\n\nIf the request body is missing 'name' or 'price' is not a number, FastAPI returns a 422 error with details.",
+      "concept_ref": "projects/modules/04-fastapi-web/02-crud-api/README.md",
+      "difficulty": 1,
+      "tags": ["pydantic", "validation", "models"]
+    },
+    {
+      "id": "m04-03",
+      "front": "What is the difference between path parameters and query parameters in FastAPI?",
+      "back": "Path parameters are part of the URL path:\n@app.get('/items/{item_id}')\ndef get_item(item_id: int):  # /items/42\n    ...\n\nQuery parameters come after ? in the URL:\n@app.get('/items')\ndef list_items(skip: int = 0, limit: int = 10):  # /items?skip=20&limit=5\n    ...\n\nPath params identify a resource. Query params filter or modify the request.\nFastAPI infers which is which from the function signature.",
+      "concept_ref": "projects/modules/04-fastapi-web/02-crud-api/README.md",
+      "difficulty": 1,
+      "tags": ["fastapi", "parameters", "routing"]
+    },
+    {
+      "id": "m04-04",
+      "front": "What HTTP methods does a CRUD API use?",
+      "back": "C — Create → POST   @app.post('/items')\nR — Read   → GET    @app.get('/items/{id}')\nU — Update → PUT    @app.put('/items/{id}')\nD — Delete → DELETE @app.delete('/items/{id}')\n\nAlso common:\n- PATCH: partial update (change some fields)\n- GET /items: list all (with pagination)\n\nReturn appropriate status codes:\n- 201 for created\n- 200 for success\n- 204 for deleted (no content)\n- 404 for not found",
+      "concept_ref": "projects/modules/04-fastapi-web/02-crud-api/README.md",
+      "difficulty": 1,
+      "tags": ["crud", "http-methods", "rest"]
+    },
+    {
+      "id": "m04-05",
+      "front": "What is dependency injection in FastAPI?",
+      "back": "A way to share logic across endpoints by declaring dependencies in function signatures.\n\nfrom fastapi import Depends\n\ndef get_db():\n    db = SessionLocal()\n    try:\n        yield db\n    finally:\n        db.close()\n\n@app.get('/items')\ndef list_items(db: Session = Depends(get_db)):\n    return db.query(Item).all()\n\nFastAPI calls get_db() automatically, passes the result, and handles cleanup (via yield/finally).",
+      "concept_ref": "projects/modules/04-fastapi-web/03-database-backed/README.md",
+      "difficulty": 2,
+      "tags": ["fastapi", "dependency-injection", "patterns"]
+    },
+    {
+      "id": "m04-06",
+      "front": "What is a JWT token and how does FastAPI authentication work?",
+      "back": "JWT (JSON Web Token): a signed token containing user identity, issued after login.\n\nFlow:\n1. User sends username/password to /login\n2. Server verifies credentials, creates JWT\n3. Server returns: {'access_token': 'eyJ...', 'token_type': 'bearer'}\n4. Client sends token in header: Authorization: Bearer eyJ...\n5. Server verifies token signature on each request\n\nJWTs are stateless — the server does not need to store sessions. The signature proves the token was not tampered with.",
+      "concept_ref": "projects/modules/04-fastapi-web/04-authentication/README.md",
+      "difficulty": 2,
+      "tags": ["jwt", "authentication", "security"]
+    },
+    {
+      "id": "m04-07",
+      "front": "Why should you never store passwords in plain text?",
+      "back": "If your database is breached, attackers get every user's password.\n\nInstead, store a hash:\nfrom passlib.context import CryptContext\npwd_context = CryptContext(schemes=['bcrypt'])\n\n# When user registers\nhashed = pwd_context.hash('mypassword')  # store this\n\n# When user logs in\npwd_context.verify('mypassword', hashed)  # True\n\nbcrypt is slow BY DESIGN — it makes brute-force attacks impractical. Never use MD5 or SHA for passwords.",
+      "concept_ref": "projects/modules/04-fastapi-web/04-authentication/README.md",
+      "difficulty": 2,
+      "tags": ["security", "passwords", "hashing"]
+    },
+    {
+      "id": "m04-08",
+      "front": "What is uvicorn and what is ASGI?",
+      "back": "uvicorn is an ASGI server — it listens for HTTP requests and passes them to your FastAPI app.\n\nASGI (Asynchronous Server Gateway Interface) is the protocol between the server and your app. It supports async/await.\n\nWSGI (older) = synchronous, one request at a time per worker.\nASGI = async, handles many concurrent connections.\n\nDevelopment: uvicorn main:app --reload\nProduction: uvicorn main:app --workers 4 --host 0.0.0.0",
+      "concept_ref": "projects/modules/04-fastapi-web/01-hello-fastapi/README.md",
+      "difficulty": 2,
+      "tags": ["uvicorn", "asgi", "server"]
+    },
+    {
+      "id": "m04-09",
+      "front": "How do you return proper HTTP status codes in FastAPI?",
+      "back": "from fastapi import HTTPException\n\n# Successful creation\n@app.post('/items', status_code=201)\ndef create_item(item: Item):\n    return item\n\n# Not found\n@app.get('/items/{id}')\ndef get_item(id: int):\n    item = db.get(id)\n    if not item:\n        raise HTTPException(status_code=404, detail='Item not found')\n    return item\n\n# No content (delete)\n@app.delete('/items/{id}', status_code=204)\ndef delete_item(id: int):\n    ...",
+      "concept_ref": "projects/modules/04-fastapi-web/02-crud-api/README.md",
+      "difficulty": 2,
+      "tags": ["fastapi", "status-codes", "errors"]
+    },
+    {
+      "id": "m04-10",
+      "front": "How do you test a FastAPI endpoint?",
+      "back": "Use FastAPI's TestClient (built on httpx).\n\nfrom fastapi.testclient import TestClient\nfrom main import app\n\nclient = TestClient(app)\n\ndef test_read_root():\n    response = client.get('/')\n    assert response.status_code == 200\n    assert response.json() == {'message': 'Hello, world!'}\n\ndef test_create_item():\n    response = client.post('/items', json={'name': 'Widget', 'price': 9.99})\n    assert response.status_code == 201\n\nRun with: pytest",
+      "concept_ref": "projects/modules/04-fastapi-web/05-full-app/README.md",
+      "difficulty": 2,
+      "tags": ["testing", "testclient", "fastapi"]
+    },
+    {
+      "id": "m04-11",
+      "front": "What is the /docs endpoint in FastAPI?",
+      "back": "FastAPI automatically generates interactive API documentation at /docs (Swagger UI) and /redoc (ReDoc).\n\nFeatures:\n- Lists all endpoints with their methods\n- Shows request/response models\n- Lets you try endpoints directly in the browser\n- Generated from your type hints and Pydantic models\n\nNo extra code needed — it reads your route decorators and function signatures.\n\nCustomize with:\napp = FastAPI(title='My API', version='1.0', description='...')",
+      "concept_ref": "projects/modules/04-fastapi-web/01-hello-fastapi/README.md",
+      "difficulty": 1,
+      "tags": ["fastapi", "docs", "swagger"]
+    },
+    {
+      "id": "m04-12",
+      "front": "How do you connect FastAPI to a SQLite database?",
+      "back": "from sqlalchemy import create_engine\nfrom sqlalchemy.orm import sessionmaker, declarative_base\n\nengine = create_engine('sqlite:///./app.db', connect_args={'check_same_thread': False})\nSessionLocal = sessionmaker(bind=engine)\nBase = declarative_base()\n\n# Define models\nclass Item(Base):\n    __tablename__ = 'items'\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n\n# Create tables\nBase.metadata.create_all(bind=engine)\n\ncheck_same_thread=False is needed for SQLite with FastAPI (multiple threads).",
+      "concept_ref": "projects/modules/04-fastapi-web/03-database-backed/README.md",
+      "difficulty": 2,
+      "tags": ["sqlalchemy", "sqlite", "database"]
+    },
+    {
+      "id": "m04-13",
+      "front": "What is request validation and how does FastAPI handle it?",
+      "back": "Checking that incoming data matches expected types and constraints.\n\nFastAPI does this automatically via Pydantic:\n\nfrom pydantic import BaseModel, Field\n\nclass Item(BaseModel):\n    name: str = Field(min_length=1, max_length=100)\n    price: float = Field(gt=0)  # greater than 0\n    category: str | None = None  # optional\n\nIf validation fails, FastAPI returns 422 Unprocessable Entity with a detailed error:\n{'detail': [{'loc': ['body', 'price'], 'msg': 'ensure this value is greater than 0'}]}",
+      "concept_ref": "projects/modules/04-fastapi-web/02-crud-api/README.md",
+      "difficulty": 2,
+      "tags": ["validation", "pydantic", "fastapi"]
+    },
+    {
+      "id": "m04-14",
+      "front": "What is a response model in FastAPI?",
+      "back": "A Pydantic model that defines and filters the response shape.\n\nclass ItemResponse(BaseModel):\n    id: int\n    name: str\n    price: float\n    # Note: password field is NOT included\n\n@app.get('/items/{id}', response_model=ItemResponse)\ndef get_item(id: int, db = Depends(get_db)):\n    return db.query(Item).get(id)\n\nBenefits:\n- Prevents accidental data leaks (passwords, internal fields)\n- Documents the response in /docs\n- Validates output shape",
+      "concept_ref": "projects/modules/04-fastapi-web/05-full-app/README.md",
+      "difficulty": 2,
+      "tags": ["fastapi", "response-model", "security"]
+    },
+    {
+      "id": "m04-15",
+      "front": "What is the difference between async def and def in FastAPI?",
+      "back": "def — runs in a thread pool. Use for synchronous code (SQLAlchemy, file I/O).\n\nasync def — runs in the async event loop. Use for async libraries (aiohttp, async DB drivers).\n\n@app.get('/sync')\ndef sync_endpoint():  # runs in thread pool\n    result = db.query(...)  # blocking is OK\n    return result\n\n@app.get('/async')\nasync def async_endpoint():  # runs in event loop\n    result = await async_db.fetch(...)  # must await\n    return result\n\nRule: use def unless you're calling async libraries.",
+      "concept_ref": "projects/modules/04-fastapi-web/01-hello-fastapi/README.md",
+      "difficulty": 3,
+      "tags": ["fastapi", "async", "performance"]
+    },
+    {
+      "id": "m04-16",
+      "front": "How do you protect a FastAPI endpoint with authentication?",
+      "back": "from fastapi.security import OAuth2PasswordBearer\n\noauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')\n\ndef get_current_user(token: str = Depends(oauth2_scheme)):\n    payload = decode_jwt(token)  # verify signature\n    user = db.get_user(payload['sub'])\n    if not user:\n        raise HTTPException(status_code=401)\n    return user\n\n@app.get('/protected')\ndef protected_route(user = Depends(get_current_user)):\n    return {'message': f'Hello, {user.name}'}\n\nThe Depends chain: extract token → decode → find user → pass to endpoint.",
+      "concept_ref": "projects/modules/04-fastapi-web/04-authentication/README.md",
+      "difficulty": 3,
+      "tags": ["authentication", "oauth2", "protected-routes"]
+    },
+    {
+      "id": "m04-17",
+      "front": "What is OpenAPI and how does FastAPI use it?",
+      "back": "OpenAPI is a standard specification for describing REST APIs.\n\nFastAPI automatically generates an OpenAPI schema (JSON) from your code:\n- Route decorators define endpoints\n- Type hints define parameters\n- Pydantic models define request/response bodies\n- Docstrings become descriptions\n\nAccess the raw schema: GET /openapi.json\nSwagger UI (/docs) and ReDoc (/redoc) render this schema as interactive documentation.\n\nYou get API docs for free just by writing typed Python.",
+      "concept_ref": "projects/modules/04-fastapi-web/01-hello-fastapi/README.md",
+      "difficulty": 2,
+      "tags": ["openapi", "documentation", "fastapi"]
+    }
+  ]
+}

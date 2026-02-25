@@ -1,0 +1,206 @@
+{
+  "deck": "Level 8 — Dashboards, Concurrency & Resilience",
+  "description": "Dashboard design, concurrency patterns, thread safety, fault injection, graceful degradation, and resilience testing",
+  "cards": [
+    {
+      "id": "8-01",
+      "front": "What is a KPI and how do you choose good ones for a dashboard?",
+      "back": "KPI = Key Performance Indicator. A measurable value that shows how effectively a system or process is performing.\n\nGood KPIs are:\n- Actionable (you can do something about it)\n- Measurable (a number, not a feeling)\n- Timely (reflects current state)\n- Comparable (can be tracked over time)\n\nExamples: p99 response time, error rate, throughput (requests/sec), data freshness.",
+      "concept_ref": "projects/level-8/01-dashboard-kpi-assembler/README.md",
+      "difficulty": 2,
+      "tags": ["dashboard", "kpi", "metrics"]
+    },
+    {
+      "id": "8-02",
+      "front": "What is the difference between concurrency and parallelism?",
+      "back": "Concurrency: managing multiple tasks that overlap in time. Tasks may not run simultaneously — they take turns.\n\nParallelism: actually running multiple tasks at the same instant on different CPU cores.\n\nAnalogy:\nConcurrency = one cook switching between chopping and stirring\nParallelism = two cooks each doing a different task\n\nPython's GIL allows concurrency (threading) but limits CPU parallelism. Use multiprocessing for true parallelism.",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["concurrency", "parallelism", "fundamentals"]
+    },
+    {
+      "id": "8-03",
+      "front": "What is the GIL (Global Interpreter Lock) in Python?",
+      "back": "A mutex that allows only one thread to execute Python bytecode at a time.\n\nConsequences:\n- CPU-bound threads do NOT run in parallel\n- I/O-bound threads DO benefit from threading (GIL is released during I/O waits)\n\nFor CPU-bound work, use:\n- multiprocessing (separate processes, each with own GIL)\n- concurrent.futures.ProcessPoolExecutor\n\nFor I/O-bound work (API calls, file I/O):\n- threading works fine\n- asyncio is even better",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["concurrency", "gil", "python"]
+    },
+    {
+      "id": "8-04",
+      "front": "What is thread safety and what makes code thread-unsafe?",
+      "back": "Code is thread-safe if it behaves correctly when called from multiple threads simultaneously.\n\nThread-UNSAFE example (race condition):\ncounter = 0\ndef increment():\n    global counter\n    counter += 1  # read-modify-write is NOT atomic!\n\nThread-SAFE fix:\nimport threading\nlock = threading.Lock()\ndef increment():\n    with lock:\n        global counter\n        counter += 1\n\nShared mutable state + no synchronization = bugs.",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["concurrency", "thread-safety", "race-condition"]
+    },
+    {
+      "id": "8-05",
+      "front": "What is fault injection and why would you deliberately break things?",
+      "back": "Deliberately introducing failures into a system to test how it handles them.\n\nExamples:\n- Simulate network timeout\n- Return errors from a dependency\n- Corrupt data in transit\n- Kill a process mid-operation\n\nWhy: discover failure modes BEFORE they happen in production. Verifies that error handling, retries, and fallbacks actually work.\n\nBetter to find weaknesses in a test than during a real outage.",
+      "concept_ref": "projects/level-8/08-fault-injection-harness/README.md",
+      "difficulty": 2,
+      "tags": ["testing", "fault-injection", "resilience"]
+    },
+    {
+      "id": "8-06",
+      "front": "What is graceful degradation?",
+      "back": "When a component fails, the system continues working with reduced functionality instead of crashing entirely.\n\nExamples:\n- Cache is down → serve from database (slower but works)\n- Recommendation engine fails → show popular items instead\n- Analytics service unreachable → queue events for later\n\nImplement with fallback chains:\ntry:\n    return fast_cache_lookup(key)\nexcept CacheError:\n    return slow_db_lookup(key)",
+      "concept_ref": "projects/level-8/09-graceful-degradation-engine/README.md",
+      "difficulty": 2,
+      "tags": ["resilience", "degradation", "fallback"]
+    },
+    {
+      "id": "8-07",
+      "front": "What is pagination and why does it matter for dashboards?",
+      "back": "Splitting large result sets into smaller pages instead of returning everything at once.\n\n# Offset-based\nSELECT * FROM orders LIMIT 20 OFFSET 40;  -- page 3\n\n# Cursor-based\nSELECT * FROM orders WHERE id > :last_id LIMIT 20;\n\nWithout pagination:\n- Huge memory usage on server and client\n- Slow response times\n- Browser/UI can freeze\n\nCursor-based is faster for large datasets (offset scans all skipped rows).",
+      "concept_ref": "projects/level-8/03-pagination-stress-lab/README.md",
+      "difficulty": 2,
+      "tags": ["pagination", "performance", "api"]
+    },
+    {
+      "id": "8-08",
+      "front": "What is a query cache layer and when should you invalidate it?",
+      "back": "A cache that stores the results of database queries to avoid re-executing them.\n\nInvalidation strategies:\n- TTL: expire after N seconds (simple, eventual consistency)\n- Event-based: invalidate when underlying data changes (accurate, more complex)\n- Manual: clear cache when you know data changed (easy, error-prone)\n\nRule: cache data that is read often and changes rarely. Never cache data that MUST be real-time (account balances, inventory counts).",
+      "concept_ref": "projects/level-8/02-query-cache-layer/README.md",
+      "difficulty": 2,
+      "tags": ["caching", "invalidation", "database"]
+    },
+    {
+      "id": "8-09",
+      "front": "What is a timeout matrix for dependencies?",
+      "back": "A configuration table that defines how long to wait for each external dependency before giving up.\n\ntimeouts = {\n    'database': 5.0,      # seconds\n    'cache': 0.5,         # fast or skip\n    'external_api': 10.0, # slower, more tolerant\n    'auth_service': 3.0,  # critical path\n}\n\nWithout timeouts, a hung dependency can make your entire system hang. Set timeouts based on each dependency's normal response time plus margin.",
+      "concept_ref": "projects/level-8/10-dependency-timeout-matrix/README.md",
+      "difficulty": 2,
+      "tags": ["timeouts", "dependencies", "resilience"]
+    },
+    {
+      "id": "8-10",
+      "front": "What is a synthetic monitor?",
+      "back": "An automated script that simulates user actions against a live system to verify it's working.\n\ndef synthetic_check():\n    resp = requests.get('https://api.example.com/health')\n    assert resp.status_code == 200\n    assert resp.json()['status'] == 'ok'\n    assert resp.elapsed.total_seconds() < 2.0\n\nRuns on a schedule (every 1-5 minutes). Alerts when checks fail.\n\nDetects outages before real users report them.",
+      "concept_ref": "projects/level-8/11-synthetic-monitor-runner/README.md",
+      "difficulty": 2,
+      "tags": ["monitoring", "synthetic", "health-checks"]
+    },
+    {
+      "id": "8-11",
+      "front": "What is an SLA and how does it relate to SLO and SLI?",
+      "back": "SLA (Service Level Agreement): a contract with consequences. \"99.9% uptime or we refund you.\"\n\nSLO (Service Level Objective): an internal target. \"We aim for 99.95% uptime.\"\n\nSLI (Service Level Indicator): the actual measured metric. \"Last month uptime was 99.97%.\"\n\nRelationship: SLIs measure performance → SLOs set targets → SLAs define penalties.\n\nAlways set SLOs tighter than SLAs to give yourself a safety margin.",
+      "concept_ref": "projects/level-8/13-sla-breach-detector/README.md",
+      "difficulty": 2,
+      "tags": ["sla", "slo", "sli", "reliability"]
+    },
+    {
+      "id": "8-12",
+      "front": "What is a filter state manager in a dashboard context?",
+      "back": "A component that tracks which filters the user has applied and ensures consistent state.\n\nChallenges:\n- Multiple filters interact (date range + category + status)\n- Changing one filter may invalidate another\n- URL should reflect filter state (shareable links)\n- Default values needed when filters are cleared\n\nGood pattern: represent filter state as a dictionary, serialize to URL query params, validate on every change.",
+      "concept_ref": "projects/level-8/04-filter-state-manager/README.md",
+      "difficulty": 2,
+      "tags": ["dashboard", "state-management", "filters"]
+    },
+    {
+      "id": "8-13",
+      "front": "What is response time profiling and what metrics matter?",
+      "back": "Measuring how long each part of a request takes.\n\nKey metrics:\n- p50 (median): typical user experience\n- p95: 1 in 20 users sees this or worse\n- p99: tail latency (worst 1%)\n- Max: absolute worst case\n\nBreakdown a request into phases:\n- Network time\n- Database query time\n- Business logic time\n- Serialization time\n\nOptimize the slowest phase first. p99 matters more than average for user experience.",
+      "concept_ref": "projects/level-8/06-response-time-profiler/README.md",
+      "difficulty": 2,
+      "tags": ["performance", "profiling", "latency"]
+    },
+    {
+      "id": "8-14",
+      "front": "What is export governance and why control data exports?",
+      "back": "Rules that control what data can be exported, by whom, and in what format.\n\nReasons:\n- Prevent PII (personal data) from being exported without authorization\n- Limit export size to prevent system overload\n- Audit trail for compliance\n- Prevent sensitive data leaking via CSV downloads\n\nImplement: check permissions before export, redact sensitive fields, log all exports, enforce row limits.",
+      "concept_ref": "projects/level-8/05-export-governance-check/README.md",
+      "difficulty": 2,
+      "tags": ["governance", "security", "data-export"]
+    },
+    {
+      "id": "8-15",
+      "front": "What is a release readiness evaluation?",
+      "back": "A checklist-driven assessment of whether a release is safe to deploy.\n\nTypical checks:\n- All tests passing\n- No critical bugs open\n- Performance benchmarks within acceptable range\n- Rollback plan documented\n- Monitoring and alerts configured\n- Security review completed\n- Documentation updated\n\nAutomate what you can (tests, benchmarks). Manual review for judgment calls (risk assessment).",
+      "concept_ref": "projects/level-8/12-release-readiness-evaluator/README.md",
+      "difficulty": 2,
+      "tags": ["release", "deployment", "readiness"]
+    },
+    {
+      "id": "8-16",
+      "front": "What is a user journey trace?",
+      "back": "Following a single user's path through your system to understand their experience.\n\nA trace captures:\n- Every endpoint hit (with timestamps)\n- Response times at each step\n- Errors encountered\n- The sequence of actions\n\nUseful for:\n- Finding where users drop off\n- Debugging specific user issues\n- Measuring end-to-end latency\n\nImplement by assigning a trace_id to each user session and logging it with every event.",
+      "concept_ref": "projects/level-8/14-user-journey-tracer/README.md",
+      "difficulty": 2,
+      "tags": ["tracing", "user-journey", "observability"]
+    },
+    {
+      "id": "8-17",
+      "front": "What is a race condition and how do you prevent one?",
+      "back": "A bug where the result depends on the timing of two concurrent operations.\n\n# Two threads both read balance=100, then both write\nThread A: balance = get_balance()  # 100\nThread B: balance = get_balance()  # 100\nThread A: set_balance(balance - 50) # 50\nThread B: set_balance(balance - 30) # 70 (should be 20!)\n\nPrevention:\n- Locks (threading.Lock)\n- Atomic operations\n- Database transactions with proper isolation\n- Message queues (serialize access)",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["concurrency", "race-condition", "bugs"]
+    },
+    {
+      "id": "8-18",
+      "front": "What is a queue and how does it help with concurrency?",
+      "back": "A data structure that holds items in FIFO (First In, First Out) order.\n\nimport queue\nq = queue.Queue(maxsize=100)\n\n# Producer thread\nq.put(task)\n\n# Consumer thread\ntask = q.get()\nprocess(task)\nq.task_done()\n\nQueues decouple producers from consumers:\n- Producers add work without waiting\n- Consumers process at their own pace\n- Built-in thread safety (no manual locking needed)",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["concurrency", "queue", "producer-consumer"]
+    },
+    {
+      "id": "8-19",
+      "front": "What is the difference between threading.Thread and concurrent.futures?",
+      "back": "threading.Thread: low-level, manual thread management.\nt = threading.Thread(target=my_func, args=(x,))\nt.start()\nt.join()\n\nconcurrent.futures: high-level, manages a pool of workers.\nwith ThreadPoolExecutor(max_workers=4) as pool:\n    futures = [pool.submit(my_func, x) for x in items]\n    for f in as_completed(futures):\n        result = f.result()\n\nPrefer concurrent.futures: cleaner API, automatic pool management, built-in error propagation via Future objects.",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["concurrency", "threading", "futures"]
+    },
+    {
+      "id": "8-20",
+      "front": "What is chaos engineering?",
+      "back": "The practice of deliberately introducing failures into production (or production-like) systems to build confidence in their resilience.\n\nProcess:\n1. Define steady state (normal behavior)\n2. Hypothesize what happens when X fails\n3. Inject the failure\n4. Observe actual behavior\n5. Fix any unexpected weaknesses\n\nPrinciple: it's better to break things on purpose under controlled conditions than to wait for uncontrolled failures.",
+      "concept_ref": "projects/level-8/08-fault-injection-harness/README.md",
+      "difficulty": 3,
+      "tags": ["chaos-engineering", "testing", "resilience"]
+    },
+    {
+      "id": "8-21",
+      "front": "What is a health check endpoint and what should it verify?",
+      "back": "An endpoint (usually GET /health) that reports whether the service is functioning.\n\nBasic:\n{'status': 'ok'}  # service is running\n\nDeep health check:\n{'status': 'ok',\n 'database': 'connected',\n 'cache': 'connected',\n 'disk_space': '72% free',\n 'uptime_seconds': 86400}\n\nLoad balancers use health checks to route traffic only to healthy instances. Return HTTP 200 for healthy, 503 for unhealthy.",
+      "concept_ref": "projects/level-8/11-synthetic-monitor-runner/README.md",
+      "difficulty": 1,
+      "tags": ["health-check", "monitoring", "api"]
+    },
+    {
+      "id": "8-22",
+      "front": "What is a deadlock and how does it happen?",
+      "back": "When two threads each hold a lock the other needs, so neither can proceed.\n\nThread A: acquires lock_1, waits for lock_2\nThread B: acquires lock_2, waits for lock_1\n→ Both wait forever.\n\nPrevention:\n- Always acquire locks in the same order\n- Use timeouts: lock.acquire(timeout=5)\n- Use a single lock instead of multiple\n- Prefer higher-level constructs (queues, concurrent.futures)",
+      "concept_ref": "projects/level-8/07-concurrency-queue-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["concurrency", "deadlock", "bugs"]
+    },
+    {
+      "id": "8-23",
+      "front": "What percentile should you use to measure response time?",
+      "back": "p50 (median): the typical experience — half of requests are faster, half slower.\n\np95: 1 in 20 users sees this or worse. Good for detecting widespread slow paths.\n\np99: 1 in 100 users. Catches tail latency issues.\n\nRule of thumb:\n- Report p50, p95, p99\n- Alert on p95 or p99 (not average — averages hide outliers)\n- Optimize for p99 to improve worst-case user experience",
+      "concept_ref": "projects/level-8/06-response-time-profiler/README.md",
+      "difficulty": 2,
+      "tags": ["performance", "percentiles", "metrics"]
+    },
+    {
+      "id": "8-24",
+      "front": "What is a fallback chain and how do you implement one?",
+      "back": "A sequence of data sources tried in order until one succeeds.\n\ndef get_data(key):\n    # Try fastest source first\n    sources = [cache, database, external_api]\n    for source in sources:\n        try:\n            return source.get(key)\n        except SourceError:\n            continue\n    raise AllSourcesFailed(key)\n\nOrder from fastest/cheapest to slowest/most expensive.\nLog which source served each request (observability).",
+      "concept_ref": "projects/level-8/09-graceful-degradation-engine/README.md",
+      "difficulty": 2,
+      "tags": ["resilience", "fallback", "patterns"]
+    },
+    {
+      "id": "8-25",
+      "front": "What is an SLA breach detector and how does it work?",
+      "back": "A monitor that continuously checks whether service level targets are being met.\n\ndef check_sla(metrics, sla_target=99.9):\n    uptime_percent = (metrics['total_time'] - metrics['downtime']) / metrics['total_time'] * 100\n    if uptime_percent < sla_target:\n        alert(f'SLA breach: {uptime_percent:.2f}% < {sla_target}%')\n        return False\n    return True\n\nRun continuously. Track error budget (how much downtime remains before SLA breach).\nAlert with increasing urgency as you approach the limit.",
+      "concept_ref": "projects/level-8/13-sla-breach-detector/README.md",
+      "difficulty": 3,
+      "tags": ["sla", "monitoring", "reliability"]
+    }
+  ]
+}

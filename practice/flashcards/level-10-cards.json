@@ -1,0 +1,206 @@
+{
+  "deck": "Level 10 — Enterprise & Operational Excellence",
+  "description": "Enterprise patterns, compliance, production readiness, documentation, mentorship, and platform strategy",
+  "cards": [
+    {
+      "id": "10-01",
+      "front": "What is an enterprise Python blueprint and what does it define?",
+      "back": "A standardized project template that codifies best practices for all Python projects in an organization.\n\nDefines:\n- Project layout (src/, tests/, docs/)\n- Dependency management (pyproject.toml)\n- Testing setup (pytest, coverage thresholds)\n- Linting/formatting (ruff, black)\n- CI/CD pipeline templates\n- Logging and observability standards\n- Security requirements\n\nEnsures every new project starts with production-quality scaffolding.",
+      "concept_ref": "projects/level-10/01-enterprise-python-blueprint/README.md",
+      "difficulty": 2,
+      "tags": ["enterprise", "blueprint", "standards"]
+    },
+    {
+      "id": "10-02",
+      "front": "What is policy-as-code?",
+      "back": "Expressing organizational policies as executable code that can be automatically enforced.\n\n# Instead of a wiki page saying 'no public S3 buckets'\ndef check_s3_policy(bucket):\n    assert not bucket.is_public, f'{bucket.name} must not be public'\n    assert bucket.encryption_enabled, f'{bucket.name} must be encrypted'\n    assert bucket.versioning_enabled, f'{bucket.name} must have versioning'\n\nBenefits: policies are versioned, testable, and enforced automatically in CI/CD. No more manual compliance reviews.",
+      "concept_ref": "projects/level-10/03-policy-as-code-validator/README.md",
+      "difficulty": 2,
+      "tags": ["policy", "compliance", "automation"]
+    },
+    {
+      "id": "10-03",
+      "front": "What is multi-tenancy and how do you keep tenant data isolated?",
+      "back": "Serving multiple customers (tenants) from a single application instance.\n\nIsolation strategies:\n1. Separate databases per tenant (strongest, most expensive)\n2. Shared database, separate schemas\n3. Shared tables with tenant_id column (cheapest, requires careful coding)\n\nCritical: EVERY query must filter by tenant_id. A missing WHERE clause leaks data between tenants.\n\ndef get_orders(db, tenant_id):\n    return db.query(Order).filter(Order.tenant_id == tenant_id).all()",
+      "concept_ref": "projects/level-10/04-multi-tenant-data-guard/README.md",
+      "difficulty": 3,
+      "tags": ["multi-tenancy", "security", "architecture"]
+    },
+    {
+      "id": "10-04",
+      "front": "What is compliance evidence and why automate its collection?",
+      "back": "Documentation proving your system meets regulatory or organizational requirements.\n\nExamples:\n- Audit logs showing who accessed what data\n- Test reports proving security controls work\n- Configuration snapshots proving encryption is enabled\n- Access reviews showing permissions are appropriate\n\nAutomate because:\n- Manual evidence collection is slow and error-prone\n- Auditors want consistent, timestamped proof\n- Continuous compliance is better than point-in-time audits",
+      "concept_ref": "projects/level-10/05-compliance-evidence-builder/README.md",
+      "difficulty": 2,
+      "tags": ["compliance", "audit", "automation"]
+    },
+    {
+      "id": "10-05",
+      "front": "What is a chaos workbench?",
+      "back": "A controlled environment for running chaos engineering experiments against your services.\n\nCapabilities:\n- Inject network latency, errors, partition\n- Kill processes at controlled times\n- Corrupt data in transit\n- Simulate resource exhaustion (CPU, memory, disk)\n\nDiffers from simple fault injection: a workbench provides a framework for defining experiments, collecting results, and tracking improvements over time.",
+      "concept_ref": "projects/level-10/06-resilience-chaos-workbench/README.md",
+      "difficulty": 3,
+      "tags": ["chaos-engineering", "resilience", "testing"]
+    },
+    {
+      "id": "10-06",
+      "front": "What is a high-risk change gate?",
+      "back": "An approval process that prevents high-risk changes from being deployed without additional review.\n\nClassification criteria:\n- Touches authentication/authorization code\n- Modifies database schema\n- Changes financial calculations\n- Affects more than N services\n- Modifies infrastructure\n\nGate requirements:\n- Additional code reviewer\n- Automated security scan\n- Rollback plan documented\n- Deployment during low-traffic window\n- On-call engineer available",
+      "concept_ref": "projects/level-10/07-high-risk-change-gate/README.md",
+      "difficulty": 2,
+      "tags": ["change-management", "risk", "governance"]
+    },
+    {
+      "id": "10-07",
+      "front": "What is a zero-downtime migration?",
+      "back": "Changing a database schema without taking the application offline.\n\nPattern for adding a required column:\n1. Add column as nullable (no downtime)\n2. Deploy code that writes to new column\n3. Backfill existing rows\n4. Deploy code that reads from new column\n5. Add NOT NULL constraint\n\nNever: add a NOT NULL column without a default in one step (locks the table, breaks running queries).\n\nEach step is independently deployable and reversible.",
+      "concept_ref": "projects/level-10/08-zero-downtime-migration-lab/README.md",
+      "difficulty": 3,
+      "tags": ["migration", "zero-downtime", "database"]
+    },
+    {
+      "id": "10-08",
+      "front": "What should a strategic architecture review evaluate?",
+      "back": "A periodic assessment of the system's technical direction.\n\nEvaluate:\n- Does the architecture still fit the business needs?\n- Where is technical debt accumulating?\n- Are we on supported/current technology versions?\n- What are the scalability bottlenecks?\n- Are security practices keeping up with threats?\n- What would we do differently if starting today?\n\nOutcome: prioritized list of investments (migrations, rewrites, new capabilities) with business justification.",
+      "concept_ref": "projects/level-10/09-strategic-architecture-review/README.md",
+      "difficulty": 2,
+      "tags": ["architecture", "strategy", "review"]
+    },
+    {
+      "id": "10-09",
+      "front": "What are executive metrics and how do they differ from engineering metrics?",
+      "back": "Executive metrics translate technical data into business impact.\n\nEngineering: p99 latency = 230ms, error rate = 0.02%\nExecutive: system reliability = 99.98%, customer-facing incidents this month = 1\n\nGood executive metrics:\n- Tied to business outcomes (revenue, customer satisfaction)\n- Trend over time (improving or degrading?)\n- Compared to targets (on track or not?)\n- Actionable (what should we invest in?)\n\nAvoid: vanity metrics that look good but don't inform decisions.",
+      "concept_ref": "projects/level-10/10-executive-metrics-publisher/README.md",
+      "difficulty": 2,
+      "tags": ["metrics", "executive", "communication"]
+    },
+    {
+      "id": "10-10",
+      "front": "What is a production readiness review (PRR)?",
+      "back": "A structured evaluation of whether a service is ready to run in production.\n\nChecklist categories:\n- Reliability: SLOs defined, alerts configured, runbook written\n- Scalability: load tested, auto-scaling configured\n- Security: auth required, secrets managed, dependencies scanned\n- Observability: logging, metrics, tracing in place\n- Operability: deployment automated, rollback tested\n- Documentation: architecture, API docs, on-call guide\n\nNo service goes live without passing PRR.",
+      "concept_ref": "projects/level-10/11-production-readiness-director/README.md",
+      "difficulty": 2,
+      "tags": ["production-readiness", "review", "operations"]
+    },
+    {
+      "id": "10-11",
+      "front": "What makes a good developer onboarding experience?",
+      "back": "A new developer should be able to set up, build, and run tests within their first day.\n\nEssentials:\n- One-command setup (make setup or ./bootstrap.sh)\n- Clear README with prerequisites\n- Working example/tutorial\n- Glossary of domain terms\n- Architecture overview diagram\n- Assigned onboarding buddy\n- First task labeled 'good first issue'\n\nMeasure: time from 'git clone' to 'first successful test run'.",
+      "concept_ref": "projects/level-10/12-onboarding-accelerator-system/README.md",
+      "difficulty": 1,
+      "tags": ["onboarding", "documentation", "developer-experience"]
+    },
+    {
+      "id": "10-12",
+      "front": "What is legacy modernization and what approaches exist?",
+      "back": "Updating old systems to modern standards without a full rewrite.\n\nApproaches:\n1. Strangler Fig: gradually replace parts with new services, routing traffic away from legacy\n2. Branch by Abstraction: insert an abstraction layer, swap implementation behind it\n3. Big Bang Rewrite: replace everything at once (highest risk, sometimes necessary)\n\nStrangler Fig is safest — you can stop partway through and still have a working system.\n\nNever modernize without clear business justification.",
+      "concept_ref": "projects/level-10/13-legacy-modernization-planner/README.md",
+      "difficulty": 3,
+      "tags": ["legacy", "modernization", "strategy"]
+    },
+    {
+      "id": "10-13",
+      "front": "What is the Strangler Fig pattern?",
+      "back": "A migration strategy where you incrementally replace parts of a legacy system.\n\nNamed after strangler fig trees that grow around a host tree and eventually replace it.\n\nProcess:\n1. Put a proxy/facade in front of the legacy system\n2. Build new functionality in a new service\n3. Route specific requests to the new service\n4. Repeat until the legacy system handles nothing\n5. Decommission the legacy system\n\nKey advantage: you can stop at any point and still have a working system.",
+      "concept_ref": "projects/level-10/13-legacy-modernization-planner/README.md",
+      "difficulty": 2,
+      "tags": ["patterns", "strangler-fig", "migration"]
+    },
+    {
+      "id": "10-14",
+      "front": "What does an SME mentorship toolkit include?",
+      "back": "SME = Subject Matter Expert. A toolkit for experienced engineers to mentor others effectively.\n\nComponents:\n- Knowledge assessment template (what does the mentee know?)\n- Learning path recommendations (structured progression)\n- Code review teaching guide (explain why, not just what)\n- Pairing session formats (driver/navigator, mob programming)\n- Progress tracking metrics\n- Feedback templates (specific, actionable, kind)\n\nGoal: scale expertise by making one expert's knowledge transferable.",
+      "concept_ref": "projects/level-10/14-sme-mentorship-toolkit/README.md",
+      "difficulty": 2,
+      "tags": ["mentorship", "leadership", "knowledge-transfer"]
+    },
+    {
+      "id": "10-15",
+      "front": "What is an autonomous run orchestrator?",
+      "back": "A system that manages the execution of complex workflows with minimal human intervention.\n\nCapabilities:\n- Schedule and trigger jobs based on dependencies\n- Monitor execution and handle failures (retry, skip, alert)\n- Maintain execution history and logs\n- Support manual intervention when needed\n\nExamples: Airflow, Prefect, Dagster for data pipelines.\n\nKey: the orchestrator handles the 'what runs when' logic so humans focus on the 'what it does' logic.",
+      "concept_ref": "projects/level-10/02-autonomous-run-orchestrator/README.md",
+      "difficulty": 2,
+      "tags": ["orchestration", "automation", "workflows"]
+    },
+    {
+      "id": "10-16",
+      "front": "What is technical debt and how do you manage it?",
+      "back": "Shortcuts or suboptimal solutions that make future changes harder.\n\nTypes:\n- Deliberate: 'ship now, fix later' (acceptable if tracked)\n- Accidental: 'didn't know a better way' (learn and fix)\n- Bit rot: code decays as requirements evolve\n\nManagement:\n- Track debt items in a backlog\n- Quantify impact (how much does it slow us down?)\n- Allocate time each sprint for debt reduction (20% rule)\n- Prevent new debt via code review and standards",
+      "concept_ref": "projects/level-10/09-strategic-architecture-review/README.md",
+      "difficulty": 2,
+      "tags": ["tech-debt", "management", "engineering"]
+    },
+    {
+      "id": "10-17",
+      "front": "What is a deployment pipeline and what stages should it have?",
+      "back": "An automated sequence that moves code from commit to production.\n\nTypical stages:\n1. Build: compile, install dependencies\n2. Unit tests: fast, isolated tests\n3. Lint & type check: code quality gates\n4. Integration tests: test with real dependencies\n5. Security scan: dependency vulnerabilities, secrets\n6. Deploy to staging: full environment test\n7. Smoke tests: verify staging works\n8. Deploy to production: canary or blue-green\n9. Post-deploy verification: synthetic monitors\n\nEach stage is a gate — failure stops the pipeline.",
+      "concept_ref": "projects/level-10/01-enterprise-python-blueprint/README.md",
+      "difficulty": 2,
+      "tags": ["cicd", "pipeline", "deployment"]
+    },
+    {
+      "id": "10-18",
+      "front": "What is the difference between authentication and authorization?",
+      "back": "Authentication (AuthN): verifying WHO you are.\n  'Prove your identity' → username/password, OAuth, JWT\n\nAuthorization (AuthZ): verifying WHAT you can do.\n  'Do you have permission?' → roles, permissions, policies\n\nAuthentication always comes first. You cannot authorize someone whose identity you haven't verified.\n\nExample: logging in = authentication. Accessing the admin page = authorization.",
+      "concept_ref": "projects/level-10/03-policy-as-code-validator/README.md",
+      "difficulty": 1,
+      "tags": ["security", "auth", "fundamentals"]
+    },
+    {
+      "id": "10-19",
+      "front": "What is infrastructure as code (IaC)?",
+      "back": "Managing infrastructure (servers, databases, networks) through version-controlled configuration files instead of manual setup.\n\nTools: Terraform, Pulumi, CloudFormation, Ansible.\n\nBenefits:\n- Reproducible environments (dev matches production)\n- Version controlled (track changes, roll back)\n- Self-documenting (the code IS the documentation)\n- Automated provisioning (spin up environments in minutes)\n\nRelated: policy-as-code validates that IaC meets security/compliance requirements.",
+      "concept_ref": "projects/level-10/03-policy-as-code-validator/README.md",
+      "difficulty": 2,
+      "tags": ["infrastructure", "iac", "automation"]
+    },
+    {
+      "id": "10-20",
+      "front": "What are feature flags at enterprise scale?",
+      "back": "Configuration-driven toggles that control feature visibility, managed centrally across an organization.\n\nEnterprise concerns beyond basic flags:\n- Gradual rollout by percentage, region, or user segment\n- Kill switches for instant disable\n- Audit trail (who changed what flag when)\n- Stale flag cleanup (flags left on forever)\n- A/B testing integration\n- Flag dependencies (feature B requires feature A)\n\nTools: LaunchDarkly, Unleash, Flagsmith, or custom solutions.",
+      "concept_ref": "projects/level-10/07-high-risk-change-gate/README.md",
+      "difficulty": 2,
+      "tags": ["feature-flags", "enterprise", "deployment"]
+    },
+    {
+      "id": "10-21",
+      "front": "What is SOC 2 compliance and why do enterprises care?",
+      "back": "SOC 2 (Service Organization Control 2) is an auditing standard for service providers that store customer data.\n\nFive trust principles:\n1. Security — protection against unauthorized access\n2. Availability — system operates as agreed\n3. Processing Integrity — data processed correctly\n4. Confidentiality — sensitive data protected\n5. Privacy — personal data handled per policy\n\nCustomers (especially enterprises) require SOC 2 reports before trusting you with their data.",
+      "concept_ref": "projects/level-10/05-compliance-evidence-builder/README.md",
+      "difficulty": 3,
+      "tags": ["compliance", "soc2", "enterprise"]
+    },
+    {
+      "id": "10-22",
+      "front": "What is a service mesh?",
+      "back": "An infrastructure layer that handles service-to-service communication in a microservices architecture.\n\nProvides:\n- Automatic mutual TLS (encrypted service communication)\n- Load balancing between service instances\n- Circuit breaking and retries\n- Observability (traces, metrics between services)\n- Traffic management (canary deployments, A/B routing)\n\nExamples: Istio, Linkerd.\n\nThe mesh handles networking concerns so application code focuses on business logic.",
+      "concept_ref": "projects/level-10/09-strategic-architecture-review/README.md",
+      "difficulty": 3,
+      "tags": ["architecture", "service-mesh", "microservices"]
+    },
+    {
+      "id": "10-23",
+      "front": "What makes documentation 'production-grade'?",
+      "back": "Documentation that is accurate, maintained, and actually used.\n\nCharacteristics:\n- Up to date (reviewed quarterly, updated with code changes)\n- Searchable (not buried in wikis nobody reads)\n- Layered (quick-start → detailed guide → reference)\n- Code-adjacent (lives near the code it documents)\n- Tested (code examples are verified to work)\n\nAnti-patterns: outdated wikis, documentation only in someone's head, 100-page docs nobody reads.",
+      "concept_ref": "projects/level-10/12-onboarding-accelerator-system/README.md",
+      "difficulty": 1,
+      "tags": ["documentation", "quality", "operations"]
+    },
+    {
+      "id": "10-24",
+      "front": "What is the difference between a monolith and microservices?",
+      "back": "Monolith: one deployable unit containing all functionality.\n  Pro: simple to develop, test, deploy, debug\n  Con: changes risk the whole system, scaling is all-or-nothing\n\nMicroservices: many small, independently deployable services.\n  Pro: independent scaling, team autonomy, technology flexibility\n  Con: distributed system complexity (networking, consistency, debugging)\n\nStart with a monolith. Extract services when you have clear domain boundaries and the monolith becomes a bottleneck.",
+      "concept_ref": "projects/level-10/09-strategic-architecture-review/README.md",
+      "difficulty": 2,
+      "tags": ["architecture", "monolith", "microservices"]
+    },
+    {
+      "id": "10-25",
+      "front": "What is operational excellence and how do you measure it?",
+      "back": "The practice of running systems reliably, efficiently, and with continuous improvement.\n\nMeasured by:\n- MTTR (time to recover from incidents)\n- Change failure rate (% of deployments causing incidents)\n- Deployment frequency (how often you ship)\n- Lead time (commit to production)\n- On-call burden (pages per week, off-hours interruptions)\n- Toil ratio (manual work vs automated work)\n\nThese four (minus on-call and toil) are the DORA metrics — the industry standard for engineering performance.",
+      "concept_ref": "projects/level-10/15-level10-grand-capstone/README.md",
+      "difficulty": 2,
+      "tags": ["operations", "dora", "excellence"]
+    }
+  ]
+}

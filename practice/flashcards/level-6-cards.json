@@ -1,0 +1,206 @@
+{
+  "deck": "Level 6 — SQL & ETL Patterns",
+  "description": "SQL connection patterns, staging areas, ETL design, idempotent operations, data integrity and lineage",
+  "cards": [
+    {
+      "id": "6-01",
+      "front": "What is a staging table and why do ETL pipelines use one?",
+      "back": "A temporary holding area where raw data lands before being validated and merged into production tables.\n\nBenefits:\n- Isolates dirty data from production\n- Allows validation before insert\n- Makes reprocessing easy if something fails\n- Decouples extraction from loading",
+      "concept_ref": "projects/level-6/02-staging-table-loader/README.md",
+      "difficulty": 2,
+      "tags": ["etl", "staging", "data-integrity"]
+    },
+    {
+      "id": "6-02",
+      "front": "What does 'idempotent' mean in the context of data operations?",
+      "back": "An operation is idempotent if running it multiple times produces the same result as running it once.\n\nExample: An UPSERT (INSERT or UPDATE) is idempotent — re-running it with the same data does not create duplicates.\n\nA plain INSERT is NOT idempotent — running it twice creates duplicate rows.",
+      "concept_ref": "projects/level-6/03-idempotency-key-builder/README.md",
+      "difficulty": 2,
+      "tags": ["idempotency", "data-integrity"]
+    },
+    {
+      "id": "6-03",
+      "front": "What is an UPSERT and how do you express it in SQL?",
+      "back": "UPSERT = INSERT if the row does not exist, UPDATE if it does.\n\nSQLite syntax:\nINSERT INTO products (id, name, price)\nVALUES (1, 'Widget', 9.99)\nON CONFLICT(id) DO UPDATE SET\n  name = excluded.name,\n  price = excluded.price;\n\n'excluded' refers to the values that were attempted to be inserted.",
+      "concept_ref": "projects/level-6/04-upsert-strategy-lab/README.md",
+      "difficulty": 2,
+      "tags": ["sql", "upsert", "idempotency"]
+    },
+    {
+      "id": "6-04",
+      "front": "What is a database transaction and why does it matter for ETL?",
+      "back": "A transaction groups multiple SQL statements into a single atomic unit.\n\nEither ALL statements succeed (COMMIT) or ALL are undone (ROLLBACK).\n\nIn Python:\nconn = sqlite3.connect('db.sqlite')\ntry:\n    conn.execute('INSERT ...')\n    conn.execute('UPDATE ...')\n    conn.commit()\nexcept Exception:\n    conn.rollback()\n    raise\n\nPrevents partial writes that leave data in an inconsistent state.",
+      "concept_ref": "projects/level-6/05-transaction-rollback-drill/README.md",
+      "difficulty": 2,
+      "tags": ["sql", "transactions", "rollback"]
+    },
+    {
+      "id": "6-05",
+      "front": "What is ETL and what does each letter stand for?",
+      "back": "E — Extract: pull data from a source (API, file, database)\nT — Transform: clean, validate, reshape the data\nL — Load: write the data into the target database\n\nETL pipelines run these three steps in sequence, often on a schedule (hourly, daily).",
+      "concept_ref": "projects/level-6/README.md",
+      "difficulty": 1,
+      "tags": ["etl", "fundamentals"]
+    },
+    {
+      "id": "6-06",
+      "front": "What is data lineage and why should you track it?",
+      "back": "Data lineage records WHERE data came from, WHAT transformations were applied, and WHEN it arrived.\n\nTracking lineage lets you:\n- Debug data quality issues back to their source\n- Prove compliance for audits\n- Understand impact when a source changes\n- Reproduce any dataset from its origin",
+      "concept_ref": "projects/level-6/08-data-lineage-capture/README.md",
+      "difficulty": 2,
+      "tags": ["lineage", "data-integrity", "observability"]
+    },
+    {
+      "id": "6-07",
+      "front": "What is the difference between a full load and an incremental load?",
+      "back": "Full load: drop and reload ALL data every time. Simple but slow for large datasets.\n\nIncremental load: only process NEW or CHANGED records since the last run. Uses a watermark (timestamp or ID) to track progress.\n\nIncremental is faster but more complex — you must handle deletes and track the high-water mark between runs.",
+      "concept_ref": "projects/level-6/09-incremental-load-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["etl", "incremental", "full-load"]
+    },
+    {
+      "id": "6-08",
+      "front": "What is a dead letter queue (or dead letter table) in data pipelines?",
+      "back": "A place where rows that failed validation or processing are stored instead of being silently dropped.\n\nEach dead letter record includes:\n- The original data\n- The error message\n- A timestamp\n- The pipeline stage where it failed\n\nThis lets you investigate and replay failed records later.",
+      "concept_ref": "projects/level-6/11-dead-letter-row-handler/README.md",
+      "difficulty": 2,
+      "tags": ["etl", "error-handling", "dead-letter"]
+    },
+    {
+      "id": "6-09",
+      "front": "How do you use Python's sqlite3 module to connect and query a database?",
+      "back": "import sqlite3\n\nconn = sqlite3.connect('my.db')\ncursor = conn.cursor()\n\n# Always use parameterized queries (never f-strings!)\ncursor.execute('SELECT * FROM users WHERE age > ?', (18,))\nrows = cursor.fetchall()\n\nconn.close()\n\nUse conn as a context manager for auto-commit:\nwith sqlite3.connect('my.db') as conn:\n    conn.execute('INSERT INTO ...')",
+      "concept_ref": "projects/level-6/01-mssql-connection-simulator/README.md",
+      "difficulty": 1,
+      "tags": ["sqlite3", "sql", "python"]
+    },
+    {
+      "id": "6-10",
+      "front": "Why should you NEVER use f-strings or string concatenation in SQL queries?",
+      "back": "SQL injection. If user input is inserted directly into SQL, an attacker can manipulate the query.\n\n# DANGEROUS\ncursor.execute(f\"SELECT * FROM users WHERE name = '{name}'\")\n# If name = \"'; DROP TABLE users; --\" your table is gone\n\n# SAFE — parameterized query\ncursor.execute('SELECT * FROM users WHERE name = ?', (name,))\n\nThe database driver escapes parameters automatically.",
+      "concept_ref": "projects/level-6/01-mssql-connection-simulator/README.md",
+      "difficulty": 1,
+      "tags": ["sql", "security", "injection"]
+    },
+    {
+      "id": "6-11",
+      "front": "What is table drift and how do you detect it?",
+      "back": "Table drift is when a table's actual schema diverges from its expected schema — columns added, removed, or type-changed without updating the pipeline.\n\nDetection: compare the live schema (PRAGMA table_info in SQLite) against a stored expected schema.\n\nDrift causes silent data corruption when pipelines assume a structure that no longer matches reality.",
+      "concept_ref": "projects/level-6/10-table-drift-detector/README.md",
+      "difficulty": 3,
+      "tags": ["schema", "drift", "data-integrity"]
+    },
+    {
+      "id": "6-12",
+      "front": "What is a batch window and why do ETL jobs use them?",
+      "back": "A batch window is a scheduled time period when ETL jobs run, typically during low-traffic hours.\n\nPurpose:\n- Avoid competing with user queries for database resources\n- Ensure data is consistent at known points in time\n- Allow dependent jobs to chain in sequence\n\nExample: nightly batch window from 2am-5am processes the previous day's data.",
+      "concept_ref": "projects/level-6/13-batch-window-controller/README.md",
+      "difficulty": 2,
+      "tags": ["etl", "scheduling", "batch"]
+    },
+    {
+      "id": "6-13",
+      "front": "What is a runbook and what should it contain?",
+      "back": "A runbook is a step-by-step guide for operating, troubleshooting, or recovering a system.\n\nA good runbook includes:\n- What the system does and its dependencies\n- How to start, stop, and restart it\n- Common failure modes and their fixes\n- Escalation contacts\n- Verification steps to confirm recovery\n\nRunbooks turn tribal knowledge into repeatable procedures.",
+      "concept_ref": "projects/level-6/14-sql-runbook-generator/README.md",
+      "difficulty": 2,
+      "tags": ["operations", "runbook", "documentation"]
+    },
+    {
+      "id": "6-14",
+      "front": "What does EXPLAIN do in SQL and why is it useful?",
+      "back": "EXPLAIN shows the query execution plan — how the database will process your query.\n\nSQLite: EXPLAIN QUERY PLAN SELECT * FROM orders WHERE customer_id = 5;\n\nIt reveals:\n- Whether indexes are being used\n- Table scan vs index scan\n- Join order and strategy\n\nUse it to find slow queries that need indexes or restructuring.",
+      "concept_ref": "projects/level-6/06-query-performance-checker/README.md",
+      "difficulty": 3,
+      "tags": ["sql", "performance", "explain"]
+    },
+    {
+      "id": "6-15",
+      "front": "What is an index in a database and when should you create one?",
+      "back": "An index is a data structure that speeds up lookups on a column, like a book's index.\n\nCREATE INDEX idx_orders_customer ON orders(customer_id);\n\nCreate indexes on columns you:\n- Filter with WHERE\n- Join on (foreign keys)\n- Sort with ORDER BY\n\nTrade-off: indexes speed reads but slow writes (the index must be updated on every INSERT/UPDATE).",
+      "concept_ref": "projects/level-6/06-query-performance-checker/README.md",
+      "difficulty": 2,
+      "tags": ["sql", "index", "performance"]
+    },
+    {
+      "id": "6-16",
+      "front": "What is the difference between DELETE, TRUNCATE, and DROP?",
+      "back": "DELETE FROM table WHERE ...; — removes matching rows, can be rolled back, fires triggers.\n\nTRUNCATE TABLE table; — removes ALL rows instantly, cannot be rolled back in most databases, resets auto-increment.\n\nDROP TABLE table; — removes the entire table structure and all data permanently.\n\nIn ETL: use DELETE for selective cleanup, TRUNCATE for full reloads, DROP only when removing a table entirely.",
+      "concept_ref": "projects/level-6/05-transaction-rollback-drill/README.md",
+      "difficulty": 2,
+      "tags": ["sql", "delete", "truncate", "drop"]
+    },
+    {
+      "id": "6-17",
+      "front": "What is a foreign key constraint and why does it matter?",
+      "back": "A foreign key links a column in one table to the primary key of another, enforcing referential integrity.\n\nCREATE TABLE orders (\n    id INTEGER PRIMARY KEY,\n    customer_id INTEGER REFERENCES customers(id)\n);\n\nThe database will reject an INSERT with a customer_id that does not exist in the customers table. This prevents orphaned records.",
+      "concept_ref": "projects/level-6/02-staging-table-loader/README.md",
+      "difficulty": 2,
+      "tags": ["sql", "foreign-key", "integrity"]
+    },
+    {
+      "id": "6-18",
+      "front": "What is a high-water mark in incremental loading?",
+      "back": "A stored value (usually a timestamp or auto-increment ID) that marks the last successfully processed record.\n\nOn the next run, the pipeline queries:\nSELECT * FROM source WHERE updated_at > :last_watermark\n\nAfter successful processing, update the watermark.\n\nStore it reliably (database, file) so it survives crashes and restarts.",
+      "concept_ref": "projects/level-6/09-incremental-load-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["etl", "incremental", "watermark"]
+    },
+    {
+      "id": "6-19",
+      "front": "What does ACID stand for in databases?",
+      "back": "A — Atomicity: all or nothing (transactions)\nC — Consistency: data always valid (constraints enforced)\nI — Isolation: concurrent transactions don't interfere\nD — Durability: committed data survives crashes\n\nACID guarantees are what make relational databases reliable for business data.",
+      "concept_ref": "projects/level-6/05-transaction-rollback-drill/README.md",
+      "difficulty": 2,
+      "tags": ["sql", "acid", "fundamentals"]
+    },
+    {
+      "id": "6-20",
+      "front": "What is an ETL health dashboard and what metrics should it show?",
+      "back": "A dashboard that shows the operational status of your data pipelines.\n\nKey metrics:\n- Row counts (expected vs actual)\n- Run duration and trends\n- Error/dead letter counts\n- Last successful run time\n- Data freshness (how old is the latest record?)\n\nThese metrics let you detect problems before users notice stale or wrong data.",
+      "concept_ref": "projects/level-6/12-etl-health-dashboard-feed/README.md",
+      "difficulty": 2,
+      "tags": ["etl", "monitoring", "dashboard"]
+    },
+    {
+      "id": "6-21",
+      "front": "What is the difference between cursor.fetchone(), fetchall(), and fetchmany()?",
+      "back": "fetchone() — returns the next single row, or None if no more rows.\n\nfetchall() — returns ALL remaining rows as a list. Careful with large result sets (loads everything into memory).\n\nfetchmany(n) — returns up to n rows. Good for processing in batches.\n\nFor large datasets, iterate the cursor directly:\nfor row in cursor:\n    process(row)",
+      "concept_ref": "projects/level-6/01-mssql-connection-simulator/README.md",
+      "difficulty": 1,
+      "tags": ["sqlite3", "cursor", "python"]
+    },
+    {
+      "id": "6-22",
+      "front": "What is a connection pool and why would you use one?",
+      "back": "A collection of pre-opened database connections that are shared and reused instead of opening a new connection for every query.\n\nBenefits:\n- Opening connections is slow; reusing is fast\n- Limits the max connections to avoid overwhelming the database\n- Handles connection lifecycle (health checks, timeouts)\n\nIn SQLAlchemy: engine = create_engine(url, pool_size=5, max_overflow=10)",
+      "concept_ref": "projects/level-6/01-mssql-connection-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["database", "connection-pool", "performance"]
+    },
+    {
+      "id": "6-23",
+      "front": "What is a SQL summary publisher and why automate it?",
+      "back": "A process that runs aggregate queries and publishes the results (to a file, dashboard, or notification channel).\n\nExamples:\n- Daily sales totals by region\n- Row counts per table for data quality\n- Top N records by some metric\n\nAutomation ensures reports are consistent, timely, and do not depend on someone remembering to run them manually.",
+      "concept_ref": "projects/level-6/07-sql-summary-publisher/README.md",
+      "difficulty": 1,
+      "tags": ["sql", "reporting", "automation"]
+    },
+    {
+      "id": "6-24",
+      "front": "What is ON CONFLICT in SQLite and when do you use it?",
+      "back": "ON CONFLICT specifies what to do when an INSERT violates a uniqueness constraint.\n\nStrategies:\n- ABORT (default): cancel the statement\n- IGNORE: skip the conflicting row silently\n- REPLACE: delete the old row, insert the new one\n- DO UPDATE SET ...: update specific columns (UPSERT)\n\nINSERT OR IGNORE INTO logs (...) VALUES (...);\nINSERT INTO items (...) VALUES (...)\n  ON CONFLICT(id) DO UPDATE SET name = excluded.name;",
+      "concept_ref": "projects/level-6/04-upsert-strategy-lab/README.md",
+      "difficulty": 3,
+      "tags": ["sql", "conflict", "upsert"]
+    },
+    {
+      "id": "6-25",
+      "front": "What makes a good idempotency key?",
+      "back": "An idempotency key uniquely identifies an operation so it can be safely retried.\n\nGood keys are:\n- Deterministic: same input always produces the same key\n- Unique: no two different operations share a key\n- Stable: does not change between retries\n\nCommon patterns:\n- Hash of the input data: hashlib.sha256(payload).hexdigest()\n- Natural keys: (source_system, record_id, date)\n- UUIDs generated by the caller (not the server)",
+      "concept_ref": "projects/level-6/03-idempotency-key-builder/README.md",
+      "difficulty": 3,
+      "tags": ["idempotency", "keys", "design"]
+    }
+  ]
+}

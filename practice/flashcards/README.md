@@ -33,6 +33,8 @@ The runner uses the **Leitner box system**:
 
 ## Card Decks
 
+### Core Levels
+
 | File | Level | Cards | Topics |
 |------|-------|-------|--------|
 | `level-00-cards.json` | Absolute Beginner | 25 | Variables, print, input, basic types |
@@ -42,6 +44,20 @@ The runner uses the **Leitner box system**:
 | `level-3-cards.json` | File Automation | 25 | pathlib, os, shutil, glob, CSV |
 | `level-4-cards.json` | JSON & Data | 25 | json module, nested data, schemas, validation |
 | `level-5-cards.json` | Exceptions | 25 | try/except, custom exceptions, logging, context managers |
+| `level-6-cards.json` | SQL & ETL | 25 | SQL, staging areas, ETL patterns, idempotent operations, data integrity |
+| `level-7-cards.json` | API Integration | 25 | API adapters, caching, polling, observability, rate limiting, contracts |
+| `level-8-cards.json` | Dashboards & Resilience | 25 | Concurrency, thread safety, fault injection, graceful degradation, SLAs |
+| `level-9-cards.json` | Architecture & Governance | 25 | Architecture patterns, SLOs, capacity planning, security, design principles |
+| `level-10-cards.json` | Enterprise Excellence | 25 | Enterprise patterns, compliance, production readiness, operational excellence |
+
+### Expansion Modules
+
+| File | Module | Cards | Topics |
+|------|--------|-------|--------|
+| `module-web-scraping-cards.json` | Web Scraping | 15 | requests, BeautifulSoup, CSS selectors, pagination, robots.txt, CSV |
+| `module-fastapi-cards.json` | FastAPI Web Apps | 17 | FastAPI, Pydantic, path/query params, dependency injection, JWT, uvicorn |
+| `module-databases-cards.json` | Databases & ORM | 17 | sqlite3, SQLAlchemy Core/ORM, sessions, Alembic migrations, query optimization |
+| `module-django-cards.json` | Django Full-Stack | 18 | Django models, views, templates, URL routing, DRF serializers, admin |
 
 ## Card Format
 

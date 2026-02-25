@@ -1,0 +1,206 @@
+{
+  "deck": "Level 9 — Architecture & Governance",
+  "description": "Architecture patterns, SLOs/SLIs, capacity planning, security baselines, design principles, and operational governance",
+  "cards": [
+    {
+      "id": "9-01",
+      "front": "What is an Architecture Decision Record (ADR)?",
+      "back": "A short document capturing a significant architectural decision.\n\nFormat:\n# ADR-001: Use PostgreSQL for primary storage\n## Status: Accepted\n## Context: We need a relational database...\n## Decision: We will use PostgreSQL because...\n## Consequences: We need to manage migrations...\n\nADRs create a decision log so future developers understand WHY choices were made, not just WHAT was chosen.",
+      "concept_ref": "projects/level-9/01-architecture-decision-log/README.md",
+      "difficulty": 2,
+      "tags": ["architecture", "adr", "documentation"]
+    },
+    {
+      "id": "9-02",
+      "front": "What are domain boundaries and why enforce them?",
+      "back": "Domain boundaries separate a system into distinct areas of responsibility, each owning its own data and logic.\n\nExample: an e-commerce system has domains for Orders, Inventory, Payments, and Users.\n\nEnforcing boundaries:\n- Each domain has its own module/package\n- Domains communicate through defined interfaces\n- No direct database access across domains\n\nPrevents spaghetti code and makes each domain independently understandable and deployable.",
+      "concept_ref": "projects/level-9/02-domain-boundary-enforcer/README.md",
+      "difficulty": 2,
+      "tags": ["architecture", "domain-driven", "boundaries"]
+    },
+    {
+      "id": "9-03",
+      "front": "What is event-driven architecture?",
+      "back": "A pattern where components communicate by producing and consuming events rather than calling each other directly.\n\nOrder placed → event emitted → Inventory, Email, Analytics each react independently.\n\nBenefits:\n- Loose coupling (producer doesn't know consumers)\n- Easy to add new consumers\n- Async processing (producer doesn't wait)\n\nTrade-offs:\n- Harder to trace flow\n- Eventual consistency\n- Need event infrastructure (queues, brokers)",
+      "concept_ref": "projects/level-9/03-event-driven-pipeline-lab/README.md",
+      "difficulty": 3,
+      "tags": ["architecture", "events", "async"]
+    },
+    {
+      "id": "9-04",
+      "front": "What is an SLO and how do you set one?",
+      "back": "SLO (Service Level Objective): an internal reliability target expressed as a percentage over a time window.\n\nExample: 99.9% of requests complete in < 500ms over a 30-day rolling window.\n\nSetting SLOs:\n1. Measure current performance (SLIs)\n2. Understand user expectations\n3. Set target slightly above current baseline\n4. Calculate error budget: 100% - SLO = allowable failure\n\n99.9% = 43 minutes of downtime per month\n99.95% = 22 minutes\n99.99% = 4.3 minutes",
+      "concept_ref": "projects/level-9/04-observability-slo-pack/README.md",
+      "difficulty": 2,
+      "tags": ["slo", "reliability", "metrics"]
+    },
+    {
+      "id": "9-05",
+      "front": "What is an error budget and how do teams use it?",
+      "back": "Error budget = the amount of unreliability your SLO allows.\n\nIf SLO = 99.9% uptime per month:\nError budget = 0.1% = ~43 minutes of downtime.\n\nWhen error budget is healthy → ship features, take risks.\nWhen error budget is depleted → freeze changes, focus on reliability.\n\nThis creates a data-driven balance between velocity and stability. Teams stop arguing about 'too fast' vs 'too careful' — the error budget decides.",
+      "concept_ref": "projects/level-9/04-observability-slo-pack/README.md",
+      "difficulty": 3,
+      "tags": ["slo", "error-budget", "reliability"]
+    },
+    {
+      "id": "9-06",
+      "front": "What is capacity planning and what inputs does it need?",
+      "back": "Predicting the resources (CPU, memory, storage, bandwidth) a system needs to handle expected load.\n\nInputs:\n- Current usage metrics (baseline)\n- Growth rate (users, data volume)\n- Seasonal patterns (Black Friday, end of quarter)\n- Planned features that change resource use\n\nOutput: when you need to scale, and by how much.\n\nRule: plan for 2x your expected peak. If you're at 70% capacity, it's time to plan expansion.",
+      "concept_ref": "projects/level-9/05-capacity-planning-model/README.md",
+      "difficulty": 2,
+      "tags": ["capacity", "planning", "scaling"]
+    },
+    {
+      "id": "9-07",
+      "front": "What is a reliability scorecard?",
+      "back": "A dashboard that grades a service's operational health across multiple dimensions.\n\nTypical dimensions:\n- Availability (uptime %)\n- Latency (p50, p95, p99)\n- Error rate\n- Deployment frequency\n- Mean time to recover (MTTR)\n- Test coverage\n- Runbook completeness\n\nEach dimension gets a score (red/yellow/green). The scorecard gives a quick overall health view and highlights areas needing investment.",
+      "concept_ref": "projects/level-9/06-reliability-scorecard/README.md",
+      "difficulty": 2,
+      "tags": ["reliability", "scorecard", "operations"]
+    },
+    {
+      "id": "9-08",
+      "front": "What is a canary deployment?",
+      "back": "Releasing a new version to a small percentage of users before rolling out fully.\n\nProcess:\n1. Deploy new version alongside old\n2. Route 5% of traffic to new version\n3. Monitor error rates and latency\n4. If healthy → gradually increase (10%, 25%, 50%, 100%)\n5. If problems → roll back (only 5% affected)\n\nSafer than big-bang deployments. Catches issues with real traffic before they affect everyone.",
+      "concept_ref": "projects/level-9/07-canary-rollout-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["deployment", "canary", "rollout"]
+    },
+    {
+      "id": "9-09",
+      "front": "What is a change impact analysis?",
+      "back": "Evaluating the potential effects of a proposed change before implementing it.\n\nAssess:\n- What components are affected?\n- What could break?\n- Who needs to know?\n- Can it be rolled back?\n- What monitoring do we need?\n\nClassify changes by risk:\n- Low: config change, feature flag toggle\n- Medium: new feature, dependency update\n- High: schema migration, security change, core logic rewrite",
+      "concept_ref": "projects/level-9/08-change-impact-analyzer/README.md",
+      "difficulty": 2,
+      "tags": ["change-management", "risk", "analysis"]
+    },
+    {
+      "id": "9-10",
+      "front": "What is a security baseline and what does it check?",
+      "back": "A minimum set of security requirements that every service must meet.\n\nCommon checks:\n- No hardcoded secrets in code\n- Dependencies scanned for known vulnerabilities\n- HTTPS enforced (no plain HTTP)\n- Authentication required for all non-public endpoints\n- Input validation on all user-facing endpoints\n- Logging of authentication events\n- Secrets stored in environment variables or a vault\n\nAutomate baseline checks in CI/CD to catch violations before deployment.",
+      "concept_ref": "projects/level-9/09-security-baseline-auditor/README.md",
+      "difficulty": 2,
+      "tags": ["security", "baseline", "audit"]
+    },
+    {
+      "id": "9-11",
+      "front": "What is data governance?",
+      "back": "Policies and processes that control how data is collected, stored, accessed, and deleted.\n\nKey concerns:\n- Who can access what data? (access control)\n- How long is data retained? (retention policies)\n- Is PII protected? (encryption, anonymization)\n- Where is data stored? (data residency)\n- How is data classified? (public, internal, confidential)\n\nGovernance ensures compliance with regulations (GDPR, CCPA) and protects against data breaches.",
+      "concept_ref": "projects/level-9/10-data-governance-enforcer/README.md",
+      "difficulty": 2,
+      "tags": ["governance", "data", "compliance"]
+    },
+    {
+      "id": "9-12",
+      "front": "What is MTTR and why is it more important than MTBF?",
+      "back": "MTTR = Mean Time To Recovery: average time to restore service after a failure.\nMTBF = Mean Time Between Failures: average time between failures.\n\nMTTR matters more because:\n- Failures are inevitable — you cannot prevent all of them\n- Fast recovery minimizes user impact\n- Reducing MTTR from 4 hours to 15 minutes is more impactful than reducing failure frequency by 50%\n\nImprove MTTR with: runbooks, automated rollbacks, good monitoring, and incident drills.",
+      "concept_ref": "projects/level-9/11-recovery-time-estimator/README.md",
+      "difficulty": 2,
+      "tags": ["reliability", "mttr", "mtbf"]
+    },
+    {
+      "id": "9-13",
+      "front": "What goes into an incident postmortem?",
+      "back": "A postmortem documents what happened, why, and how to prevent recurrence.\n\nSections:\n1. Summary: what happened and impact\n2. Timeline: minute-by-minute events\n3. Root cause: the underlying issue\n4. Contributing factors: what made it worse\n5. What went well: things that helped recovery\n6. Action items: concrete steps with owners and due dates\n\nCritical rule: postmortems are BLAMELESS. Focus on systems, not people.",
+      "concept_ref": "projects/level-9/12-incident-postmortem-generator/README.md",
+      "difficulty": 2,
+      "tags": ["incident", "postmortem", "operations"]
+    },
+    {
+      "id": "9-14",
+      "front": "What is the difference between horizontal and vertical scaling?",
+      "back": "Vertical scaling (scale up): bigger machine — more CPU, RAM, disk.\n  Limits: hardware has a ceiling. Single point of failure.\n\nHorizontal scaling (scale out): more machines running the same service.\n  Requires: stateless services, load balancing, shared storage.\n\nPrefer horizontal for:\n- Web servers, API services, workers\n\nVertical is simpler for:\n- Databases (until you need sharding)\n- Single-threaded workloads",
+      "concept_ref": "projects/level-9/05-capacity-planning-model/README.md",
+      "difficulty": 2,
+      "tags": ["scaling", "architecture", "capacity"]
+    },
+    {
+      "id": "9-15",
+      "front": "What is the Single Responsibility Principle?",
+      "back": "A module, class, or function should have one reason to change — it should do one thing well.\n\n# BAD — does too much\ndef process_order(order):\n    validate(order)\n    save_to_db(order)\n    send_email(order)\n    update_inventory(order)\n\n# GOOD — each function has one job\ndef validate_order(order): ...\ndef save_order(order): ...\ndef notify_customer(order): ...\ndef update_inventory(order): ...\n\nSRP makes code easier to test, change, and understand.",
+      "concept_ref": "projects/level-9/02-domain-boundary-enforcer/README.md",
+      "difficulty": 1,
+      "tags": ["design-principles", "srp", "solid"]
+    },
+    {
+      "id": "9-16",
+      "front": "What is a cost estimator for platform infrastructure?",
+      "back": "A tool that predicts infrastructure costs based on usage projections.\n\nInputs:\n- Number of servers/instances\n- Storage volume (GB)\n- Network transfer (GB)\n- Database type and size\n- Managed service fees\n\nWhy: prevents budget surprises. Helps compare architectures by total cost.\n\nTip: factor in hidden costs — data transfer between regions, logging storage, monitoring tools, SSL certificates.",
+      "concept_ref": "projects/level-9/13-platform-cost-estimator/README.md",
+      "difficulty": 2,
+      "tags": ["cost", "infrastructure", "planning"]
+    },
+    {
+      "id": "9-17",
+      "front": "What is a cross-team handoff and how do you make them reliable?",
+      "back": "Transferring responsibility for a component or task from one team to another.\n\nReliable handoff includes:\n- Written documentation (not just verbal)\n- Runbooks for operations\n- Architecture diagrams\n- Known issues and tech debt list\n- Contact info for questions\n- Shadowing period (overlap)\n\nBad handoff = tribal knowledge loss. Good handoff = team can operate independently within days.",
+      "concept_ref": "projects/level-9/14-cross-team-handoff-kit/README.md",
+      "difficulty": 2,
+      "tags": ["operations", "handoff", "documentation"]
+    },
+    {
+      "id": "9-18",
+      "front": "What is the Dependency Inversion Principle?",
+      "back": "High-level modules should not depend on low-level modules. Both should depend on abstractions.\n\n# BAD — tightly coupled\nclass OrderService:\n    def __init__(self):\n        self.db = PostgresDatabase()  # hard-coded\n\n# GOOD — depends on abstraction\nclass OrderService:\n    def __init__(self, db: Database):  # interface\n        self.db = db\n\nBenefits: swap implementations (Postgres → SQLite for tests), test in isolation, reduce coupling.",
+      "concept_ref": "projects/level-9/02-domain-boundary-enforcer/README.md",
+      "difficulty": 3,
+      "tags": ["design-principles", "dependency-inversion", "solid"]
+    },
+    {
+      "id": "9-19",
+      "front": "What is a blue-green deployment?",
+      "back": "Running two identical production environments (blue and green). Only one serves live traffic.\n\n1. Blue is live, green is idle\n2. Deploy new version to green\n3. Test green\n4. Switch traffic from blue to green\n5. Green is now live, blue is the rollback target\n\nAdvantage: instant rollback (just switch back to blue).\nDisadvantage: requires double the infrastructure during deployment.",
+      "concept_ref": "projects/level-9/07-canary-rollout-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["deployment", "blue-green", "rollout"]
+    },
+    {
+      "id": "9-20",
+      "front": "What are the four golden signals for monitoring?",
+      "back": "From Google's SRE book:\n\n1. Latency — how long requests take (p50, p95, p99)\n2. Traffic — how many requests per second\n3. Errors — rate of failed requests\n4. Saturation — how full your resources are (CPU, memory, disk)\n\nMonitor all four for any service. If all four are healthy, the service is almost certainly healthy. If any degrades, you know where to investigate.",
+      "concept_ref": "projects/level-9/04-observability-slo-pack/README.md",
+      "difficulty": 2,
+      "tags": ["monitoring", "golden-signals", "sre"]
+    },
+    {
+      "id": "9-21",
+      "front": "What is PII and how should you handle it?",
+      "back": "PII = Personally Identifiable Information. Data that can identify a person.\n\nExamples: name, email, phone, SSN, IP address, location.\n\nHandling rules:\n- Encrypt at rest and in transit\n- Minimize collection (only collect what you need)\n- Define retention periods (delete when no longer needed)\n- Control access (need-to-know basis)\n- Log access for audit\n- Anonymize in non-production environments\n- Never log PII in plain text",
+      "concept_ref": "projects/level-9/10-data-governance-enforcer/README.md",
+      "difficulty": 2,
+      "tags": ["security", "pii", "compliance"]
+    },
+    {
+      "id": "9-22",
+      "front": "What is eventual consistency?",
+      "back": "A model where updates propagate asynchronously, so different parts of the system may temporarily have different values, but will eventually converge.\n\nExample: user updates their profile → the change is visible on the API immediately but the search index updates 5 seconds later.\n\nAcceptable when: slightly stale data is okay (social feeds, analytics).\nNot acceptable when: accuracy is critical (bank balances, inventory counts).",
+      "concept_ref": "projects/level-9/03-event-driven-pipeline-lab/README.md",
+      "difficulty": 3,
+      "tags": ["consistency", "distributed", "architecture"]
+    },
+    {
+      "id": "9-23",
+      "front": "What is a rollback plan and what should it include?",
+      "back": "A documented procedure for reverting a deployment if something goes wrong.\n\nMust include:\n1. How to revert the code (previous version tag/commit)\n2. How to revert the database (down migration or backup restore)\n3. How to verify the rollback succeeded\n4. Who has authority to trigger it\n5. Communication plan (who to notify)\n\nTest rollback procedures regularly. An untested rollback plan is not a plan.",
+      "concept_ref": "projects/level-9/07-canary-rollout-simulator/README.md",
+      "difficulty": 2,
+      "tags": ["deployment", "rollback", "safety"]
+    },
+    {
+      "id": "9-24",
+      "front": "What is the difference between coupling and cohesion?",
+      "back": "Coupling: how much one module depends on another.\n  Low coupling = good (changes in A don't break B)\n  High coupling = bad (everything is interconnected)\n\nCohesion: how related the things inside a module are.\n  High cohesion = good (module does one thing well)\n  Low cohesion = bad (module is a grab-bag of unrelated functions)\n\nGoal: LOW coupling between modules, HIGH cohesion within modules.",
+      "concept_ref": "projects/level-9/02-domain-boundary-enforcer/README.md",
+      "difficulty": 2,
+      "tags": ["design-principles", "coupling", "cohesion"]
+    },
+    {
+      "id": "9-25",
+      "front": "What is the OWASP Top 10?",
+      "back": "The ten most critical web application security risks, maintained by the Open Web Application Security Project.\n\nKey entries include:\n1. Broken Access Control — users access unauthorized data\n2. Injection — SQL/command injection via unsanitized input\n3. Cryptographic Failures — weak encryption, exposed secrets\n4. Insecure Design — missing threat models\n5. Security Misconfiguration — default credentials, verbose errors\n\nEvery developer should know these. Review them when building any web-facing application.",
+      "concept_ref": "projects/level-9/09-security-baseline-auditor/README.md",
+      "difficulty": 2,
+      "tags": ["security", "owasp", "fundamentals"]
+    }
+  ]
+}

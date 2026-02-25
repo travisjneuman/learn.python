@@ -1,0 +1,206 @@
+{
+  "deck": "Level 7 — API Integration & Telemetry",
+  "description": "API adapters, caching strategies, polling patterns, observability, rate limiting, contracts, and policy guardrails",
+  "cards": [
+    {
+      "id": "7-01",
+      "front": "What is an API adapter and why use one instead of calling APIs directly?",
+      "back": "An adapter wraps a third-party API behind your own interface.\n\nclass WeatherAdapter:\n    def get_temperature(self, city: str) -> float:\n        resp = requests.get(f'{self.base_url}/weather?q={city}')\n        return resp.json()['main']['temp']\n\nBenefits:\n- Isolates your code from API changes\n- Centralizes auth, retries, and error handling\n- Makes testing easy (mock the adapter, not HTTP)",
+      "concept_ref": "projects/level-7/01-orion-query-adapter/README.md",
+      "difficulty": 2,
+      "tags": ["api", "adapter", "design-patterns"]
+    },
+    {
+      "id": "7-02",
+      "front": "What is a cache and what problems does caching solve?",
+      "back": "A cache stores the result of an expensive operation so future requests can reuse it.\n\nSolves:\n- Slow API calls (cache the response)\n- Database load (cache query results)\n- Rate limits (avoid repeated calls)\n\nTrade-off: cached data can become stale. You need an invalidation strategy (TTL, event-based, manual).",
+      "concept_ref": "projects/level-7/03-unified-cache-writer/README.md",
+      "difficulty": 1,
+      "tags": ["caching", "performance"]
+    },
+    {
+      "id": "7-03",
+      "front": "What is TTL (Time To Live) in caching?",
+      "back": "TTL is the maximum age of a cached entry before it expires and must be refreshed.\n\ncache = {}\ndef get_cached(key, ttl_seconds=300):\n    entry = cache.get(key)\n    if entry and time.time() - entry['time'] < ttl_seconds:\n        return entry['data']\n    # Cache miss — fetch fresh data\n    data = fetch_from_source(key)\n    cache[key] = {'data': data, 'time': time.time()}\n    return data\n\nShort TTL = fresher data, more API calls.\nLong TTL = fewer calls, staler data.",
+      "concept_ref": "projects/level-7/03-unified-cache-writer/README.md",
+      "difficulty": 2,
+      "tags": ["caching", "ttl"]
+    },
+    {
+      "id": "7-04",
+      "front": "What is polling and how does it differ from webhooks?",
+      "back": "Polling: your code repeatedly asks \"any updates?\" on a schedule.\nwhile True:\n    data = api.check_for_updates()\n    process(data)\n    time.sleep(60)  # check every minute\n\nWebhooks: the external service PUSHES updates to your endpoint when something changes.\n\nPolling is simpler but wastes requests when nothing changes.\nWebhooks are more efficient but require you to host an endpoint.",
+      "concept_ref": "projects/level-7/05-polling-cadence-manager/README.md",
+      "difficulty": 2,
+      "tags": ["polling", "webhooks", "integration"]
+    },
+    {
+      "id": "7-05",
+      "front": "What is rate limiting and how should your code handle it?",
+      "back": "Rate limiting restricts how many API requests you can make in a time period (e.g., 100 requests/minute).\n\nWhen you hit the limit, the API returns HTTP 429 Too Many Requests.\n\nHandling:\n1. Check the Retry-After header\n2. Use exponential backoff: wait 1s, 2s, 4s, 8s...\n3. Pre-emptively throttle with time.sleep() between requests\n4. Track your request count and pause before hitting the limit",
+      "concept_ref": "projects/level-7/05-polling-cadence-manager/README.md",
+      "difficulty": 2,
+      "tags": ["rate-limiting", "api", "backoff"]
+    },
+    {
+      "id": "7-06",
+      "front": "What is exponential backoff and why use it for retries?",
+      "back": "A retry strategy where the wait time doubles after each failure.\n\nimport time\nfor attempt in range(5):\n    try:\n        return api_call()\n    except TransientError:\n        wait = 2 ** attempt  # 1, 2, 4, 8, 16 seconds\n        time.sleep(wait)\n\nWhy: prevents a flood of retries from overwhelming a struggling service. Often combined with jitter (random additional delay) to avoid thundering herd.",
+      "concept_ref": "projects/level-7/05-polling-cadence-manager/README.md",
+      "difficulty": 2,
+      "tags": ["retries", "backoff", "resilience"]
+    },
+    {
+      "id": "7-07",
+      "front": "What is a field mapper and why do multi-source systems need one?",
+      "back": "A field mapper translates field names between different data sources into a common schema.\n\nSource A: {'temp_f': 72, 'loc': 'NYC'}\nSource B: {'temperature': 22.2, 'city': 'New York'}\n\nMapper normalizes both to:\n{'temperature_celsius': 22.2, 'location': 'New York'}\n\nWithout mapping, downstream code must handle every source's naming convention separately.",
+      "concept_ref": "projects/level-7/04-source-field-mapper/README.md",
+      "difficulty": 2,
+      "tags": ["data-mapping", "normalization", "integration"]
+    },
+    {
+      "id": "7-08",
+      "front": "What is observability and how does it differ from monitoring?",
+      "back": "Monitoring: predefined checks that alert when known things go wrong (disk full, service down).\n\nObservability: the ability to understand UNKNOWN problems by examining system output (logs, metrics, traces).\n\nThree pillars of observability:\n1. Logs — what happened (events)\n2. Metrics — how much/how often (numbers)\n3. Traces — the path of a request across services\n\nMonitoring tells you THAT something is wrong. Observability helps you figure out WHY.",
+      "concept_ref": "projects/level-7/08-ingestion-observability-kit/README.md",
+      "difficulty": 2,
+      "tags": ["observability", "monitoring", "fundamentals"]
+    },
+    {
+      "id": "7-09",
+      "front": "What is a contract (or schema contract) in API integration?",
+      "back": "A formal agreement about the shape of data exchanged between systems.\n\nDefines:\n- Required fields and their types\n- Valid value ranges\n- Versioning rules (what changes are breaking?)\n\nBreaking contract change: removing a field, changing a type\nNon-breaking: adding an optional field\n\nVersioned contracts let you evolve APIs without breaking consumers.",
+      "concept_ref": "projects/level-7/09-contract-version-checker/README.md",
+      "difficulty": 2,
+      "tags": ["contracts", "api", "versioning"]
+    },
+    {
+      "id": "7-10",
+      "front": "What is token rotation and why is it important?",
+      "back": "Periodically replacing authentication tokens (API keys, access tokens) to limit damage if one is compromised.\n\nPattern:\n1. Generate new token before old one expires\n2. Configure system to use new token\n3. Verify new token works\n4. Revoke old token\n\nNever have a period with zero valid tokens (overlap briefly).\nAutomate rotation to prevent manual errors and expired credentials.",
+      "concept_ref": "projects/level-7/06-token-rotation-simulator/README.md",
+      "difficulty": 3,
+      "tags": ["security", "tokens", "rotation"]
+    },
+    {
+      "id": "7-11",
+      "front": "How do you detect stale data in a pipeline?",
+      "back": "Compare the timestamp of the most recent record against the current time.\n\ndef is_stale(latest_timestamp, max_age_minutes=30):\n    age = datetime.now() - latest_timestamp\n    return age > timedelta(minutes=max_age_minutes)\n\nAlso check:\n- Row count drops to zero unexpectedly\n- Source hasn't been updated since last poll\n- Data values stopped changing (flatline)\n\nStale data is often worse than no data — users think it's current.",
+      "concept_ref": "projects/level-7/07-stale-data-detector/README.md",
+      "difficulty": 2,
+      "tags": ["data-quality", "staleness", "monitoring"]
+    },
+    {
+      "id": "7-12",
+      "front": "What is data reconciliation between multiple sources?",
+      "back": "The process of comparing data from different sources to find and resolve discrepancies.\n\nSteps:\n1. Extract the same logical data from each source\n2. Normalize formats (dates, names, units)\n3. Match records across sources (by key)\n4. Flag mismatches for investigation\n\nExample: source A says 100 orders, source B says 98. The 2 missing orders need investigation.",
+      "concept_ref": "projects/level-7/10-multi-source-reconciler/README.md",
+      "difficulty": 3,
+      "tags": ["reconciliation", "data-quality", "multi-source"]
+    },
+    {
+      "id": "7-13",
+      "front": "What are feature flags and how do pipelines use them?",
+      "back": "Feature flags are toggles that enable or disable functionality without deploying new code.\n\nconfig = {'enable_new_parser': False, 'use_cache_v2': True}\n\nif config['enable_new_parser']:\n    result = new_parser(data)\nelse:\n    result = old_parser(data)\n\nIn pipelines: safely roll out new logic, quickly disable broken features, run A/B experiments on data processing paths.",
+      "concept_ref": "projects/level-7/11-pipeline-feature-flags/README.md",
+      "difficulty": 2,
+      "tags": ["feature-flags", "deployment", "safety"]
+    },
+    {
+      "id": "7-14",
+      "front": "What is incident mode in a data pipeline?",
+      "back": "A special operating mode activated during outages or emergencies that changes pipeline behavior.\n\nTypical changes:\n- Increase logging verbosity\n- Disable non-critical processing\n- Switch to cached/fallback data sources\n- Reduce polling frequency to ease load\n- Send alerts to on-call engineers\n\nAn incident mode switch lets you respond quickly without code changes.",
+      "concept_ref": "projects/level-7/12-incident-mode-switch/README.md",
+      "difficulty": 2,
+      "tags": ["incident", "operations", "resilience"]
+    },
+    {
+      "id": "7-15",
+      "front": "What is a service account and how does it differ from a user account?",
+      "back": "A service account is an identity used by a program (not a person) to authenticate with APIs and systems.\n\nDifferences from user accounts:\n- No interactive login\n- Credentials stored in config/secrets, not a browser\n- Should have minimal permissions (principle of least privilege)\n- Often exempt from MFA but need key rotation\n\nPolicy checks verify service accounts are not over-privileged.",
+      "concept_ref": "projects/level-7/13-service-account-policy-check/README.md",
+      "difficulty": 2,
+      "tags": ["security", "service-accounts", "auth"]
+    },
+    {
+      "id": "7-16",
+      "front": "What is cache backfill and when do you need it?",
+      "back": "Loading historical data into a cache that normally only holds recent data.\n\nNeeded when:\n- Cache is empty after a restart\n- New cache layer added to existing system\n- Cache corruption requires rebuild\n- Expanding cached time range\n\nBackfill should be idempotent and rate-limited to avoid overwhelming the data source.",
+      "concept_ref": "projects/level-7/14-cache-backfill-runner/README.md",
+      "difficulty": 2,
+      "tags": ["caching", "backfill", "operations"]
+    },
+    {
+      "id": "7-17",
+      "front": "What is the principle of least privilege?",
+      "back": "Every account, service, or process should have only the minimum permissions needed to do its job.\n\nExamples:\n- Read-only DB user for reporting (no INSERT/DELETE)\n- API key scoped to specific endpoints\n- Service account with access to one S3 bucket, not all\n\nWhy: limits the blast radius if credentials are compromised.",
+      "concept_ref": "projects/level-7/13-service-account-policy-check/README.md",
+      "difficulty": 2,
+      "tags": ["security", "least-privilege", "access-control"]
+    },
+    {
+      "id": "7-18",
+      "front": "What is structured logging and why is it better than print()?",
+      "back": "Structured logging outputs log entries as key-value pairs (usually JSON) instead of free-form text.\n\nimport logging, json\nlogger = logging.getLogger(__name__)\n\n# Unstructured (hard to parse)\nlogger.info(f'Processed 42 records from source_a')\n\n# Structured (machine-parseable)\nlogger.info(json.dumps({\n    'event': 'records_processed',\n    'count': 42,\n    'source': 'source_a'\n}))\n\nStructured logs can be searched, filtered, and aggregated by log management tools.",
+      "concept_ref": "projects/level-7/08-ingestion-observability-kit/README.md",
+      "difficulty": 2,
+      "tags": ["logging", "observability", "structured"]
+    },
+    {
+      "id": "7-19",
+      "front": "What is a breaking change in an API contract?",
+      "back": "A change that causes existing consumers to fail.\n\nBreaking changes:\n- Removing a field\n- Renaming a field\n- Changing a field's type (string to int)\n- Making an optional field required\n- Changing the URL or HTTP method\n\nNon-breaking changes:\n- Adding a new optional field\n- Adding a new endpoint\n- Deprecating (but not removing) a field\n\nSemantic versioning: breaking = major version bump (v1 -> v2).",
+      "concept_ref": "projects/level-7/09-contract-version-checker/README.md",
+      "difficulty": 2,
+      "tags": ["api", "contracts", "versioning"]
+    },
+    {
+      "id": "7-20",
+      "front": "What is a circuit breaker pattern?",
+      "back": "A pattern that stops calling a failing service to let it recover.\n\nStates:\n- CLOSED: requests pass through normally\n- OPEN: all requests fail immediately (no calls made)\n- HALF-OPEN: allow one test request to check recovery\n\nTriggered when failure count exceeds a threshold.\n\nPrevents cascading failures — if service B is down, service A stops hammering it and returns a fallback instead.",
+      "concept_ref": "projects/level-7/12-incident-mode-switch/README.md",
+      "difficulty": 3,
+      "tags": ["resilience", "circuit-breaker", "patterns"]
+    },
+    {
+      "id": "7-21",
+      "front": "What is the difference between push-based and pull-based data collection?",
+      "back": "Pull-based (polling): the collector asks sources for data on a schedule.\n  collector --GET--> source every N seconds\n\nPush-based: sources send data to the collector when it changes.\n  source --POST--> collector on change\n\nPull: simpler, collector controls pace, but wastes requests\nPush: more efficient, real-time, but requires sources to be configured\n\nMany systems use both: push for real-time, pull as a safety net.",
+      "concept_ref": "projects/level-7/05-polling-cadence-manager/README.md",
+      "difficulty": 2,
+      "tags": ["architecture", "push", "pull", "polling"]
+    },
+    {
+      "id": "7-22",
+      "front": "What is jitter and why add it to retry delays?",
+      "back": "Jitter is random variation added to retry timing.\n\nimport random\nwait = 2 ** attempt + random.uniform(0, 1)\n\nWithout jitter: 100 clients all retry at exactly 2s, 4s, 8s — creating synchronized spikes (thundering herd).\n\nWith jitter: retries spread out over time, reducing load spikes on the server.\n\nAlways add jitter to exponential backoff in production systems.",
+      "concept_ref": "projects/level-7/05-polling-cadence-manager/README.md",
+      "difficulty": 3,
+      "tags": ["retries", "jitter", "resilience"]
+    },
+    {
+      "id": "7-23",
+      "front": "What HTTP status codes should your API adapter handle?",
+      "back": "200 OK — success, parse the response\n201 Created — resource created successfully\n204 No Content — success, no body\n400 Bad Request — your request is malformed (fix the code)\n401 Unauthorized — bad/missing credentials\n403 Forbidden — valid auth but insufficient permissions\n404 Not Found — resource does not exist\n429 Too Many Requests — rate limited (back off and retry)\n500 Internal Server Error — server problem (retry with backoff)\n503 Service Unavailable — server overloaded (retry later)",
+      "concept_ref": "projects/level-7/01-orion-query-adapter/README.md",
+      "difficulty": 1,
+      "tags": ["http", "status-codes", "api"]
+    },
+    {
+      "id": "7-24",
+      "front": "What is a data contract version check and how do you implement one?",
+      "back": "A validation step that ensures incoming data matches the expected schema version.\n\ndef validate_contract(data, expected_version='2.0'):\n    version = data.get('schema_version')\n    if version != expected_version:\n        raise ContractMismatch(\n            f'Expected v{expected_version}, got v{version}'\n        )\n    # Validate required fields\n    for field in REQUIRED_FIELDS[expected_version]:\n        if field not in data:\n            raise MissingField(field)\n\nRun this at the pipeline entry point to fail fast on contract violations.",
+      "concept_ref": "projects/level-7/09-contract-version-checker/README.md",
+      "difficulty": 3,
+      "tags": ["contracts", "validation", "data-quality"]
+    },
+    {
+      "id": "7-25",
+      "front": "What is the difference between cache-aside and write-through caching?",
+      "back": "Cache-aside (lazy loading):\n1. Check cache first\n2. On miss, fetch from source\n3. Store in cache\n4. Return data\nPro: only caches what's actually requested\n\nWrite-through:\n1. Write to cache AND source simultaneously\n2. Reads always hit cache\nPro: cache is always up to date\nCon: every write is slower (two writes)\n\nCache-aside is simpler and most common for read-heavy workloads.",
+      "concept_ref": "projects/level-7/03-unified-cache-writer/README.md",
+      "difficulty": 3,
+      "tags": ["caching", "strategies", "architecture"]
+    }
+  ]
+}

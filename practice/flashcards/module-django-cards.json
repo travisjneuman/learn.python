@@ -1,0 +1,150 @@
+{
+  "deck": "Module 10 — Django Full-Stack",
+  "description": "Django project structure, models, views, templates, URL routing, DRF serializers, admin",
+  "cards": [
+    {
+      "id": "m10-01",
+      "front": "What is Django and what does 'batteries included' mean?",
+      "back": "Django is a full-stack Python web framework.\n\n'Batteries included' means it ships with everything you need:\n- ORM (database models)\n- Admin interface\n- Template engine\n- Form handling\n- Authentication system\n- URL routing\n- Security middleware\n\nYou don't need to pick and install separate libraries for each concern — Django provides a cohesive, opinionated set.",
+      "concept_ref": "projects/modules/10-django-fullstack/README.md",
+      "difficulty": 1,
+      "tags": ["django", "basics", "philosophy"]
+    },
+    {
+      "id": "m10-02",
+      "front": "What is the difference between a Django project and a Django app?",
+      "back": "Project: the entire web application. Created with django-admin startproject mysite.\nContains settings.py, urls.py, and one or more apps.\n\nApp: a self-contained module within the project. Created with python manage.py startapp books.\nContains models.py, views.py, urls.py, templates/.\n\nA project can have many apps. Apps can be reused across projects.\n\nmysite/           ← project\n├── settings.py\n├── urls.py\n└── books/        ← app\n    ├── models.py\n    └── views.py",
+      "concept_ref": "projects/modules/10-django-fullstack/01-django-setup/README.md",
+      "difficulty": 1,
+      "tags": ["django", "project", "app"]
+    },
+    {
+      "id": "m10-03",
+      "front": "How do you define a Django model?",
+      "back": "from django.db import models\n\nclass Book(models.Model):\n    title = models.CharField(max_length=200)\n    author = models.CharField(max_length=100)\n    price = models.DecimalField(max_digits=6, decimal_places=2)\n    published = models.DateField()\n    in_stock = models.BooleanField(default=True)\n    \n    def __str__(self):\n        return self.title\n\nAfter defining:\npython manage.py makemigrations  # generate migration\npython manage.py migrate          # apply to database",
+      "concept_ref": "projects/modules/10-django-fullstack/01-django-setup/README.md",
+      "difficulty": 1,
+      "tags": ["django", "models", "orm"]
+    },
+    {
+      "id": "m10-04",
+      "front": "What is the Django admin and how do you register a model?",
+      "back": "A built-in web interface for managing your data — no code needed.\n\n# admin.py\nfrom django.contrib import admin\nfrom .models import Book\n\n@admin.register(Book)\nclass BookAdmin(admin.ModelAdmin):\n    list_display = ['title', 'author', 'price']\n    search_fields = ['title', 'author']\n    list_filter = ['in_stock']\n\nCreate a superuser:\npython manage.py createsuperuser\n\nAccess at: http://localhost:8000/admin/\n\nThe admin is one of Django's most powerful features for rapid prototyping.",
+      "concept_ref": "projects/modules/10-django-fullstack/01-django-setup/README.md",
+      "difficulty": 1,
+      "tags": ["django", "admin", "management"]
+    },
+    {
+      "id": "m10-05",
+      "front": "What is the MTV pattern in Django?",
+      "back": "Model-Template-View — Django's version of MVC.\n\nModel: defines data structure (models.py)\nTemplate: HTML with Django template tags (templates/)\nView: business logic connecting models to templates (views.py)\n\nConfusing naming:\n- Django 'View' = MVC 'Controller'\n- Django 'Template' = MVC 'View'\n\nFlow: URL → View → queries Model → renders Template → HTML response",
+      "concept_ref": "projects/modules/10-django-fullstack/02-views-templates/README.md",
+      "difficulty": 2,
+      "tags": ["django", "mtv", "architecture"]
+    },
+    {
+      "id": "m10-06",
+      "front": "How does Django URL routing work?",
+      "back": "URLs are mapped to views in urls.py files.\n\n# mysite/urls.py (project level)\nfrom django.urls import path, include\nurlpatterns = [\n    path('admin/', admin.site.urls),\n    path('books/', include('books.urls')),\n]\n\n# books/urls.py (app level)\nfrom . import views\nurlpatterns = [\n    path('', views.book_list, name='book-list'),\n    path('<int:pk>/', views.book_detail, name='book-detail'),\n]\n\n<int:pk> captures a URL segment as an integer parameter.\nname= lets you reference URLs by name: {% url 'book-list' %}",
+      "concept_ref": "projects/modules/10-django-fullstack/02-views-templates/README.md",
+      "difficulty": 2,
+      "tags": ["django", "urls", "routing"]
+    },
+    {
+      "id": "m10-07",
+      "front": "How do you write a function-based view in Django?",
+      "back": "from django.shortcuts import render, get_object_or_404\nfrom .models import Book\n\ndef book_list(request):\n    books = Book.objects.all()\n    return render(request, 'books/book_list.html', {'books': books})\n\ndef book_detail(request, pk):\n    book = get_object_or_404(Book, pk=pk)\n    return render(request, 'books/book_detail.html', {'book': book})\n\nrender() combines a template with context data.\nget_object_or_404() returns the object or raises a 404 error.",
+      "concept_ref": "projects/modules/10-django-fullstack/02-views-templates/README.md",
+      "difficulty": 2,
+      "tags": ["django", "views", "function-based"]
+    },
+    {
+      "id": "m10-08",
+      "front": "What are Django template tags and how do you use them?",
+      "back": "Template tags add logic to HTML templates.\n\nVariables: {{ book.title }}\n\nTags (logic):\n{% for book in books %}\n    <p>{{ book.title }} — ${{ book.price }}</p>\n{% empty %}\n    <p>No books found.</p>\n{% endfor %}\n\n{% if book.in_stock %}\n    <span>Available</span>\n{% else %}\n    <span>Sold out</span>\n{% endif %}\n\nFilters: {{ book.title|upper }} {{ book.published|date:'Y-m-d' }}\n\nTemplate inheritance: {% extends 'base.html' %} {% block content %}...{% endblock %}",
+      "concept_ref": "projects/modules/10-django-fullstack/02-views-templates/README.md",
+      "difficulty": 2,
+      "tags": ["django", "templates", "tags"]
+    },
+    {
+      "id": "m10-09",
+      "front": "What is a Django ModelForm and why use it?",
+      "back": "A form class generated from a model, with automatic validation.\n\nfrom django import forms\nfrom .models import Book\n\nclass BookForm(forms.ModelForm):\n    class Meta:\n        model = Book\n        fields = ['title', 'author', 'price', 'published']\n\n# In the view\ndef create_book(request):\n    if request.method == 'POST':\n        form = BookForm(request.POST)\n        if form.is_valid():\n            form.save()  # creates Book in database\n            return redirect('book-list')\n    else:\n        form = BookForm()\n    return render(request, 'books/form.html', {'form': form})\n\nModelForm handles HTML rendering, validation, and saving.",
+      "concept_ref": "projects/modules/10-django-fullstack/03-forms-auth/README.md",
+      "difficulty": 2,
+      "tags": ["django", "forms", "modelform"]
+    },
+    {
+      "id": "m10-10",
+      "front": "How does Django's built-in authentication work?",
+      "back": "Django provides a complete auth system out of the box.\n\n# settings.py\nLOGIN_URL = '/accounts/login/'\nLOGIN_REDIRECT_URL = '/'\n\n# urls.py\npath('accounts/', include('django.contrib.auth.urls'))\n# Gives you: login, logout, password_change, password_reset\n\n# Protect a view\nfrom django.contrib.auth.decorators import login_required\n\n@login_required\ndef my_view(request):\n    # request.user is the logged-in user\n    return render(request, 'my_page.html')\n\nYou provide templates; Django handles the logic.",
+      "concept_ref": "projects/modules/10-django-fullstack/03-forms-auth/README.md",
+      "difficulty": 2,
+      "tags": ["django", "authentication", "login"]
+    },
+    {
+      "id": "m10-11",
+      "front": "What is Django REST Framework (DRF) and why use it?",
+      "back": "A toolkit for building REST APIs on top of Django.\n\nDRF adds:\n- Serializers (like Pydantic models — convert between Python objects and JSON)\n- ViewSets (CRUD logic in one class)\n- Routers (automatic URL generation for viewsets)\n- Browsable API (interactive HTML interface for testing)\n- Authentication/permissions classes\n\nIf Django handles your web pages, DRF handles your API endpoints.\nTogether they power full-stack apps with both HTML and JSON interfaces.",
+      "concept_ref": "projects/modules/10-django-fullstack/04-rest-framework/README.md",
+      "difficulty": 2,
+      "tags": ["drf", "rest-api", "django"]
+    },
+    {
+      "id": "m10-12",
+      "front": "What is a DRF serializer and how does it compare to Pydantic?",
+      "back": "A serializer converts between Django model instances and JSON.\n\nfrom rest_framework import serializers\n\nclass BookSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Book\n        fields = ['id', 'title', 'author', 'price']\n\n# Serialize: model → JSON\nserializer = BookSerializer(book)\nserializer.data  # {'id': 1, 'title': 'Dune', ...}\n\n# Deserialize: JSON → model\nserializer = BookSerializer(data=request.data)\nserializer.is_valid(raise_exception=True)\nserializer.save()  # creates Book\n\nLike Pydantic but deeply integrated with Django's ORM.",
+      "concept_ref": "projects/modules/10-django-fullstack/04-rest-framework/README.md",
+      "difficulty": 2,
+      "tags": ["drf", "serializers", "json"]
+    },
+    {
+      "id": "m10-13",
+      "front": "What is a DRF ViewSet and Router?",
+      "back": "A ViewSet combines list, create, retrieve, update, delete into one class.\n\nfrom rest_framework import viewsets\n\nclass BookViewSet(viewsets.ModelViewSet):\n    queryset = Book.objects.all()\n    serializer_class = BookSerializer\n\n# Router auto-generates URLs\nfrom rest_framework.routers import DefaultRouter\nrouter = DefaultRouter()\nrouter.register('books', BookViewSet)\n\nurlpatterns = [path('api/', include(router.urls))]\n\nThis creates: GET/POST /api/books/ and GET/PUT/DELETE /api/books/{id}/ — full CRUD with minimal code.",
+      "concept_ref": "projects/modules/10-django-fullstack/04-rest-framework/README.md",
+      "difficulty": 2,
+      "tags": ["drf", "viewsets", "routers"]
+    },
+    {
+      "id": "m10-14",
+      "front": "How do you run Django's development server and create migrations?",
+      "back": "Key manage.py commands:\n\n# Run development server\npython manage.py runserver         # http://127.0.0.1:8000/\npython manage.py runserver 0:8080  # custom port\n\n# Database migrations\npython manage.py makemigrations    # generate from model changes\npython manage.py migrate           # apply to database\npython manage.py showmigrations    # list migration status\n\n# Other essentials\npython manage.py createsuperuser   # admin account\npython manage.py shell             # interactive Python with Django loaded\npython manage.py test              # run tests",
+      "concept_ref": "projects/modules/10-django-fullstack/01-django-setup/README.md",
+      "difficulty": 1,
+      "tags": ["django", "manage-py", "commands"]
+    },
+    {
+      "id": "m10-15",
+      "front": "How does Django compare to FastAPI?",
+      "back": "Django: batteries included, synchronous by default, built-in admin/auth/ORM/templates.\nBest for: full-stack web apps, admin-heavy apps, rapid prototyping.\n\nFastAPI: minimal, async-native, brings your own ORM/auth/templates.\nBest for: REST APIs, microservices, high-performance async workloads.\n\nDjango strengths: admin panel, mature ecosystem, all-in-one.\nFastAPI strengths: performance, automatic docs, modern Python types.\n\nBoth are excellent. Use Django when you need a full web app with pages and admin. Use FastAPI for pure API services.",
+      "concept_ref": "projects/modules/10-django-fullstack/README.md",
+      "difficulty": 2,
+      "tags": ["django", "fastapi", "comparison"]
+    },
+    {
+      "id": "m10-16",
+      "front": "How do you write tests in Django?",
+      "back": "from django.test import TestCase, Client\nfrom .models import Book\n\nclass BookTests(TestCase):\n    def setUp(self):\n        Book.objects.create(title='Dune', author='Herbert', price=12.99)\n    \n    def test_book_list_view(self):\n        client = Client()\n        response = client.get('/books/')\n        self.assertEqual(response.status_code, 200)\n        self.assertContains(response, 'Dune')\n    \n    def test_book_str(self):\n        book = Book.objects.get(title='Dune')\n        self.assertEqual(str(book), 'Dune')\n\nDjango creates a test database, runs migrations, and tears it down automatically.",
+      "concept_ref": "projects/modules/10-django-fullstack/05-complete-app/README.md",
+      "difficulty": 2,
+      "tags": ["django", "testing", "testcase"]
+    },
+    {
+      "id": "m10-17",
+      "front": "What is Django's ORM QuerySet and how do you use it?",
+      "back": "A QuerySet is a lazy database query — it doesn't hit the database until evaluated.\n\n# These build the query but don't execute\nbooks = Book.objects.filter(price__lt=20)\nbooks = books.exclude(in_stock=False)\nbooks = books.order_by('title')\n\n# These execute the query\nlist(books)      # evaluate as list\nbooks.count()    # SELECT COUNT(*)\nbooks.first()    # LIMIT 1\nbooks.exists()   # efficient existence check\n\nLookup syntax: field__operator\nprice__lt=20 → WHERE price < 20\ntitle__contains='dune' → WHERE title LIKE '%dune%'",
+      "concept_ref": "projects/modules/10-django-fullstack/01-django-setup/README.md",
+      "difficulty": 2,
+      "tags": ["django", "queryset", "orm"]
+    },
+    {
+      "id": "m10-18",
+      "front": "What is template inheritance in Django?",
+      "back": "A pattern where child templates extend a base template, overriding specific blocks.\n\n<!-- base.html -->\n<html>\n<head><title>{% block title %}My Site{% endblock %}</title></head>\n<body>\n  <nav>...</nav>\n  {% block content %}{% endblock %}\n  <footer>...</footer>\n</body>\n</html>\n\n<!-- book_list.html -->\n{% extends 'base.html' %}\n{% block title %}Books{% endblock %}\n{% block content %}\n  <h1>All Books</h1>\n  {% for book in books %}<p>{{ book.title }}</p>{% endfor %}\n{% endblock %}\n\nAvoids repeating nav/footer in every template.",
+      "concept_ref": "projects/modules/10-django-fullstack/02-views-templates/README.md",
+      "difficulty": 2,
+      "tags": ["django", "templates", "inheritance"]
+    }
+  ]
+}

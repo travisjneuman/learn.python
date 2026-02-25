@@ -1,0 +1,126 @@
+{
+  "deck": "Module 01 — Web Scraping",
+  "description": "requests library, BeautifulSoup, CSS selectors, pagination, robots.txt, CSV export",
+  "cards": [
+    {
+      "id": "m01-01",
+      "front": "How do you fetch a web page with the requests library?",
+      "back": "import requests\n\nresponse = requests.get('http://example.com')\n\nresponse.status_code  # 200\nresponse.text         # HTML as a string\nresponse.headers      # dict-like headers\nresponse.ok           # True if status < 400\n\nAlways check response.ok or response.raise_for_status() before using the content.",
+      "concept_ref": "projects/modules/01-web-scraping/01-fetch-a-webpage/README.md",
+      "difficulty": 1,
+      "tags": ["requests", "http", "basics"]
+    },
+    {
+      "id": "m01-02",
+      "front": "How do you parse HTML with BeautifulSoup?",
+      "back": "from bs4 import BeautifulSoup\n\nsoup = BeautifulSoup(html_string, 'lxml')\n\n# Find one element\ntitle = soup.find('h1')\n\n# Find all elements\nlinks = soup.find_all('a')\n\n# Get text content\ntitle.text  # or title.get_text()\n\n# Get attribute\nlinks[0]['href']\n\nThe second argument ('lxml') is the parser. lxml is fast; 'html.parser' is built-in.",
+      "concept_ref": "projects/modules/01-web-scraping/02-parse-html/README.md",
+      "difficulty": 1,
+      "tags": ["beautifulsoup", "parsing", "html"]
+    },
+    {
+      "id": "m01-03",
+      "front": "What is a CSS selector and how do you use one in BeautifulSoup?",
+      "back": "CSS selectors target elements by tag, class, id, or structure.\n\nsoup.select('h1')              # all <h1> tags\nsoup.select('.price')          # class='price'\nsoup.select('#main')           # id='main'\nsoup.select('div.product h3')  # <h3> inside <div class='product'>\nsoup.select('a[href]')         # <a> tags with an href attribute\n\nsoup.select() returns a list. soup.select_one() returns the first match or None.\n\nCSS selectors are more powerful and readable than find() for complex queries.",
+      "concept_ref": "projects/modules/01-web-scraping/02-parse-html/README.md",
+      "difficulty": 2,
+      "tags": ["css-selectors", "beautifulsoup", "parsing"]
+    },
+    {
+      "id": "m01-04",
+      "front": "How do you handle pagination when scraping multiple pages?",
+      "back": "Find the 'next page' link and follow it until there is no more.\n\nurl = 'http://books.toscrape.com/catalogue/page-1.html'\nall_books = []\n\nwhile url:\n    response = requests.get(url)\n    soup = BeautifulSoup(response.text, 'lxml')\n    all_books.extend(scrape_page(soup))\n    \n    next_btn = soup.select_one('li.next a')\n    url = next_btn['href'] if next_btn else None\n    time.sleep(1)  # be polite!\n\nAlways add a delay between requests to avoid overwhelming the server.",
+      "concept_ref": "projects/modules/01-web-scraping/04-multi-page-scraper/README.md",
+      "difficulty": 2,
+      "tags": ["pagination", "scraping", "rate-limiting"]
+    },
+    {
+      "id": "m01-05",
+      "front": "What is robots.txt and why should you check it before scraping?",
+      "back": "A file at the root of a website (e.g., http://example.com/robots.txt) that tells bots which pages they may or may not access.\n\nExample:\nUser-agent: *\nDisallow: /admin/\nDisallow: /private/\nCrawl-delay: 10\n\nRules:\n- Respect Disallow directives\n- Honor Crawl-delay (seconds between requests)\n- robots.txt is advisory, not enforced, but ignoring it is unethical and may have legal consequences",
+      "concept_ref": "projects/modules/01-web-scraping/README.md",
+      "difficulty": 1,
+      "tags": ["robots-txt", "ethics", "scraping"]
+    },
+    {
+      "id": "m01-06",
+      "front": "How do you write scraped data to a CSV file?",
+      "back": "import csv\n\nbooks = [{'title': 'Dune', 'price': '12.99', 'rating': 5}]\n\nwith open('books.csv', 'w', newline='') as f:\n    writer = csv.DictWriter(f, fieldnames=['title', 'price', 'rating'])\n    writer.writeheader()\n    writer.writerows(books)\n\nKey: use newline='' to prevent blank lines on Windows.\nDictWriter handles column ordering and escaping automatically.",
+      "concept_ref": "projects/modules/01-web-scraping/05-save-to-csv/README.md",
+      "difficulty": 1,
+      "tags": ["csv", "export", "file-io"]
+    },
+    {
+      "id": "m01-07",
+      "front": "What is the difference between find() and find_all() in BeautifulSoup?",
+      "back": "find() returns the FIRST matching element, or None.\nfind_all() returns a LIST of ALL matching elements (empty list if none).\n\nsoup.find('p', class_='price')    # first <p class='price'>\nsoup.find_all('p', class_='price') # all <p class='price'>\n\nNote: use class_ (with underscore) because class is a Python keyword.\n\nfind_all() can take a limit: soup.find_all('a', limit=5)",
+      "concept_ref": "projects/modules/01-web-scraping/02-parse-html/README.md",
+      "difficulty": 1,
+      "tags": ["beautifulsoup", "find", "parsing"]
+    },
+    {
+      "id": "m01-08",
+      "front": "What HTTP status codes should you handle when scraping?",
+      "back": "200 — Success, parse the page\n301/302 — Redirect (requests follows automatically)\n403 — Forbidden (you're blocked, check User-Agent)\n404 — Page not found (skip or log)\n429 — Too many requests (slow down!)\n500 — Server error (retry after delay)\n\nAlways check before parsing:\nif response.status_code != 200:\n    print(f'Error: {response.status_code}')\n    continue",
+      "concept_ref": "projects/modules/01-web-scraping/01-fetch-a-webpage/README.md",
+      "difficulty": 2,
+      "tags": ["http", "status-codes", "error-handling"]
+    },
+    {
+      "id": "m01-09",
+      "front": "How do you extract text vs attributes from an HTML element?",
+      "back": "# Given: <a href='/books/dune' class='title'>Dune</a>\n\nlink = soup.find('a', class_='title')\n\n# Text content\nlink.text          # 'Dune'\nlink.get_text()    # 'Dune' (same, with more options)\nlink.string        # 'Dune' (only if single text child)\n\n# Attributes\nlink['href']       # '/books/dune'\nlink.get('href')   # '/books/dune' (returns None if missing)\nlink.attrs         # {'href': '/books/dune', 'class': ['title']}",
+      "concept_ref": "projects/modules/01-web-scraping/03-extract-structured-data/README.md",
+      "difficulty": 1,
+      "tags": ["beautifulsoup", "attributes", "text"]
+    },
+    {
+      "id": "m01-10",
+      "front": "How do you build structured data from scraped content?",
+      "back": "Extract multiple fields from each item and store as a list of dicts.\n\nbooks = []\nfor article in soup.find_all('article', class_='product_pod'):\n    book = {\n        'title': article.h3.a['title'],\n        'price': article.find('p', class_='price_color').text,\n        'rating': article.p['class'][1],  # 'Three', 'Four', etc.\n        'in_stock': 'In stock' in article.text\n    }\n    books.append(book)\n\nThis gives you a clean, consistent data structure ready for CSV export or database insertion.",
+      "concept_ref": "projects/modules/01-web-scraping/03-extract-structured-data/README.md",
+      "difficulty": 2,
+      "tags": ["structured-data", "scraping", "dicts"]
+    },
+    {
+      "id": "m01-11",
+      "front": "What is a User-Agent header and why set one when scraping?",
+      "back": "The User-Agent header tells the server what software is making the request.\n\nDefault requests User-Agent: 'python-requests/2.31.0'\n\nSome sites block requests without a browser-like User-Agent.\n\nheaders = {'User-Agent': 'Mozilla/5.0 (educational scraper)'}\nresponse = requests.get(url, headers=headers)\n\nBest practice: identify yourself honestly. Use a descriptive User-Agent, not a deceptive browser string.",
+      "concept_ref": "projects/modules/01-web-scraping/01-fetch-a-webpage/README.md",
+      "difficulty": 2,
+      "tags": ["http", "headers", "user-agent"]
+    },
+    {
+      "id": "m01-12",
+      "front": "How do you deduplicate scraped data before saving?",
+      "back": "Use a set to track what you've already seen.\n\nseen_titles = set()\nunique_books = []\n\nfor book in all_books:\n    if book['title'] not in seen_titles:\n        seen_titles.add(book['title'])\n        unique_books.append(book)\n\nAlternatively, use a dict keyed by the unique field:\nbooks_by_title = {b['title']: b for b in all_books}\nunique_books = list(books_by_title.values())\n\nDedup BEFORE writing to CSV to avoid duplicate rows.",
+      "concept_ref": "projects/modules/01-web-scraping/05-save-to-csv/README.md",
+      "difficulty": 2,
+      "tags": ["deduplication", "data-quality", "scraping"]
+    },
+    {
+      "id": "m01-13",
+      "front": "Why should you add time.sleep() between requests when scraping?",
+      "back": "Rate limiting protects the server and your scraper.\n\nWithout delays:\n- You may overwhelm the server\n- Your IP may get blocked\n- You could trigger DDoS protections\n- It's disrespectful to the site operator\n\nimport time\nfor url in page_urls:\n    response = requests.get(url)\n    process(response)\n    time.sleep(1)  # 1 second between requests\n\nUse random delays for more natural behavior:\ntime.sleep(random.uniform(0.5, 1.5))",
+      "concept_ref": "projects/modules/01-web-scraping/04-multi-page-scraper/README.md",
+      "difficulty": 1,
+      "tags": ["rate-limiting", "ethics", "sleep"]
+    },
+    {
+      "id": "m01-14",
+      "front": "What is the lxml parser and why use it with BeautifulSoup?",
+      "back": "lxml is a fast, C-based HTML/XML parser.\n\nsoup = BeautifulSoup(html, 'lxml')      # fast, lenient\nsoup = BeautifulSoup(html, 'html.parser') # built-in, slower\n\nlxml advantages:\n- 5-10x faster than html.parser\n- Better at handling malformed HTML\n- Supports XML parsing too\n\nDisadvantage: requires installation (pip install lxml).\n\nUse 'html.parser' only when you cannot install external packages.",
+      "concept_ref": "projects/modules/01-web-scraping/README.md",
+      "difficulty": 2,
+      "tags": ["lxml", "parser", "beautifulsoup"]
+    },
+    {
+      "id": "m01-15",
+      "front": "How do you handle relative URLs when scraping?",
+      "back": "Combine the base URL with the relative path using urljoin.\n\nfrom urllib.parse import urljoin\n\nbase = 'http://books.toscrape.com/catalogue/'\nrelative = '../page-2.html'\n\nfull_url = urljoin(base, relative)\n# 'http://books.toscrape.com/page-2.html'\n\nNever concatenate strings manually — urljoin handles:\n- ../ navigation\n- Absolute vs relative paths\n- Protocol-relative URLs (//example.com)",
+      "concept_ref": "projects/modules/01-web-scraping/04-multi-page-scraper/README.md",
+      "difficulty": 2,
+      "tags": ["urls", "urljoin", "scraping"]
+    }
+  ]
+}

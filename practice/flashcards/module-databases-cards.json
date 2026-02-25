@@ -1,0 +1,142 @@
+{
+  "deck": "Module 06 — Databases & ORM",
+  "description": "sqlite3, SQLAlchemy Core vs ORM, session management, Alembic migrations, query optimization",
+  "cards": [
+    {
+      "id": "m06-01",
+      "front": "What is a relational database and how does it store data?",
+      "back": "A database that stores data in tables (rows and columns), with relationships between tables.\n\nTable = a collection of related records (like a spreadsheet)\nRow = one record (one customer, one order)\nColumn = one attribute (name, email, price)\nPrimary key = unique identifier for each row\nForeign key = links rows between tables\n\nSQL (Structured Query Language) is how you interact with it.",
+      "concept_ref": "projects/modules/06-databases-orm/README.md",
+      "difficulty": 1,
+      "tags": ["database", "relational", "fundamentals"]
+    },
+    {
+      "id": "m06-02",
+      "front": "How do you create a table and insert data with sqlite3?",
+      "back": "import sqlite3\n\nconn = sqlite3.connect('app.db')\ncursor = conn.cursor()\n\ncursor.execute('''\n    CREATE TABLE IF NOT EXISTS users (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        name TEXT NOT NULL,\n        email TEXT UNIQUE\n    )\n''')\n\ncursor.execute(\n    'INSERT INTO users (name, email) VALUES (?, ?)',\n    ('Alice', 'alice@example.com')\n)\nconn.commit()\nconn.close()\n\nAlways use ? placeholders, never f-strings.",
+      "concept_ref": "projects/modules/06-databases-orm/01-sqlite-basics/README.md",
+      "difficulty": 1,
+      "tags": ["sqlite3", "create-table", "insert"]
+    },
+    {
+      "id": "m06-03",
+      "front": "What is an ORM and what problem does it solve?",
+      "back": "ORM = Object-Relational Mapper. Maps database tables to Python classes and rows to objects.\n\nWithout ORM:\ncursor.execute('SELECT * FROM users WHERE id = ?', (1,))\nrow = cursor.fetchone()  # tuple: (1, 'Alice', 'alice@...')\n\nWith ORM (SQLAlchemy):\nuser = session.query(User).get(1)  # User object\nuser.name  # 'Alice'\nuser.email  # 'alice@...'\n\nORM benefits: type safety, no raw SQL for common operations, relationships as attributes, migration support.",
+      "concept_ref": "projects/modules/06-databases-orm/02-sqlalchemy-models/README.md",
+      "difficulty": 2,
+      "tags": ["orm", "sqlalchemy", "fundamentals"]
+    },
+    {
+      "id": "m06-04",
+      "front": "What is the difference between SQLAlchemy Core and ORM?",
+      "back": "Core: SQL expression language. Build SQL with Python, but results are tuples/rows.\nstmt = select(users).where(users.c.name == 'Alice')\nresult = conn.execute(stmt)  # returns Row objects\n\nORM: maps tables to classes. Results are Python objects.\nuser = session.query(User).filter_by(name='Alice').first()\nuser.name  # attribute access\n\nCore is lower-level and faster. ORM is more Pythonic.\nMany projects use both: ORM for CRUD, Core for complex queries.",
+      "concept_ref": "projects/modules/06-databases-orm/02-sqlalchemy-models/README.md",
+      "difficulty": 3,
+      "tags": ["sqlalchemy", "core", "orm"]
+    },
+    {
+      "id": "m06-05",
+      "front": "How do you define a SQLAlchemy ORM model?",
+      "back": "from sqlalchemy import Column, Integer, String, Float\nfrom sqlalchemy.orm import declarative_base\n\nBase = declarative_base()\n\nclass Product(Base):\n    __tablename__ = 'products'\n    \n    id = Column(Integer, primary_key=True)\n    name = Column(String(100), nullable=False)\n    price = Column(Float, nullable=False)\n    category = Column(String(50), default='general')\n    \n    def __repr__(self):\n        return f'<Product {self.name}>'\n\nBase.metadata.create_all(engine)  # creates the table",
+      "concept_ref": "projects/modules/06-databases-orm/02-sqlalchemy-models/README.md",
+      "difficulty": 2,
+      "tags": ["sqlalchemy", "models", "declarative"]
+    },
+    {
+      "id": "m06-06",
+      "front": "What is a SQLAlchemy Session and how do you use it?",
+      "back": "A Session manages a conversation with the database — it tracks objects you've loaded or created.\n\nfrom sqlalchemy.orm import sessionmaker\nSession = sessionmaker(bind=engine)\nsession = Session()\n\n# Create\nproduct = Product(name='Widget', price=9.99)\nsession.add(product)\nsession.commit()\n\n# Read\nproducts = session.query(Product).all()\n\n# Update\nproduct.price = 12.99\nsession.commit()\n\n# Delete\nsession.delete(product)\nsession.commit()\n\nAlways commit() to save changes. Use session.rollback() on error.",
+      "concept_ref": "projects/modules/06-databases-orm/03-crud-operations/README.md",
+      "difficulty": 2,
+      "tags": ["sqlalchemy", "session", "crud"]
+    },
+    {
+      "id": "m06-07",
+      "front": "What is Alembic and why use it for database migrations?",
+      "back": "Alembic is a database migration tool for SQLAlchemy. It manages schema changes (add column, rename table) in versioned, reversible steps.\n\n# Initialize\nalembic init migrations\n\n# Generate migration from model changes\nalembic revision --autogenerate -m 'add email column'\n\n# Apply migration\nalembic upgrade head\n\n# Revert migration\nalembic downgrade -1\n\nWithout migrations, you'd need to manually ALTER TABLE or drop and recreate — losing data.",
+      "concept_ref": "projects/modules/06-databases-orm/04-migrations-alembic/README.md",
+      "difficulty": 2,
+      "tags": ["alembic", "migrations", "schema"]
+    },
+    {
+      "id": "m06-08",
+      "front": "What is the N+1 query problem?",
+      "back": "Loading related objects one at a time instead of in bulk.\n\n# N+1 problem: 1 query for orders + N queries for customers\norders = session.query(Order).all()  # 1 query\nfor order in orders:\n    print(order.customer.name)  # N queries (1 per order!)\n\n# Fix: eager loading\nfrom sqlalchemy.orm import joinedload\norders = session.query(Order).options(joinedload(Order.customer)).all()\n# 1 query with JOIN — gets everything at once\n\nN+1 is the most common ORM performance problem. Always check query count.",
+      "concept_ref": "projects/modules/06-databases-orm/05-query-optimization/README.md",
+      "difficulty": 3,
+      "tags": ["performance", "n-plus-one", "eager-loading"]
+    },
+    {
+      "id": "m06-09",
+      "front": "What is the difference between eager and lazy loading in SQLAlchemy?",
+      "back": "Lazy loading (default): related objects are loaded when you first access them.\norder.customer  # SQL query runs HERE\n\nEager loading: related objects are loaded with the parent query.\nquery(Order).options(joinedload(Order.customer))  # one JOIN query\n\nTypes of eager loading:\n- joinedload: SQL JOIN (one query)\n- subqueryload: separate query with IN clause (two queries)\n- selectinload: like subqueryload, often more efficient\n\nUse eager loading when you know you'll need the related data.",
+      "concept_ref": "projects/modules/06-databases-orm/05-query-optimization/README.md",
+      "difficulty": 3,
+      "tags": ["sqlalchemy", "lazy-loading", "eager-loading"]
+    },
+    {
+      "id": "m06-10",
+      "front": "How do you define a relationship between SQLAlchemy models?",
+      "back": "from sqlalchemy import ForeignKey\nfrom sqlalchemy.orm import relationship\n\nclass Author(Base):\n    __tablename__ = 'authors'\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    books = relationship('Book', back_populates='author')\n\nclass Book(Base):\n    __tablename__ = 'books'\n    id = Column(Integer, primary_key=True)\n    title = Column(String, nullable=False)\n    author_id = Column(Integer, ForeignKey('authors.id'))\n    author = relationship('Author', back_populates='books')\n\nbook.author.name  # traverse the relationship\nauthor.books       # list of books",
+      "concept_ref": "projects/modules/06-databases-orm/02-sqlalchemy-models/README.md",
+      "difficulty": 2,
+      "tags": ["sqlalchemy", "relationships", "foreign-key"]
+    },
+    {
+      "id": "m06-11",
+      "front": "What is a database migration and what does 'upgrade' vs 'downgrade' mean?",
+      "back": "A migration is a versioned script that changes the database schema.\n\nUpgrade: apply the change (add column, create table)\n  alembic upgrade head  # apply all pending migrations\n  alembic upgrade +1    # apply next migration only\n\nDowngrade: revert the change (drop column, remove table)\n  alembic downgrade -1  # revert last migration\n  alembic downgrade base # revert all migrations\n\nEvery migration has both upgrade() and downgrade() functions, making schema changes reversible.",
+      "concept_ref": "projects/modules/06-databases-orm/04-migrations-alembic/README.md",
+      "difficulty": 2,
+      "tags": ["alembic", "migrations", "versioning"]
+    },
+    {
+      "id": "m06-12",
+      "front": "What does EXPLAIN do and how do you use it to find slow queries?",
+      "back": "EXPLAIN shows the database's execution plan for a query.\n\nSQLite:\nEXPLAIN QUERY PLAN SELECT * FROM orders WHERE customer_id = 5;\n\nLook for:\n- SCAN TABLE: bad (reads every row)\n- SEARCH TABLE USING INDEX: good (uses index)\n- USING COVERING INDEX: best (index has all needed data)\n\nFix slow queries by:\n1. Adding an index on filtered/joined columns\n2. Reducing the result set (add WHERE, LIMIT)\n3. Avoiding SELECT * (select only needed columns)",
+      "concept_ref": "projects/modules/06-databases-orm/05-query-optimization/README.md",
+      "difficulty": 3,
+      "tags": ["explain", "performance", "sql"]
+    },
+    {
+      "id": "m06-13",
+      "front": "What is a parameterized query and why is it essential?",
+      "back": "A query where user input is passed as parameters, not embedded in the SQL string.\n\n# DANGEROUS — SQL injection risk\ncursor.execute(f\"SELECT * FROM users WHERE name = '{name}'\")\n\n# SAFE — parameterized\ncursor.execute('SELECT * FROM users WHERE name = ?', (name,))\n\n# SQLAlchemy (also safe)\nsession.query(User).filter(User.name == name)\n\nThe database driver handles escaping and quoting. This prevents attackers from injecting malicious SQL.",
+      "concept_ref": "projects/modules/06-databases-orm/01-sqlite-basics/README.md",
+      "difficulty": 1,
+      "tags": ["security", "sql-injection", "parameterized"]
+    },
+    {
+      "id": "m06-14",
+      "front": "How do you filter and query data with SQLAlchemy ORM?",
+      "back": "# Exact match\nsession.query(User).filter(User.name == 'Alice').first()\n\n# Multiple conditions\nsession.query(User).filter(User.age > 18, User.active == True).all()\n\n# LIKE\nsession.query(User).filter(User.name.like('%ali%')).all()\n\n# IN\nsession.query(User).filter(User.id.in_([1, 2, 3])).all()\n\n# OR\nfrom sqlalchemy import or_\nsession.query(User).filter(or_(User.age < 18, User.age > 65)).all()\n\n# Order and limit\nsession.query(User).order_by(User.name).limit(10).all()",
+      "concept_ref": "projects/modules/06-databases-orm/03-crud-operations/README.md",
+      "difficulty": 2,
+      "tags": ["sqlalchemy", "queries", "filtering"]
+    },
+    {
+      "id": "m06-15",
+      "front": "What is a database index and what is the trade-off?",
+      "back": "An index is a data structure that speeds up lookups on specific columns.\n\nCREATE INDEX idx_users_email ON users(email);\n\n# In SQLAlchemy\nemail = Column(String, index=True)\n\nSpeed-up: WHERE, JOIN, and ORDER BY on indexed columns go from O(n) table scan to O(log n) index lookup.\n\nTrade-off:\n- Reads: much faster\n- Writes: slower (index must be updated on INSERT/UPDATE/DELETE)\n- Storage: additional disk space\n\nIndex columns you filter on frequently. Don't index everything.",
+      "concept_ref": "projects/modules/06-databases-orm/05-query-optimization/README.md",
+      "difficulty": 2,
+      "tags": ["index", "performance", "trade-offs"]
+    },
+    {
+      "id": "m06-16",
+      "front": "What is the difference between session.add() and session.merge()?",
+      "back": "session.add(obj): insert a NEW object. Raises an error if an object with the same primary key already exists in the session.\n\nsession.merge(obj): insert OR update. If an object with the same key exists, update it; otherwise, insert it.\n\n# Always new\nuser = User(name='Alice')\nsession.add(user)\n\n# Insert or update\nuser = User(id=1, name='Alice Updated')\nsession.merge(user)  # updates if id=1 exists\n\nmerge() is like an UPSERT at the ORM level.",
+      "concept_ref": "projects/modules/06-databases-orm/03-crud-operations/README.md",
+      "difficulty": 3,
+      "tags": ["sqlalchemy", "add", "merge", "upsert"]
+    },
+    {
+      "id": "m06-17",
+      "front": "What happens if you forget to call session.commit()?",
+      "back": "Your changes exist only in memory — they are NOT saved to the database.\n\nsession.add(user)    # staged in session\n# session.commit()   # FORGOT THIS!\nsession.close()      # changes are discarded\n\nThe session tracks changes in a 'unit of work'. commit() flushes all pending changes to the database in a transaction.\n\nIf an error occurs, call session.rollback() to discard staged changes.\n\nBest practice: use try/except/finally or a context manager to ensure commit or rollback always happens.",
+      "concept_ref": "projects/modules/06-databases-orm/03-crud-operations/README.md",
+      "difficulty": 2,
+      "tags": ["sqlalchemy", "commit", "session"]
+    }
+  ]
+}
