@@ -96,9 +96,9 @@ Check off items as you complete them. This is your personal tracker.
 
 ---
 
-## Gate D: Orion/DPA Integration
-- [ ] Orion ingestion proof into MSSQL cache
-- [ ] DPA ingestion proof into MSSQL cache
+## Gate D: API Integration
+- [ ] External API data ingested into local cache
+- [ ] API response parsing and storage verified
 
 ---
 
@@ -120,13 +120,13 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] 04 Foundations
 - [ ] 05 Automation / Files / Excel
 - [ ] 06 SQL
-- [ ] 07 SolarWinds Orion
+- [ ] 07 Monitoring & API Integration
 - [ ] 08 Dashboards
 - [ ] 09 Quality Tooling
 - [ ] 10 Capstone Projects
 - [ ] 11 Checklists
 - [ ] 12 Screenshot Checkpoints
-- [ ] 13 Enterprise Sample Schemas
+- [ ] 13 Sample Database Schemas
 - [ ] 14 Navigation and Study Workflow
 - [ ] 15 Next Level Expansion Plan
 
