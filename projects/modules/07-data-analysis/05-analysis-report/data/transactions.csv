@@ -1,0 +1,201 @@
+date,product,quantity,price,customer_id
+2024-01-03,Wireless Mouse,2,29.99,C001
+2024-01-03,USB Cable Pack,5,9.99,C002
+2024-01-04,Bluetooth Speaker,1,49.99,C003
+2024-01-05,Desk Lamp,1,34.99,C001
+2024-01-05,Notebook Set,3,12.99,C004
+2024-01-06,Wireless Mouse,1,29.99,C005
+2024-01-07,USB Cable Pack,2,9.99,C006
+2024-01-08,Bluetooth Speaker,1,49.99,C007
+2024-01-09,Desk Lamp,2,34.99,C002
+2024-01-10,Notebook Set,1,12.99,C008
+2024-01-10,Wireless Mouse,3,29.99,C009
+2024-01-11,USB Cable Pack,4,9.99,C010
+2024-01-12,Bluetooth Speaker,1,49.99,C001
+2024-01-13,Desk Lamp,1,34.99,C003
+2024-01-14,Notebook Set,2,12.99,C011
+2024-01-15,Wireless Mouse,1,29.99,C012
+2024-01-16,USB Cable Pack,3,9.99,C004
+2024-01-17,Bluetooth Speaker,2,49.99,C013
+2024-01-18,Desk Lamp,1,34.99,C005
+2024-01-19,Notebook Set,4,12.99,C014
+2024-01-20,Wireless Mouse,2,29.99,C006
+2024-01-21,USB Cable Pack,1,9.99,C015
+2024-01-22,Bluetooth Speaker,1,49.99,C002
+2024-01-23,Desk Lamp,3,34.99,C016
+2024-01-24,Notebook Set,1,12.99,C007
+2024-01-25,Wireless Mouse,1,29.99,C017
+2024-01-26,USB Cable Pack,6,9.99,C008
+2024-01-27,Bluetooth Speaker,1,49.99,C018
+2024-01-28,Desk Lamp,2,34.99,C009
+2024-01-29,Notebook Set,3,12.99,C001
+2024-01-30,Wireless Mouse,2,29.99,C019
+2024-01-31,USB Cable Pack,2,9.99,C010
+2024-02-01,Bluetooth Speaker,1,49.99,C020
+2024-02-02,Desk Lamp,1,34.99,C011
+2024-02-03,Notebook Set,2,12.99,C003
+2024-02-04,Wireless Mouse,3,29.99,C012
+2024-02-05,USB Cable Pack,1,9.99,C021
+2024-02-06,Bluetooth Speaker,2,49.99,C004
+2024-02-07,Desk Lamp,1,34.99,C022
+2024-02-08,Notebook Set,1,12.99,C013
+2024-02-09,Wireless Mouse,1,29.99,C023
+2024-02-10,USB Cable Pack,4,9.99,C005
+2024-02-11,Bluetooth Speaker,1,49.99,C014
+2024-02-12,Desk Lamp,2,34.99,C024
+2024-02-13,Notebook Set,3,12.99,C006
+2024-02-14,Wireless Mouse,2,29.99,C025
+2024-02-15,USB Cable Pack,1,9.99,C015
+2024-02-16,Bluetooth Speaker,1,49.99,C001
+2024-02-17,Desk Lamp,1,34.99,C026
+2024-02-18,Notebook Set,2,12.99,C016
+2024-02-19,Wireless Mouse,1,29.99,C002
+2024-02-20,USB Cable Pack,3,9.99,C027
+2024-02-21,Bluetooth Speaker,2,49.99,C007
+2024-02-22,Desk Lamp,1,34.99,C017
+2024-02-23,Notebook Set,1,12.99,C028
+2024-02-24,Wireless Mouse,4,29.99,C008
+2024-02-25,USB Cable Pack,2,9.99,C018
+2024-02-26,Bluetooth Speaker,1,49.99,C029
+2024-02-27,Desk Lamp,3,34.99,C009
+2024-02-28,Notebook Set,2,12.99,C019
+2024-03-01,Wireless Mouse,1,29.99,C030
+2024-03-02,USB Cable Pack,5,9.99,C010
+2024-03-03,Bluetooth Speaker,1,49.99,C020
+2024-03-04,Desk Lamp,2,34.99,C001
+2024-03-05,Notebook Set,1,12.99,C031
+2024-03-06,Wireless Mouse,2,29.99,C011
+2024-03-07,USB Cable Pack,1,9.99,C021
+2024-03-08,Bluetooth Speaker,3,49.99,C012
+2024-03-09,Desk Lamp,1,34.99,C032
+2024-03-10,Notebook Set,4,12.99,C003
+2024-03-11,Wireless Mouse,1,29.99,C022
+2024-03-12,USB Cable Pack,2,9.99,C033
+2024-03-13,Bluetooth Speaker,1,49.99,C013
+2024-03-14,Desk Lamp,2,34.99,C023
+2024-03-15,Notebook Set,1,12.99,C034
+2024-03-16,Wireless Mouse,3,29.99,C004
+2024-03-17,USB Cable Pack,1,9.99,C024
+2024-03-18,Bluetooth Speaker,1,49.99,C035
+2024-03-19,Desk Lamp,1,34.99,C014
+2024-03-20,Notebook Set,3,12.99,C025
+2024-03-21,Wireless Mouse,2,29.99,C005
+2024-03-22,USB Cable Pack,4,9.99,C015
+2024-03-23,Bluetooth Speaker,2,49.99,C036
+2024-03-24,Desk Lamp,1,34.99,C026
+2024-03-25,Notebook Set,2,12.99,C006
+2024-03-26,Wireless Mouse,1,29.99,C027
+2024-03-27,USB Cable Pack,1,9.99,C037
+2024-03-28,Bluetooth Speaker,1,49.99,C016
+2024-03-29,Desk Lamp,3,34.99,C007
+2024-03-30,Notebook Set,1,12.99,C028
+2024-03-31,Wireless Mouse,2,29.99,C038
+2024-04-01,USB Cable Pack,3,9.99,C008
+2024-04-02,Bluetooth Speaker,1,49.99,C017
+2024-04-03,Desk Lamp,1,34.99,C039
+2024-04-04,Notebook Set,2,12.99,C029
+2024-04-05,Wireless Mouse,1,29.99,C009
+2024-04-06,USB Cable Pack,2,9.99,C030
+2024-04-07,Bluetooth Speaker,2,49.99,C018
+2024-04-08,Desk Lamp,2,34.99,C040
+2024-04-09,Notebook Set,1,12.99,C010
+2024-04-10,Wireless Mouse,3,29.99,C031
+2024-04-11,USB Cable Pack,1,9.99,C019
+2024-04-12,Bluetooth Speaker,1,49.99,C041
+2024-04-13,Desk Lamp,1,34.99,C011
+2024-04-14,Notebook Set,3,12.99,C020
+2024-04-15,Wireless Mouse,2,29.99,C032
+2024-04-16,USB Cable Pack,5,9.99,C001
+2024-04-17,Bluetooth Speaker,1,49.99,C042
+2024-04-18,Desk Lamp,2,34.99,C021
+2024-04-19,Notebook Set,1,12.99,C033
+2024-04-20,Wireless Mouse,1,29.99,C012
+2024-04-21,USB Cable Pack,2,9.99,C022
+2024-04-22,Bluetooth Speaker,3,49.99,C002
+2024-04-23,Desk Lamp,1,34.99,C034
+2024-04-24,Notebook Set,2,12.99,C043
+2024-04-25,Wireless Mouse,2,29.99,C013
+2024-04-26,USB Cable Pack,1,9.99,C023
+2024-04-27,Bluetooth Speaker,1,49.99,C035
+2024-04-28,Desk Lamp,3,34.99,C003
+2024-04-29,Notebook Set,1,12.99,C024
+2024-04-30,Wireless Mouse,1,29.99,C044
+2024-05-01,USB Cable Pack,4,9.99,C014
+2024-05-02,Bluetooth Speaker,1,49.99,C025
+2024-05-03,Desk Lamp,1,34.99,C036
+2024-05-04,Notebook Set,3,12.99,C004
+2024-05-05,Wireless Mouse,2,29.99,C026
+2024-05-06,USB Cable Pack,2,9.99,C045
+2024-05-07,Bluetooth Speaker,2,49.99,C015
+2024-05-08,Desk Lamp,1,34.99,C037
+2024-05-09,Notebook Set,1,12.99,C027
+2024-05-10,Wireless Mouse,3,29.99,C005
+2024-05-11,USB Cable Pack,1,9.99,C028
+2024-05-12,Bluetooth Speaker,1,49.99,C038
+2024-05-13,Desk Lamp,2,34.99,C016
+2024-05-14,Notebook Set,2,12.99,C046
+2024-05-15,Wireless Mouse,1,29.99,C029
+2024-05-16,USB Cable Pack,3,9.99,C006
+2024-05-17,Bluetooth Speaker,1,49.99,C039
+2024-05-18,Desk Lamp,1,34.99,C047
+2024-05-19,Notebook Set,4,12.99,C017
+2024-05-20,Wireless Mouse,2,29.99,C030
+2024-05-21,USB Cable Pack,1,9.99,C040
+2024-05-22,Bluetooth Speaker,2,49.99,C007
+2024-05-23,Desk Lamp,2,34.99,C018
+2024-05-24,Notebook Set,1,12.99,C031
+2024-05-25,Wireless Mouse,1,29.99,C048
+2024-05-26,USB Cable Pack,5,9.99,C019
+2024-05-27,Bluetooth Speaker,1,49.99,C041
+2024-05-28,Desk Lamp,1,34.99,C032
+2024-05-29,Notebook Set,3,12.99,C008
+2024-05-30,Wireless Mouse,2,29.99,C042
+2024-05-31,USB Cable Pack,2,9.99,C020
+2024-06-01,Bluetooth Speaker,1,49.99,C033
+2024-06-02,Desk Lamp,3,34.99,C049
+2024-06-03,Notebook Set,1,12.99,C021
+2024-06-04,Wireless Mouse,1,29.99,C043
+2024-06-05,USB Cable Pack,2,9.99,C034
+2024-06-06,Bluetooth Speaker,2,49.99,C009
+2024-06-07,Desk Lamp,1,34.99,C050
+2024-06-08,Notebook Set,2,12.99,C035
+2024-06-09,Wireless Mouse,4,29.99,C001
+2024-06-10,USB Cable Pack,1,9.99,C036
+2024-06-11,Bluetooth Speaker,1,49.99,C044
+2024-06-12,Desk Lamp,2,34.99,C022
+2024-06-13,Notebook Set,1,12.99,C037
+2024-06-14,Wireless Mouse,2,29.99,C045
+2024-06-15,USB Cable Pack,3,9.99,C010
+2024-06-16,Bluetooth Speaker,1,49.99,C046
+2024-06-17,Desk Lamp,1,34.99,C038
+2024-06-18,Notebook Set,3,12.99,C023
+2024-06-19,Wireless Mouse,1,29.99,C047
+2024-06-20,USB Cable Pack,2,9.99,C039
+2024-06-21,Bluetooth Speaker,3,49.99,C011
+2024-06-22,Desk Lamp,1,34.99,C048
+2024-06-23,Notebook Set,2,12.99,C040
+2024-06-24,Wireless Mouse,2,29.99,C002
+2024-06-25,USB Cable Pack,1,9.99,C049
+2024-06-26,Bluetooth Speaker,1,49.99,C024
+2024-06-27,Desk Lamp,2,34.99,C041
+2024-06-28,Notebook Set,1,12.99,C050
+2024-06-29,Wireless Mouse,3,29.99,C025
+2024-06-30,USB Cable Pack,4,9.99,C012
+2024-07-01,Bluetooth Speaker,1,49.99,C026
+2024-07-02,Desk Lamp,1,34.99,C042
+2024-07-03,Wireless Mouse,2,29.99,C003
+2024-07-04,Notebook Set,2,12.99,C043
+2024-07-05,USB Cable Pack,3,9.99,C027
+2024-07-06,Bluetooth Speaker,2,49.99,C010
+2024-07-07,Desk Lamp,1,34.99,C044
+2024-07-08,Wireless Mouse,1,29.99,C028
+2024-07-09,Notebook Set,3,12.99,C045
+2024-07-10,USB Cable Pack,2,9.99,C013
+2024-07-11,Bluetooth Speaker,1,49.99,C046
+2024-07-12,Desk Lamp,2,34.99,C029
+2024-07-13,Wireless Mouse,3,29.99,C047
+2024-07-14,Notebook Set,1,12.99,C014
+2024-07-15,USB Cable Pack,1,9.99,C030
+2024-07-16,Bluetooth Speaker,1,49.99,C048
+2024-07-17,Desk Lamp,1,34.99,C015
+2024-07-18,Wireless Mouse,2,29.99,C049
