@@ -1,5 +1,10 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+python = A high-level programming language known for readability
+java = A compiled object-oriented language used in enterprise software
+javascript = A dynamic language powering interactive web pages
+rust = A systems programming language focused on memory safety
+go = A compiled language created at Google for scalable services
+typescript = A typed superset of JavaScript
+ruby = An elegant language designed for programmer happiness
+swift = Apple's language for iOS and macOS development
+kotlin = A modern JVM language favored for Android development
+sql = A declarative language for managing relational databases

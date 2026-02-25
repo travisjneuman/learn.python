@@ -1,107 +1,199 @@
 """Level 2 project: Records Deduplicator.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- find and remove duplicate records by configurable keys,
+- preserve first or last occurrence,
+- report which records were duplicates.
+
+Skills practiced: sets, dict comprehensions, sorting with key functions,
+enumerate, nested data structures, try/except.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Records Deduplicator"
-PROJECT_FOCUS = "dedupe logic with stable keys"
 
+def parse_csv_records(path: Path) -> tuple[list[str], list[dict[str, str]]]:
+    """Parse a CSV file into headers and a list of record dicts.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    Returns:
+        A tuple of (headers, records) where records are dicts.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    lines = [line.strip() for line in lines if line.strip()]
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    if not lines:
+        return [], []
+
+    headers = [h.strip() for h in lines[0].split(",")]
+    records = []
+
+    for line in lines[1:]:
+        values = [v.strip() for v in line.split(",")]
+        # Pad with empty strings if row has fewer values than headers.
+        while len(values) < len(headers):
+            values.append("")
+        record = dict(zip(headers, values))
+        records.append(record)
+
+    return headers, records
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def make_dedup_key(record: dict[str, str], key_fields: list[str]) -> str:
+    """Create a deduplication key from specified fields.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    The key is a pipe-separated string of normalised field values.
+    Normalisation: strip whitespace, lowercase.
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    This key is used to detect duplicates — two records with the
+    same key are considered duplicates.
+    """
+    parts = []
+    for field in key_fields:
+        value = record.get(field, "").strip().lower()
+        parts.append(value)
+    # Join with | so "a|b" is different from "ab".
+    return "|".join(parts)
+
+
+def deduplicate(
+    records: list[dict[str, str]],
+    key_fields: list[str],
+    keep: str = "first",
+) -> dict:
+    """Remove duplicate records based on key fields.
+
+    Args:
+        records: List of record dicts.
+        key_fields: Which fields to use for duplicate detection.
+        keep: "first" keeps the first occurrence, "last" keeps the last.
+
+    Returns:
+        A dict with unique records, duplicates, and stats.
+    """
+    if keep not in ("first", "last"):
+        raise ValueError(f"keep must be 'first' or 'last', got '{keep}'")
+
+    # Track seen keys using a set for O(1) lookup.
+    seen: set[str] = set()
+    # For 'last' mode, we use a dict to overwrite with latest occurrence.
+    key_to_record: dict[str, dict] = {}
+
+    unique: list[dict] = []
+    duplicates: list[dict] = []
+
+    for idx, record in enumerate(records):
+        dedup_key = make_dedup_key(record, key_fields)
+        record_with_meta = {**record, "_original_index": idx, "_dedup_key": dedup_key}
+
+        if dedup_key in seen:
+            if keep == "last":
+                # Move the previous one to duplicates, replace with current.
+                old = key_to_record[dedup_key]
+                duplicates.append(old)
+                key_to_record[dedup_key] = record_with_meta
+            else:
+                # 'first' mode: current record is the duplicate.
+                duplicates.append(record_with_meta)
+        else:
+            seen.add(dedup_key)
+            key_to_record[dedup_key] = record_with_meta
+            if keep == "first":
+                unique.append(record_with_meta)
+
+    if keep == "last":
+        # Sort by original index to maintain stable order.
+        unique = sorted(key_to_record.values(), key=lambda r: r["_original_index"])
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "unique": unique,
+        "duplicates": duplicates,
+        "stats": {
+            "total_records": len(records),
+            "unique_count": len(unique),
+            "duplicate_count": len(duplicates),
+            "dedup_fields": key_fields,
+            "keep_mode": keep,
+        },
     }
 
 
+def find_duplicate_groups(
+    records: list[dict[str, str]], key_fields: list[str]
+) -> dict[str, list[dict]]:
+    """Group records that share the same dedup key.
+
+    Only returns groups with more than one record (actual duplicates).
+    Uses a dict comprehension to filter.
+    """
+    groups: dict[str, list[dict]] = {}
+    for record in records:
+        key = make_dedup_key(record, key_fields)
+        groups.setdefault(key, []).append(record)
+
+    # Dict comprehension — keep only groups with duplicates.
+    return {k: v for k, v in groups.items() if len(v) > 1}
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Records deduplicator")
+    parser.add_argument("input", help="Path to CSV input file")
+    parser.add_argument(
+        "--keys",
+        nargs="+",
+        required=True,
+        help="Fields to use for duplicate detection",
+    )
+    parser.add_argument(
+        "--keep",
+        choices=["first", "last"],
+        default="first",
+        help="Which duplicate to keep (default: first)",
+    )
+    parser.add_argument(
+        "--show-groups",
+        action="store_true",
+        help="Show duplicate groups instead of deduplicating",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: load records, deduplicate, report results."""
     args = parse_args()
+    headers, records = parse_csv_records(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    if args.show_groups:
+        groups = find_duplicate_groups(records, args.keys)
+        print(f"Found {len(groups)} duplicate groups:")
+        for key, group in groups.items():
+            print(f"\n  Key: {key} ({len(group)} records)")
+            for r in group:
+                print(f"    {r}")
+        return
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    result = deduplicate(records, args.keys, keep=args.keep)
+    print(json.dumps(result["stats"], indent=2))
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    print(f"\nUnique records ({result['stats']['unique_count']}):")
+    for r in result["unique"]:
+        # Remove internal metadata before display.
+        display = {k: v for k, v in r.items() if not k.startswith("_")}
+        print(f"  {display}")
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    if result["duplicates"]:
+        print(f"\nRemoved duplicates ({result['stats']['duplicate_count']}):")
+        for r in result["duplicates"]:
+            display = {k: v for k, v in r.items() if not k.startswith("_")}
+            print(f"  {display}")
 
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
 
-
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

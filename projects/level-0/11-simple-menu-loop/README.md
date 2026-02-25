@@ -5,49 +5,58 @@ Home: [README](../../../README.md)
 - while loops and command menu flow
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Build a text-based menu that dispatches numbered choices to action functions. You will practise while loops, if/elif dispatch, and processing batch commands from a file -- the pattern behind every CLI tool.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/11-simple-menu-loop
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Simple Menu ===
+  1. Greet
+  2. Reverse text
+  3. Count characters
+  4. Quit
+
+  [1] => Hello, World!
+  [2] => nohtyP
+  [3] => "programming" has 11 characters
+
+3 commands processed. Output: data/output.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a new menu action: "5. Count vowels" that counts vowels in a given string.
+2. Add a `--verbose` flag that prints the menu before each action in batch mode.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Enter choice `99` -- does `execute_choice()` handle unknown options gracefully?
+2. Enter choice `quit` in the middle of the batch file -- does `run_batch()` stop processing?
+3. Enter an action with no argument like just `1` with no name -- what happens?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `execute_choice()` returns a clear error message for unknown choices.
+2. Handle missing arguments by using a default value (e.g. "World" for greet).
+3. Add a test for the missing-argument edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `run_batch()` use a for loop instead of a while loop?
+2. What is the advantage of mapping menu choices to functions in the `actions` dict?
+3. Why does the menu loop `break` on "quit" instead of using `sys.exit()`?
+4. Where would menu-driven interfaces appear in real software (CLI tools, admin consoles, kiosk systems)?
 
 ## Mastery check
 You can move on when you can:

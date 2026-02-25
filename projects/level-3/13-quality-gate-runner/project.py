@@ -1,106 +1,212 @@
 """Level 3 project: Quality Gate Runner.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Simulates a CI/CD quality gate pipeline: runs a sequence of checks
+(lint, test, build) and reports pass/fail with structured output.
+
+Skills practiced: dataclasses, typing basics, logging, subprocess
+simulation, pipeline patterns, JSON reporting.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import time
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
+from typing import Optional
 
-PROJECT_LEVEL = 3
-PROJECT_TITLE = "Quality Gate Runner"
-PROJECT_FOCUS = "simulate lint/test/build gate process"
+logger = logging.getLogger(__name__)
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+@dataclass
+class GateResult:
+    """Result of running a single quality gate."""
+    name: str
+    passed: bool
+    duration_ms: float
+    message: str = ""
+    details: list[str] = field(default_factory=list)
+
+
+@dataclass
+class PipelineResult:
+    """Result of running the full pipeline."""
+    total_gates: int
+    passed: int
+    failed: int
+    duration_ms: float
+    status: str  # "PASS", "FAIL"
+    gates: list[GateResult] = field(default_factory=list)
+
+
+# ── Gate check functions ──────────────────────────────────────
+# Each returns a GateResult. In a real project these would call
+# external tools; here we simulate with file checks.
+
+def check_file_exists(path: Path) -> GateResult:
+    """Gate: verify a required file exists."""
+    start = time.perf_counter()
+    exists = path.exists()
+    elapsed = (time.perf_counter() - start) * 1000
+
+    return GateResult(
+        name=f"file_exists:{path.name}",
+        passed=exists,
+        duration_ms=round(elapsed, 2),
+        message="File found" if exists else f"Missing: {path}",
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
+def check_no_syntax_errors(path: Path) -> GateResult:
+    """Gate: check a Python file for syntax errors using compile()."""
+    start = time.perf_counter()
+
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
-
-    We keep this separate from I/O so business logic stays testable.
-    """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+        elapsed = (time.perf_counter() - start) * 1000
+        return GateResult(
+            name=f"syntax:{path.name}",
+            passed=False,
+            duration_ms=round(elapsed, 2),
+            message=f"File not found: {path}",
         )
-    return records
+
+    try:
+        source = path.read_text(encoding="utf-8")
+        compile(source, str(path), "exec")
+        elapsed = (time.perf_counter() - start) * 1000
+        return GateResult(
+            name=f"syntax:{path.name}",
+            passed=True,
+            duration_ms=round(elapsed, 2),
+            message="No syntax errors",
+        )
+    except SyntaxError as exc:
+        elapsed = (time.perf_counter() - start) * 1000
+        return GateResult(
+            name=f"syntax:{path.name}",
+            passed=False,
+            duration_ms=round(elapsed, 2),
+            message=f"Syntax error at line {exc.lineno}: {exc.msg}",
+        )
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def check_no_print_statements(path: Path) -> GateResult:
+    """Gate: check that a Python file has no bare print() calls.
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    This is a simplified lint check.
+    """
+    start = time.perf_counter()
+
+    if not path.exists():
+        elapsed = (time.perf_counter() - start) * 1000
+        return GateResult(name=f"no_print:{path.name}", passed=False,
+                          duration_ms=round(elapsed, 2), message="File not found")
+
+    source = path.read_text(encoding="utf-8")
+    violations: list[str] = []
+
+    for line_num, line in enumerate(source.splitlines(), 1):
+        stripped = line.strip()
+        if stripped.startswith("print(") and not stripped.startswith("#"):
+            violations.append(f"Line {line_num}: {stripped[:60]}")
+
+    elapsed = (time.perf_counter() - start) * 1000
+    return GateResult(
+        name=f"no_print:{path.name}",
+        passed=len(violations) == 0,
+        duration_ms=round(elapsed, 2),
+        message=f"{len(violations)} print statement(s) found" if violations else "Clean",
+        details=violations,
+    )
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+def check_file_size(path: Path, max_lines: int = 300) -> GateResult:
+    """Gate: check that a file doesn't exceed max lines."""
+    start = time.perf_counter()
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    if not path.exists():
+        elapsed = (time.perf_counter() - start) * 1000
+        return GateResult(name=f"size:{path.name}", passed=False,
+                          duration_ms=round(elapsed, 2), message="File not found")
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+    lines = path.read_text(encoding="utf-8").splitlines()
+    elapsed = (time.perf_counter() - start) * 1000
+    passed = len(lines) <= max_lines
+
+    return GateResult(
+        name=f"size:{path.name}",
+        passed=passed,
+        duration_ms=round(elapsed, 2),
+        message=f"{len(lines)} lines (limit: {max_lines})",
+    )
 
 
-def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    return parser.parse_args()
+def run_pipeline(gates: list[GateResult]) -> PipelineResult:
+    """Aggregate gate results into a pipeline result."""
+    passed = sum(1 for g in gates if g.passed)
+    failed = sum(1 for g in gates if not g.passed)
+    total_ms = sum(g.duration_ms for g in gates)
+
+    return PipelineResult(
+        total_gates=len(gates),
+        passed=passed,
+        failed=failed,
+        duration_ms=round(total_ms, 2),
+        status="PASS" if failed == 0 else "FAIL",
+        gates=gates,
+    )
+
+
+def run_default_gates(target: Path) -> PipelineResult:
+    """Run all default gates on a Python file."""
+    gates: list[GateResult] = [
+        check_file_exists(target),
+        check_no_syntax_errors(target),
+        check_no_print_statements(target),
+        check_file_size(target),
+    ]
+    return run_pipeline(gates)
+
+
+def format_pipeline_text(result: PipelineResult) -> str:
+    """Format pipeline result as human-readable text."""
+    lines = [f"Pipeline: {result.status} ({result.duration_ms:.1f}ms)", ""]
+
+    for gate in result.gates:
+        icon = "PASS" if gate.passed else "FAIL"
+        lines.append(f"  [{icon}] {gate.name}: {gate.message}")
+        for detail in gate.details:
+            lines.append(f"         {detail}")
+
+    lines.append(f"\n{result.passed}/{result.total_gates} gates passed")
+    return "\n".join(lines)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build CLI parser."""
+    parser = argparse.ArgumentParser(description="Quality gate runner")
+    parser.add_argument("file", help="Python file to check")
+    parser.add_argument("--max-lines", type=int, default=300)
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--log-level", default="INFO")
+    return parser
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
-    args = parse_args()
+    """Entry point."""
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    parser = build_parser()
+    args = parser.parse_args()
 
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    target = Path(args.file)
+    result = run_default_gates(target)
+
+    if args.json:
+        print(json.dumps(asdict(result), indent=2))
+    else:
+        print(format_pipeline_text(result))
 
 
 if __name__ == "__main__":

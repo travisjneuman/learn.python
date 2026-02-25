@@ -19,35 +19,41 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "input_rows": 8,
+  "accepted": 5,
+  "rejected": 3,
+  "errors": ["row=6 missing_field=timestamp", ...],
+  "total_in_staging": 5
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — load results with accept/reject counts
+- Passing tests (`pytest -q` → 7+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a new validation rule: reject rows where the `message` field exceeds 200 characters.
+2. Add a `--strict` CLI flag that aborts the entire load if any row fails validation (instead of skipping).
+3. Add a `loaded_at` timestamp column to `staging_events` populated by the loader.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a CSV with mismatched column headers (e.g. rename "level" to "severity") and observe the error.
+2. Insert a row with a `level` value of "DEBUG" (not in `VALID_LEVELS`) and confirm rejection.
+3. Try loading the same file twice and observe whether duplicates accumulate.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add header validation that checks required columns exist before processing any rows.
+2. Add an idempotency check using a hash of each row to prevent duplicate inserts.
+3. Add tests for each broken scenario.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why do we insert row-by-row instead of using `executemany` for this use case?
+2. What is the advantage of a staging table vs inserting directly into the final table?
+3. How does the `CHECK` constraint in the DDL differ from Python-side validation?
+4. In production ETL, what happens to rejected rows — are they just logged?
 
 ## Mastery check
 You can move on when you can:

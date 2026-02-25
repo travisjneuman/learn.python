@@ -2,59 +2,71 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- dependency and blast radius estimation
+- BFS graph traversal for impact propagation through service dependencies
+- Risk scoring with weighted factors (change type, service tier, dependency depth)
+- Service dependency graph modeling with tier classification
+- Blast radius estimation for proposed changes
+- Stakeholder identification from affected service ownership
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Before deploying a change, engineers must understand its blast radius: which services,
+teams, and SLOs are affected. A database schema migration might seem local, but it
+propagates through 12 downstream services owned by 4 different teams. This project
+builds an impact analyzer that traverses dependency graphs, scores change risk based
+on service tiers and change types, and identifies all affected stakeholders — the same
+analysis that platform teams perform before every production deployment.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/08-change-impact-analyzer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "change": {"service": "user-db", "type": "schema_migration"},
+  "blast_radius": 5,
+  "risk_score": 8.5,
+  "affected_services": [...],
+  "affected_teams": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with impact analysis
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `visualize_blast_radius()` method that outputs affected services as a tree diagram.
+2. Add a `ChangeType.INFRASTRUCTURE` variant with its own risk scoring multiplier.
+3. Add a `--team` filter that shows only impact on services owned by a specific team.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a circular dependency (A -> B -> A) — does `transitive_dependents` handle cycles?
+2. Analyze a change to a service not in the graph — what error or result occurs?
+3. Set service tier to 0 (invalid) — does the risk scoring handle it?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add cycle detection in `transitive_dependents` using a visited set.
+2. Return a clear error when the changed service is not found in the graph.
+3. Validate service tier values are in the range 1-3.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is blast radius analysis and why is it important before making changes?
+2. How does BFS traversal find transitive dependents in a service graph?
+3. Why do schema changes carry higher risk than code changes?
+4. How do real organizations use impact analysis to decide deployment strategies?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain BFS graph traversal and how it maps to dependency discovery,
+- add a new service to the graph and predict its impact on risk scores,
+- describe how service tiers affect risk scoring (tier-1 = critical = higher risk),
+- design an impact analysis for a real microservices architecture.
 
 ---
 

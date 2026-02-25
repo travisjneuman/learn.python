@@ -1,6 +1,10 @@
 name: Curriculum Checks
 
 on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       full_smoke:
@@ -22,6 +26,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install ruff
+        run: uv pip install ruff --system
+
+      - name: Ruff lint check
+        run: ruff check .
+
+      - name: Python syntax check (py_compile)
+        run: |
+          find . -name "*.py" -not -path "./.venv/*" | while read f; do
+            python -c "import py_compile; py_compile.compile('$f', doraise=True)" || exit 1
+          done
 
       - name: Markdown link checks
         run: ./tools/check_markdown_links.sh
@@ -61,6 +80,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Install uv
+        run: pip install uv
 
       - name: Full curriculum checks
         run: ./tools/run_all_curriculum_checks.sh --full

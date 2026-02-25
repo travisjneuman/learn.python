@@ -1,106 +1,178 @@
-"""Level 4 project: Transformation Pipeline V1.
+"""Level 4 / Project 09 — Transformation Pipeline V1.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Chains data transformations in sequence, with logging at each step.
+Each transform is a pure function that takes records and returns records.
+The pipeline tracks what changed at each step for auditability.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Transformation Pipeline V1"
-PROJECT_FOCUS = "multi-step transform sequencing"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- transform functions ----------
+# Each takes a list of record dicts and returns a new list.
+# This functional style keeps transforms composable and testable.
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def transform_strip_whitespace(records: list[dict]) -> list[dict]:
+    """Strip leading/trailing whitespace from all string values."""
+    return [
+        {k: v.strip() if isinstance(v, str) else v for k, v in row.items()}
+        for row in records
+    ]
 
-    We keep this separate from I/O so business logic stays testable.
+
+def transform_lowercase_keys(records: list[dict]) -> list[dict]:
+    """Normalize all dictionary keys to lowercase."""
+    return [
+        {k.lower(): v for k, v in row.items()}
+        for row in records
+    ]
+
+
+def transform_add_row_id(records: list[dict]) -> list[dict]:
+    """Add a sequential row_id field to each record."""
+    return [
+        {**row, "row_id": idx}
+        for idx, row in enumerate(records, start=1)
+    ]
+
+
+def transform_filter_empty_rows(records: list[dict]) -> list[dict]:
+    """Remove records where all values are empty strings."""
+    return [
+        row for row in records
+        if any(str(v).strip() for v in row.values())
+    ]
+
+
+def transform_coerce_numbers(records: list[dict]) -> list[dict]:
+    """Try to convert string values that look numeric into int or float."""
+    result = []
+    for row in records:
+        new_row = {}
+        for k, v in row.items():
+            if isinstance(v, str):
+                # Try int first, then float
+                try:
+                    new_row[k] = int(v)
+                    continue
+                except ValueError:
+                    pass
+                try:
+                    new_row[k] = float(v)
+                    continue
+                except ValueError:
+                    pass
+            new_row[k] = v
+        result.append(new_row)
+    return result
+
+# ---------- pipeline engine ----------
+
+# Registry of available transforms by name
+TRANSFORMS: dict[str, callable] = {
+    "strip_whitespace": transform_strip_whitespace,
+    "lowercase_keys": transform_lowercase_keys,
+    "add_row_id": transform_add_row_id,
+    "filter_empty_rows": transform_filter_empty_rows,
+    "coerce_numbers": transform_coerce_numbers,
+}
+
+
+def run_pipeline(
+    records: list[dict],
+    steps: list[str],
+) -> tuple[list[dict], list[dict]]:
+    """Execute a sequence of named transforms, logging each step.
+
+    Returns (final_records, step_log) where step_log tracks
+    the record count after each transform.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    step_log: list[dict] = []
+    current = records
+
+    for step_name in steps:
+        func = TRANSFORMS.get(step_name)
+        if func is None:
+            logging.error("Unknown transform: %s — skipping", step_name)
+            step_log.append({"step": step_name, "status": "skipped", "reason": "unknown"})
+            continue
+
+        before_count = len(current)
+        current = func(current)
+        after_count = len(current)
+
+        step_log.append({
+            "step": step_name,
+            "status": "ok",
+            "records_before": before_count,
+            "records_after": after_count,
+        })
+        logging.info("Step '%s': %d -> %d records", step_name, before_count, after_count)
+
+    return current, step_log
+
+# ---------- I/O ----------
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def load_csv(path: Path) -> list[dict]:
+    if not path.exists():
+        raise FileNotFoundError(f"Input not found: {path}")
+    text = path.read_text(encoding="utf-8")
+    return list(csv.DictReader(text.splitlines()))
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+
+def run(input_path: Path, output_path: Path, steps: list[str]) -> dict:
+    """Load data, run pipeline, write results."""
+    records = load_csv(input_path)
+    result, step_log = run_pipeline(records, steps)
+
+    report = {
+        "input_records": len(records),
+        "output_records": len(result),
+        "steps": step_log,
+        "data": result,
     }
 
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info("Pipeline complete: %d -> %d records", len(records), len(result))
+    return report
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Run a data transformation pipeline")
+    parser.add_argument("--input", default="data/sample_input.csv")
+    parser.add_argument("--output", default="data/pipeline_output.json")
+    parser.add_argument(
+        "--steps",
+        default="strip_whitespace,lowercase_keys,filter_empty_rows,coerce_numbers,add_row_id",
+        help="Comma-separated transform names",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    steps = [s.strip() for s in args.steps.split(",")]
+    report = run(Path(args.input), Path(args.output), steps)
+    print(json.dumps({"steps": report["steps"], "output_records": report["output_records"]}, indent=2))
 
 
 if __name__ == "__main__":

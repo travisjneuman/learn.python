@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "backends": ["memory", "sqlite"],
+  "records": [
+    {"key": "user:1001", "name": "Alice", "role": "admin"},
+    {"key": "user:1002", "name": "Bob", "role": "editor"},
+    {"key": "config:theme", "value": "dark"}
+  ]
+}

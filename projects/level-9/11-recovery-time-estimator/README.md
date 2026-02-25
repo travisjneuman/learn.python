@@ -2,59 +2,75 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- estimate rto/rpo windows
+- Monte Carlo simulation for probabilistic time estimation
+- Recovery phases: detection, diagnosis, fix, verification, deployment
+- Triangular distribution modeling with 3-point estimates (min, expected, max)
+- Confidence intervals at p50, p90, and p99
+- Impact of team size, runbooks, and incident novelty on recovery time
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+When systems fail, stakeholders need realistic recovery time estimates — not guesses.
+"How long until the site is back?" requires modeling the full recovery process: detecting
+the issue, diagnosing root cause, implementing a fix, verifying it works, and deploying.
+Each phase has uncertainty. This project uses Monte Carlo simulation to model recovery
+times as probability distributions, producing confidence intervals that account for
+team capacity, runbook availability, and incident complexity — the same approach used
+by incident management teams at Google, Netflix, and PagerDuty.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/11-recovery-time-estimator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "incident": "database-outage",
+  "estimates": {
+    "p50_minutes": 95,
+    "p90_minutes": 142,
+    "p99_minutes": 198
+  },
+  "phases": [...],
+  "scenario_comparison": {...}
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with recovery time estimates and scenario comparison
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `communication_overhead` phase that models coordination time for multi-team incidents.
+2. Change the estimator to support custom estimation strategies via dependency injection.
+3. Add a `--runs` flag that controls the number of Monte Carlo simulation iterations.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `team_size=0` — does the diagnosis multiplier handle division by zero?
+2. Create a `PhaseEstimate` where `min > max` — what happens to the triangular distribution?
+3. Run the simulation with `simulation_runs=0` — does the percentile calculation handle empty data?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `team_size >= 1` in `IncidentProfile`.
+2. Validate that `min <= expected <= max` in `PhaseEstimate.__post_init__`.
+3. Return a default estimate when `simulation_runs` is 0.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is Monte Carlo simulation and why is it used for time estimation?
+2. How does the triangular distribution model 3-point estimates (min, expected, max)?
+3. What do p50, p90, and p99 mean in the context of recovery time estimation?
+4. Why do runbooks significantly reduce recovery time — what does the multiplier model?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain Monte Carlo simulation and triangular distributions in plain language,
+- run a scenario comparison and interpret the improvement percentage,
+- describe how team size, runbooks, and incident novelty affect recovery time,
+- add a new recovery phase and see its effect on the overall estimate.
 
 ---
 

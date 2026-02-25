@@ -2,59 +2,66 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- kpi dataset construction for ui
+- KPI aggregation from heterogeneous metric sources
+- Threshold evaluation with traffic-light statuses
+- Trend detection (improving / stable / degrading)
+- Percentile-based statistical summaries
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Real dashboards pull metrics from many sources — API gateways, infrastructure agents, monitoring
+systems. This project teaches you to aggregate those readings, evaluate them against thresholds,
+and produce a structured dashboard payload — the same pattern used in Grafana, Datadog, and custom BI tools.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/01-dashboard-kpi-assembler
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.json --output data/dashboard_output.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "title": "Operations Dashboard",
+  "overall_health": "warning",
+  "counts": {"red": 0, "yellow": 1, "green": 2},
+  "kpis": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/dashboard_output.json` — full dashboard payload
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a new KPI definition (e.g. `memory_usage_pct`) to `sample_input.json` with samples.
+2. Change `compute_trend` to use a sliding-window approach instead of simple half-split.
+3. Add a `--format` flag that supports both JSON and CSV output.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Remove one KPI from `kpi_definitions` but leave its samples — what happens to orphan data?
+2. Pass negative values in samples — does the percentile function handle them?
+3. Set `green_threshold` higher than `yellow_threshold` — what status does `evaluate` return?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that `green_threshold <= yellow_threshold` in `KPIDefinition`.
+2. Handle the case where samples reference a KPI not in definitions (log a warning).
+3. Add a test for negative metric values.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the project use `dataclass` instead of plain dictionaries?
+2. What is the nearest-rank percentile method and when might it give surprising results?
+3. How does `compute_trend` decide between "improving" and "degrading"?
+4. In a production system, where would the metric samples come from?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain the difference between mean and p95 and why dashboards show both,
+- add a new KPI end-to-end (definition + samples + threshold) without looking at docs,
+- describe how this pattern scales to thousands of metrics per minute,
+- explain why trend detection needs a minimum sample count.
 
 ---
 

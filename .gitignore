@@ -11,3 +11,6 @@ practice/flashcards/.review-state.json
 
 # Personal learning workspace
 learning/
+
+# MkDocs build output
+site/

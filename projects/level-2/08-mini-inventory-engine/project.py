@@ -1,107 +1,234 @@
 """Level 2 project: Mini Inventory Engine.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- track inventory items with quantities and prices,
+- add stock, remove stock, search items,
+- generate low-stock alerts and inventory reports.
+
+Skills practiced: nested dicts, dict/list comprehensions, try/except,
+sets, enumerate, sorting with key functions, re for search.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import re
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Mini Inventory Engine"
-PROJECT_FOCUS = "stock add/remove and reorder alerts"
 
+def create_inventory() -> dict[str, dict]:
+    """Create an empty inventory structure.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    Each item is stored as:
+        {"quantity": int, "price": float, "category": str, "min_stock": int}
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return {}
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def add_item(
+    inventory: dict[str, dict],
+    name: str,
+    quantity: int,
+    price: float,
+    category: str = "general",
+    min_stock: int = 5,
+) -> dict[str, dict]:
+    """Add a new item or increase stock of an existing item.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    If the item already exists, quantity is ADDED to current stock.
+    Price and category are updated to the new values.
+    """
+    # Normalise item name to lowercase for consistent lookups.
+    key = name.strip().lower()
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    if key in inventory:
+        # Item exists — increase quantity.
+        inventory[key]["quantity"] += quantity
+        inventory[key]["price"] = price
+        inventory[key]["category"] = category
+    else:
+        # New item — create the record.
+        inventory[key] = {
+            "quantity": quantity,
+            "price": price,
+            "category": category,
+            "min_stock": min_stock,
+        }
+
+    return inventory
+
+
+def remove_stock(
+    inventory: dict[str, dict], name: str, quantity: int
+) -> dict:
+    """Remove stock from an existing item.
+
+    Returns a result dict with success status and remaining quantity.
+    Raises no exception — returns error info in the dict instead.
+    """
+    key = name.strip().lower()
+
+    if key not in inventory:
+        return {"success": False, "error": f"Item '{name}' not found"}
+
+    current = inventory[key]["quantity"]
+
+    if quantity > current:
+        return {
+            "success": False,
+            "error": f"Cannot remove {quantity} — only {current} in stock",
+        }
+
+    inventory[key]["quantity"] -= quantity
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "success": True,
+        "item": key,
+        "removed": quantity,
+        "remaining": inventory[key]["quantity"],
     }
 
 
+def search_items(
+    inventory: dict[str, dict], pattern: str
+) -> list[tuple[str, dict]]:
+    """Search inventory by name using a regex pattern.
+
+    Returns a list of (name, item_dict) tuples matching the pattern.
+    Case-insensitive by default.
+    """
+    try:
+        compiled = re.compile(pattern, re.IGNORECASE)
+    except re.error:
+        return []
+
+    # List comprehension filtering items whose names match the pattern.
+    return [
+        (name, info)
+        for name, info in inventory.items()
+        if compiled.search(name)
+    ]
+
+
+def get_low_stock(inventory: dict[str, dict]) -> list[tuple[str, dict]]:
+    """Find items where quantity is at or below the minimum stock level.
+
+    Sorted by quantity (lowest first) so the most urgent items show first.
+    """
+    low = [
+        (name, info)
+        for name, info in inventory.items()
+        if info["quantity"] <= info["min_stock"]
+    ]
+    # Sort by quantity ascending using a key function.
+    return sorted(low, key=lambda pair: pair[1]["quantity"])
+
+
+def inventory_value(inventory: dict[str, dict]) -> dict:
+    """Calculate the total inventory value and per-category breakdown.
+
+    Uses dict comprehension for category grouping.
+    """
+    total = sum(
+        info["quantity"] * info["price"] for info in inventory.values()
+    )
+
+    # Group by category.
+    categories: dict[str, float] = {}
+    for info in inventory.values():
+        cat = info["category"]
+        val = info["quantity"] * info["price"]
+        categories[cat] = categories.get(cat, 0) + val
+
+    # Sort categories by value (highest first).
+    sorted_cats = dict(
+        sorted(categories.items(), key=lambda pair: pair[1], reverse=True)
+    )
+
+    return {
+        "total_value": round(total, 2),
+        "total_items": sum(info["quantity"] for info in inventory.values()),
+        "unique_products": len(inventory),
+        "by_category": {k: round(v, 2) for k, v in sorted_cats.items()},
+    }
+
+
+def load_inventory(path: Path) -> dict[str, dict]:
+    """Load inventory from a CSV file.
+
+    Expected format: name,quantity,price,category,min_stock
+    First line is header.
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Inventory file not found: {path}")
+
+    inventory = create_inventory()
+    lines = path.read_text(encoding="utf-8").splitlines()
+
+    for line in lines[1:]:  # Skip header.
+        parts = [p.strip() for p in line.split(",")]
+        if len(parts) < 3:
+            continue
+        try:
+            name = parts[0]
+            qty = int(parts[1])
+            price = float(parts[2])
+            category = parts[3] if len(parts) > 3 else "general"
+            min_stock = int(parts[4]) if len(parts) > 4 else 5
+            add_item(inventory, name, qty, price, category, min_stock)
+        except (ValueError, IndexError):
+            continue
+
+    return inventory
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Mini inventory engine")
+    parser.add_argument(
+        "--inventory",
+        default="data/sample_input.txt",
+        help="Path to inventory CSV file",
+    )
+    parser.add_argument("--search", default=None, help="Search pattern")
+    parser.add_argument("--low-stock", action="store_true", help="Show low-stock alerts")
+    parser.add_argument("--value", action="store_true", help="Show inventory value")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: load inventory and run requested operations."""
     args = parse_args()
+    inventory = load_inventory(Path(args.inventory))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    if args.search:
+        results = search_items(inventory, args.search)
+        print(f"Search results for '{args.search}':")
+        for name, info in results:
+            print(f"  {name}: qty={info['quantity']}, price=${info['price']:.2f}")
+        return
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    if args.low_stock:
+        low = get_low_stock(inventory)
+        if low:
+            print("LOW STOCK ALERTS:")
+            for name, info in low:
+                print(f"  {name}: {info['quantity']} remaining (min: {info['min_stock']})")
+        else:
+            print("All items are above minimum stock levels.")
+        return
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if args.value:
+        val = inventory_value(inventory)
+        print(json.dumps(val, indent=2))
+        return
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    # Default: show full inventory.
+    print(f"Inventory ({len(inventory)} products):")
+    for name, info in sorted(inventory.items()):
+        print(f"  {name}: qty={info['quantity']}, ${info['price']:.2f}, {info['category']}")
 
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
 
-
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

@@ -1,106 +1,170 @@
-"""Level 4 project: Schema Validator Engine.
+"""Level 4 / Project 01 — Schema Validator Engine.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Validates data records against a JSON schema definition.
+Demonstrates: schema loading, type checking, required-field enforcement,
+and structured error collection.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Schema Validator Engine"
-PROJECT_FOCUS = "required fields and datatype checks"
-
+# ---------- logging setup ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+    """Set up structured logging so every validation event is traceable."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
+# ---------- schema helpers ----------
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
-
-    We keep this separate from I/O so business logic stays testable.
-    """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+# Supported JSON-schema-like type strings mapped to Python builtins.
+TYPE_MAP: dict[str, type] = {
+    "string": str,
+    "integer": int,
+    "float": float,
+    "boolean": bool,
+    "number": (int, float),  # type: ignore[assignment]
+}
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def load_schema(path: Path) -> dict:
+    """Load a JSON schema file that describes expected fields.
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    Schema format example:
+    {
+      "fields": {
+        "name":  {"type": "string",  "required": true},
+        "age":   {"type": "integer", "required": true, "min": 0, "max": 150},
+        "email": {"type": "string",  "required": false}
+      }
     }
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Schema not found: {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+def load_records(path: Path) -> list[dict]:
+    """Load a JSON array of data records to validate."""
+    if not path.exists():
+        raise FileNotFoundError(f"Records file not found: {path}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise ValueError("Records file must contain a JSON array")
+    return data
+
+# ---------- validation logic ----------
+
+
+def validate_record(record: dict, schema: dict) -> list[str]:
+    """Validate one record against the schema, returning a list of errors.
+
+    Checks performed:
+    1. Required fields must be present and non-null.
+    2. Field values must match the declared type.
+    3. Numeric fields must fall within min/max bounds (if specified).
+    """
+    errors: list[str] = []
+    fields_spec = schema.get("fields", {})
+
+    # Check every field declared in the schema.
+    for field_name, rules in fields_spec.items():
+        value = record.get(field_name)
+
+        # --- required check ---
+        if rules.get("required", False) and (value is None or field_name not in record):
+            errors.append(f"missing required field '{field_name}'")
+            continue  # no point checking type/range on a missing field
+
+        if field_name not in record:
+            continue  # optional and absent — that is fine
+
+        # --- type check ---
+        expected = TYPE_MAP.get(rules.get("type", ""), None)
+        if expected and not isinstance(value, expected):
+            errors.append(
+                f"field '{field_name}' expected {rules['type']}, "
+                f"got {type(value).__name__}"
+            )
+            continue  # skip range check if type is wrong
+
+        # --- range check (numeric fields) ---
+        if isinstance(value, (int, float)):
+            if "min" in rules and value < rules["min"]:
+                errors.append(
+                    f"field '{field_name}' value {value} < min {rules['min']}"
+                )
+            if "max" in rules and value > rules["max"]:
+                errors.append(
+                    f"field '{field_name}' value {value} > max {rules['max']}"
+                )
+
+    # Warn about unexpected extra fields (not an error, just informational).
+    for key in record:
+        if key not in fields_spec:
+            errors.append(f"unexpected field '{key}'")
+
+    return errors
+
+
+def validate_all(records: list[dict], schema: dict) -> dict:
+    """Validate every record and return a structured report.
+
+    Returns:
+        {
+            "total": int,
+            "valid": int,
+            "invalid": int,
+            "errors": [{"record_index": int, "issues": [str]}]
+        }
+    """
+    report: dict = {"total": len(records), "valid": 0, "invalid": 0, "errors": []}
+
+    for idx, record in enumerate(records):
+        issues = validate_record(record, schema)
+        if issues:
+            report["invalid"] += 1
+            report["errors"].append({"record_index": idx, "issues": issues})
+            logging.warning("record %d invalid: %s", idx, issues)
+        else:
+            report["valid"] += 1
+
+    return report
+
+# ---------- CLI ----------
+
+
+def run(schema_path: Path, records_path: Path, output_path: Path) -> dict:
+    """Full validation run: load schema + records, validate, write report."""
+    schema = load_schema(schema_path)
+    records = load_records(records_path)
+    report = validate_all(records, schema)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info("Validation complete — %d valid, %d invalid", report["valid"], report["invalid"])
+    return report
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Validate records against a JSON schema")
+    parser.add_argument("--schema", default="data/schema.json", help="Path to schema file")
+    parser.add_argument("--input", default="data/records.json", help="Path to records file")
+    parser.add_argument("--output", default="data/validation_report.json", help="Output report path")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    report = run(Path(args.schema), Path(args.input), Path(args.output))
+    print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":

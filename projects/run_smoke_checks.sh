@@ -69,7 +69,9 @@ if [[ -z "$py_files" ]]; then
   echo "ERROR: no python files found under $ROOT_DIR" >&2
   exit 1
 fi
-python3 -m py_compile $py_files
+while IFS= read -r f; do
+  python3 -m py_compile "$f"
+done <<< "$py_files"
 
 echo "[check] selecting projects to run"
 selected_projects=()

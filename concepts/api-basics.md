@@ -2,6 +2,11 @@
 
 An **API** (Application Programming Interface) is a way for programs to talk to each other. When people say "API" in web development, they usually mean a web API — a server that accepts HTTP requests and returns data (usually JSON).
 
+## Visualize It
+
+See how Python works with JSON data, the format APIs use to communicate:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=import%20json%0A%0Apost%20%3D%20%7B%0A%20%20%20%20%22title%22%3A%20%22My%20Post%22%2C%0A%20%20%20%20%22tags%22%3A%20%5B%22python%22%2C%20%22api%22%5D%0A%7D%0Ajson_str%20%3D%20json.dumps%28post%29%0Aprint%28json_str%29%0Aparsed%20%3D%20json.loads%28json_str%29%0Aprint%28parsed%5B%22tags%22%5D%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## How APIs work
 
 ```
@@ -112,16 +117,11 @@ BASE_URL = "https://api.example.com/v2"
 requests.get(f"{BASE_URL}/users")
 ```
 
-## Related exercises
+## Practice
 
-- [Module 03 — REST APIs: Consuming](../projects/modules/03-rest-apis/)
-- [Module 04 — FastAPI Web Apps](../projects/modules/04-fastapi-web/)
-- [concepts/http-explained.md](./http-explained.md)
-
----
-
-## Practice This
-
+- [Module 03 REST APIs](../projects/modules/03-rest-apis/)
+- [Module 04 FastAPI Web Apps](../projects/modules/04-fastapi-web/)
+- [HTTP Explained](./http-explained.md)
 - [Module: Elite Track / 04 Secure Auth Gateway](../projects/elite-track/04-secure-auth-gateway/README.md)
 - [Level 1 / 09 Json Settings Loader](../projects/level-1/09-json-settings-loader/README.md)
 - [Level 10 / 01 Enterprise Python Blueprint](../projects/level-10/01-enterprise-python-blueprint/README.md)

@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+2024-01-15 09:30:00 [INFO] Server started on port 8080
+2024-01-15 09:30:05 [INFO] Database connection established
+2024-01-15 09:31:12 [WARNING] Slow query detected (2.3s)
+2024-01-15 09:32:00 [INFO] Request processed: GET /api/users
+2024-01-15 09:33:45 [ERROR] Database connection timeout
+2024-01-15 09:33:46 [ERROR] Failed to process request: 500
+2024-01-15 09:34:00 [INFO] Retrying database connection
+2024-01-15 09:34:02 [INFO] Database reconnected
+2024-01-15 09:35:00 [WARNING] Memory usage above 80%
+this line is not a valid log entry
+2024-01-15 09:36:00 [INFO] Health check passed

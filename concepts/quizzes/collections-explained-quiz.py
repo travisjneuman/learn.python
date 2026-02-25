@@ -3,6 +3,8 @@ Quiz: Collections — Lists, Dicts, Sets, Tuples
 Review: concepts/collections-explained.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -26,7 +28,7 @@ def run_quiz():
     print("  c) [1, 2, 3, 4]")
     print("  d) Error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! append() adds one item, so the list now has")
@@ -46,7 +48,7 @@ def run_quiz():
     print('  c) person.city')
     print('  d) person("city")')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Dictionaries use keys in square brackets")
@@ -66,7 +68,7 @@ def run_quiz():
     print('  c) {"red", "green"}')
     print("  d) Error — duplicate values")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Sets automatically remove duplicates.")
@@ -86,7 +88,7 @@ def run_quiz():
     print("  c) TypeError — tuples are immutable")
     print("  d) point becomes (10, 3, 5)")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Tuples cannot be modified after creation.")
@@ -104,7 +106,7 @@ def run_quiz():
     print("  c) An empty list")
     print("  d) A SyntaxError")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! {} creates an empty dict, not a set.")
@@ -125,7 +127,7 @@ def run_quiz():
     print("  c) None")
     print('  d) ""')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! .get() returns None for missing keys instead")
@@ -145,7 +147,7 @@ def run_quiz():
     print("  c) Dictionary")
     print("  d) List")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "d":
         score += 1
         print("Correct! Lists are ordered, changeable, and allow duplicates —")
@@ -165,7 +167,7 @@ def run_quiz():
     print("  c) Error")
     print('  d) "banana"')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Negative indexing counts from the end.")

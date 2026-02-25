@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/05-plugin-style-transformer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.json --output data/transformed.json --plugins uppercase,trim_whitespace,add_timestamp
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Applied 3 plugins to 4 records
+9 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/transformed.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Write a new plugin class that reverses string values and register it in the registry.
+2. Add a `--list-plugins` flag that prints all registered plugin names and exits.
+3. Add execution order tracking so each record shows which plugins were applied.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Request a plugin name that does not exist in the registry (e.g. `--plugins nonexistent`).
+2. Pass an input file where a record is missing the fields your plugins expect.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Raise a clear error listing available plugins when a requested one is not found.
+2. Make plugins skip fields that are missing rather than crashing.
+3. Add tests for unknown plugin names and missing fields.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does the plugin registry pattern decouple new transforms from the core pipeline?
+2. What is the role of the `TransformPlugin` base class?
+3. Why does `apply_plugins` iterate plugins in order?
+4. Where do you see plugin architectures in real systems (webpack, pytest, Flask extensions)?
 
 ## Mastery check
 You can move on when you can:

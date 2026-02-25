@@ -13,48 +13,50 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/13-validation-rule-engine
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --verbose
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Validated 8 records: 4 valid, 4 invalid (50.0% pass rate)
+Most common failures: R003: 1, R001: 1, ...
+12 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Validation report on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a new rule type `"one_of"` that checks if a value is in an allowed list.
+2. Add a `--rules` flag to load rules from a separate JSON file.
+3. Add a `--strict` mode that stops validation after the first failure per record.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a record with a field that is an unexpected type (e.g. age as a list).
+2. Use an invalid regex pattern in a rule — does it crash?
+3. Feed an empty records array — does the pass_rate calculation divide by zero?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Guard the regex check against `re.error` exceptions.
+2. Handle division by zero in pass_rate for empty batches.
+3. Add type checking before range validation.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are rules defined as data instead of hard-coded if/else chains?
+2. How does the dispatch pattern (`if rule_type == ...`) work?
+3. What is the advantage of returning result dicts instead of printing directly?
+4. Where would a validation rule engine be used in production systems?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- add a new rule type without modifying existing rule checks,
+- explain data-driven design vs code-driven design,
+- write regex patterns for common validations (email, phone, URL),
+- describe how this pattern scales to complex validation scenarios.
 
 ---
 

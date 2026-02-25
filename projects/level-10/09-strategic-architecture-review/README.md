@@ -2,59 +2,58 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- architecture review automation support
+- Architecture fitness functions as executable constraints
+- System model with service dependencies
+- Health scoring with automated recommendations
+- Transitive dependency depth calculation
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Architecture erodes silently — each small shortcut seems harmless until the system becomes unmaintainable. Fitness functions make architectural constraints executable and measurable, so drift is detected in CI rather than discovered during a crisis. This project builds a review engine with pluggable checks.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/09-strategic-architecture-review
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "system": "ecommerce-platform",
+  "health_score": 50.0,
+  "status": "warning",
+  "recommendations": [...]
+}
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add an `APIStabilityCheck` that fails when services have different API versions.
+2. Add a `CircularDependencyCheck` that detects cycles in the dependency graph.
+3. Weight recommendations by priority and show the top 3 in the summary.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a system with a service that has 10+ dependencies and observe the coupling check fail.
+2. Add a service with 15,000 LOC and watch the complexity check flag it.
+3. Create a deep dependency chain (A->B->C->D->E->F) and trigger the depth check.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add configurable thresholds per service (some services legitimately need more dependencies).
+2. Make `DependencyDepthCheck` detect and report cycles instead of infinite-looping.
+3. Test the cycle detection.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is an architecture fitness function and why is it better than a document?
+2. How does the health score aggregate multiple checks into a single number?
+3. Why does the dependency depth check use recursive traversal with a visited set?
+4. How would you run these checks in CI to catch architectural drift automatically?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- write a new fitness function and register it in the engine,
+- interpret a health score and prioritize recommendations,
+- model a system with known architectural problems and verify the checks catch them,
+- explain the difference between coupling, cohesion, and complexity metrics.
 
 ---
 

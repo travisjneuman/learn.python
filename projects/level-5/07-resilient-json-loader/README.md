@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/07-resilient-json-loader
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/primary.json --fallback data/backup.json --output data/loaded_data.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Loaded 3 records via primary
+8 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/loaded_data.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--strict` flag that fails immediately instead of trying fallbacks.
+2. Add repair support for JSON with single quotes instead of double quotes.
+3. Log a detailed report of which sources were tried, in order, and which succeeded.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Corrupt `primary.json` by adding a trailing comma and delete `backup.json`.
+2. Create a `primary.json` that is valid JSON but not a list (e.g. a plain string).
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Make `try_repair_json` handle the trailing-comma case and restore the data.
+2. Validate that loaded data is a list; wrap non-list data in a list with a warning.
+3. Add tests for repair and type-mismatch cases.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `try_load_json` return a tuple of `(data, error)` instead of raising?
+2. How does `try_repair_json` attempt to fix trailing commas?
+3. What is the fallback chain order and why does repair come last?
+4. Where do you see resilient loading in production (config servers, cached fallbacks)?
 
 ## Mastery check
 You can move on when you can:

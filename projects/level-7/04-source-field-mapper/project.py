@@ -1,140 +1,117 @@
-"""Level 7 project: Source Field Mapper.
+"""Level 7 / Project 04 — Source Field Mapper.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Maps fields between different data source schemas using configurable
+mapping rules. Supports renaming, type casting, and default values.
+
+Key concepts:
+- Schema mapping configuration (source field -> target field)
+- Type coercion: string->int, string->float, etc.
+- Default values for missing fields
+- Validation that all required target fields are populated
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
 from dataclasses import dataclass
-# Path enables robust path management.
 from pathlib import Path
-
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Source Field Mapper"
-PROJECT_FOCUS = "explicit source-to-target mapping contracts"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class FieldRule:
+    source_field: str
+    target_field: str
+    cast: str = "str"
+    default: str | None = None
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+def parse_rules(raw: list[dict]) -> list[FieldRule]:
+    return [
+        FieldRule(source_field=r["source"], target_field=r["target"],
+                  cast=r.get("cast", "str"), default=r.get("default"))
+        for r in raw
+    ]
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+CAST_FUNCTIONS = {
+    "str": str,
+    "int": int,
+    "float": float,
+    "bool": lambda v: str(v).lower() in ("true", "1", "yes"),
+}
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+
+def apply_mapping(record: dict, rules: list[FieldRule]) -> dict:
+    result: dict = {}
+    for rule in rules:
+        raw_value = record.get(rule.source_field)
+        if raw_value is None:
+            if rule.default is not None:
+                raw_value = rule.default
+            else:
+                continue
+        cast_fn = CAST_FUNCTIONS.get(rule.cast, str)
+        try:
+            result[rule.target_field] = cast_fn(raw_value)
+        except (ValueError, TypeError) as exc:
+            logging.warning("cast_error field=%s value=%r cast=%s err=%s",
+                            rule.source_field, raw_value, rule.cast, exc)
+            result[rule.target_field] = raw_value
+    return result
+
+
+def map_records(records: list[dict], rules: list[FieldRule]) -> tuple[list[dict], list[str]]:
+    mapped, errors = [], []
+    for idx, rec in enumerate(records, 1):
+        try:
+            mapped.append(apply_mapping(rec, rules))
+        except Exception as exc:
+            errors.append(f"record={idx} error={exc}")
+    return mapped, errors
+
+
+def validate_mapped(records: list[dict], required_fields: list[str]) -> list[str]:
+    issues = []
+    for idx, rec in enumerate(records, 1):
+        for f in required_fields:
+            if f not in rec:
+                issues.append(f"record={idx} missing={f}")
+    return issues
+
+
+def run(input_path: Path, output_path: Path) -> dict:
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
+    config = json.loads(input_path.read_text(encoding="utf-8"))
+    rules = parse_rules(config["rules"])
+    records = config["records"]
+    required = config.get("required_fields", [])
+    mapped, errors = map_records(records, rules)
+    validation_issues = validate_mapped(mapped, required)
+    summary = {
+        "input_records": len(records), "mapped_records": len(mapped),
+        "mapping_errors": errors, "validation_issues": validation_issues,
+        "sample_output": mapped[:5],
     }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    logging.info("mapped %d records, %d errors", len(mapped), len(errors))
     return summary
 
 
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(description="Source Field Mapper")
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

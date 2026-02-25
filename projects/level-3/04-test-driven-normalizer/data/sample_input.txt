@@ -1,5 +1,23 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Save the following as contacts.json and run:
+    python project.py contacts.json --fields "email:email,name:name,phone:phone" --json
+
+[
+    {
+        "name": "JANE DOE",
+        "email": "  Jane.Doe@EXAMPLE.com ",
+        "phone": "1-555-867-5309",
+        "signup_date": "01/15/2024"
+    },
+    {
+        "name": "john smith",
+        "email": "JOHN@test.COM",
+        "phone": "(555) 123-4567",
+        "signup_date": "25-12-2023"
+    },
+    {
+        "name": "  alice   jones  ",
+        "email": "alice@Jones.ORG  ",
+        "phone": "5559876543",
+        "signup_date": "2024.03.07"
+    }
+]

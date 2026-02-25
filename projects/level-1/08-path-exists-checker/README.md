@@ -5,49 +5,54 @@ Home: [README](../../../README.md)
 - filesystem existence and type checks
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Check whether file paths exist, determine if each is a file or directory, and report sizes in human-readable format. You will learn `pathlib.Path` methods like `exists()`, `is_file()`, `is_dir()`, and `stat()`.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/08-path-exists-checker
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Path Checker ===
+
+  data/sample_input.txt     EXISTS   file    0.1 KB
+  data/output.json          EXISTS   file    0.3 KB
+  /nonexistent/path/file    MISSING  --      --
+
+  2/3 paths exist
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a "last modified" field showing when each file was last changed (use `os.path.getmtime()`).
+2. Add a `--exists-only` flag that only shows paths that actually exist.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a path with special characters like `data/my file (1).txt` -- does `check_path()` handle spaces in paths?
+2. Add a symbolic link (if on Linux/Mac) or a path to a network drive -- does it detect the type correctly?
+3. Add a very deeply nested path that does not exist -- does the checker handle long paths gracefully?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `check_path()` works with paths containing spaces by using `Path` objects consistently.
+2. Handle permission errors (e.g. restricted directories) by catching `PermissionError`.
+3. Add a test for the missing-path case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What does `Path.exists()` do and why is it better than `os.path.exists()`?
+2. Why does `format_size()` convert bytes to KB/MB/GB instead of just showing raw bytes?
+3. What is the difference between `is_file()`, `is_dir()`, and `exists()` on a `Path` object?
+4. Where would path checking appear in real software (deployment scripts, backup tools, file managers)?
 
 ## Mastery check
 You can move on when you can:

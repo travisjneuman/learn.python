@@ -1,5 +1,17 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample manifest for Path Safe File Mover
+-------------------------------------------
+This file describes the test scenario for safe file operations.
+
+The project moves files between directories while enforcing safety:
+  - No overwriting existing files without --force
+  - No moving outside the designated base directory (path traversal protection)
+  - Dry-run mode shows what would happen without making changes
+  - Atomic moves using rename when possible, copy+delete when crossing devices
+
+Test files to create for manual testing:
+  source/report_q1.csv    -> archive/2024/report_q1.csv
+  source/report_q2.csv    -> archive/2024/report_q2.csv
+  source/summary.txt      -> archive/2024/summary.txt
+  source/../../../etc/passwd -> BLOCKED (path traversal attempt)
+
+Expected: 3 files moved, 1 blocked, move manifest written to log

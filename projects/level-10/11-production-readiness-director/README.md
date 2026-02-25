@@ -2,59 +2,58 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- readiness gate and release verdict
+- Checklist-driven readiness evaluation with categorical checks
+- Go/No-Go/Conditional decision logic with configurable thresholds
+- Immutable service manifest describing production preparedness
+- Category-grouped results (observability, reliability, security, operations)
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Launching a service without checking readiness leads to incidents. This project codifies the readiness review as executable checks, giving teams consistent evaluation and a clear audit trail of what was verified before production.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/11-production-readiness-director
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "service": "payment-service",
+  "decision": "conditional_go",
+  "pass_rate": "88%",
+  ...
+}
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `BackupCheck` and `SLACheck` that evaluate the corresponding manifest fields.
+2. Add weighted categories — security failures should block launch regardless of pass rate.
+3. Add an override mechanism where a VP can force a "go" decision with an audit trail.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a `ServiceManifest` with all fields `False` and observe the NO_GO decision.
+2. Set thresholds to zero and watch every service get auto-approved regardless of readiness.
+3. Register no checks and observe a 0% pass rate.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a minimum check count requirement — `evaluate` should fail if fewer than 3 checks are registered.
+2. Make security checks "hard blockers" that always produce NO_GO on failure.
+3. Test both safeguards.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is the service manifest immutable (frozen dataclass)?
+2. How does the three-tier decision system (go/conditional/no-go) help operations teams?
+3. Why are checks categorized — what does grouping by observability/reliability/security enable?
+4. How would you integrate this into a CI/CD pipeline?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- add a new ReadinessCheck and register it in the director,
+- explain the threshold-based decision logic,
+- create a manifest that produces a CONDITIONAL_GO decision,
+- describe how Google and Netflix approach production readiness reviews.
 
 ---
 

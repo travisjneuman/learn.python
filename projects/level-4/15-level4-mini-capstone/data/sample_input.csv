@@ -1,0 +1,9 @@
+name,age,department,salary,email
+Alice Johnson,30,Engineering,95000,alice@company.com
+Bob Smith,25,Design,78000,bob@company.com
+,28,Marketing,65000,anon@company.com
+Charlie Brown,,Sales,72000,charlie@company.com
+Diana Prince,32,Engineering,88000,diana@company.com
+Eve Wilson,45,HR,,eve@company.com
+Frank Castle,38,Operations,71000,frank@company.com
+Grace Hopper,29,,82000,grace@company.com

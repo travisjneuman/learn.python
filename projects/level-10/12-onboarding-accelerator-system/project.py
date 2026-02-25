@@ -1,141 +1,221 @@
-"""Level 10 project: Onboarding Accelerator System.
+"""Onboarding Accelerator System — Generate onboarding materials and environment setup.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: Uses the Builder pattern to compose onboarding plans from modular
+components (access requests, tool setup, reading lists, buddy assignments). A
+RoleTemplate defines what each role needs; the OnboardingBuilder assembles a
+personalized plan. The system tracks task completion and computes ramp-up progress.
+
+Design rationale: New-hire onboarding is expensive and inconsistent when done ad-hoc.
+By codifying role-specific checklists, teams ensure every engineer gets the same
+high-quality start. The builder pattern allows customization without a combinatorial
+explosion of plan variants.
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "Onboarding Accelerator System"
-PROJECT_FOCUS = "new engineer ramp-up automation"
+
+# ---------------------------------------------------------------------------
+# Domain types
+# ---------------------------------------------------------------------------
+
+class TaskCategory(Enum):
+    ACCESS = auto()
+    TOOLS = auto()
+    READING = auto()
+    MEETINGS = auto()
+    CODING = auto()
+
+
+class TaskPriority(Enum):
+    DAY_ONE = auto()
+    FIRST_WEEK = auto()
+    FIRST_MONTH = auto()
+    FIRST_QUARTER = auto()
+
+
+class CompletionStatus(Enum):
+    PENDING = auto()
+    IN_PROGRESS = auto()
+    DONE = auto()
+    BLOCKED = auto()
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class OnboardingTask:
+    """A single onboarding task."""
+    task_id: str
+    title: str
+    category: TaskCategory
+    priority: TaskPriority
+    description: str = ""
+    status: CompletionStatus = CompletionStatus.PENDING
+    assigned_to: str = ""
+    depends_on: list[str] = field(default_factory=list)
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class RoleTemplate:
+    """Template defining onboarding tasks for a specific role."""
+    role_name: str
+    tasks: list[OnboardingTask] = field(default_factory=list)
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    def task_count(self) -> int:
+        return len(self.tasks)
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+# ---------------------------------------------------------------------------
+# Pre-built role templates
+# ---------------------------------------------------------------------------
+
+def backend_engineer_template() -> RoleTemplate:
+    return RoleTemplate("Backend Engineer", [
+        OnboardingTask("BE-001", "Request GitHub access", TaskCategory.ACCESS, TaskPriority.DAY_ONE),
+        OnboardingTask("BE-002", "Request AWS console access", TaskCategory.ACCESS, TaskPriority.DAY_ONE),
+        OnboardingTask("BE-003", "Install Python + toolchain", TaskCategory.TOOLS, TaskPriority.DAY_ONE,
+                       "Install Python 3.11+, pip, ruff, black, pytest"),
+        OnboardingTask("BE-004", "Clone core repositories", TaskCategory.TOOLS, TaskPriority.DAY_ONE,
+                       depends_on=["BE-001"]),
+        OnboardingTask("BE-005", "Read architecture overview", TaskCategory.READING, TaskPriority.FIRST_WEEK),
+        OnboardingTask("BE-006", "Read API design guidelines", TaskCategory.READING, TaskPriority.FIRST_WEEK),
+        OnboardingTask("BE-007", "Meet team lead", TaskCategory.MEETINGS, TaskPriority.DAY_ONE),
+        OnboardingTask("BE-008", "Complete first code review", TaskCategory.CODING, TaskPriority.FIRST_WEEK,
+                       depends_on=["BE-004"]),
+        OnboardingTask("BE-009", "Submit first PR", TaskCategory.CODING, TaskPriority.FIRST_MONTH,
+                       depends_on=["BE-008"]),
+        OnboardingTask("BE-010", "Complete on-call shadow", TaskCategory.CODING, TaskPriority.FIRST_QUARTER),
+    ])
+
+
+def frontend_engineer_template() -> RoleTemplate:
+    return RoleTemplate("Frontend Engineer", [
+        OnboardingTask("FE-001", "Request GitHub access", TaskCategory.ACCESS, TaskPriority.DAY_ONE),
+        OnboardingTask("FE-002", "Install Node.js + toolchain", TaskCategory.TOOLS, TaskPriority.DAY_ONE),
+        OnboardingTask("FE-003", "Clone frontend repos", TaskCategory.TOOLS, TaskPriority.DAY_ONE,
+                       depends_on=["FE-001"]),
+        OnboardingTask("FE-004", "Read component library docs", TaskCategory.READING, TaskPriority.FIRST_WEEK),
+        OnboardingTask("FE-005", "Meet design team", TaskCategory.MEETINGS, TaskPriority.DAY_ONE),
+        OnboardingTask("FE-006", "Build a sample feature", TaskCategory.CODING, TaskPriority.FIRST_WEEK,
+                       depends_on=["FE-003"]),
+        OnboardingTask("FE-007", "Submit first PR", TaskCategory.CODING, TaskPriority.FIRST_MONTH,
+                       depends_on=["FE-006"]),
+    ])
+
+
+ROLE_TEMPLATES: dict[str, RoleTemplate] = {
+    "backend": backend_engineer_template(),
+    "frontend": frontend_engineer_template(),
+}
+
+
+# ---------------------------------------------------------------------------
+# Onboarding plan (built from template + customization)
+# ---------------------------------------------------------------------------
+
+@dataclass
+class OnboardingPlan:
+    """Personalized onboarding plan for a specific hire."""
+    employee_name: str
+    role: str
+    buddy: str = ""
+    tasks: list[OnboardingTask] = field(default_factory=list)
+
+    @property
+    def completion_pct(self) -> float:
+        if not self.tasks:
+            return 0.0
+        done = sum(1 for t in self.tasks if t.status == CompletionStatus.DONE)
+        return (done / len(self.tasks)) * 100
+
+    @property
+    def blocked_tasks(self) -> list[OnboardingTask]:
+        return [t for t in self.tasks if t.status == CompletionStatus.BLOCKED]
+
+    def tasks_by_priority(self, priority: TaskPriority) -> list[OnboardingTask]:
+        return [t for t in self.tasks if t.priority == priority]
+
+    def complete_task(self, task_id: str) -> bool:
+        for task in self.tasks:
+            if task.task_id == task_id:
+                task.status = CompletionStatus.DONE
+                return True
+        return False
+
+    def summary(self) -> dict[str, Any]:
+        by_priority: dict[str, int] = {}
+        for p in TaskPriority:
+            tasks = self.tasks_by_priority(p)
+            by_priority[p.name.lower()] = len(tasks)
+        return {
+            "employee": self.employee_name,
+            "role": self.role,
+            "buddy": self.buddy,
+            "total_tasks": len(self.tasks),
+            "completion": f"{self.completion_pct:.0f}%",
+            "blocked": len(self.blocked_tasks),
+            "by_priority": by_priority,
+        }
+
+
+# ---------------------------------------------------------------------------
+# Builder pattern
+# ---------------------------------------------------------------------------
+
+class OnboardingBuilder:
+    """Builds personalized onboarding plans from role templates."""
+
+    def __init__(self, employee_name: str, role: str) -> None:
+        self._name = employee_name
+        self._role = role
+        self._buddy = ""
+        self._extra_tasks: list[OnboardingTask] = []
+
+    def with_buddy(self, buddy_name: str) -> OnboardingBuilder:
+        self._buddy = buddy_name
+        return self
+
+    def add_task(self, task: OnboardingTask) -> OnboardingBuilder:
+        self._extra_tasks.append(task)
+        return self
+
+    def build(self) -> OnboardingPlan:
+        template = ROLE_TEMPLATES.get(self._role)
+        if template is None:
+            raise ValueError(f"Unknown role: {self._role}. Available: {list(ROLE_TEMPLATES.keys())}")
+
+        tasks = list(template.tasks) + self._extra_tasks
+        return OnboardingPlan(
+            employee_name=self._name,
+            role=self._role,
+            buddy=self._buddy,
+            tasks=tasks,
         )
-    return records
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
-
-
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
+# ---------------------------------------------------------------------------
+# CLI demo
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
+    plan = (
+        OnboardingBuilder("Alice Chen", "backend")
+        .with_buddy("Bob Smith")
+        .add_task(OnboardingTask("CUSTOM-001", "Set up VPN", TaskCategory.TOOLS, TaskPriority.DAY_ONE))
+        .build()
     )
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    # Simulate completing some tasks
+    plan.complete_task("BE-001")
+    plan.complete_task("BE-007")
+
+    print(json.dumps(plan.summary(), indent=2))
+    print(f"\nDay-one tasks ({len(plan.tasks_by_priority(TaskPriority.DAY_ONE))}):")
+    for task in plan.tasks_by_priority(TaskPriority.DAY_ONE):
+        tag = task.status.name.ljust(10)
+        print(f"  [{tag}] {task.task_id}: {task.title}")
 
 
 if __name__ == "__main__":

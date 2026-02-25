@@ -1,0 +1,13 @@
+{
+  "export_id": "exp-2025-001",
+  "requester": "analyst@company.com",
+  "format": "csv",
+  "columns": ["name", "email", "department", "salary", "ssn"],
+  "row_count": 5000,
+  "classification": "confidential",
+  "data_sample": [
+    {"name": "Alice Chen", "email": "alice@example.com", "department": "Engineering", "salary": 120000, "ssn": "123-45-6789"},
+    {"name": "Bob Smith", "email": "bob@example.com", "department": "Sales", "salary": 95000, "ssn": "987-65-4321"},
+    {"name": "Carol Davis", "email": "carol@example.com", "department": "Marketing", "salary": 88000, "ssn": "456-78-9012"}
+  ]
+}

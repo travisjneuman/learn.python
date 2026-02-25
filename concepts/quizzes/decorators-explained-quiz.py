@@ -3,6 +3,8 @@ Quiz: Decorators Explained
 Review: concepts/decorators-explained.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) Makes a function run faster")
     print("  d) Converts a function to a class")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! A decorator takes a function, wraps it with")
@@ -45,7 +47,7 @@ def run_quiz():
     print("  c) shout = greet(shout)")
     print("  d) shout(greet())")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! @shout is syntactic sugar for greet = shout(greet).")
@@ -69,7 +71,7 @@ def run_quiz():
     print("  c) They run at the same time")
     print("  d) Only the top one runs")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Decorators apply bottom-up. This is equivalent to:")
@@ -88,7 +90,7 @@ def run_quiz():
     print("  c) To allow the decorator to take arguments")
     print("  d) It is required — decorators do not work without it")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Without @wraps, the decorated function loses its")
@@ -115,7 +117,7 @@ def run_quiz():
     print("  c) They make the function faster")
     print("  d) They are only needed for methods")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! *args and **kwargs let the wrapper accept any")
@@ -135,7 +137,7 @@ def run_quiz():
     print("  c) @click.command() to create a CLI command")
     print("  d) All of the above")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "d":
         score += 1
         print("Correct! Decorators are used heavily in web frameworks,")

@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+service: user-db tier=1 owner=platform-team depends=[]
+service: auth-api tier=1 owner=auth-team depends=[user-db]
+service: user-api tier=1 owner=user-team depends=[user-db,auth-api]
+service: checkout-api tier=1 owner=commerce-team depends=[user-api,payment-svc]
+service: payment-svc tier=1 owner=payments-team depends=[user-db]
+service: notification-svc tier=2 owner=platform-team depends=[user-api]
+service: analytics-svc tier=3 owner=data-team depends=[user-api,checkout-api]
+change: user-db type=schema_migration description="Add email_verified column"

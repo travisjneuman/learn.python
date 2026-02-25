@@ -5,49 +5,57 @@ Home: [README](../../../README.md)
 - dictionary creation and formatting
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Parse comma-separated contact records into structured dictionaries and display them as formatted cards with box borders. You will practise string splitting, dictionary construction, and text alignment.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/12-contact-card-builder
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Contact Cards ===
+
+  +---------------------------+
+  | Ada Lovelace              |
+  | Phone: 555-0101           |
+  | Email: ada@example.com    |
+  +---------------------------+
+
+Parsed 3 valid contacts (0 errors)
+Output written to data/contacts.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a phone number field (4th comma-separated value) to the contact card format.
+2. Add a `--format` flag to choose between "card" (box drawing) and "csv" (plain comma-separated) output.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a line with only a name and no email like `John Smith` -- does `parse_contact_line()` raise `ValueError`?
+2. Add a line with an invalid email like `alice@` -- does the email validator catch it?
+3. Add a line with extra commas like `Name, Role, email@test.com, , ,` -- what happens?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `parse_contact_line()` raises `ValueError` with a clear message for lines with fewer than 3 fields.
+2. Improve email validation to reject emails without a domain part.
+3. Add a test for the malformed-line edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `parse_contact_line()` use `.split(",")` and then `.strip()` each part?
+2. What does the `"@" in email and "." in email` check actually validate (and what does it miss)?
+3. Why does `format_card()` use box-drawing characters for the border?
+4. Where would contact card parsing appear in real software (CRM imports, vCard generation, address books)?
 
 ## Mastery check
 You can move on when you can:

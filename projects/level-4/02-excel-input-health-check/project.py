@@ -1,106 +1,194 @@
-"""Level 4 project: Excel Input Health Check.
+"""Level 4 / Project 02 — Excel Input Health Check.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Analyzes CSV/data files for common quality issues: encoding problems,
+delimiter inconsistencies, missing headers, empty columns, and row
+completeness. Produces a structured health report.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Excel Input Health Check"
-PROJECT_FOCUS = "tabular input quality scoring"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- detection helpers ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def detect_delimiter(sample_lines: list[str]) -> str:
+    """Guess the CSV delimiter by counting candidate characters.
 
-    We keep this separate from I/O so business logic stays testable.
+    We check comma, tab, semicolon, and pipe across the first few lines.
+    The character with the most consistent count wins.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    candidates = [",", "\t", ";", "|"]
+    best = ","
+    best_score = -1
+
+    for char in candidates:
+        counts = [line.count(char) for line in sample_lines if line.strip()]
+        if not counts:
+            continue
+        # Score = minimum count (consistency) — a real delimiter appears the same
+        # number of times in every row.
+        if min(counts) > 0 and min(counts) >= best_score:
+            best_score = min(counts)
+            best = char
+
+    return best
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def check_encoding(path: Path) -> dict:
+    """Try reading the file as UTF-8; report success or failure."""
+    try:
+        path.read_text(encoding="utf-8")
+        return {"encoding": "utf-8", "readable": True}
+    except UnicodeDecodeError:
+        return {"encoding": "unknown", "readable": False}
+
+
+def check_headers(rows: list[list[str]]) -> dict:
+    """Verify the header row has no blanks and no duplicates."""
+    if not rows:
+        return {"present": False, "issues": ["file is empty"]}
+
+    headers = rows[0]
+    issues: list[str] = []
+
+    blanks = [i for i, h in enumerate(headers) if not h.strip()]
+    if blanks:
+        issues.append(f"blank header(s) at column index(es): {blanks}")
+
+    seen: set[str] = set()
+    for h in headers:
+        normalized = h.strip().lower()
+        if normalized in seen:
+            issues.append(f"duplicate header: '{h.strip()}'")
+        seen.add(normalized)
+
+    return {"present": True, "column_count": len(headers), "issues": issues}
+
+
+def check_row_completeness(rows: list[list[str]]) -> dict:
+    """Check whether every data row has the same number of fields as the header."""
+    if len(rows) < 2:
+        return {"data_rows": 0, "short_rows": [], "long_rows": []}
+
+    expected = len(rows[0])
+    short: list[int] = []
+    long: list[int] = []
+
+    for idx, row in enumerate(rows[1:], start=2):  # 1-indexed, header is row 1
+        if len(row) < expected:
+            short.append(idx)
+        elif len(row) > expected:
+            long.append(idx)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "data_rows": len(rows) - 1,
+        "expected_columns": expected,
+        "short_rows": short,
+        "long_rows": long,
     }
 
 
+def check_empty_columns(rows: list[list[str]]) -> list[int]:
+    """Return column indexes that are entirely empty across all data rows."""
+    if len(rows) < 2:
+        return []
+
+    col_count = len(rows[0])
+    empty_cols: list[int] = []
+
+    for col_idx in range(col_count):
+        all_empty = all(
+            col_idx >= len(row) or not row[col_idx].strip()
+            for row in rows[1:]
+        )
+        if all_empty:
+            empty_cols.append(col_idx)
+
+    return empty_cols
+
+# ---------- main pipeline ----------
+
+
+def health_check(path: Path) -> dict:
+    """Run all health checks on a CSV file and return a combined report."""
+    report: dict = {"file": str(path)}
+
+    # 1. Encoding check
+    enc = check_encoding(path)
+    report["encoding"] = enc
+    if not enc["readable"]:
+        report["status"] = "FAIL"
+        return report
+
+    # 2. Read raw lines for delimiter detection
+    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    if not raw_lines:
+        report["status"] = "FAIL"
+        report["reason"] = "file is empty"
+        return report
+
+    delimiter = detect_delimiter(raw_lines[:10])
+    report["detected_delimiter"] = repr(delimiter)
+
+    # 3. Parse as CSV with detected delimiter
+    reader = csv.reader(raw_lines, delimiter=delimiter)
+    rows = list(reader)
+
+    # 4. Header check
+    report["headers"] = check_headers(rows)
+
+    # 5. Row completeness
+    report["completeness"] = check_row_completeness(rows)
+
+    # 6. Empty columns
+    report["empty_columns"] = check_empty_columns(rows)
+
+    # Overall status
+    has_issues = (
+        report["headers"].get("issues", [])
+        or report["completeness"].get("short_rows", [])
+        or report["completeness"].get("long_rows", [])
+        or report["empty_columns"]
+    )
+    report["status"] = "WARN" if has_issues else "OK"
+
+    return report
+
+
 def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
+    """Execute health check and persist the report."""
+    report = health_check(input_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info("Health check complete — status=%s", report["status"])
+    return report
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Check CSV/data file health")
+    parser.add_argument("--input", default="data/sample_input.csv")
+    parser.add_argument("--output", default="data/health_report.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    report = run(Path(args.input), Path(args.output))
+    print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":

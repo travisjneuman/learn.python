@@ -1,0 +1,9 @@
+employee_id,name,age,department,salary
+1,Alice,30,Engineering,95000.00
+2,Bob,25,Design,78000.00
+3,,28,Marketing,65000.00
+4,Diana,17,Sales,52000.00
+5,Eve,45,Legal,88000.00
+6,Frank,abc,HR,71000.00
+7,Grace,38,Engineering,-5000.00
+8,Hank,52,Design,

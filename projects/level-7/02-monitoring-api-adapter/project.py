@@ -1,140 +1,199 @@
-"""Level 7 project: Monitoring API Adapter.
+"""Level 7 / Project 02 — Monitoring API Adapter.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Collects metrics from simulated monitoring APIs (CPU, memory, disk)
+and normalizes them into a unified metrics format.
+
+Key concepts:
+- Simulating API responses with mock data (no real HTTP)
+- Metric normalization: different units → standard format
+- Threshold-based alerting on collected metrics
+- Timestamp handling for time-series data
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Monitoring API Adapter"
-PROJECT_FOCUS = "api call abstraction and result normalization"
+# ---------------------------------------------------------------------------
+# Metric model
+# ---------------------------------------------------------------------------
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class Metric:
+    name: str
+    value: float
+    unit: str
+    source: str
+    timestamp: str
+    alert: bool = False
+    alert_reason: str = ""
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------------------------------------------------------------------------
+# Mock monitoring APIs
+# ---------------------------------------------------------------------------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+def mock_cpu_api() -> list[dict]:
+    return [
+        {"metric": "cpu_usage", "pct": 45.2, "host": "web-01", "time": "2025-01-15T08:00:00"},
+        {"metric": "cpu_usage", "pct": 92.1, "host": "web-02", "time": "2025-01-15T08:00:00"},
+    ]
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+def mock_memory_api() -> list[dict]:
+    return [
+        {"type": "memory_used_mb", "value_mb": 3200, "server": "web-01", "at": "2025-01-15T08:00:00"},
+        {"type": "memory_used_mb", "value_mb": 7800, "server": "db-01", "at": "2025-01-15T08:00:00"},
+    ]
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+
+def mock_disk_api() -> list[dict]:
+    return [
+        {"check": "disk_free_pct", "free_pct": 15.0, "node": "db-01", "ts": "2025-01-15T08:00:00"},
+        {"check": "disk_free_pct", "free_pct": 72.0, "node": "web-01", "ts": "2025-01-15T08:00:00"},
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Adapters
+# ---------------------------------------------------------------------------
+
+
+def adapt_cpu(raw: list[dict]) -> list[Metric]:
+    return [
+        Metric(name="cpu_usage", value=r["pct"], unit="percent",
+               source=r["host"], timestamp=r["time"])
+        for r in raw
+    ]
+
+
+def adapt_memory(raw: list[dict]) -> list[Metric]:
+    return [
+        Metric(name="memory_used", value=r["value_mb"], unit="MB",
+               source=r["server"], timestamp=r["at"])
+        for r in raw
+    ]
+
+
+def adapt_disk(raw: list[dict]) -> list[Metric]:
+    return [
+        Metric(name="disk_free", value=r["free_pct"], unit="percent",
+               source=r["node"], timestamp=r["ts"])
+        for r in raw
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Alerting
+# ---------------------------------------------------------------------------
+
+DEFAULT_THRESHOLDS = {
+    "cpu_usage": {"max": 90.0, "reason": "CPU above 90%"},
+    "memory_used": {"max": 7500, "reason": "Memory above 7500 MB"},
+    "disk_free": {"min": 20.0, "reason": "Disk free below 20%"},
+}
+
+
+def check_alerts(
+    metrics: list[Metric],
+    thresholds: dict | None = None,
+) -> list[Metric]:
+    """Apply threshold checks and flag metrics that breach limits."""
+    thresholds = thresholds or DEFAULT_THRESHOLDS
+
+    for m in metrics:
+        rule = thresholds.get(m.name)
+        if not rule:
+            continue
+
+        if "max" in rule and m.value > rule["max"]:
+            m.alert = True
+            m.alert_reason = rule["reason"]
+        elif "min" in rule and m.value < rule["min"]:
+            m.alert = True
+            m.alert_reason = rule["reason"]
+
+    return metrics
+
+
+# ---------------------------------------------------------------------------
+# Collector
+# ---------------------------------------------------------------------------
+
+
+def collect_all(custom_sources: dict | None = None) -> list[Metric]:
+    """Fetch from all monitoring APIs and normalize."""
+    sources = custom_sources or {
+        "cpu": (mock_cpu_api, adapt_cpu),
+        "memory": (mock_memory_api, adapt_memory),
+        "disk": (mock_disk_api, adapt_disk),
     }
 
+    all_metrics: list[Metric] = []
+    for name, (fetcher, adapter) in sources.items():
+        try:
+            raw = fetcher() if callable(fetcher) else fetcher
+            metrics = adapter(raw)
+            all_metrics.extend(metrics)
+            logging.info("collected source=%s metrics=%d", name, len(metrics))
+        except Exception as exc:
+            logging.warning("skip source=%s error=%s", name, exc)
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+    return all_metrics
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
+def run(input_path: Path, output_path: Path) -> dict:
+    metrics = collect_all()
+    check_alerts(metrics)
+
+    alerts = [m for m in metrics if m.alert]
+
+    summary = {
+        "total_metrics": len(metrics),
+        "alerts": len(alerts),
+        "metrics": [
+            {"name": m.name, "value": m.value, "unit": m.unit,
+             "source": m.source, "alert": m.alert, "reason": m.alert_reason}
+            for m in metrics
+        ],
     }
 
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    logging.info("collected %d metrics, %d alerts", len(metrics), len(alerts))
     return summary
 
 
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(
+        description="Monitoring API Adapter — collect and normalize metrics"
+    )
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

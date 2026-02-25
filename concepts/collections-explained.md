@@ -2,6 +2,11 @@
 
 Python has several ways to group multiple values together.
 
+## Visualize It
+
+See how lists, dicts, and sets store data differently in memory:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=fruits%20%3D%20%5B%22apple%22%2C%20%22banana%22%5D%0Afruits.append%28%22cherry%22%29%0A%0Aperson%20%3D%20%7B%22name%22%3A%20%22Alice%22%2C%20%22age%22%3A%2030%7D%0Aperson%5B%22city%22%5D%20%3D%20%22Denver%22%0A%0Acolors%20%3D%20%7B%22red%22%2C%20%22blue%22%2C%20%22red%22%7D%0Aprint%28len%28colors%29%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Lists — ordered, changeable, allows duplicates
 
 ```python
@@ -15,7 +20,7 @@ len(fruits)               # 4
 
 Use lists when: you have an ordered collection of similar items (scores, names, files).
 
-## Dictionaries — key-value pairs, unordered, changeable
+## Dictionaries — key-value pairs, insertion-ordered (Python 3.7+), changeable
 
 ```python
 person = {"name": "Alice", "age": 30}
@@ -53,7 +58,7 @@ Use tuples when: you have a fixed group of values that should not change (coordi
 | Feature | List | Dict | Set | Tuple |
 |---------|------|------|-----|-------|
 | Syntax | `[1, 2, 3]` | `{"a": 1}` | `{1, 2, 3}` | `(1, 2, 3)` |
-| Ordered | Yes | No* | No | Yes |
+| Ordered | Yes | Yes* | No | Yes |
 | Changeable | Yes | Yes | Yes | No |
 | Duplicates | Yes | No (keys) | No | Yes |
 | Access by | Index | Key | N/A | Index |
@@ -78,14 +83,10 @@ for item in items:
 items = [item for item in items if item != "remove_me"]
 ```
 
-## Related exercises
-- [Level 00, Exercise 09 — Lists](../projects/level-00-absolute-beginner/09-lists/)
-- [Level 00, Exercise 12 — Dictionaries](../projects/level-00-absolute-beginner/12-dictionaries/)
+## Practice
 
----
-
-## Practice This
-
+- [Level 00 / 09 Lists](../projects/level-00-absolute-beginner/09-lists/)
+- [Level 00 / 12 Dictionaries](../projects/level-00-absolute-beginner/12-dictionaries/)
 - [Level 0 / 06 Word Counter Basic](../projects/level-0/06-word-counter-basic/README.md)
 - [Level 0 / 09 Daily Checklist Writer](../projects/level-0/09-daily-checklist-writer/README.md)
 - [Level 0 / 10 Duplicate Line Finder](../projects/level-0/10-duplicate-line-finder/README.md)

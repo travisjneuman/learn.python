@@ -1,52 +1,149 @@
-"""Advanced test module with heavy comments.
+"""Tests for Policy-as-Code Validator.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers individual rule types, engine composition, batch evaluation,
+config loading, and edge cases.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from typing import Any
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    CustomPredicateRule,
+    EvaluationReport,
+    NumericRangeRule,
+    PolicyEngine,
+    RequiredFieldRule,
+    Severity,
+    ValueInSetRule,
+    Verdict,
+    load_policies_from_config,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+@pytest.fixture
+def sample_resource() -> dict[str, Any]:
+    return {
+        "name": "billing-svc",
+        "environment": "production",
+        "replicas": 3,
+        "owner": "platform-team",
+    }
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+
+@pytest.fixture
+def engine_with_rules() -> PolicyEngine:
+    engine = PolicyEngine()
+    engine.add_rule(RequiredFieldRule("R001", "name"))
+    engine.add_rule(RequiredFieldRule("R002", "owner"))
+    engine.add_rule(ValueInSetRule("R003", "environment", {"production", "staging", "development"}))
+    engine.add_rule(NumericRangeRule("R004", "replicas", min_val=1, max_val=10))
+    return engine
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# ---------------------------------------------------------------------------
+# Individual rules
+# ---------------------------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestRequiredFieldRule:
+    def test_present_field_passes(self, sample_resource: dict[str, Any]) -> None:
+        result = RequiredFieldRule("R1", "name").evaluate(sample_resource)
+        assert result.verdict == Verdict.PASS
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_missing_field_fails(self) -> None:
+        result = RequiredFieldRule("R1", "missing").evaluate({})
+        assert result.verdict == Verdict.FAIL
+
+    def test_empty_string_fails(self) -> None:
+        result = RequiredFieldRule("R1", "name").evaluate({"name": ""})
+        assert result.verdict == Verdict.FAIL
+
+
+class TestValueInSetRule:
+    @pytest.mark.parametrize("value,expected", [
+        ("production", Verdict.PASS),
+        ("staging", Verdict.PASS),
+        ("invalid", Verdict.FAIL),
+    ])
+    def test_value_in_set_variants(self, value: str, expected: Verdict) -> None:
+        rule = ValueInSetRule("R1", "env", {"production", "staging"})
+        result = rule.evaluate({"env": value})
+        assert result.verdict == expected
+
+
+class TestNumericRangeRule:
+    def test_within_range_passes(self) -> None:
+        result = NumericRangeRule("R1", "count", min_val=1, max_val=10).evaluate({"count": 5})
+        assert result.verdict == Verdict.PASS
+
+    def test_below_minimum_fails(self) -> None:
+        result = NumericRangeRule("R1", "count", min_val=1).evaluate({"count": 0})
+        assert result.verdict == Verdict.FAIL
+
+    def test_missing_field_skips(self) -> None:
+        result = NumericRangeRule("R1", "count", min_val=1).evaluate({})
+        assert result.verdict == Verdict.SKIP
+
+    def test_non_numeric_fails(self) -> None:
+        result = NumericRangeRule("R1", "count", min_val=1).evaluate({"count": "abc"})
+        assert result.verdict == Verdict.FAIL
+
+
+class TestCustomPredicateRule:
+    def test_predicate_passes(self) -> None:
+        rule = CustomPredicateRule("R1", lambda r: len(r) > 0, "Resource empty")
+        result = rule.evaluate({"key": "val"})
+        assert result.verdict == Verdict.PASS
+
+    def test_predicate_fails(self) -> None:
+        rule = CustomPredicateRule("R1", lambda r: "required" in r, "Missing 'required' key")
+        result = rule.evaluate({})
+        assert result.verdict == Verdict.FAIL
+
+
+# ---------------------------------------------------------------------------
+# Engine and report
+# ---------------------------------------------------------------------------
+
+class TestPolicyEngine:
+    def test_all_rules_pass(self, engine_with_rules: PolicyEngine, sample_resource: dict[str, Any]) -> None:
+        report = engine_with_rules.evaluate("res-1", sample_resource)
+        assert report.passed
+        assert len(report.results) == 4
+
+    def test_failure_detected(self, engine_with_rules: PolicyEngine) -> None:
+        bad_resource = {"name": "svc", "environment": "unknown", "replicas": 3, "owner": "team"}
+        report = engine_with_rules.evaluate("res-2", bad_resource)
+        assert not report.passed
+        assert len(report.failures) == 1
+
+    def test_batch_evaluation(self, engine_with_rules: PolicyEngine, sample_resource: dict[str, Any]) -> None:
+        results = engine_with_rules.evaluate_batch({
+            "good": sample_resource,
+            "bad": {"name": "", "environment": "x", "replicas": 0, "owner": ""},
+        })
+        assert results["good"].passed
+        assert not results["bad"].passed
+
+
+class TestConfigLoading:
+    def test_load_from_json_config(self) -> None:
+        config = {
+            "rules": [
+                {"id": "R1", "type": "required_field", "field": "name"},
+                {"id": "R2", "type": "value_in_set", "field": "env", "allowed": ["prod", "dev"]},
+                {"id": "R3", "type": "numeric_range", "field": "count", "min": 1, "max": 100},
+            ]
+        }
+        engine = load_policies_from_config(config)
+        assert engine.rule_count == 3
+
+    def test_unknown_rule_type_raises(self) -> None:
+        config = {"rules": [{"id": "R1", "type": "nonexistent", "field": "x"}]}
+        with pytest.raises(ValueError, match="Unknown rule type"):
+            load_policies_from_config(config)

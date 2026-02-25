@@ -1,54 +1,121 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Test Driven Normalizer.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Written FIRST (TDD style) — each test defines expected behaviour
+before the implementation exists.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    NormalisationResult,
+    normalise_batch,
+    normalise_date,
+    normalise_email,
+    normalise_name,
+    normalise_phone,
+    normalise_record,
+    normalise_whitespace,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+# --- Whitespace normalisation ---
 
-    # Act: build structured records.
-    records = build_records(raw_items)
+@pytest.mark.parametrize("input_text,expected", [
+    ("hello   world", "hello world"),
+    ("  leading", "leading"),
+    ("trailing  ", "trailing"),
+    ("\ttabs\tand\nlines", "tabs and lines"),
+    ("already clean", "already clean"),
+])
+def test_normalise_whitespace(input_text: str, expected: str) -> None:
+    """Whitespace normaliser should collapse and strip."""
+    result = normalise_whitespace(input_text)
+    assert isinstance(result, NormalisationResult)
+    assert result.normalised == expected
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+
+# --- Email normalisation ---
+
+def test_normalise_email_lowercase() -> None:
+    """Emails should be lowercased."""
+    result = normalise_email("User@Example.COM")
+    assert result.normalised == "user@example.com"
+    assert result.changed is True
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_normalise_email_strips_whitespace() -> None:
+    """Leading/trailing whitespace should be removed."""
+    result = normalise_email("  test@test.com  ")
+    assert result.normalised == "test@test.com"
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+# --- Phone normalisation ---
+
+@pytest.mark.parametrize("raw,expected", [
+    ("555-867-5309", "(555) 867-5309"),
+    ("1-555-867-5309", "(555) 867-5309"),
+    ("(555) 867-5309", "(555) 867-5309"),
+    ("5558675309", "(555) 867-5309"),
+])
+def test_normalise_phone(raw: str, expected: str) -> None:
+    """Phone numbers should normalise to (XXX) XXX-XXXX."""
+    result = normalise_phone(raw)
+    assert result.normalised == expected
+
+
+def test_normalise_phone_invalid() -> None:
+    """Non-10-digit numbers should be returned as-is (stripped)."""
+    result = normalise_phone("123")
+    assert result.normalised == "123"
+
+
+# --- Name normalisation ---
+
+def test_normalise_name_uppercase() -> None:
+    """All-caps names should become title case."""
+    result = normalise_name("JANE DOE")
+    assert result.normalised == "Jane Doe"
+
+
+def test_normalise_name_lowercase() -> None:
+    """All-lower names should become title case."""
+    result = normalise_name("john smith")
+    assert result.normalised == "John Smith"
+
+
+# --- Date normalisation ---
+
+@pytest.mark.parametrize("raw,expected", [
+    ("01/15/2024", "2024-01-15"),
+    ("25-12-2023", "2023-12-25"),
+    ("2024.03.07", "2024-03-07"),
+    ("2024-01-15", "2024-01-15"),  # Already normalised.
+])
+def test_normalise_date(raw: str, expected: str) -> None:
+    """Various date formats should normalise to YYYY-MM-DD."""
+    result = normalise_date(raw)
+    assert result.normalised == expected
+
+
+# --- Record and batch normalisation ---
+
+def test_normalise_record() -> None:
+    """A record should have specified fields normalised."""
+    record = {"email": "TEST@Example.COM", "age": 30, "name": "ALICE"}
+    field_types = {"email": "email", "name": "name"}
+    result = normalise_record(record, field_types)
+    assert result["email"] == "test@example.com"
+    assert result["name"] == "Alice"
+    assert result["age"] == 30  # Untouched.
+
+
+def test_normalise_batch() -> None:
+    """Batch should normalise all records."""
+    records = [
+        {"email": "A@B.COM"},
+        {"email": "C@D.COM"},
+    ]
+    result = normalise_batch(records, {"email": "email"})
+    assert len(result) == 2
+    assert result[0]["email"] == "a@b.com"
+    assert result[1]["email"] == "c@d.com"

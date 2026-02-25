@@ -1,5 +1,20 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Data Contract Enforcer
+----------------------------------------
+This file explains the companion files.
+
+contract.json defines the expected data contract:
+  - Required columns: id (integer), name (string), email (string)
+  - Optional columns: phone (string), active (boolean)
+  - Uniqueness constraint on "id"
+  - Format constraint: email must contain "@"
+
+sample_input.csv contains records to enforce the contract against:
+  Row 1: header — id,name,email,phone,active
+  Row 2: 1,Alice,alice@example.com,555-1234,true   (valid)
+  Row 3: 2,Bob,bob-no-at-sign,555-5678,true        (email format violation)
+  Row 4: 3,Carol,carol@test.com,,false              (valid, optional phone omitted)
+  Row 5: 1,Dave,dave@test.com,555-0000,true         (duplicate id violation)
+  Row 6: ,Eve,eve@test.com,555-9999,true            (missing required id)
+  Row 7: 5,Frank,frank@test.com,555-1111,true       (valid)
+
+Expected: 3 valid, 3 violations (format, uniqueness, missing required)

@@ -1,5 +1,17 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "service": {
+    "name": "payment-service",
+    "has_logging": true,
+    "has_metrics": true,
+    "has_alerts": true,
+    "has_healthcheck": true,
+    "has_runbook": true,
+    "has_rollback_plan": true,
+    "has_load_test": false,
+    "has_security_review": true,
+    "has_backup": true,
+    "has_on_call": true,
+    "test_coverage_pct": 82.0,
+    "sla_defined": true
+  }
+}

@@ -19,35 +19,42 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "source_records": 5,
+  "loaded": 5,
+  "skipped": 0,
+  "previous_watermark": null,
+  "new_watermark": "2025-01-15T11:15:00",
+  "total_in_target": 5
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — load stats with watermark values
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Use a persistent database (`--db data/events.db`) and run the script twice to see the watermark in action.
+2. Add a `--full-load` flag that ignores the watermark and reloads everything.
+3. Add a `modified_at` check: if a record's ID exists but its timestamp is newer, update it (change detection).
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed records with timestamps older than the current watermark — confirm they are all skipped.
+2. Feed records with identical timestamps and observe whether the `<=` comparison causes off-by-one issues.
+3. Feed records out of chronological order and check whether the watermark is set correctly.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Use `<` instead of `<=` if you want to include records at exactly the watermark timestamp.
+2. Add a test proving that out-of-order input still produces the correct final watermark.
+3. Log a warning when all source records are skipped (may indicate a stale source).
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a high-water mark, and why is it useful for incremental loading?
+2. What happens if the source data is late (arrives after the watermark has advanced)?
+3. How does incremental loading compare to full-table reload in terms of performance?
+4. What are the risks of losing or corrupting the watermark value?
 
 ## Mastery check
 You can move on when you can:

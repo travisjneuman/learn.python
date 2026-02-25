@@ -13,48 +13,50 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/07-list-search-benchmark
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --sizes 100 1000 10000
+python project.py --sizes 100 1000 10000 --json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Search Algorithm Benchmark ===
+    Size | Linear(hit) | Binary(hit) | Set(hit) ...
+10 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Benchmark timing table on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--sorted-linear` variant that searches sorted data linearly with early exit.
+2. Add a "speedup" column showing how many times faster binary is vs linear.
+3. Plot the results to a text-based bar chart (just using `#` characters).
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Run binary search on UNSORTED data — does it still find elements?
+2. Pass a size of 0 — does the benchmark handle an empty list?
+3. Use 1 iteration — are the timings meaningful?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a guard that validates data is sorted before binary search.
+2. Handle size=0 gracefully in `generate_test_data`.
+3. Add a minimum iteration count warning.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What does O(n) vs O(log n) mean in plain language?
+2. Why must binary search data be sorted first?
+3. Why is set lookup O(1) but building the set is O(n)?
+4. When would you choose each search method in practice?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- implement binary search from memory,
+- explain why halving the search space gives O(log n),
+- predict which algorithm wins for different use cases,
+- describe the trade-off between sort cost and search speed.
 
 ---
 

@@ -1,0 +1,7 @@
+{
+  "input_dir": "data/sources",
+  "output_dir": "data/output",
+  "threshold_warn": 50,
+  "threshold_crit": 90,
+  "max_retries": 3
+}

@@ -1,54 +1,81 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Level 4 Mini Capstone."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import json
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import validate_row, transform_row, run_pipeline
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+@pytest.mark.parametrize(
+    "row, required, error_count",
+    [
+        ({"name": "Alice", "age": "30"}, ["name", "age"], 0),
+        ({"name": "Alice"}, ["name", "age"], 1),
+        ({"name": "", "age": "30"}, ["name", "age"], 1),
+        ({}, ["name", "age"], 2),
+    ],
+)
+def test_validate_row(row: dict, required: list, error_count: int) -> None:
+    errors = validate_row(row, required)
+    assert len(errors) == error_count
 
-    # Act: build structured records.
-    records = build_records(raw_items)
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_transform_row_normalizes() -> None:
+    row = {"  Name  ": "  Alice  ", "Age": "30", "Salary": "95000.50"}
+    result = transform_row(row)
+    assert result["name"] == "Alice"
+    assert result["age"] == 30
+    assert result["salary"] == 95000.50
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_transform_row_handles_non_numeric() -> None:
+    row = {"city": "New York"}
+    result = transform_row(row)
+    assert result["city"] == "New York"
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_run_pipeline_end_to_end(tmp_path: Path) -> None:
+    input_file = tmp_path / "data.csv"
+    input_file.write_text(
+        "name,age,city\nAlice,30,NYC\n,25,LA\nBob,28,Chicago\n",
+        encoding="utf-8",
+    )
+    output_dir = tmp_path / "output"
+    summary = run_pipeline(input_file, output_dir, ["name", "age"])
+
+    assert summary["valid"] == 2
+    assert summary["quarantined"] == 1
+    assert (output_dir / "valid_data.json").exists()
+    assert (output_dir / "quarantined.json").exists()
+    assert (output_dir / "manifest.json").exists()
+
+
+def test_run_pipeline_checkpoint_recovery(tmp_path: Path) -> None:
+    """Verify that checkpoint allows resumption."""
+    input_file = tmp_path / "data.csv"
+    input_file.write_text(
+        "name,age\nAlice,30\nBob,25\nCharlie,28\nDiana,32\n",
+        encoding="utf-8",
+    )
+    output_dir = tmp_path / "output"
+    cp = tmp_path / "cp.json"
+
+    # Pre-save a checkpoint as if we crashed after 2 rows
+    cp.write_text(json.dumps({
+        "processed_count": 2,
+        "valid": [{"name": "Alice", "age": 30, "_row_num": 1}, {"name": "Bob", "age": 25, "_row_num": 2}],
+        "quarantined": [],
+    }), encoding="utf-8")
+
+    summary = run_pipeline(input_file, output_dir, ["name", "age"], checkpoint_path=cp)
+    assert summary["valid"] == 4  # all 4 rows
+    assert not cp.exists()  # checkpoint cleared
+
+
+def test_run_pipeline_empty_input(tmp_path: Path) -> None:
+    input_file = tmp_path / "empty.csv"
+    input_file.write_text("name,age\n", encoding="utf-8")
+    output_dir = tmp_path / "output"
+    summary = run_pipeline(input_file, output_dir, ["name"])
+    assert summary["total_rows"] == 0

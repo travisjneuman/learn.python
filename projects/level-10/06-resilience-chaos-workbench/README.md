@@ -2,59 +2,59 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- controlled chaos and resilience scoring
+- Strategy pattern for injectable fault types
+- Service state modeling with health simulation
+- Resilience scoring and grading system
+- Experiment rollback and recovery measurement
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Netflix's Chaos Monkey proved that systems must be tested against failure. This framework lets you define chaos experiments, inject faults into a service model, measure impact, and quantify resilience with letter grades — turning "we think it's reliable" into a measurable score.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/06-resilience-chaos-workbench
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "service": "order-service",
+  "experiments": 4,
+  "recovery_rate": "100%",
+  "grade": "A",
+  ...
+}
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `NetworkPartition` chaos action that removes all dependencies at once — implement `apply` and `rollback`.
+2. Add a `CombinedFault` that applies multiple actions simultaneously (e.g., latency + errors).
+3. Add a "blast radius" metric to the scorecard based on impact severity.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `MemoryPressure` to 100% and observe the service becoming unhealthy.
+2. Inject 100% error rate and verify the service fails all requests.
+3. Kill all dependencies and check how the health check responds.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add circuit-breaker logic to `ServiceState.handle_request` that stops accepting requests when error rate exceeds a threshold.
+2. Add a `graceful_degradation` mode where the service returns cached responses when dependencies are down.
+3. Test that degraded mode still counts as "recovered" in the scorecard.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does the Strategy pattern make it easy to add new fault types without modifying the experiment runner?
+2. Why is rollback essential in chaos engineering — what happens if you don't roll back?
+3. How does the grading system translate recovery rates into actionable categories?
+4. How would you adapt this to test real distributed systems instead of a simulation?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- create a custom ChaosAction and run it in an experiment,
+- explain the relationship between fault injection, impact measurement, and rollback,
+- interpret a resilience scorecard and identify the weakest fault type,
+- describe how Netflix's Chaos Monkey works at a high level.
 
 ---
 

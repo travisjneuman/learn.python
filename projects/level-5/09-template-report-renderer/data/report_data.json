@@ -1,0 +1,18 @@
+{
+  "title": "Daily Data Quality Report",
+  "date": "2025-01-15",
+  "total_records": 1500,
+  "valid_count": 1423,
+  "invalid_count": 77,
+  "has_errors": true,
+  "errors": [
+    {"row": 42, "message": "Missing required field: email"},
+    {"row": 158, "message": "Invalid date format in 'hire_date'"},
+    {"row": 891, "message": "Duplicate employee_id: 1042"}
+  ],
+  "has_warnings": true,
+  "warnings": [
+    {"message": "15 records have empty 'phone' field"},
+    {"message": "3 records have salary below minimum threshold"}
+  ]
+}

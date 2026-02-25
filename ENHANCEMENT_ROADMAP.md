@@ -10,7 +10,7 @@
 The curriculum's foundation (concept guides, quizzes, flashcards, challenges, expansion modules) is genuinely excellent. The critical issue: **165 core-track projects (levels 0-10) share identical templated `project.py`, tests, and README body sections**. A "Word Counter" has the same code as a "Dictionary Lookup Service." This is the single highest-impact fix available.
 
 ### Competitive Analysis
-learn.python's 261 projects across 13 levels is more comprehensive than any free competitor. The gaps are not in content volume but in **delivery**: no browser-based execution, no community infrastructure, no spaced repetition integration, no time-based pacing structure. The untapped opportunity: no major platform does spaced repetition well for programming.
+learn.python's 246 projects across 13 levels is more comprehensive than any free competitor. The gaps are not in content volume but in **delivery**: no browser-based execution, no community infrastructure, no spaced repetition integration, no time-based pacing structure. The untapped opportunity: no major platform does spaced repetition well for programming.
 
 ### Innovation Research
 Three macro-trends: (1) browser-based Python via Pyodide eliminates setup friction, (2) modern Rust-powered tooling (uv, ruff) simplifies the developer experience dramatically, (3) AI tutoring is becoming table-stakes but must preserve cognitive engagement. Highest-ROI innovations: adopt uv, add Python Tutor visualization links, formalize progressive disclosure, teach type hints early.
@@ -29,12 +29,12 @@ The repo is private with 0 stars. The content is strong enough to compete, but d
 
 | # | Enhancement | Source | Effort | Impact |
 |---|------------|--------|--------|--------|
-| 1 | **Fix hardcoded path in `tools/rebuild_navigation.py:10`** — Replace `Path(r"E:\Web Development\learn.python")` with `Path(__file__).parent.parent` | Infra | 5 min | Critical |
-| 2 | **Fix broken links in `14_NAVIGATION_AND_STUDY_WORKFLOW.md`** — Elite extension links need `curriculum/` prefix | Content | 15 min | High |
-| 3 | **Fix unquoted `$py_files` in smoke scripts** — Word-splitting bug in `run_smoke_checks.sh:72` and `run_elite_smoke_checks.sh:45` | Infra | 15 min | Medium |
-| 4 | **Add `command -v rg` check to shell scripts** — Fail gracefully if ripgrep is missing | Infra | 30 min | Medium |
-| 5 | **Fix `XXXXX` placeholder in web-scraping module README** | Content | 5 min | Low |
-| 6 | **Extend portable path checker to scan `*.py` files** | Infra | 15 min | Medium |
+| 1 | ~~**Fix hardcoded path in `tools/rebuild_navigation.py:10`**~~ | Infra | 5 min | **DONE** |
+| 2 | ~~**Fix broken links in `14_NAVIGATION_AND_STUDY_WORKFLOW.md`**~~ | Content | 15 min | **DONE** |
+| 3 | ~~**Fix unquoted `$py_files` in smoke scripts**~~ | Infra | 15 min | **DONE** |
+| 4 | ~~**Add `command -v rg` check to shell scripts**~~ | Infra | 30 min | **DONE** |
+| 5 | ~~**Fix `XXXXX` placeholder in web-scraping module README**~~ | Content | 5 min | **DONE** |
+| 6 | ~~**Extend portable path checker to scan `*.py` files**~~ | Infra | 15 min | **DONE** |
 
 ### Tier 1: Quick Wins (High Impact, Low Effort)
 
@@ -62,7 +62,7 @@ The repo is private with 0 stars. The content is strong enough to compete, but d
 | 21 | **Teach dataclasses before traditional classes** — Restructure OOP progression | Innovation | 6 hrs | Medium |
 | 22 | **Add match/case pattern matching** — Introduce at Level 2-3 after if/elif/else | Innovation | 4 hrs | Medium |
 | 23 | **Add PR-triggered CI** — Lightweight `py_compile` + link check + ruff on PRs | Infra | 4 hrs | High |
-| 24 | **Create social preview image** — 1280x640px branded image showing "261 Projects, Zero to Full-Stack" | Community | 2 hrs | High |
+| 24 | **Create social preview image** — 1280x640px branded image showing "246 Projects, Zero to Full-Stack" | Community | 2 hrs | High |
 | 25 | **Create TEACHING_GUIDE.md** — Semester mapping, fork instructions, assessment materials for educators | Community | 4 hrs | Medium |
 | 26 | **Make repo a GitHub template** — Enable "Use this template" for teachers | Community | 5 min | Medium |
 | 27 | **Create 5-10 "good first issue" issues** — Attract first contributors | Community | 1 hr | High |

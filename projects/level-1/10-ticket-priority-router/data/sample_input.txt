@@ -1,5 +1,10 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Website is completely down, customers cannot access anything
+Login page error for users in Europe
+Dashboard loading slow during peak hours
+How to export data to CSV?
+Database crash at 2am, data loss possible
+Payment processing is broken
+Intermittent timeout on API calls
+Feature request: dark mode for dashboard
+Security breach detected in auth module
+Can we add a search feature?

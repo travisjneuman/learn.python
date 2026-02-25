@@ -13,41 +13,45 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/12-fail-safe-exporter
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.json --output data/exported.json --format json
+python project.py --input data/sample_input.json --output data/exported.csv --format csv
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Exported 4 records to data/exported.json (atomic write)
+Exported 4 records to data/exported.csv (atomic write)
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/exported.json` or `data/exported.csv`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--validate` flag that checks each record has required fields before exporting.
+2. Add a backup: before overwriting, copy the existing file to `.bak`.
+3. Add a `--dry-run` flag that validates and reports but does not write.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Pass an output path to a read-only directory (or a path with invalid characters).
+2. Pass input data where records have inconsistent keys (some missing columns).
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Catch `OSError` / `PermissionError` during atomic write and report clearly.
+2. Pad missing keys with empty strings during CSV export.
+3. Add tests for write failures and inconsistent records.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `atomic_write_json` write to a `.tmp` file and then rename?
+2. What happens if the process crashes between writing `.tmp` and renaming?
+3. How does `atomic_write_csv` determine CSV headers from the records?
+4. Where do you see atomic writes in production (databases, log rotation, config updates)?
 
 ## Mastery check
 You can move on when you can:

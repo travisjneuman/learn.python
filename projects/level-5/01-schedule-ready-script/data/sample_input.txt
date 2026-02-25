@@ -1,5 +1,18 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample task list for Schedule Ready Script
+---------------------------------------------
+This file describes the scheduling scenario.
+
+The project runs tasks on a schedule without user interaction:
+  - Reads a task configuration with cron-like schedule expressions
+  - Determines which tasks are due based on current time
+  - Executes due tasks and logs results
+  - Handles lock files to prevent duplicate runs
+
+Sample task schedule:
+  task: daily_report    schedule: "0 8 * * *"    (every day at 8:00 AM)
+  task: weekly_cleanup  schedule: "0 2 * * 0"    (Sundays at 2:00 AM)
+  task: hourly_check    schedule: "0 * * * *"    (every hour on the hour)
+  task: monthly_archive schedule: "0 0 1 * *"    (1st of each month at midnight)
+
+Expected: tasks evaluated against current time, due tasks executed,
+lock file created to prevent overlapping runs, results logged to JSON

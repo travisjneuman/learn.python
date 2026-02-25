@@ -1,54 +1,105 @@
-"""Intermediate test module with heavy comments.
+"""Tests for SQL Runbook Generator.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Validates template rendering, SQL validation, runbook generation,
+and history storage using in-memory SQLite.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+from __future__ import annotations
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import json
+import sqlite3
 
+import pytest
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+from project import (
+    format_runbook,
+    generate_runbook,
+    get_runbook_history,
+    init_db,
+    render_template,
+    run,
+    save_runbook,
+    validate_sql,
+)
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+@pytest.fixture()
+def conn() -> sqlite3.Connection:
+    c = sqlite3.connect(":memory:")
+    init_db(c)
+    yield c
+    c.close()
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+class TestRenderTemplate:
+    def test_substitutes_params(self) -> None:
+        result = render_template("SELECT * FROM ${table}", {"table": "users"})
+        assert result == "SELECT * FROM users"
+
+    def test_missing_param_raises(self) -> None:
+        with pytest.raises(KeyError):
+            render_template("SELECT * FROM ${table}", {})
+
+    @pytest.mark.parametrize("params,expected", [
+        ({"x": "1", "y": "2"}, "1 and 2"),
+        ({"x": "a", "y": "b"}, "a and b"),
+    ])
+    def test_multiple_params(self, params: dict, expected: str) -> None:
+        assert render_template("${x} and ${y}", params) == expected
+
+
+class TestValidateSQL:
+    def test_safe_sql(self) -> None:
+        assert validate_sql("SELECT COUNT(*) FROM users") == []
+
+    def test_dangerous_drop(self) -> None:
+        warnings = validate_sql("DROP TABLE users;")
+        assert any("DROP TABLE" in w for w in warnings)
+
+    def test_unresolved_variable(self) -> None:
+        warnings = validate_sql("SELECT * FROM ${table}")
+        assert any("Unresolved" in w for w in warnings)
+
+
+class TestGenerateRunbook:
+    def test_builtin_template(self) -> None:
+        rb = generate_runbook("table_maintenance", {"table_name": "orders"})
+        assert rb.name == "table_maintenance"
+        assert len(rb.steps) == 3
+        assert "orders" in rb.steps[0].sql
+
+    def test_unknown_template_raises(self) -> None:
+        with pytest.raises(ValueError, match="Unknown template"):
+            generate_runbook("nonexistent", {})
+
+
+class TestHistory:
+    def test_save_and_retrieve(self, conn: sqlite3.Connection) -> None:
+        rb = generate_runbook("table_maintenance", {"table_name": "test"})
+        save_runbook(conn, rb)
+        history = get_runbook_history(conn)
+        assert len(history) == 1
+        assert history[0]["name"] == "table_maintenance"
+
+
+def test_format_runbook() -> None:
+    rb = generate_runbook("table_maintenance", {"table_name": "events"})
+    text = format_runbook(rb)
+    assert "RUNBOOK:" in text
+    assert "Step 1:" in text
+    assert "events" in text
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    config = {
+        "runbooks": [
+            {"template": "table_maintenance", "params": {"table_name": "sales"}},
+        ]
+    }
+    inp = tmp_path / "config.json"
+    inp.write_text(json.dumps(config), encoding="utf-8")
+    out = tmp_path / "out.json"
+
+    summary = run(inp, out)
+    assert summary["runbooks_generated"] == 1
+    assert out.exists()

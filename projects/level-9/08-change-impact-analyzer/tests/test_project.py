@@ -1,52 +1,99 @@
-"""Advanced test module with heavy comments.
+"""Tests for Change Impact Analyzer.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: service graph, impact traversal, risk scoring, and recommendations.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    Change,
+    ChangeImpactAnalyzer,
+    ChangeType,
+    RiskLevel,
+    Service,
+    ServiceGraph,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- Fixtures -----------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+@pytest.fixture
+def graph() -> ServiceGraph:
+    g = ServiceGraph()
+    g.add_service(Service("A", "team-1", tier=1, slos=["avail-99.9"]))
+    g.add_service(Service("B", "team-1", tier=2))
+    g.add_service(Service("C", "team-2", tier=2))
+    g.add_service(Service("D", "team-3", tier=3))
+    g.add_dependency("B", "A")  # B depends on A
+    g.add_dependency("C", "A")  # C depends on A
+    g.add_dependency("D", "B")  # D depends on B
+    return g
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+
+# --- ServiceGraph -------------------------------------------------------
+
+class TestServiceGraph:
+    def test_direct_dependents(self, graph: ServiceGraph) -> None:
+        deps = graph.direct_dependents("A")
+        assert deps == {"B", "C"}
+
+    def test_transitive_dependents(self, graph: ServiceGraph) -> None:
+        transitive, depth = graph.transitive_dependents("A")
+        assert "D" in transitive  # D -> B -> A
+        assert depth == 2
+
+    def test_no_dependents(self, graph: ServiceGraph) -> None:
+        deps = graph.direct_dependents("D")
+        assert len(deps) == 0
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- Impact analysis ----------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestImpactAnalysis:
+    def test_change_to_core_service(self, graph: ServiceGraph) -> None:
+        analyzer = ChangeImpactAnalyzer(graph)
+        change = Change("c1", "A", ChangeType.CODE, "Update logic")
+        result = analyzer.analyze(change)
+        assert "B" in result.directly_affected
+        assert "C" in result.directly_affected
+        assert len(result.affected_teams) >= 2
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_change_to_leaf_service(self, graph: ServiceGraph) -> None:
+        analyzer = ChangeImpactAnalyzer(graph)
+        change = Change("c2", "D", ChangeType.CODE, "Fix bug")
+        result = analyzer.analyze(change)
+        assert len(result.directly_affected) == 0
+
+    @pytest.mark.parametrize("change_type,min_expected_score", [
+        (ChangeType.SCHEMA, 40),
+        (ChangeType.CODE, 20),
+        (ChangeType.CONFIG, 25),
+    ])
+    def test_risk_varies_by_type(
+        self, graph: ServiceGraph, change_type: ChangeType,
+        min_expected_score: float,
+    ) -> None:
+        analyzer = ChangeImpactAnalyzer(graph)
+        change = Change("c", "A", change_type, "Change")
+        result = analyzer.analyze(change)
+        assert result.risk_score >= min_expected_score
+
+    def test_schema_change_gets_migration_recommendation(self, graph: ServiceGraph) -> None:
+        analyzer = ChangeImpactAnalyzer(graph)
+        change = Change("c", "A", ChangeType.SCHEMA, "Add column")
+        result = analyzer.analyze(change)
+        assert any("schema" in r.lower() for r in result.recommendations)
+
+
+# --- Serialization ------------------------------------------------------
+
+class TestSerialization:
+    def test_result_to_dict(self, graph: ServiceGraph) -> None:
+        analyzer = ChangeImpactAnalyzer(graph)
+        change = Change("c1", "A", ChangeType.CODE, "Test")
+        d = analyzer.analyze(change).to_dict()
+        assert "risk_level" in d
+        assert "affected_teams" in d
+        assert "recommendations" in d

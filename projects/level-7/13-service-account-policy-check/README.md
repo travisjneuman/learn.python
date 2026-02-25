@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add an `"inactive_days"` rule that flags accounts not used within N days.
+2. Add a `remediation_suggestion` field to each Violation (e.g. "rotate key" or "reduce permissions").
+3. Re-run script and tests — verify new rule and suggestions appear in the compliance report.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Provide a naming pattern with invalid regex syntax (e.g. `"[invalid"`) and observe the crash.
+2. Set `key_created_at` to a timestamp in the far future and see negative key age.
+3. Capture the `re.error` or confusing "key is -100 days old" message.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Wrap `re.match()` in a try/except for `re.error` and report "invalid pattern" as a violation.
+2. Clamp negative key ages to zero (future timestamps mean "just rotated").
+3. Add tests for invalid regex patterns and future key timestamps.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is least-privilege important for service accounts?
+2. What happened when the regex pattern was malformed?
+3. How did the try/except prevent a full pipeline crash on one bad rule?
+4. How do real cloud platforms (AWS IAM, GCP) enforce service account policies?
 
 ## Mastery check
 You can move on when you can:

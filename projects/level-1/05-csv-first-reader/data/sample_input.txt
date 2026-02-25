@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+name,department,salary,years
+Alice Johnson,Engineering,85000,5
+Bob Smith,Marketing,62000,3
+Carol Lee,Engineering,92000,8
+David Chen,Sales,58000,2
+Eve Brown,Marketing,67000,6
+Frank Wilson,Engineering,95000,10
+Grace Kim,Sales,61000,4

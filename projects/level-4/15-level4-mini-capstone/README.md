@@ -13,41 +13,48 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/15-level4-mini-capstone
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.csv --output-dir data/output --required name,age --batch-size 3
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_rows": 8,
+  "valid": 5,
+  "quarantined": 3,
+  "run_id": "capstone_20250115_100000"
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output/valid_data.json` — validated and transformed rows
+- `data/output/quarantined.json` — rejected rows with reasons
+- `data/output/manifest.json` — file inventory with checksums
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--schema` flag that loads validation rules from a JSON file (like project 01).
+2. Add a `--report` flag that generates a human-readable summary alongside the JSON.
+3. Re-run script and tests — verify the schema-based validation works.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Kill the process mid-run (Ctrl+C after 2 rows) and restart — verify it resumes from checkpoint.
+2. Feed it a CSV with headers but no data rows.
+3. Remove the output directory and verify it is created automatically.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle keyboard interrupts gracefully (save checkpoint before exiting).
+2. Add total processing time to the manifest.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does this project combine skills from projects 01-14?
+2. Why is checkpoint recovery important for data pipelines?
+3. What is the purpose of the manifest — when would you use it?
+4. If this pipeline processed 1 million rows, what would be the bottleneck and how would you optimize?
 
 ## Mastery check
 You can move on when you can:

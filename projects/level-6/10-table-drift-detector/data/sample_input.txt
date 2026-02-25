@@ -1,5 +1,16 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "tables": [
+    {
+      "name": "users",
+      "ddl_steps": [
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT)"
+      ]
+    },
+    {
+      "name": "orders",
+      "ddl_steps": [
+        "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY, user_id INTEGER, total REAL, created_at TEXT)"
+      ]
+    }
+  ]
+}

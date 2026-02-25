@@ -1,0 +1,234 @@
+site_name: "learn.python — Zero to Full-Stack Python Mastery"
+site_description: >-
+  A comprehensive Python curriculum from zero tech experience to world-class
+  full-stack mastery. 50+ sequenced documents, 175+ hands-on projects across
+  12 levels, 56 expansion modules across 12 technology domains.
+site_url: https://travisjneuman.github.io/learn.python
+repo_url: https://github.com/travisjneuman/learn.python
+repo_name: travisjneuman/learn.python
+edit_uri: edit/main/
+
+docs_dir: .
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+plugins:
+  - search
+  - social
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/travisjneuman/learn.python
+
+not_in_nav: |
+  CLAUDE.md
+  PROGRESS.md
+  ENHANCEMENT_ROADMAP.md
+  _audit_*.md
+  learning/**
+  tools/**
+  projects/**/notes.md
+  **/__pycache__/**
+  .github/**
+
+exclude_docs: |
+  __pycache__/
+  *.pyc
+  *.pyo
+  .git/
+  .github/
+  .ruff_cache/
+  node_modules/
+  venv/
+  .venv/
+
+nav:
+  - Home: README.md
+  - Getting Started:
+      - Start Here: START_HERE.md
+      - Getting Started Guide: GETTING_STARTED.md
+      - FAQ: FAQ.md
+      - Curriculum Map: CURRICULUM_MAP.md
+  - Foundations:
+      - "00 — Computer Literacy Primer": 00_COMPUTER_LITERACY_PRIMER.md
+      - "01 — Roadmap": 01_ROADMAP.md
+      - "02 — Glossary": 02_GLOSSARY.md
+      - "03 — Setup (All Platforms)": 03_SETUP_ALL_PLATFORMS.md
+      - "04 — Foundations": 04_FOUNDATIONS.md
+  - Domain Skills:
+      - "05 — Automation, Files & Excel": 05_AUTOMATION_FILES_EXCEL.md
+      - "06 — SQL": 06_SQL.md
+      - "07 — Monitoring & API Integration": 07_MONITORING_API_INTEGRATION.md
+      - "08 — Dashboards": 08_DASHBOARDS.md
+      - "09 — Quality & Tooling": 09_QUALITY_TOOLING.md
+      - "10 — Capstone Projects": 10_CAPSTONE_PROJECTS.md
+  - Support Infrastructure:
+      - "11 — Checklists": 11_CHECKLISTS.md
+      - "12 — Screenshot Checkpoints": 12_SCREENSHOT_CHECKPOINTS.md
+      - "13 — Sample Database Schemas": 13_SAMPLE_DATABASE_SCHEMAS.md
+      - "14 — Navigation & Study Workflow": 14_NAVIGATION_AND_STUDY_WORKFLOW.md
+      - "15 — Expansion Plan": 15_NEXT_LEVEL_EXPANSION_PLAN.md
+  - Advanced Curriculum:
+      - Assessment & Mastery:
+          - "16 — Learner Profile & Placement": curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md
+          - "17 — Assessment & Rubrics": curriculum/17_ASSESSMENT_AND_RUBRICS.md
+          - "18 — Remediation Playbook": curriculum/18_REMEDIATION_PLAYBOOK.md
+          - "19 — Mentor Guide": curriculum/19_MENTOR_GUIDE.md
+          - "20 — Curriculum Changelog": curriculum/20_CURRICULUM_CHANGELOG.md
+      - Mastery Path:
+          - "21 — Full-Stack Mastery": curriculum/21_FULL_STACK_MASTERY_PATH.md
+          - "22 — Specialization Tracks": curriculum/22_SPECIALIZATION_TRACKS.md
+          - "23 — Resource & Curriculum Map": curriculum/23_RESOURCE_AND_CURRICULUM_MAP.md
+          - "24 — Mastery Scoring & Gates": curriculum/24_MASTERY_SCORING_AND_GATES.md
+          - "25 — Infinity Mastery Loop": curriculum/25_INFINITY_MASTERY_LOOP.md
+      - Zero-to-Master Execution:
+          - "26 — Zero-to-Master Playbook": curriculum/26_ZERO_TO_MASTER_PLAYBOOK.md
+          - "27 — Day 0 to Day 30 Bootstrap": curriculum/27_DAY_0_TO_DAY_30_BOOTSTRAP.md
+          - "28 — Levels 0–2 Deep Guide": curriculum/28_LEVEL_0_TO_2_DEEP_GUIDE.md
+          - "29 — Levels 3–5 Deep Guide": curriculum/29_LEVEL_3_TO_5_DEEP_GUIDE.md
+          - "30 — Levels 6–8 Deep Guide": curriculum/30_LEVEL_6_TO_8_DEEP_GUIDE.md
+          - "31 — Levels 9–10 & Beyond": curriculum/31_LEVEL_9_TO_10_AND_BEYOND.md
+          - "32 — Daily Session Script": curriculum/32_DAILY_SESSION_SCRIPT.md
+          - "33 — Weekly Review Template": curriculum/33_WEEKLY_REVIEW_TEMPLATE.md
+          - "34 — Failure Recovery Atlas": curriculum/34_FAILURE_RECOVERY_ATLAS.md
+          - "35 — Capstone Blueprints": curriculum/35_CAPSTONE_BLUEPRINTS.md
+      - Elite Engineering:
+          - "36 — Elite Engineering Track": curriculum/36_ELITE_ENGINEERING_TRACK.md
+          - "37 — Quarterly Exams & Defenses": curriculum/37_QUARTERLY_EXAMS_AND_DEFENSES.md
+          - "38 — System Design & RFCs": curriculum/38_SYSTEM_DESIGN_AND_RFCS.md
+          - "39 — Production Platform Lab": curriculum/39_PRODUCTION_PLATFORM_LAB.md
+          - "40 — Security & Compliance": curriculum/40_SECURITY_COMPLIANCE_HARDENING.md
+          - "41 — Performance Engineering": curriculum/41_PERFORMANCE_ENGINEERING_LAB.md
+          - "42 — Open Source Contribution": curriculum/42_OPEN_SOURCE_CONTRIBUTION_LANE.md
+          - "43 — Public Portfolio": curriculum/43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md
+          - "44 — SME Interview & Debate Bank": curriculum/44_SME_INTERVIEW_AND_DEBATE_BANK.md
+          - "45 — Mastery Telemetry": curriculum/45_MASTERY_TELEMETRY_AND_REMEDIATION.md
+      - Adaptive Learning:
+          - "46 — Accessibility & Learning Profiles": curriculum/46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md
+          - "47 — Diagnostic & Study Engine": curriculum/47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md
+          - "48 — Misconception Atlas": curriculum/48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md
+          - "49 — Competency Coverage Matrix": curriculum/49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md
+          - "50 — Certification Protocol": curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md
+  - Concepts:
+      - concepts/README.md
+      - Variables: concepts/what-is-a-variable.md
+      - Loops: concepts/how-loops-work.md
+      - Functions: concepts/functions-explained.md
+      - Collections: concepts/collections-explained.md
+      - Files & Paths: concepts/files-and-paths.md
+      - Errors & Debugging: concepts/errors-and-debugging.md
+      - Reading Error Messages: concepts/reading-error-messages.md
+      - Types & Conversions: concepts/types-and-conversions.md
+      - Imports: concepts/how-imports-work.md
+      - Classes & Objects: concepts/classes-and-objects.md
+      - Decorators: concepts/decorators-explained.md
+      - Virtual Environments: concepts/virtual-environments.md
+      - The Terminal: concepts/the-terminal-deeper.md
+      - HTTP Explained: concepts/http-explained.md
+      - API Basics: concepts/api-basics.md
+      - Type Hints: concepts/type-hints-explained.md
+      - Dataclasses: concepts/dataclasses-explained.md
+      - Match/Case: concepts/match-case-explained.md
+      - Modern Python Tooling: concepts/modern-python-tooling.md
+      - Async Explained: concepts/async-explained.md
+  - Projects:
+      - projects/README.md
+      - Absolute Beginners (Level 00): projects/level-00-absolute-beginner/README.md
+      - Level 0: projects/level-0/README.md
+      - Level 1: projects/level-1/README.md
+      - Level 2: projects/level-2/README.md
+      - Level 3: projects/level-3/README.md
+      - Level 4: projects/level-4/README.md
+      - Level 5: projects/level-5/README.md
+      - Level 6: projects/level-6/README.md
+      - Level 7: projects/level-7/README.md
+      - Level 8: projects/level-8/README.md
+      - Level 9: projects/level-9/README.md
+      - Level 10: projects/level-10/README.md
+      - Elite Track: projects/elite-track/README.md
+      - Expansion Modules:
+          - projects/modules/README.md
+  - Practice:
+      - practice/README.md
+      - Challenges:
+          - practice/challenges/README.md
+      - Flashcards:
+          - practice/flashcards/README.md
+  - Guides:
+      - AI Usage Guide: AI_USAGE_GUIDE.md
+      - Career Readiness: CAREER_READINESS.md
+      - Fast Track: FAST_TRACK.md
+      - Feature Unlock Chart: FEATURE_UNLOCK.md
+      - Portfolio Guide: PORTFOLIO_GUIDE.md
+      - Teaching Guide: TEACHING_GUIDE.md
+  - Reference:
+      - Glossary: 02_GLOSSARY.md
+      - Validation: VALIDATION.md
+      - Changelog: CHANGELOG.md
+  - Contributing:
+      - Contributing Guide: CONTRIBUTING.md
+      - Code of Conduct: CODE_OF_CONDUCT.md

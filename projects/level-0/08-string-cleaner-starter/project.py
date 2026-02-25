@@ -1,107 +1,124 @@
-"""Level 0 project: string Cleaner Starter.
+"""Level 0 project: String Cleaner Starter.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read messy strings from a file and apply cleaning transformations:
+strip whitespace, normalise case, remove special characters, collapse spaces.
+
+Concepts: string methods (strip, lower, replace), loops, character filtering.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "string Cleaner Starter"
-PROJECT_FOCUS = "trim, lowercase, and replace transformations"
 
+def strip_whitespace(text: str) -> str:
+    """Remove leading and trailing whitespace from a string.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY strip? -- User input and file data often have invisible
+    spaces or tabs at the beginning or end.  strip() removes them.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    return text.strip()
+
+
+def normalise_case(text: str) -> str:
+    """Convert a string to lowercase.
+
+    WHY lowercase? -- Normalising case makes comparisons simpler.
+    'Hello' and 'hello' become the same string.
+    """
+    return text.lower()
+
+
+def remove_special_characters(text: str) -> str:
+    """Keep only letters, digits, and spaces.
+
+    WHY check each character? -- We loop through the string and
+    keep only the characters we want.  isalnum() checks if a
+    character is a letter or digit.
+    """
+    cleaned = []
+    for char in text:
+        # Keep letters, digits, and spaces.
+        if char.isalnum() or char == " ":
+            cleaned.append(char)
+    # Join the list back into a single string.
+    return "".join(cleaned)
+
+
+def collapse_spaces(text: str) -> str:
+    """Replace multiple consecutive spaces with a single space.
+
+    WHY a while loop? -- We keep replacing double-spaces until none
+    remain.  This is a simple approach that handles any number of
+    consecutive spaces.
+    """
+    while "  " in text:
+        text = text.replace("  ", " ")
+    return text
+
+
+def clean_string(text: str) -> str:
+    """Apply all cleaning steps in order.
+
+    WHY chain steps? -- Each function does one small job.
+    Chaining them together creates a pipeline where the output
+    of one step becomes the input of the next.
+    """
+    result = strip_whitespace(text)
+    result = normalise_case(result)
+    result = remove_special_characters(result)
+    result = collapse_spaces(result)
+    return result
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read lines from a file and clean each one.
+
+    Returns a list of dicts showing the before and after for each line.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    results = []
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    for line in lines:
+        if not line.strip():
+            continue
+        results.append({
+            "original": line,
+            "cleaned": clean_string(line),
+        })
 
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+    return results
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="String Cleaner Starter")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
+    results = process_file(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== String Cleaning Results ===\n")
+    for r in results:
+        print(f"  BEFORE: {r['original']!r}")
+        print(f"  AFTER:  {r['cleaned']!r}")
+        print()
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"{len(results)} lines cleaned. Output written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

@@ -1,48 +1,39 @@
-"""Beginner test module with heavy comments.
+"""Tests for Duplicate Line Finder."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+from project import build_report, count_line_occurrences, find_duplicates
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_count_line_occurrences() -> None:
+    """Each line should be counted correctly."""
+    lines = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+    counts = count_line_occurrences(lines)
+    assert counts["apple"] == 3
+    assert counts["banana"] == 2
+    assert counts["cherry"] == 1
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_find_duplicates_returns_only_dupes() -> None:
+    """Only lines appearing more than once should be in the result."""
+    lines = ["a", "b", "a", "c"]
+    dupes = find_duplicates(lines)
+    assert len(dupes) == 1
+    assert dupes[0]["text"] == "a"
+    assert dupes[0]["count"] == 2
+    assert dupes[0]["line_numbers"] == [1, 3]
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_find_duplicates_no_dupes() -> None:
+    """When all lines are unique, the result should be empty."""
+    lines = ["one", "two", "three"]
+    assert find_duplicates(lines) == []
+
+
+def test_build_report_counts(tmp_path: Path) -> None:
+    """The report should have correct totals."""
+    lines = ["x", "y", "x", "z", "y"]
+    report = build_report(lines)
+    assert report["total_lines"] == 5
+    assert report["unique_lines"] == 3
+    assert report["duplicate_count"] == 2

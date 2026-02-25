@@ -1,106 +1,239 @@
 """Level 3 project: Structured Error Handler.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Demonstrates custom exception hierarchies, error context propagation,
+and safe error collection patterns.
+
+Skills practiced: custom exceptions, dataclasses, typing basics,
+logging, error handling patterns, JSON serialisation.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import traceback
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
+from typing import Optional
 
-PROJECT_LEVEL = 3
-PROJECT_TITLE = "Structured Error Handler"
-PROJECT_FOCUS = "typed errors and safe propagation"
+logger = logging.getLogger(__name__)
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+# ── Custom exception hierarchy ─────────────────────────────────
+
+class AppError(Exception):
+    """Base error for all application-specific exceptions."""
+
+    def __init__(self, message: str, code: str = "UNKNOWN", context: Optional[dict] = None) -> None:
+        super().__init__(message)
+        self.code = code
+        self.context = context or {}
+
+
+class ValidationError(AppError):
+    """Raised when input data fails validation."""
+
+    def __init__(self, message: str, field: str = "", context: Optional[dict] = None) -> None:
+        super().__init__(message, code="VALIDATION_ERROR", context=context)
+        self.field = field
+
+
+class NotFoundError(AppError):
+    """Raised when a requested resource does not exist."""
+
+    def __init__(self, resource: str, identifier: str) -> None:
+        super().__init__(
+            f"{resource} not found: {identifier}",
+            code="NOT_FOUND",
+            context={"resource": resource, "identifier": identifier},
+        )
+
+
+class ConfigError(AppError):
+    """Raised when configuration is invalid or missing."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="CONFIG_ERROR")
+
+
+# ── Error result dataclasses ──────────────────────────────────
+
+@dataclass
+class ErrorRecord:
+    """A structured error record for reporting."""
+    code: str
+    message: str
+    field: str = ""
+    context: dict = field(default_factory=dict)
+    traceback_lines: list[str] = field(default_factory=list)
+
+
+@dataclass
+class OperationResult:
+    """Result of an operation that might fail.
+
+    Wraps either a success value or a list of errors.
+    This is the 'Result' pattern — avoids scattering try/except.
+    """
+    success: bool
+    value: Optional[dict] = None
+    errors: list[ErrorRecord] = field(default_factory=list)
+
+
+def capture_error(exc: Exception) -> ErrorRecord:
+    """Convert any exception into a structured ErrorRecord."""
+    if isinstance(exc, AppError):
+        return ErrorRecord(
+            code=exc.code,
+            message=str(exc),
+            field=getattr(exc, "field", ""),
+            context=exc.context,
+            traceback_lines=traceback.format_exception(type(exc), exc, exc.__traceback__),
+        )
+    return ErrorRecord(
+        code="UNEXPECTED",
+        message=str(exc),
+        traceback_lines=traceback.format_exception(type(exc), exc, exc.__traceback__),
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# ── Validation functions ──────────────────────────────────────
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+def validate_field(name: str, value: str, rules: dict) -> list[ErrorRecord]:
+    """Validate a single field against rules.
 
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
-
-    We keep this separate from I/O so business logic stays testable.
+    Supported rules: required, min_length, max_length, pattern.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    import re
+    errors: list[ErrorRecord] = []
+
+    if rules.get("required") and not value.strip():
+        errors.append(ErrorRecord(
+            code="REQUIRED",
+            message=f"Field '{name}' is required",
+            field=name,
+        ))
+        return errors  # No point checking further.
+
+    if "min_length" in rules and len(value) < rules["min_length"]:
+        errors.append(ErrorRecord(
+            code="TOO_SHORT",
+            message=f"Field '{name}' must be at least {rules['min_length']} characters",
+            field=name,
+            context={"actual_length": len(value)},
+        ))
+
+    if "max_length" in rules and len(value) > rules["max_length"]:
+        errors.append(ErrorRecord(
+            code="TOO_LONG",
+            message=f"Field '{name}' must be at most {rules['max_length']} characters",
+            field=name,
+            context={"actual_length": len(value)},
+        ))
+
+    if "pattern" in rules and not re.match(rules["pattern"], value):
+        errors.append(ErrorRecord(
+            code="INVALID_FORMAT",
+            message=f"Field '{name}' does not match expected pattern",
+            field=name,
+            context={"pattern": rules["pattern"]},
+        ))
+
+    return errors
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def validate_record(record: dict, schema: dict[str, dict]) -> OperationResult:
+    """Validate a full record against a schema.
+
+    schema maps field names to rule dicts.
+    Returns OperationResult with all errors collected.
+    """
+    all_errors: list[ErrorRecord] = []
+
+    for field_name, rules in schema.items():
+        value = str(record.get(field_name, ""))
+        field_errors = validate_field(field_name, value, rules)
+        all_errors.extend(field_errors)
+
+    if all_errors:
+        return OperationResult(success=False, errors=all_errors)
+    return OperationResult(success=True, value=record)
+
+
+def safe_process(records: list[dict], schema: dict[str, dict]) -> list[OperationResult]:
+    """Process a batch of records, collecting errors instead of crashing.
+
+    This demonstrates the 'error accumulation' pattern.
+    """
+    results: list[OperationResult] = []
+
+    for i, record in enumerate(records):
+        try:
+            result = validate_record(record, schema)
+            logger.info("Record %d: %s", i, "OK" if result.success else "FAILED")
+            results.append(result)
+        except Exception as exc:
+            logger.error("Unexpected error on record %d: %s", i, exc)
+            results.append(OperationResult(
+                success=False,
+                errors=[capture_error(exc)],
+            ))
+
+    return results
+
+
+def summarise_results(results: list[OperationResult]) -> dict:
+    """Summarise batch processing results."""
+    passed = sum(1 for r in results if r.success)
+    failed = sum(1 for r in results if not r.success)
+    all_errors = [asdict(e) for r in results for e in r.errors]
+
+    error_codes: dict[str, int] = {}
+    for err in all_errors:
+        code = err["code"]
+        error_codes[code] = error_codes.get(code, 0) + 1
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "total": len(results),
+        "passed": passed,
+        "failed": failed,
+        "error_counts": error_codes,
+        "errors": all_errors,
     }
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
-
-
-def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    return parser.parse_args()
+def build_parser() -> argparse.ArgumentParser:
+    """Build CLI parser."""
+    parser = argparse.ArgumentParser(description="Structured error handler")
+    parser.add_argument("file", help="JSON file with records")
+    parser.add_argument("--schema", required=True, help="JSON file with validation schema")
+    parser.add_argument("--json", action="store_true", help="JSON output")
+    parser.add_argument("--log-level", default="INFO")
+    return parser
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
-    args = parse_args()
+    """Entry point."""
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    parser = build_parser()
+    args = parser.parse_args()
 
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    records = json.loads(Path(args.file).read_text(encoding="utf-8"))
+    schema = json.loads(Path(args.schema).read_text(encoding="utf-8"))
+
+    results = safe_process(records, schema)
+    summary = summarise_results(results)
+
+    if args.json:
+        print(json.dumps(summary, indent=2))
+    else:
+        print(f"Processed {summary['total']} records: "
+              f"{summary['passed']} passed, {summary['failed']} failed")
+        if summary["error_counts"]:
+            print("Error breakdown:")
+            for code, count in summary["error_counts"].items():
+                print(f"  {code}: {count}")
 
 
 if __name__ == "__main__":

@@ -2,59 +2,69 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- forecast load and headroom
+- Growth modeling: linear, exponential, and step-function curves
+- Strategy pattern for pluggable growth curve selection
+- Resource profiling with current usage and capacity limits
+- Forecast generation with headroom recommendations
+- What-if scenario analysis for capacity decisions
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Capacity planning prevents outages by projecting resource needs before demand exceeds
+supply. A service growing at 15% month-over-month will exhaust its database connections
+in 8 months — but without a model, the team only discovers this during a production
+incident. This project models compute, storage, and bandwidth growth using configurable
+curves and generates capacity forecasts with months-until-exhaustion calculations — the
+same approach infrastructure teams use at every major tech company.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/05-capacity-planning-model
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "resources": [...],
+  "forecasts": [...],
+  "months_until_exhaustion": {"compute": 14, "storage": 8, ...}
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with capacity forecasts
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `seasonal` growth function that models periodic spikes (e.g. Black Friday traffic).
+2. Add a `--chart` flag that outputs a text-based ASCII chart of the capacity forecast.
+3. Add cost estimation — multiply forecasted usage by per-unit cost to project spend.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `growth_rate=0` for exponential growth — does the forecast handle it?
+2. Create a resource profile with `capacity < current_usage` — is it flagged as already exhausted?
+3. Pass `months=0` to `forecast()` — does it return an empty forecast or error?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `growth_rate > 0` for exponential models.
+2. Add "already exhausted" detection for resources that are over capacity at month 0.
+3. Validate `months >= 1` in the forecast method.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is capacity planning and why is it critical for infrastructure teams?
+2. How do linear, exponential, and step growth functions differ in real-world modeling?
+3. What is the "months until exhaustion" calculation and why is it a key metric?
+4. How do what-if scenarios help teams decide when to add infrastructure?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain the difference between linear and exponential growth forecasting,
+- run a what-if scenario that compares current vs optimized resource profiles,
+- describe how capacity planning prevents outages vs reactive scaling,
+- add a new growth model without modifying existing forecast logic.
 
 ---
 

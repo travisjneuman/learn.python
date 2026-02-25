@@ -13,48 +13,48 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/10-dependency-boundary-lab
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py records.json output.json --config config.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Processed: 4 in, 3 out, 1 filtered
+10 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Processed JSON output file
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `sort_by` config option to sort output records by a field.
+2. Add a `CsvFileReader` that reads CSV instead of JSON.
+3. Add a `--dry-run` flag that shows what would be processed without writing.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a config with a rename map that creates duplicate keys — what happens?
+2. Pass a JSON file that contains a string instead of an array — what error appears?
+3. Use `InMemoryReader` with no records — does the pipeline handle empty input?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate config keys before running the pipeline.
+2. Handle non-list JSON input by wrapping in a list.
+3. Add clear error messages when reader/writer operations fail.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is "dependency inversion" and why does it make code testable?
+2. How do `InMemoryReader`/`InMemoryWriter` replace real files in tests?
+3. Why is the `run()` orchestrator the ONLY place that touches I/O?
+4. What is a Python `Protocol` and how does it define an interface?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- separate I/O from business logic,
+- test business logic without touching the filesystem,
+- use the Protocol pattern for dependency boundaries,
+- build a configurable data processing pipeline.
 
 ---
 

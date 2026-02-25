@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/02-alert-threshold-monitor
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --metrics data/metrics.json --thresholds data/thresholds.json --output data/alert_report.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Alert evaluation: 3 breaches found
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/alert_report.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--cooldown` flag that suppresses repeated alerts for the same metric within N seconds.
+2. Add an "info" severity level for metrics that are within 10% of the warn threshold.
+3. Log each breach with the metric name, current value, and which threshold it crossed.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Set a `warn` threshold higher than the `crit` threshold in `thresholds.json` and observe what happens.
+2. Remove a metric from `metrics.json` that the thresholds file expects.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that `warn < crit` and raise a clear error if not.
+2. Handle missing metrics gracefully (skip or report as "no data").
+3. Add tests for the broken cases.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is cooldown important in production alerting systems?
+2. What happens if thresholds are misconfigured in a real monitoring stack?
+3. How does `check_threshold` decide between warn, crit, and ok?
+4. How would this pattern apply to monitoring dashboards or PagerDuty-style alerting?
 
 ## Mastery check
 You can move on when you can:

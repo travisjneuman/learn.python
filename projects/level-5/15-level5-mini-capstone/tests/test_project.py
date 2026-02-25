@@ -1,54 +1,90 @@
-"""Intermediate test module with heavy comments.
-
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+"""Tests for Level 5 Mini Capstone — Operational Pipeline."""
 from pathlib import Path
-
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+import json
+import pytest
+from project import load_config, extract_csv_files, transform_rows, check_thresholds, atomic_write, run_pipeline
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_load_config_defaults() -> None:
+    """Defaults are returned when no file or env vars exist."""
+    config = load_config(None)
+    assert config["max_retries"] == 3
+    assert config["threshold_warn"] == 50
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_load_config_file_override(tmp_path: Path) -> None:
+    """File config overrides defaults."""
+    cfg = tmp_path / "cfg.json"
+    cfg.write_text(json.dumps({"max_retries": 7}), encoding="utf-8")
+    config = load_config(cfg)
+    assert config["max_retries"] == 7
+    assert config["threshold_warn"] == 50  # unchanged default
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_load_config_env_override(tmp_path: Path, monkeypatch) -> None:
+    """Environment variables take highest precedence."""
+    monkeypatch.setenv("PIPELINE_MAX_RETRIES", "10")
+    config = load_config(None)
+    assert config["max_retries"] == 10
+
+
+def test_extract_csv_files(tmp_path: Path) -> None:
+    """Extracts rows from all CSV files in directory."""
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "a.csv").write_text("name,amount\nalice,55\nbob,30\n", encoding="utf-8")
+    (src / "b.csv").write_text("name,amount\ncharlie,95\n", encoding="utf-8")
+    rows = extract_csv_files(src)
+    assert len(rows) == 3
+
+
+@pytest.mark.parametrize("value_str,expected_numeric", [
+    ("75", 75.0),
+    ("abc", 0.0),
+    ("0", 0.0),
+])
+def test_transform_rows(value_str, expected_numeric) -> None:
+    """Transform parses numeric values and handles non-numeric gracefully."""
+    rows = [{"name": "test", "amount": value_str}]
+    result = transform_rows(rows)
+    assert result[0]["_numeric"] == expected_numeric
+    assert result[0]["_row_index"] == 1
+
+
+@pytest.mark.parametrize("values,warn,crit,expected_warn,expected_crit", [
+    ([10, 20, 30], 50, 90, 0, 0),
+    ([55, 60, 95], 50, 90, 2, 1),
+    ([90, 91], 50, 90, 0, 2),
+])
+def test_check_thresholds(values, warn, crit, expected_warn, expected_crit) -> None:
+    rows = [{"_numeric": v, "_row_index": i} for i, v in enumerate(values, 1)]
+    report = check_thresholds(rows, warn, crit)
+    assert report["warnings"] == expected_warn
+    assert report["criticals"] == expected_crit
+
+
+def test_atomic_write(tmp_path: Path) -> None:
+    """Atomic write creates the file with correct content."""
+    target = tmp_path / "sub" / "output.json"
+    atomic_write(target, '{"ok": true}')
+    assert target.exists()
+    assert json.loads(target.read_text(encoding="utf-8")) == {"ok": True}
+
+
+def test_run_pipeline_integration(tmp_path: Path) -> None:
+    """Full pipeline runs end-to-end and produces summary."""
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "data.csv").write_text("name,amount\nalice,55\nbob,95\n", encoding="utf-8")
+    out = tmp_path / "output"
+    config = {
+        "input_dir": str(src),
+        "output_dir": str(out),
+        "threshold_warn": 50,
+        "threshold_crit": 90,
+        "max_retries": 3,
+    }
+    summary = run_pipeline(config)
+    assert summary["status"] == "completed"
+    assert summary["rows_extracted"] == 2
+    assert (out / "summary.json").exists()

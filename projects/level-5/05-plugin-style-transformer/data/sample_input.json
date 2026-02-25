@@ -1,0 +1,7 @@
+[
+  {"name": "  Alice Johnson  ", "department": "engineering", "active": "true"},
+  {"name": "  Bob Smith  ", "department": "design", "active": "true"},
+  {"name": "", "department": "", "active": ""},
+  {"name": "  Charlie Brown  ", "department": "marketing", "active": "false"},
+  {"name": "  Diana Prince  ", "department": "sales", "active": "true"}
+]

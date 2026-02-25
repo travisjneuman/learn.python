@@ -1,5 +1,19 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample logs for Audit Log Enhancer
+-------------------------------------
+This file explains the companion sample_input.jsonl.
+
+sample_input.jsonl contains raw audit events (one JSON object per line):
+  Line 1: {"ts":"2024-03-01T09:00:00","user":"alice","action":"login","ip":"10.0.1.5"}
+  Line 2: {"ts":"2024-03-01T09:01:30","user":"bob","action":"view_report","ip":"10.0.1.12"}
+  Line 3: {"ts":"2024-03-01T09:02:45","user":"alice","action":"export_data","ip":"10.0.1.5"}
+  Line 4: {"ts":"2024-03-01T09:05:00","user":"carol","action":"login","ip":"192.168.1.100"}
+  Line 5: {"ts":"2024-03-01T09:06:00","user":"bob","action":"delete_record","ip":"10.0.1.12"}
+  Line 6: {"ts":"2024-03-01T09:10:00","user":"alice","action":"logout","ip":"10.0.1.5"}
+
+Enhancements applied:
+  - Session grouping (group events by user between login/logout)
+  - Risk scoring (delete and export actions score higher)
+  - IP geolocation tagging (internal vs external network)
+  - Duration calculation per session
+
+Expected: 3 users, 2 sessions with duration, 2 high-risk events flagged

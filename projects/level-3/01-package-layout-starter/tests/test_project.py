@@ -1,54 +1,87 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Package Layout Starter.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Uses pytest fixtures for temporary package structures.
 """
 
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import pytest
+
+from project import (
+    PackageInfo,
+    generate_init_py,
+    scan_module,
+    scan_package,
+    validate_package,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+@pytest.fixture
+def sample_package(tmp_path: Path) -> Path:
+    """Create a minimal Python package structure."""
+    pkg = tmp_path / "mypackage"
+    pkg.mkdir()
+    (pkg / "__init__.py").write_text('"""My package."""\n', encoding="utf-8")
+    (pkg / "utils.py").write_text(
+        "def helper():\n    return 42\n\nclass Tool:\n    pass\n",
+        encoding="utf-8",
+    )
+    (pkg / "core.py").write_text(
+        "import json\nfrom pathlib import Path\n\ndef run():\n    pass\n",
+        encoding="utf-8",
+    )
+    return pkg
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_scan_package(sample_package: Path) -> None:
+    """Scanning should detect modules and __init__.py."""
+    info = scan_package(sample_package)
+    assert info.name == "mypackage"
+    assert "utils" in info.modules
+    assert "core" in info.modules
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_scan_package_missing(tmp_path: Path) -> None:
+    """Missing directory should raise FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        scan_package(tmp_path / "nope")
+
+
+def test_scan_module(sample_package: Path) -> None:
+    """Module scanning should detect functions and classes."""
+    info = scan_module(sample_package / "utils.py")
+    assert "helper" in info.functions
+    assert "Tool" in info.classes
+
+
+def test_package_info_dataclass() -> None:
+    """PackageInfo should be a proper dataclass."""
+    info = PackageInfo(name="test", version="1.0.0", modules=["a", "b"])
+    d = info.to_dict()
+    assert d["name"] == "test"
+    assert d["version"] == "1.0.0"
+
+
+def test_generate_init_py() -> None:
+    """Generated __init__.py should have __version__ and __all__."""
+    info = PackageInfo(name="pkg", modules=["core", "utils"])
+    content = generate_init_py(info)
+    assert "__version__" in content
+    assert "__all__" in content
+    assert '"core"' in content
+
+
+def test_validate_package_valid(sample_package: Path) -> None:
+    """A properly structured package should have no errors."""
+    issues = validate_package(sample_package)
+    errors = [i for i in issues if i["severity"] == "error"]
+    assert len(errors) == 0
+
+
+def test_validate_package_no_init(tmp_path: Path) -> None:
+    """A directory without __init__.py should report an error."""
+    pkg = tmp_path / "bad_pkg"
+    pkg.mkdir()
+    (pkg / "module.py").write_text("x = 1\n", encoding="utf-8")
+    issues = validate_package(pkg)
+    assert any("__init__.py" in i["message"] for i in issues)

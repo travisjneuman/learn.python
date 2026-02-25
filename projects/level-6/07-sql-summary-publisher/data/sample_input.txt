@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+[
+  {"region": "North", "product": "Widget", "quantity": 15, "revenue": 149.85, "sale_date": "2025-01-05"},
+  {"region": "North", "product": "Gadget", "quantity": 8, "revenue": 199.92, "sale_date": "2025-01-06"},
+  {"region": "South", "product": "Widget", "quantity": 25, "revenue": 249.75, "sale_date": "2025-01-07"},
+  {"region": "South", "product": "Bolt", "quantity": 200, "revenue": 100.00, "sale_date": "2025-01-08"},
+  {"region": "East", "product": "Gadget", "quantity": 12, "revenue": 299.88, "sale_date": "2025-01-09"},
+  {"region": "East", "product": "Spring", "quantity": 50, "revenue": 75.00, "sale_date": "2025-01-10"},
+  {"region": "West", "product": "Widget", "quantity": 30, "revenue": 299.70, "sale_date": "2025-01-11"}
+]

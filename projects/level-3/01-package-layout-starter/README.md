@@ -13,48 +13,50 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/01-package-layout-starter
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py scan .
+python project.py validate .
+python project.py init .
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"name": "01-package-layout-starter", "modules": [...]}
+8 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Package info JSON on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--recursive` flag to scan nested packages.
+2. Add a `pyproject.toml` generator alongside `__init__.py`.
+3. Count lines of code per module and include in the report.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Point the scanner at a directory with no `.py` files.
+2. Create a circular import between two modules — does validation catch it?
+3. Scan a file (not a directory) — what error appears?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a check that the path is a directory, not a file.
+2. Improve circular import detection heuristic.
+3. Handle permission errors when scanning directories.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What makes a directory a Python package (hint: `__init__.py`)?
+2. What is `__all__` and how does it control `from package import *`?
+3. Why use `@dataclass` instead of writing `__init__` manually?
+4. What is the difference between a module and a package?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- create a Python package from scratch with proper structure,
+- explain what `__init__.py` does and when it is optional (Python 3.3+),
+- describe how `from package import module` resolves the import,
+- use dataclasses for structured data instead of plain dicts.
 
 ---
 

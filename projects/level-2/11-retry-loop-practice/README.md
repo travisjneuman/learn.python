@@ -13,48 +13,53 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/11-retry-loop-practice
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --operations 10 --failure-rate 0.6 --attempts 5
+python project.py --operations 5 --failure-rate 0.9 --attempts 3
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Simulating 10 operations (failure_rate=0.6, max_attempts=5)
+  Operation 1: OK (attempts: 2)
+  Operation 2: FAILED (attempts: 5)
+  ...
+=== Summary ===
+9 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Retry simulation results on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--jitter` flag that adds random variation to delay times.
+2. Add a `--fail-fast` mode that stops all operations after the first failure.
+3. Log each retry attempt with a timestamp.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `--failure-rate 1.0` — every operation should exhaust all attempts.
+2. Set `--attempts 0` — what happens with zero allowed attempts?
+3. Set `--delay -1` — negative delay makes no sense.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that max_attempts is at least 1.
+2. Validate that delay is non-negative.
+3. Add tests for edge-case configurations.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is exponential backoff and why is it used?
+2. Why catch specific exceptions instead of bare `except`?
+3. What is a closure and how does `make_countdown_function` use one?
+4. Where is retry logic essential in real systems (networks, APIs, databases)?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- implement retry with exponential backoff from memory,
+- explain why backoff prevents "thundering herd" problems,
+- describe the difference between flaky and deterministic test helpers,
+- add jitter to a retry delay calculation.
 
 ---
 

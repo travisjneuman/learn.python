@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Level 5 Mini Capstone
+----------------------------------------
+This file explains the capstone pipeline scenario.
+
+The capstone combines Level 5 skills into a full operational pipeline:
+  - Config loading with layer priority (project 04)
+  - Multi-file ETL extraction (project 03)
+  - Plugin-style transforms (project 05)
+  - Metrics aggregation (project 06)
+  - Resilient loading with fallbacks (project 07)
+  - Retry with backoff on failures (project 11)
+  - Atomic export (project 12)
+  - Run logging (project 13)
+
+Pipeline configuration (data/pipeline_config.json):
+  Sources: data/sources/ directory containing CSV files
+  Transforms: normalize, deduplicate, validate
+  Output: data/pipeline_output.json
+  Retry: max 3 attempts with 0.5s base delay
+
+Expected: full pipeline execution with run log, metrics summary,
+and atomic output. Any failures trigger retry with backoff.

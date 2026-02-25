@@ -13,41 +13,45 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/07-duplicate-record-investigator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.csv --output data/duplicates_report.json --keys name,email --threshold 0.8
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_records": 7,
+  "duplicate_pairs_found": 3,
+  "duplicates": [ ... ]
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/duplicates_report.json` — exact and fuzzy duplicate pairs
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--method` flag supporting both `bigram` (current) and `levenshtein` similarity.
+2. Add a `--group` mode that clusters duplicates into groups instead of listing pairs.
+3. Re-run script and tests — add a parametrized test for the new method.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Use a very low threshold (0.1) and observe how many false positives appear.
+2. Feed it a CSV with only one row — verify no crash on the single-record case.
+3. Use key fields that do not exist in the CSV and observe the behavior.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that key fields exist in the CSV headers before comparing.
+2. Add a warning when the threshold produces more than 50% of records as duplicates.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What are character bigrams and why are they useful for fuzzy matching?
+2. Why does Jaccard similarity use set intersection/union instead of comparing characters directly?
+3. What is the time complexity of the nested-loop comparison — how would you optimize it?
+4. When would fuzzy matching produce false positives, and how would you handle them?
 
 ## Mastery check
 You can move on when you can:

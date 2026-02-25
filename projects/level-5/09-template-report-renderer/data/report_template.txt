@@ -1,0 +1,27 @@
+========================================
+  {{title}}
+  Generated: {{date}}
+========================================
+
+Summary:
+  Total records processed: {{total_records}}
+  Valid: {{valid_count}}
+  Invalid: {{invalid_count}}
+
+{{#if has_errors}}
+ERRORS DETECTED:
+{{#each errors}}
+  - Row {{row}}: {{message}}
+{{/each}}
+{{/if}}
+
+{{#if has_warnings}}
+WARNINGS:
+{{#each warnings}}
+  - {{message}}
+{{/each}}
+{{/if}}
+
+========================================
+  End of Report
+========================================

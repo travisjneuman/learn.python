@@ -1,54 +1,90 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Incremental Load Simulator.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Validates watermark tracking, incremental vs full load behavior,
+and correct skipping of already-loaded records.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+from __future__ import annotations
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import json
+import sqlite3
 
+import pytest
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    count_events,
+    get_watermark,
+    incremental_load,
+    init_db,
+    run,
+    set_watermark,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+@pytest.fixture()
+def conn() -> sqlite3.Connection:
+    c = sqlite3.connect(":memory:")
+    init_db(c)
+    yield c
+    c.close()
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+BATCH_1 = [
+    {"id": 1, "name": "event_a", "modified_at": "2025-01-01T10:00:00"},
+    {"id": 2, "name": "event_b", "modified_at": "2025-01-01T11:00:00"},
+]
 
-    # Act: build summary from records.
-    summary = build_summary(records)
+BATCH_2 = [
+    {"id": 2, "name": "event_b", "modified_at": "2025-01-01T11:00:00"},  # already loaded
+    {"id": 3, "name": "event_c", "modified_at": "2025-01-02T09:00:00"},  # new
+]
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+
+class TestWatermark:
+    def test_initial_watermark_is_none(self, conn: sqlite3.Connection) -> None:
+        assert get_watermark(conn, "events") is None
+
+    def test_set_and_get(self, conn: sqlite3.Connection) -> None:
+        set_watermark(conn, "events", "2025-01-01T12:00:00")
+        assert get_watermark(conn, "events") == "2025-01-01T12:00:00"
+
+    def test_update_watermark(self, conn: sqlite3.Connection) -> None:
+        set_watermark(conn, "events", "2025-01-01")
+        set_watermark(conn, "events", "2025-01-02")
+        assert get_watermark(conn, "events") == "2025-01-02"
+
+
+class TestIncrementalLoad:
+    def test_first_load_inserts_all(self, conn: sqlite3.Connection) -> None:
+        stats = incremental_load(conn, BATCH_1)
+        assert stats.loaded == 2
+        assert stats.skipped == 0
+        assert count_events(conn) == 2
+
+    def test_second_load_skips_old(self, conn: sqlite3.Connection) -> None:
+        incremental_load(conn, BATCH_1)
+        stats = incremental_load(conn, BATCH_2)
+        assert stats.loaded == 1
+        assert stats.skipped == 1
+        assert count_events(conn) == 3
+
+    @pytest.mark.parametrize("batch_size", [0, 1, 5])
+    def test_various_batch_sizes(self, conn: sqlite3.Connection, batch_size: int) -> None:
+        records = [
+            {"id": i, "name": f"evt_{i}", "modified_at": f"2025-01-{i+1:02d}T00:00:00"}
+            for i in range(batch_size)
+        ]
+        stats = incremental_load(conn, records)
+        assert stats.loaded == batch_size
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    inp = tmp_path / "events.json"
+    inp.write_text(json.dumps(BATCH_1), encoding="utf-8")
+    out = tmp_path / "out.json"
+
+    summary = run(inp, out)
+    assert summary["loaded"] == 2
+    assert summary["skipped"] == 0
+    assert summary["previous_watermark"] is None
+    assert out.exists()

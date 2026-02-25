@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+service: checkout-api
+dimension: uptime weight=30 raw_value=99.95% normalizer=percentage target=99.99%
+dimension: mttr weight=25 raw_value=45min normalizer=inverse_minutes target=15min
+dimension: change_failure_rate weight=20 raw_value=8% normalizer=inverse_percentage target=5%
+dimension: deploy_frequency weight=15 raw_value=12/week normalizer=frequency target=20/week
+dimension: incident_response weight=10 raw_value=5min normalizer=inverse_minutes target=3min

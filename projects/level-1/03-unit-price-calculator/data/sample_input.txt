@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+product,price,quantity,unit
+Rice 5lb Bag,8.99,5,lb
+Rice 10lb Bag,15.49,10,lb
+Rice 25lb Bag,32.99,25,lb
+Olive Oil 500ml,6.99,500,ml
+Olive Oil 1L,11.49,1000,ml
+Olive Oil 3L,28.99,3000,ml
+Paper Towels 6-pack,7.99,6,roll
+Paper Towels 12-pack,13.49,12,roll

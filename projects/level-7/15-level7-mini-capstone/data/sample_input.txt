@@ -1,5 +1,28 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "now": 1700000000,
+  "max_age_seconds": 600,
+  "required_fields": ["id", "value"],
+  "sources": {
+    "alpha": {
+      "records": [
+        {"uid": "order_001", "data": "shipped"},
+        {"uid": "order_002", "data": "pending"},
+        {"uid": "order_003", "data": "delivered"}
+      ]
+    },
+    "beta": {
+      "records": [
+        {"identifier": "order_001", "payload": "shipped"},
+        {"identifier": "order_002", "payload": "processing"},
+        {"identifier": "order_004", "payload": "returned"}
+      ]
+    }
+  },
+  "flags": {
+    "adapt": true,
+    "cache": true,
+    "validate": true,
+    "freshness": true,
+    "reconcile": true
+  }
+}

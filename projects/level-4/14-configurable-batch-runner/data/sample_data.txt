@@ -1,0 +1,10 @@
+2025-01-15 10:00:01 INFO Application started successfully
+2025-01-15 10:00:05 INFO User alice logged in from 192.168.1.100
+2025-01-15 10:00:12 WARNING Slow query detected: 2.3s for user_lookup
+2025-01-15 10:00:15 ERROR Database connection timeout after 30s
+2025-01-15 10:00:16 INFO Retrying database connection attempt 1
+2025-01-15 10:00:18 INFO Database connection restored
+2025-01-15 10:00:22 INFO User bob logged in from 10.0.0.50
+2025-01-15 10:00:30 WARNING Memory usage at 85% threshold
+2025-01-15 10:00:45 ERROR Failed to process batch job: insufficient disk space
+2025-01-15 10:01:00 INFO Scheduled cleanup completed, freed 2.1 GB

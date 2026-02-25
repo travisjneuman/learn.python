@@ -1,106 +1,202 @@
-"""Level 5 project: API Polling Simulator.
+"""Level 5 / Project 10 — API Polling Simulator.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Simulates polling an API endpoint at regular intervals with rate
+limiting and exponential backoff on errors.  Uses a mock API that
+returns randomised results to simulate real-world behaviour.
+
+Concepts practiced:
+- Exponential backoff with jitter for rate-limit handling
+- Mock objects for deterministic testing
+- Time-based polling loops with configurable limits
+- Structured result collection and reporting
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import random
+import time
 from pathlib import Path
 
-PROJECT_LEVEL = 5
-PROJECT_TITLE = "API Polling Simulator"
-PROJECT_FOCUS = "poll cycles, retries, and delays"
 
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+    """Set up logging so every poll attempt is traceable."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- mock API ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+class MockAPI:
+    """Simulates an unreliable API with configurable failure rate.
 
-    We keep this separate from I/O so business logic stays testable.
+    The random number generator is seeded so that results are
+    deterministic for testing, while still demonstrating realistic
+    failure patterns.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+
+    def __init__(self, failure_rate: float = 0.2, seed: int | None = None) -> None:
+        self.failure_rate = max(0.0, min(1.0, failure_rate))
+        self.call_count = 0
+        self.rng = random.Random(seed)
+
+    def get_status(self) -> dict:
+        """Simulate a single API call.
+
+        Returns a success dict or raises ConnectionError to
+        simulate intermittent failures.
+        """
+        self.call_count += 1
+        roll = self.rng.random()
+
+        if roll < self.failure_rate:
+            raise ConnectionError(
+                f"API unavailable (call #{self.call_count}, roll={roll:.3f})"
+            )
+
+        return {
+            "status": "ok",
+            "value": self.rng.randint(1, 100),
+            "call_number": self.call_count,
+        }
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+# ---------- polling engine ----------
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+
+def calculate_backoff(
+    attempt: int,
+    base_delay: float,
+    max_delay: float,
+    jitter: bool = True,
+) -> float:
+    """Calculate the delay before the next retry using exponential backoff.
+
+    The delay doubles with each consecutive failure but is capped at
+    *max_delay*.  Jitter adds a small random component to prevent
+    multiple clients from retrying in lockstep (thundering herd).
+    """
+    delay = min(base_delay * (2 ** attempt), max_delay)
+    if jitter:
+        delay += delay * 0.1 * random.random()
+    return delay
+
+
+def poll_with_backoff(
+    api: MockAPI,
+    max_polls: int = 10,
+    base_delay: float = 0.01,
+    max_delay: float = 1.0,
+    max_retries: int = 3,
+) -> tuple[list[dict], list[dict]]:
+    """Poll the API up to *max_polls* times with exponential backoff.
+
+    Returns (results, errors) where *results* contains successful
+    responses and *errors* contains failure records.  Polling stops
+    early if *max_retries* consecutive failures occur.
+    """
+    results: list[dict] = []
+    errors: list[dict] = []
+    consecutive_failures = 0
+
+    for poll_num in range(1, max_polls + 1):
+        try:
+            response = api.get_status()
+            results.append({"poll": poll_num, **response})
+            consecutive_failures = 0
+            logging.info("Poll %d: %s", poll_num, response)
+        except ConnectionError as exc:
+            consecutive_failures += 1
+            errors.append({
+                "poll": poll_num,
+                "error": str(exc),
+                "retry": consecutive_failures,
+            })
+            logging.warning(
+                "Poll %d failed (attempt %d): %s",
+                poll_num,
+                consecutive_failures,
+                exc,
+            )
+
+            if consecutive_failures >= max_retries:
+                logging.error("Max retries (%d) reached — stopping early", max_retries)
+                break
+
+            delay = calculate_backoff(consecutive_failures, base_delay, max_delay)
+            time.sleep(delay)
+            continue
+
+        # Short pause between successful polls (rate limiting).
+        time.sleep(base_delay)
+
+    return results, errors
+
+
+# ---------- pipeline ----------
+
+
+def run(
+    output_path: Path,
+    max_polls: int = 10,
+    failure_rate: float = 0.2,
+    seed: int | None = 42,
+) -> dict:
+    """Execute a full polling session and write the report."""
+    api = MockAPI(failure_rate=failure_rate, seed=seed)
+    results, errors = poll_with_backoff(api, max_polls=max_polls, base_delay=0.01)
+
+    report = {
+        "total_polls_attempted": len(results) + len(errors),
+        "successful": len(results),
+        "failed": len(errors),
+        "success_rate": round(len(results) / max(1, len(results) + len(errors)), 2),
+        "results": results,
+        "errors": errors,
     }
 
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info(
+        "Polling complete: %d successful, %d failed out of %d attempted",
+        len(results),
+        len(errors),
+        report["total_polls_attempted"],
+    )
+    return report
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    """Parse command-line arguments for the polling simulator."""
+    parser = argparse.ArgumentParser(
+        description="Simulate API polling with exponential backoff",
+    )
+    parser.add_argument("--output", default="data/poll_results.json", help="Output report path")
+    parser.add_argument("--max-polls", type=int, default=10, help="Maximum poll attempts")
+    parser.add_argument("--failure-rate", type=float, default=0.2, help="Simulated failure rate 0-1")
+    parser.add_argument("--seed", type=int, default=42, help="RNG seed for reproducibility")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
+    """Entry point: configure logging, parse args, run the poller."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    report = run(Path(args.output), args.max_polls, args.failure_rate, args.seed)
+    print(
+        f"Polling complete: {report['successful']} successful, "
+        f"{report['failed']} failed"
+    )
 
 
 if __name__ == "__main__":

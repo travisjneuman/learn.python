@@ -1,5 +1,17 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project analyses project directories — no input file needed.
+
+Usage:
+    python project.py report .
+    python project.py report . --json
+    python project.py scan . --pattern "*.py"
+    python project.py report ../14-service-simulator
+
+The health dashboard checks:
+- File count and line metrics
+- Large files (over 300 lines)
+- Missing README
+- Missing test files
+- Files with too many functions
+
+Try pointing it at other projects in this curriculum:
+    python project.py report ../01-package-layout-starter

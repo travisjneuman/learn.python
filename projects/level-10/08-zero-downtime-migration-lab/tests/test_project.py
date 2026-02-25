@@ -1,52 +1,138 @@
-"""Advanced test module with heavy comments.
+"""Tests for Zero-Downtime Migration Lab.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers table operations, migration phases, expand-migrate-contract pattern,
+rollback behavior, and safety validation.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import pytest
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    Column,
+    ColumnType,
+    MigrationExecutor,
+    MigrationPhase,
+    MigrationPlan,
+    MigrationStep,
+    Table,
+    build_add_column_migration,
+    build_rename_column_migration,
+    validate_migration_safety,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+@pytest.fixture
+def users_table() -> Table:
+    t = Table("users", {
+        "id": Column("id", ColumnType.INTEGER, nullable=False),
+        "name": Column("name", ColumnType.TEXT),
+    })
+    t.insert({"id": 1, "name": "alice"})
+    t.insert({"id": 2, "name": "bob"})
+    return t
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+
+# ---------------------------------------------------------------------------
+# Table operations
+# ---------------------------------------------------------------------------
+
+class TestTable:
+    def test_add_column_populates_default(self, users_table: Table) -> None:
+        users_table.add_column(Column("active", ColumnType.BOOLEAN, default="true"))
+        assert "active" in users_table.column_names
+        assert users_table.rows[0]["active"] == "true"
+
+    def test_drop_column_removes_data(self, users_table: Table) -> None:
+        users_table.drop_column("name")
+        assert "name" not in users_table.column_names
+        assert "name" not in users_table.rows[0]
+
+    def test_duplicate_column_raises(self, users_table: Table) -> None:
+        with pytest.raises(ValueError, match="already exists"):
+            users_table.add_column(Column("id", ColumnType.INTEGER))
+
+    def test_drop_nonexistent_raises(self, users_table: Table) -> None:
+        with pytest.raises(ValueError, match="not found"):
+            users_table.drop_column("nonexistent")
+
+    def test_insert_missing_required_raises(self) -> None:
+        t = Table("strict", {"id": Column("id", ColumnType.INTEGER, nullable=False)})
+        with pytest.raises(ValueError, match="Missing required"):
+            t.insert({})
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# ---------------------------------------------------------------------------
+# Migration plan building
+# ---------------------------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestMigrationPlanBuilder:
+    def test_add_column_plan_has_two_steps(self, users_table: Table) -> None:
+        col = Column("email", ColumnType.TEXT)
+        plan = build_add_column_migration("M1", users_table, col)
+        assert len(plan.steps) == 2
+        assert plan.steps[0].phase == MigrationPhase.EXPANDING
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_rename_plan_has_three_steps(self, users_table: Table) -> None:
+        plan = build_rename_column_migration("M2", users_table, "name", "display_name", ColumnType.TEXT)
+        assert len(plan.steps) == 3
+        assert plan.steps[2].phase == MigrationPhase.CONTRACTING
+
+    def test_progress_starts_at_zero(self, users_table: Table) -> None:
+        col = Column("email", ColumnType.TEXT)
+        plan = build_add_column_migration("M1", users_table, col)
+        assert plan.progress_pct == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Migration execution
+# ---------------------------------------------------------------------------
+
+class TestMigrationExecutor:
+    def test_successful_migration_completes(self, users_table: Table) -> None:
+        col = Column("email", ColumnType.TEXT)
+        plan = build_add_column_migration("M1", users_table, col)
+        executor = MigrationExecutor(users_table)
+        result = executor.execute_plan(plan)
+        assert result.is_complete
+        assert result.progress_pct == 100.0
+
+    def test_history_records_all_phases(self, users_table: Table) -> None:
+        col = Column("email", ColumnType.TEXT)
+        plan = build_add_column_migration("M1", users_table, col)
+        executor = MigrationExecutor(users_table)
+        executor.execute_plan(plan)
+        assert len(executor.history) >= 3  # steps + COMPLETE
+
+    def test_empty_plan_completes_immediately(self, users_table: Table) -> None:
+        plan = MigrationPlan(migration_id="M0", title="Empty")
+        executor = MigrationExecutor(users_table)
+        result = executor.execute_plan(plan)
+        assert result.is_complete
+
+
+# ---------------------------------------------------------------------------
+# Safety validation
+# ---------------------------------------------------------------------------
+
+class TestSafetyValidation:
+    def test_empty_plan_warns(self) -> None:
+        plan = MigrationPlan(migration_id="M0", title="Empty")
+        warnings = validate_migration_safety(plan)
+        assert any("no steps" in w for w in warnings)
+
+    def test_contract_without_expand_warns(self) -> None:
+        plan = MigrationPlan(migration_id="M1", title="Bad", steps=[
+            MigrationStep(MigrationPhase.CONTRACTING, "Drop column", "", ""),
+        ])
+        warnings = validate_migration_safety(plan)
+        assert any("Contracting without expanding" in w for w in warnings)
+
+    def test_valid_plan_no_warnings(self, users_table: Table) -> None:
+        col = Column("email", ColumnType.TEXT)
+        plan = build_add_column_migration("M1", users_table, col)
+        warnings = validate_migration_safety(plan)
+        assert len(warnings) == 0

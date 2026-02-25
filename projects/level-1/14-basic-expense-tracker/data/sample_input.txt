@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+date,category,amount,description
+2024-01-02,Food,12.50,Lunch at deli
+2024-01-03,Transport,35.00,Monthly bus pass
+2024-01-05,Food,8.75,Coffee and snack
+2024-01-07,Entertainment,15.99,Movie ticket
+2024-01-10,Food,45.20,Weekly groceries
+2024-01-12,Utilities,89.00,Electric bill
+2024-01-15,Transport,22.50,Uber ride
+2024-01-18,Food,11.30,Takeout dinner
+2024-01-20,Entertainment,9.99,Streaming subscription
+2024-01-25,Utilities,65.00,Internet bill

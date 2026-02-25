@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "name": "billing-service",
+  "owner": "platform-team",
+  "environment": "production",
+  "replicas": 3,
+  "cost_center": "CC-4421"
+}

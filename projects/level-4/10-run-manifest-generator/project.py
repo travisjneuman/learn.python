@@ -1,106 +1,132 @@
-"""Level 4 project: Run Manifest Generator.
+"""Level 4 / Project 10 — Run Manifest Generator.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Generates manifest files that document batch run metadata: what files
+were processed, file sizes, checksums (MD5), timestamps, and run status.
+Useful for auditing and reproducibility.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import hashlib
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Run Manifest Generator"
-PROJECT_FOCUS = "artifact manifest and run metadata"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- manifest helpers ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def compute_checksum(path: Path, algorithm: str = "md5") -> str:
+    """Compute a hex digest checksum for a file.
 
-    We keep this separate from I/O so business logic stays testable.
+    Reads in chunks to handle large files without loading them fully into memory.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    hasher = hashlib.new(algorithm)
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def scan_files(directory: Path) -> list[dict]:
+    """Scan a directory and collect metadata for each file.
+
+    Returns a list of dicts with: name, path, size_bytes, checksum, modified.
+    """
+    if not directory.is_dir():
+        raise NotADirectoryError(f"Not a directory: {directory}")
+
+    entries: list[dict] = []
+    for file_path in sorted(directory.rglob("*")):
+        if not file_path.is_file():
+            continue
+        stat = file_path.stat()
+        entries.append({
+            "name": file_path.name,
+            "relative_path": str(file_path.relative_to(directory)),
+            "size_bytes": stat.st_size,
+            "checksum_md5": compute_checksum(file_path),
+            "modified_utc": datetime.fromtimestamp(
+                stat.st_mtime, tz=timezone.utc
+            ).isoformat(),
+        })
+
+    return entries
+
+
+def build_manifest(
+    run_id: str,
+    directory: Path,
+    status: str = "completed",
+) -> dict:
+    """Build a complete run manifest for a directory.
+
+    The manifest includes run metadata and a file inventory.
+    """
+    files = scan_files(directory)
+    total_size = sum(f["size_bytes"] for f in files)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "run_id": run_id,
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "directory": str(directory),
+        "status": status,
+        "file_count": len(files),
+        "total_size_bytes": total_size,
+        "files": files,
     }
 
+# ---------- runner ----------
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+
+def run(
+    directory: Path,
+    output_path: Path,
+    run_id: str = "auto",
+) -> dict:
+    """Generate and write a manifest for a directory."""
+    if run_id == "auto":
+        run_id = f"run_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
+
+    manifest = build_manifest(run_id, directory)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    logging.info(
+        "Manifest generated: %d files, %d bytes total",
+        manifest["file_count"], manifest["total_size_bytes"],
+    )
+    return manifest
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Generate a run manifest for a directory")
+    parser.add_argument("--dir", default="data", help="Directory to scan")
+    parser.add_argument("--output", default="data/manifest.json")
+    parser.add_argument("--run-id", default="auto", help="Run identifier")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    manifest = run(Path(args.dir), Path(args.output), run_id=args.run_id)
+    print(json.dumps({
+        "run_id": manifest["run_id"],
+        "file_count": manifest["file_count"],
+        "total_size_bytes": manifest["total_size_bytes"],
+    }, indent=2))
 
 
 if __name__ == "__main__":

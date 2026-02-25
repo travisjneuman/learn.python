@@ -1,5 +1,10 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+user_001 2025-01-15T10:00:00Z page_view /landing
+user_001 2025-01-15T10:01:30Z page_view /signup
+user_001 2025-01-15T10:03:00Z form_submit signup_complete
+user_001 2025-01-15T10:05:00Z page_view /dashboard
+user_002 2025-01-15T10:00:00Z page_view /landing
+user_002 2025-01-15T10:02:00Z page_view /pricing
+user_003 2025-01-15T10:00:00Z page_view /landing
+user_003 2025-01-15T10:01:00Z page_view /signup
+user_003 2025-01-15T10:02:00Z page_view /signup
+user_003 2025-01-15T10:10:00Z form_submit signup_complete

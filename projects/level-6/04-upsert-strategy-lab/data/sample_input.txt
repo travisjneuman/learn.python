@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+sku,name,price,stock
+WIDGET-001,Standard Widget,9.99,150
+GADGET-002,Deluxe Gadget,24.99,75
+WIDGET-001,Standard Widget v2,11.99,120
+TOOL-003,Power Tool,49.99,30
+GADGET-002,Deluxe Gadget,24.99,80
+PART-004,Replacement Part,3.49,500

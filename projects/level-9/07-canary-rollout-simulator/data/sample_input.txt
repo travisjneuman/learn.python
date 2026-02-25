@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+version: v2.4.0
+baseline_error_rate: 0.5%
+baseline_latency_p99: 180ms
+stages: 1% 5% 25% 50% 100%
+error_rate_threshold: 2.0% (rollback if canary exceeds this)
+latency_threshold: 500ms
+observation_window: 60s per stage
+seed: 42

@@ -2,59 +2,68 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- capture adr records and rationale
+- Structured ADR (Architecture Decision Record) management
+- Observer pattern for status change notifications
+- ADR lifecycle: proposed, accepted, deprecated, superseded
+- Full-text search across decision records
+- JSON persistence and structured querying
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Architecture decisions are the most expensive decisions in software engineering — yet
+most teams make them informally and forget the reasoning within months. ADRs capture the
+context, alternatives considered, and consequences of each decision. This project builds
+a structured ADR system with status tracking, observer notifications, and search — teaching
+documentation as a first-class engineering practice used at Spotify, AWS, and Google.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/01-architecture-decision-log
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "adr_count": 3,
+  "statuses": {"accepted": 1, "proposed": 1, "superseded": 1},
+  "search_results": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with ADR log summary
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `search_by_tag` method that filters ADRs by tag keywords.
+2. Add an `export_markdown()` method that renders each ADR as a Markdown document.
+3. Add a `--status` CLI filter that lists only ADRs in a given status (proposed, accepted, etc.).
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Try to supersede an ADR that is already deprecated — what status transition occurs?
+2. Register an observer callback that raises an exception — does the log still function?
+3. Add two ADRs with the same ID — what happens to the internal dictionary?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add status transition validation (e.g. deprecated ADRs cannot be superseded).
+2. Wrap observer callbacks in try/except so one bad observer does not break the log.
+3. Add a check that rejects duplicate ADR IDs with a descriptive error.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is an Architecture Decision Record (ADR) and why do teams write them?
+2. How does the Observer pattern notify subscribers when an ADR changes status?
+3. What is the ADR lifecycle: proposed, accepted, deprecated, superseded?
+4. How would you integrate this log into a CI pipeline to enforce ADR review?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain the ADR lifecycle and why each status matters,
+- add a new ADR end-to-end (create, accept, supersede) without looking at docs,
+- describe the Observer pattern and how it decouples event producers from consumers,
+- explain why decision records are important for long-lived software projects.
 
 ---
 

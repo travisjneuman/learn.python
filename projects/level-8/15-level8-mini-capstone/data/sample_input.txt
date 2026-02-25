@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+service: auth-api health=healthy metrics=[latency_ms=45,error_rate=0.1,cpu_pct=35]
+service: user-db health=healthy metrics=[query_ms=12,connections=45,replication_lag=0]
+service: search-api health=degraded metrics=[latency_ms=890,error_rate=5.2,cpu_pct=92]
+service: payment-svc health=healthy metrics=[latency_ms=120,error_rate=0.05,cpu_pct=28]
+alert_threshold: 2.0 (multiplier of baseline)

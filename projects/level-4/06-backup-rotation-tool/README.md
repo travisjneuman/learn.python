@@ -13,41 +13,48 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/06-backup-rotation-tool
-python project.py --input data/sample_input.txt --output data/output_summary.json
+# Create sample backup files first:
+mkdir -p data/backups
+for d in $(seq 1 20); do touch "data/backups/backup_2025-01-$(printf '%02d' $d).tar.gz"; done
+python project.py --backup-dir data/backups --output data/rotation_report.json --daily 7 --weekly 4 --monthly 6
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "keep": [ ... ],
+  "delete": [ ... ],
+  "summary": { "total": 20, "keeping": 11, "deleting": 9, ... }
+}
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/rotation_report.json` — keep/delete lists with retention reasons
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--execute` flag that actually deletes the files marked for deletion (default: plan only).
+2. Add a `--min-keep` safety net that refuses to delete if fewer than N backups would remain.
+3. Re-run script and tests — add a test for the min-keep guard.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create backup files with unparseable names (no date) and confirm they land in `unparseable`.
+2. Set `--daily 0 --weekly 0 --monthly 0` and observe whether ALL backups are scheduled for deletion.
+3. Create two backups on the same day and verify only one is counted for the daily slot.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a confirmation prompt before actual deletion (when `--execute` is used).
+2. Handle the edge case of monthly retention when months vary in length (28-31 days).
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `classify_backups` take `now` as a parameter instead of calling `datetime.now()` internally?
+2. What is the purpose of `kept_set` — why not just check the `keep` list directly?
+3. Why does weekly retention use ISO week numbers instead of just counting 7-day intervals?
+4. How would this pattern scale to thousands of backup files?
 
 ## Mastery check
 You can move on when you can:

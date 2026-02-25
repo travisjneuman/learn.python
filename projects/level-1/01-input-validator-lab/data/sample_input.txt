@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+email: user@example.com
+email: bad-email-no-at
+email: missing@domain
+phone: 555-123-4567
+phone: (555) 987-6543
+phone: 12345
+zip: 90210
+zip: 90210-1234
+zip: 123

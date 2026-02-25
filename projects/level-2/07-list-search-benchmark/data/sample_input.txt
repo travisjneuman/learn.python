@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project generates its own test data programmatically.
+No input file is needed — run with:
+
+    python project.py --sizes 100 1000 10000
+
+The --sizes flag controls which list sizes to benchmark.
+The --iterations flag controls measurement precision.

@@ -13,41 +13,46 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/15-level5-mini-capstone
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --config data/pipeline_config.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Pipeline complete: 5 rows, 2 alerts, 12ms
+8 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output/summary.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--dry-run` flag that runs extract and transform but skips the export step.
+2. Add env var overrides: `PIPELINE_THRESHOLD_WARN=80` should override the config file value.
+3. Add a retry wrapper around `extract_csv_files` so one bad file does not abort the pipeline.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Point `input_dir` in the config at a directory that does not exist.
+2. Add a CSV with no numeric columns and observe what `_numeric` defaults to.
+3. Set `threshold_warn` higher than `threshold_crit` in the config.
+4. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `input_dir` exists before starting extraction.
+2. Log a clear warning when no numeric column is found in a row.
+3. Validate that `warn < crit` at config load time.
+4. Add tests for each broken scenario.
+5. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does `load_config` implement the three-layer priority (defaults, file, env)?
+2. Why does `atomic_write` use a `.tmp` file and rename instead of writing directly?
+3. How does `check_thresholds` separate warnings from criticals?
+4. How does this capstone tie together config, ETL, monitoring, and atomic export from earlier projects?
+5. Where would you see a pipeline like this in production (data warehousing, CI/CD, monitoring)?
 
 ## Mastery check
 You can move on when you can:

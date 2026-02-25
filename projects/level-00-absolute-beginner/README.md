@@ -43,6 +43,14 @@ You have never written a line of code in your life. You may not know what a "ter
 4. **Try** the challenges in `TRY_THIS.md`
 5. **Move on** when you can explain what the code does without reading the comments
 
+## Try in your browser (no install needed)
+
+Want to try Python before installing anything? Run these exercises directly in your browser:
+
+[Open Browser Exercises](../../browser/index.html)
+
+Uses [Pyodide](https://pyodide.org/) to run real Python in your browser with a code editor and output panel.
+
 ## Important
 - There are no tests at this level. Just run and observe.
 - There is no wrong way to experiment. Break things. That is how you learn.

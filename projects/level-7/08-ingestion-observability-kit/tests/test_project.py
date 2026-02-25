@@ -1,52 +1,74 @@
-"""Advanced test module with heavy comments.
+"""Tests for Ingestion Observability Kit."""
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
-"""
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import json
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
+
+from project import ObservabilityKit, ingest_stage, run, run_pipeline, transform_stage
 
 
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+class TestObservabilityKit:
+    def test_start_and_end_stage(self) -> None:
+        kit = ObservabilityKit()
+        kit.start_stage("load", 10)
+        kit.end_stage("load", 8, errors=2)
+        s = kit.summary()
+        assert s["stages"]["load"]["rows_in"] == 10
+        assert s["stages"]["load"]["rows_out"] == 8
+        assert s["stages"]["load"]["errors"] == 2
 
-    # Act: call loader.
-    items = load_items(sample)
+    def test_error_rate_calculation(self) -> None:
+        kit = ObservabilityKit()
+        kit.start_stage("s1", 100)
+        kit.end_stage("s1", 90, errors=10)
+        assert kit.metrics["s1"].error_rate == 0.1
 
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+    def test_log_error_recorded(self) -> None:
+        kit = ObservabilityKit()
+        kit.start_stage("s1", 5)
+        kit.log_error("s1", "abc", "bad row")
+        assert any(e.level == "ERROR" and "bad row" in e.message for e in kit.logs)
+
+    def test_log_warn_recorded(self) -> None:
+        kit = ObservabilityKit()
+        kit.start_stage("s1", 5)
+        kit.log_warn("s1", "abc", "slow")
+        assert any(e.level == "WARN" for e in kit.logs)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+class TestPipelineStages:
+    def test_ingest_filters_bad_records(self) -> None:
+        kit = ObservabilityKit()
+        records = [{"id": "a", "value": "ok"}, {"id": "b"}]  # second missing value
+        good = ingest_stage(records, kit)
+        assert len(good) == 1
+        assert kit.metrics["ingest"].errors == 1
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+    def test_transform_uppercases(self) -> None:
+        kit = ObservabilityKit()
+        records = [{"id": "a", "value": "hello"}]
+        out = transform_stage(records, kit)
+        assert out[0]["value"] == "HELLO"
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    @pytest.mark.parametrize("n_records", [0, 1, 10])
+    def test_pipeline_various_sizes(self, n_records: int) -> None:
+        records = [{"id": str(i), "value": f"v{i}"} for i in range(n_records)]
+        data, summary = run_pipeline(records)
+        assert len(data) == n_records
+        assert summary["total_errors"] == 0
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
-
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
-
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+def test_run_end_to_end(tmp_path) -> None:
+    config = {"records": [
+        {"id": "1", "value": "alpha"},
+        {"id": "2"},
+        {"id": "3", "value": "gamma"},
+    ]}
+    inp = tmp_path / "config.json"
+    inp.write_text(json.dumps(config), encoding="utf-8")
+    out = tmp_path / "out.json"
+    summary = run(inp, out)
+    assert summary["stages"]["ingest"]["errors"] == 1
+    assert summary["stages"]["transform"]["rows_out"] == 2

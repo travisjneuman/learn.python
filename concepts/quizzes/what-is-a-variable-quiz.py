@@ -3,6 +3,8 @@ Quiz: What is a Variable?
 Review: concepts/what-is-a-variable.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) second_place")
     print("  d) second place")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Variable names can contain letters, numbers, and")
@@ -44,7 +46,7 @@ def run_quiz():
     print("  c) AliceBob")
     print("  d) Error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Assigning a new value replaces the old one.")
@@ -62,7 +64,7 @@ def run_quiz():
     print("  c) = checks equality, == assigns a value")
     print("  d) == is used for strings, = is used for numbers")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! x = 5 stores 5 in x. x == 5 checks if x equals 5.")
@@ -77,7 +79,7 @@ def run_quiz():
     print("  a) Yes, Python ignores case")
     print("  b) No, Python is case-sensitive")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Python is case-sensitive. Score and score are")
@@ -98,7 +100,7 @@ def run_quiz():
     print("  c) NameError — score is not defined yet")
     print("  d) Prints 0")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! You cannot use a variable before creating it.")
@@ -117,7 +119,7 @@ def run_quiz():
     print("  c) snake_case (student_count)")
     print("  d) UPPER_CASE (STUDENT_COUNT)")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Python convention is snake_case for variables:")
@@ -134,7 +136,7 @@ def run_quiz():
     print("  next_year = age + 1")
     print("  print(next_year)")
     print()
-    answer = input("Your answer: ").strip()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "26":
         score += 1
         print("Correct! age holds 25, so age + 1 is 26, which gets")

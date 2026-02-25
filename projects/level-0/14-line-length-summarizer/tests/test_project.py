@@ -1,48 +1,35 @@
-"""Beginner test module with heavy comments.
+"""Tests for Line Length Summarizer."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import categorise_lengths, compute_stats, measure_lines
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_measure_lines() -> None:
+    """Each line length should be counted correctly."""
+    lines = ["hi", "hello", "a"]
+    assert measure_lines(lines) == [2, 5, 1]
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_compute_stats_normal() -> None:
+    """Stats should be correct for a normal list of lengths."""
+    stats = compute_stats([10, 20, 30])
+    assert stats["min"] == 10
+    assert stats["max"] == 30
+    assert stats["average"] == 20.0
+    assert stats["total_lines"] == 3
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_compute_stats_empty() -> None:
+    """An empty list should not crash; all stats should be zero."""
+    stats = compute_stats([])
+    assert stats["min"] == 0
+    assert stats["max"] == 0
+    assert stats["total_lines"] == 0
+
+
+def test_categorise_lengths() -> None:
+    """Lines should be grouped into short, medium, and long."""
+    lengths = [10, 50, 90, 5, 75]
+    cats = categorise_lengths(lengths)
+    assert cats["short"] == 2   # 10 and 5
+    assert cats["medium"] == 2  # 50 and 75
+    assert cats["long"] == 1    # 90

@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `tolerance` parameter for numeric comparisons (e.g. prices within 0.01 count as matching).
+2. Add a `reconcile_three()` function that compares three sources simultaneously.
+3. Re-run script and tests — verify tolerance and three-way reconciliation work.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Use a key field that does not exist in any records (e.g. `"nonexistent_id"`).
+2. Compare records where one side has duplicate keys.
+3. Observe empty results or last-write-wins behavior with duplicates.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `key_field` exists in at least one record before proceeding.
+2. Log a warning when duplicate keys are found in a single source.
+3. Add tests for missing key fields and duplicate-key scenarios.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is set-based reconciliation the right approach for comparing data sources?
+2. What happened when the key field did not exist in the records?
+3. How did the validation prevent silent empty results?
+4. Where is data reconciliation used in real financial or inventory systems?
 
 ## Mastery check
 You can move on when you can:

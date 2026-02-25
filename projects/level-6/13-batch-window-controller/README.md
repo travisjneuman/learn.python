@@ -19,35 +19,40 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "windows_created": 4,
+  "overlaps_found": 1,
+  "gaps": [{"start": "...", "end": "..."}, ...],
+  "windows": [...]
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — window analysis with overlaps and gaps
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `merge_overlaps` function that combines overlapping windows into a single window.
+2. Add a `--auto-fill-gaps` flag that creates new pending windows for any detected gaps.
+3. Add a duration column showing each window's length in hours.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a window where `end < start` and observe the validation error.
+2. Create three windows that all overlap each other and check all pairs are detected.
+3. Try to transition a window to an invalid status (e.g. "cancelled").
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation rejecting `end <= start` windows.
+2. Ensure overlap detection handles more than 2 windows overlapping.
+3. Add status validation with a clear error message.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are overlapping processing windows dangerous in data pipelines?
+2. What is a "gap" in batch processing, and what data does it leave unprocessed?
+3. How do real ETL systems prevent double-processing?
+4. What is the interval scheduling problem and how does it relate to this project?
 
 ## Mastery check
 You can move on when you can:

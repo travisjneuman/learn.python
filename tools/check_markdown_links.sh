@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+command -v rg >/dev/null 2>&1 || { echo "ripgrep (rg) not found. Install: https://github.com/BurntSushi/ripgrep#installation" >&2; exit 1; }
+
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 missing=0

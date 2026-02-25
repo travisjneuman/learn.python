@@ -1,5 +1,30 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Template Report Renderer
+-------------------------------------------
+This file explains the companion report_template.txt and report_data.json.
+
+report_template.txt contains a text template with placeholders:
+  === {{title}} ===
+  Generated: {{date}}
+  {{IF show_summary}}
+  Summary: {{total_items}} items processed, {{error_count}} errors
+  {{END IF}}
+  {{EACH items}}
+  - {{name}}: {{status}} ({{value}})
+  {{END EACH}}
+  --- End of Report ---
+
+report_data.json provides the values to fill in:
+  {
+    "title": "Daily Operations Report",
+    "date": "2024-03-15",
+    "show_summary": true,
+    "total_items": 5,
+    "error_count": 1,
+    "items": [
+      {"name": "Server Alpha", "status": "OK", "value": "99.9% uptime"},
+      {"name": "Server Beta", "status": "WARN", "value": "85% uptime"},
+      {"name": "Database", "status": "OK", "value": "2ms latency"}
+    ]
+  }
+
+Expected: 25-line rendered report with variables replaced and blocks expanded

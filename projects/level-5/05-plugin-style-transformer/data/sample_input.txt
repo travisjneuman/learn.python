@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Plugin Style Transformer
+-------------------------------------------
+This file explains the companion sample_input.json.
+
+The project applies a chain of transformation plugins to input data.
+Each plugin is a function that takes a record and returns a modified record.
+
+sample_input.json contains records to transform:
+  [
+    {"name": "alice smith", "email": "ALICE@EXAMPLE.COM", "score": 85},
+    {"name": "bob jones", "email": "Bob@Test.Com", "score": 92},
+    {"name": "carol white", "email": "carol@demo.org", "score": 78}
+  ]
+
+Available transform plugins:
+  - capitalize_names: "alice smith" -> "Alice Smith"
+  - lowercase_emails: "ALICE@EXAMPLE.COM" -> "alice@example.com"
+  - grade_scores: 85 -> {"score": 85, "grade": "B"}
+  - add_timestamp: adds "processed_at" field
+
+Plugin chain: capitalize_names -> lowercase_emails -> grade_scores
+Expected: 3 records transformed through the plugin pipeline

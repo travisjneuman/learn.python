@@ -1,107 +1,166 @@
 """Level 1 project: Level 1 Mini Automation.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+A multi-step automation pipeline that reads a configuration of tasks,
+executes each step in sequence, and produces a summary report.
+Combines file operations, string processing, and data aggregation
+from earlier projects into one workflow.
+
+Concepts: pipeline pattern, step sequencing, combining learned skills.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
+import csv
 import json
-# Path is safer than plain strings for file paths.
+from datetime import datetime
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Level 1 Mini Automation"
-PROJECT_FOCUS = "multi-step beginner automation flow"
 
+def step_read_lines(path: Path) -> list[str]:
+    """Step 1: Read and clean lines from a text file.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY a dedicated step? -- Automation pipelines break work into
+    discrete steps.  Each step does one thing and passes results
+    to the next step.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+        raise FileNotFoundError(f"File not found: {path}")
+    raw = path.read_text(encoding="utf-8").splitlines()
+    return [line.strip() for line in raw if line.strip()]
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def step_parse_records(lines: list[str]) -> list[dict[str, str]]:
+    """Step 2: Parse pipe-delimited lines into records.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY pipe-delimited? -- Using '|' as delimiter is common in log
+    files and data feeds where commas appear in the data itself.
+    """
+    records = []
+    for line in lines:
+        parts = [p.strip() for p in line.split("|")]
+        if len(parts) < 3:
+            continue
+        records.append({
+            "name": parts[0],
+            "status": parts[1].lower(),
+            "value": parts[2],
+        })
+    return records
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
 
+def step_filter_active(records: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Step 3: Keep only records with status 'active' or 'ok'.
+
+    WHY filter? -- Real automation often needs to skip failed,
+    disabled, or irrelevant entries before processing.
+    """
+    active_statuses = {"active", "ok", "pass", "success"}
+    return [r for r in records if r["status"] in active_statuses]
+
+
+def step_transform(records: list[dict[str, str]]) -> list[dict[str, object]]:
+    """Step 4: Transform records — normalise names and parse values.
+
+    WHY transform? -- Raw data rarely matches the format downstream
+    systems need.  Cleaning and normalising is a standard pipeline step.
+    """
+    transformed = []
+    for r in records:
+        name = r["name"].strip().title()
+        try:
+            value = float(r["value"])
+        except ValueError:
+            value = 0.0
+        transformed.append({"name": name, "status": r["status"], "value": value})
+    return transformed
+
+
+def step_summarise(records: list[dict[str, object]]) -> dict[str, object]:
+    """Step 5: Aggregate transformed records into a summary.
+
+    WHY summarise? -- The final step of most pipelines is to produce
+    a report or summary that humans or downstream systems consume.
+    """
+    if not records:
+        return {"count": 0, "total_value": 0.0, "average_value": 0.0, "names": []}
+
+    values = [r["value"] for r in records]
+    total = round(sum(values), 2)
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "count": len(records),
+        "total_value": total,
+        "average_value": round(total / len(records), 2),
+        "names": [r["name"] for r in records],
     }
 
 
+def run_pipeline(input_path: Path) -> dict[str, object]:
+    """Execute all pipeline steps in sequence and return results.
+
+    WHY a single orchestrator? -- Having one function that calls
+    each step in order makes the pipeline easy to test, debug,
+    and extend with new steps.
+    """
+    lines = step_read_lines(input_path)
+    records = step_parse_records(lines)
+    active = step_filter_active(records)
+    transformed = step_transform(active)
+    summary = step_summarise(transformed)
+
+    return {
+        "input_file": str(input_path),
+        "total_lines": len(lines),
+        "parsed_records": len(records),
+        "active_records": len(active),
+        "summary": summary,
+    }
+
+
+def format_report(result: dict[str, object]) -> str:
+    """Format pipeline results as a human-readable report."""
+    lines = [
+        "=== Automation Pipeline Report ===",
+        "",
+        f"  Input:           {result['input_file']}",
+        f"  Lines read:      {result['total_lines']}",
+        f"  Records parsed:  {result['parsed_records']}",
+        f"  Active records:  {result['active_records']}",
+        "",
+    ]
+
+    summary = result["summary"]
+    lines.append(f"  Processed:       {summary['count']}")
+    lines.append(f"  Total value:     {summary['total_value']}")
+    lines.append(f"  Average value:   {summary['average_value']}")
+
+    if summary["names"]:
+        lines.append("")
+        lines.append("  Names:")
+        for name in summary["names"]:
+            lines.append(f"    - {name}")
+
+    return "\n".join(lines)
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser = argparse.ArgumentParser(description="Level 1 Mini Automation")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="Pipe-delimited data file")
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    result = run_pipeline(Path(args.input))
+    print(format_report(result))
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

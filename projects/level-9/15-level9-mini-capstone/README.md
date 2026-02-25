@@ -2,59 +2,71 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- architecture-level operations toolkit
+- Facade pattern unifying multiple subsystems (SLOs, costs, reliability, governance)
+- Composition over inheritance for subsystem integration
+- Multi-dimensional health scoring from heterogeneous data sources
+- Structured reporting with per-service and aggregate views
+- Platform engineering toolkit design
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+This capstone integrates the core Level 9 concepts: architecture decisions, SLO
+management, cost estimation, reliability scoring, and governance checks into a unified
+platform engineering toolkit. Real platform teams do not run each of these in isolation —
+they compose them into a single operational view that answers "how healthy is this
+service?" across every dimension. This project proves you can design systems that compose
+multiple domain engines into a coherent whole, the architectural skill that separates
+senior engineers from juniors.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/15-level9-mini-capstone
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "platform_health": "WARNING",
+  "services": [...],
+  "aggregate": {"slo_compliance": 92, "reliability_grade": "B", "monthly_cost": 14200},
+  "top_risks": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with full platform engineering report
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `top_risks()` method that returns the 3 services with the worst health status.
+2. Add cost trend analysis — flag services with SPIKING cost trends in the report.
+3. Add a `--team` filter that generates a report scoped to a specific team's services.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Register a service with no SLOs, no cost data, and no governance checks — what health status results?
+2. Set `budget_monthly=0` in `CostProfile` — does `over_budget` report correctly?
+3. Generate a report with zero registered services — does `generate_report()` handle division by zero?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Return `UNKNOWN` health status when a service has no subsystem data.
+2. Guard against `budget_monthly=0` in the `over_budget` property.
+3. Add a test for the empty toolkit report.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does the facade pattern unify SLOs, costs, reliability, and governance into one view?
+2. What is the relationship between health status and the individual subsystem scores?
+3. Why does this capstone compose subsystems rather than inheriting from them?
+4. How would a real platform engineering team use this toolkit day-to-day?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain the facade pattern and how it simplifies complex subsystem interactions,
+- register a new service and predict its health status from its subsystem data,
+- describe how SLOs, costs, reliability, and governance interact in platform engineering,
+- extend the toolkit with a new subsystem (e.g. incident tracking) without modifying existing code.
 
 ---
 

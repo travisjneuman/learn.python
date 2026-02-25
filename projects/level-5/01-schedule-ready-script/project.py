@@ -1,106 +1,169 @@
-"""Level 5 project: Schedule Ready Script.
+"""Level 5 / Project 01 — Schedule-Ready Script.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+A script designed to run non-interactively (e.g., via cron or Task
+Scheduler). Features: time-window checks, lock files to prevent
+overlapping runs, structured exit codes, and run logging.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_LEVEL = 5
-PROJECT_TITLE = "Schedule Ready Script"
-PROJECT_FOCUS = "non-interactive execution patterns"
+# ---------- logging ----------
 
-
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+def configure_logging(log_path: Path | None = None) -> None:
+    handlers: list[logging.Handler] = [logging.StreamHandler()]
+    if log_path:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        handlers.append(logging.FileHandler(log_path, encoding="utf-8"))
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
+        handlers=handlers,
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- scheduling helpers ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def is_within_time_window(
+    now: datetime,
+    start_hour: int,
+    end_hour: int,
+) -> bool:
+    """Check if current time is within the allowed execution window.
 
-    We keep this separate from I/O so business logic stays testable.
+    Window wraps around midnight: start=22, end=6 means 10 PM to 6 AM.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    hour = now.hour
+    if start_hour <= end_hour:
+        return start_hour <= hour < end_hour
+    # Window wraps past midnight
+    return hour >= start_hour or hour < end_hour
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+def is_skip_day(now: datetime, skip_days: list[int]) -> bool:
+    """Check if today's weekday (0=Monday) is in the skip list."""
+    return now.weekday() in skip_days
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+def acquire_lock(lock_path: Path) -> bool:
+    """Try to create a lock file. Returns False if already locked.
+
+    A lock file prevents overlapping runs when the script is scheduled
+    to run more frequently than it takes to complete.
+    """
+    if lock_path.exists():
+        # Check if lock is stale (older than 1 hour)
+        age_seconds = (datetime.now(timezone.utc).timestamp()
+                       - lock_path.stat().st_mtime)
+        if age_seconds < 3600:
+            return False
+        logging.warning("Removing stale lock file (age: %.0fs)", age_seconds)
+
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path.write_text(
+        json.dumps({"pid": "simulated", "locked_at": datetime.now(timezone.utc).isoformat()}),
+        encoding="utf-8",
+    )
+    return True
+
+
+def release_lock(lock_path: Path) -> None:
+    """Remove the lock file after a successful run."""
+    if lock_path.exists():
+        lock_path.unlink()
+
+# ---------- the actual work ----------
+
+
+def do_work(input_path: Path, output_path: Path) -> dict:
+    """The payload work this script is scheduled to do.
+
+    Reads input lines, processes them, writes output.
+    Replace this with your actual batch logic.
+    """
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
+
+    lines = [l.strip() for l in input_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    results = [{"line": i + 1, "content": line, "length": len(line)} for i, line in enumerate(lines)]
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    return {"processed": len(results)}
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+# ---------- runner ----------
+
+
+def run(
+    input_path: Path,
+    output_path: Path,
+    lock_path: Path,
+    now: datetime | None = None,
+    start_hour: int = 0,
+    end_hour: int = 24,
+    skip_days: list[int] | None = None,
+) -> dict:
+    """Full scheduled run with all safety checks."""
+    now = now or datetime.now(timezone.utc)
+    skip_days = skip_days or []
+
+    # Check time window
+    if not is_within_time_window(now, start_hour, end_hour):
+        logging.info("Outside time window (%d:00-%d:00), skipping", start_hour, end_hour)
+        return {"status": "skipped", "reason": "outside_time_window"}
+
+    # Check skip days
+    if is_skip_day(now, skip_days):
+        logging.info("Today is a skip day (weekday=%d), skipping", now.weekday())
+        return {"status": "skipped", "reason": "skip_day"}
+
+    # Acquire lock
+    if not acquire_lock(lock_path):
+        logging.warning("Lock file exists — another instance may be running")
+        return {"status": "skipped", "reason": "locked"}
+
+    try:
+        result = do_work(input_path, output_path)
+        result["status"] = "completed"
+        logging.info("Run completed: %s", result)
+        return result
+    except Exception as exc:
+        logging.error("Run failed: %s", exc)
+        return {"status": "failed", "error": str(exc)}
+    finally:
+        release_lock(lock_path)
+
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
+    parser = argparse.ArgumentParser(description="Schedule-ready batch script")
     parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--lock", default="data/.run.lock")
+    parser.add_argument("--log", default="data/run.log")
+    parser.add_argument("--start-hour", type=int, default=0)
+    parser.add_argument("--end-hour", type=int, default=24)
+    parser.add_argument("--skip-days", default="", help="Comma-separated weekdays to skip (0=Mon)")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    configure_logging(Path(args.log))
+    skip = [int(d) for d in args.skip_days.split(",") if d.strip()]
+    result = run(
+        Path(args.input), Path(args.output), Path(args.lock),
+        start_hour=args.start_hour, end_hour=args.end_hour, skip_days=skip,
+    )
+    print(json.dumps(result, indent=2))
+    sys.exit(0 if result.get("status") == "completed" else 1)
 
 
 if __name__ == "__main__":

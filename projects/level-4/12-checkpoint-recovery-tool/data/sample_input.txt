@@ -1,5 +1,25 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample scenario for Checkpoint Recovery Tool
+-----------------------------------------------
+This file describes the checkpoint/recovery context.
+
+The project processes a large batch of items and saves checkpoints
+so that interrupted runs can resume from where they left off.
+
+Simulated batch of 20 items to process:
+  Items 1-8:   already processed (checkpoint file exists)
+  Items 9-12:  to be processed this run
+  Items 13-20: remaining (will be processed in future runs)
+
+Checkpoint file format (data/checkpoint.json):
+  {
+    "run_id": "batch-2024-03-15",
+    "last_completed": 8,
+    "total_items": 20,
+    "started_at": "2024-03-15T10:00:00",
+    "items_per_second": 2.5
+  }
+
+Expected behavior:
+  - Resume from item 9 (not item 1)
+  - Process items 9-12, update checkpoint
+  - If interrupted mid-run, next run picks up where this one stopped

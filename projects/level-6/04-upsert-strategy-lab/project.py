@@ -1,105 +1,216 @@
-"""Level 6 project: Upsert Strategy Lab.
+"""Level 6 / Project 04 — Upsert Strategy Lab.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Demonstrates INSERT ... ON CONFLICT (upsert) patterns in SQLite for
+keeping a table in sync with incoming data without duplicates.
+
+Key concepts:
+- INSERT OR REPLACE vs INSERT ... ON CONFLICT DO UPDATE
+- UNIQUE constraints as the foundation for upsert
+- Tracking update counts vs insert counts
+- Comparing strategies: replace-all vs merge-fields
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import sqlite3
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 6
-PROJECT_TITLE = "Upsert Strategy Lab"
-PROJECT_FOCUS = "insert/update decision logic"
+# ---------------------------------------------------------------------------
+# Schema
+# ---------------------------------------------------------------------------
+
+PRODUCTS_DDL = """\
+CREATE TABLE IF NOT EXISTS products (
+    sku        TEXT PRIMARY KEY,
+    name       TEXT NOT NULL,
+    price      REAL NOT NULL,
+    stock      INTEGER NOT NULL DEFAULT 0,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+"""
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+@dataclass
+class UpsertResult:
+    """Tracks how many rows were inserted vs updated."""
+
+    inserted: int = 0
+    updated: int = 0
+    errors: list[str] = field(default_factory=list)
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
+# ---------------------------------------------------------------------------
+# Data loading
+# ---------------------------------------------------------------------------
+
+
+def load_csv(path: Path) -> list[dict]:
+    """Parse a CSV with columns: sku, name, price, stock."""
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+        raise FileNotFoundError(f"File not found: {path}")
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+
+# ---------------------------------------------------------------------------
+# Upsert strategies
+# ---------------------------------------------------------------------------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def upsert_replace(conn: sqlite3.Connection, rows: list[dict]) -> UpsertResult:
+    """Strategy 1: INSERT OR REPLACE — simple but overwrites *all* columns.
 
-    We keep this separate from I/O so business logic stays testable.
+    If the SKU already exists, the entire row is deleted and re-inserted.
+    This is the bluntest approach: easy to understand but you lose any
+    columns that the incoming data doesn't supply.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    conn.execute(PRODUCTS_DDL)
+    result = UpsertResult()
+
+    for idx, row in enumerate(rows, start=1):
+        try:
+            sku = row["sku"].strip()
+            # Check whether the row exists before the upsert so we can
+            # distinguish inserts from updates.
+            existing = conn.execute(
+                "SELECT 1 FROM products WHERE sku = ?", (sku,)
+            ).fetchone()
+
+            conn.execute(
+                "INSERT OR REPLACE INTO products (sku, name, price, stock) "
+                "VALUES (?, ?, ?, ?)",
+                (sku, row["name"].strip(), float(row["price"]), int(row["stock"])),
+            )
+
+            if existing:
+                result.updated += 1
+            else:
+                result.inserted += 1
+        except (KeyError, ValueError) as exc:
+            result.errors.append(f"row={idx} error={exc}")
+
+    conn.commit()
+    return result
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def upsert_on_conflict(conn: sqlite3.Connection, rows: list[dict]) -> UpsertResult:
+    """Strategy 2: INSERT ... ON CONFLICT DO UPDATE — selective merge.
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    Only the columns we explicitly list in the SET clause are touched.
+    This preserves any columns we do *not* mention, which is crucial
+    when different systems own different columns of the same row.
+    """
+    conn.execute(PRODUCTS_DDL)
+    result = UpsertResult()
+
+    for idx, row in enumerate(rows, start=1):
+        try:
+            sku = row["sku"].strip()
+            existing = conn.execute(
+                "SELECT 1 FROM products WHERE sku = ?", (sku,)
+            ).fetchone()
+
+            conn.execute(
+                "INSERT INTO products (sku, name, price, stock) "
+                "VALUES (?, ?, ?, ?) "
+                "ON CONFLICT(sku) DO UPDATE SET "
+                "  name = excluded.name, "
+                "  price = excluded.price, "
+                "  stock = excluded.stock, "
+                "  updated_at = datetime('now')",
+                (sku, row["name"].strip(), float(row["price"]), int(row["stock"])),
+            )
+
+            if existing:
+                result.updated += 1
+            else:
+                result.inserted += 1
+        except (KeyError, ValueError) as exc:
+            result.errors.append(f"row={idx} error={exc}")
+
+    conn.commit()
+    return result
+
+
+def get_all_products(conn: sqlite3.Connection) -> list[dict]:
+    """Fetch every product row for inspection."""
+    rows = conn.execute(
+        "SELECT sku, name, price, stock, updated_at FROM products ORDER BY sku"
+    ).fetchall()
+    return [
+        {"sku": r[0], "name": r[1], "price": r[2], "stock": r[3], "updated_at": r[4]}
+        for r in rows
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run(
+    input_path: Path,
+    output_path: Path,
+    db_path: str = ":memory:",
+    strategy: str = "on_conflict",
+) -> dict:
+    """Load CSV, apply chosen upsert strategy, write summary."""
+    rows = load_csv(input_path)
+
+    conn = sqlite3.connect(db_path)
+    try:
+        upsert_fn = upsert_on_conflict if strategy == "on_conflict" else upsert_replace
+        result = upsert_fn(conn, rows)
+        products = get_all_products(conn)
+    finally:
+        conn.close()
+
+    summary = {
+        "strategy": strategy,
+        "input_rows": len(rows),
+        "inserted": result.inserted,
+        "updated": result.updated,
+        "errors": result.errors,
+        "final_products": len(products),
+        "products": products,
     }
-
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    logging.info("upsert strategy=%s inserted=%d updated=%d", strategy, result.inserted, result.updated)
     return summary
 
 
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(
+        description="Upsert Strategy Lab — INSERT ON CONFLICT patterns"
+    )
+    parser.add_argument("--input", default="data/sample_input.csv")
     parser.add_argument("--output", default="data/output_summary.json")
+    parser.add_argument("--db", default=":memory:")
+    parser.add_argument(
+        "--strategy",
+        choices=["replace", "on_conflict"],
+        default="on_conflict",
+        help="Which upsert strategy to demonstrate",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    summary = run(Path(args.input), Path(args.output), args.db, args.strategy)
     print(json.dumps(summary, indent=2))
 
 

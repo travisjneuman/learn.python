@@ -1,48 +1,63 @@
-"""Beginner test module with heavy comments.
+"""Tests for Batch Rename Simulator."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
+import pytest
 
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+from project import (
+    apply_rule_lower,
+    apply_rule_replace_spaces,
+    apply_rule_strip_numbers,
+    detect_conflicts,
+    simulate_batch,
+    simulate_rename,
+)
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_apply_rule_lower() -> None:
+    assert apply_rule_lower("README.MD") == "readme.md"
+    assert apply_rule_lower("My File.TXT") == "my file.txt"
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_apply_rule_replace_spaces() -> None:
+    assert apply_rule_replace_spaces("my file name.txt") == "my_file_name.txt"
+    assert apply_rule_replace_spaces("nochange.py") == "nochange.py"
+
+
+def test_apply_rule_strip_numbers() -> None:
+    assert apply_rule_strip_numbers("001_photo.jpg") == "photo.jpg"
+    assert apply_rule_strip_numbers("42-notes.txt") == "notes.txt"
+
+
+def test_simulate_rename_valid() -> None:
+    result = simulate_rename("Hello World.txt", "lower")
+    assert result["original"] == "Hello World.txt"
+    assert result["renamed"] == "hello world.txt"
+    assert result["changed"] is True
+
+
+def test_simulate_rename_unknown_rule() -> None:
+    with pytest.raises(ValueError, match="Unknown rule"):
+        simulate_rename("file.txt", "nonexistent")
+
+
+def test_simulate_batch_skips_blanks() -> None:
+    names = ["File.TXT", "", "  ", "Other.TXT"]
+    results = simulate_batch(names, "lower")
+    assert len(results) == 2
+    assert results[0]["renamed"] == "file.txt"
+
+
+def test_detect_conflicts() -> None:
+    results = [
+        {"original": "A.TXT", "renamed": "a.txt", "changed": True},
+        {"original": "a.txt", "renamed": "a.txt", "changed": False},
+    ]
+    conflicts = detect_conflicts(results)
+    assert "a.txt" in conflicts
+
+
+def test_no_conflicts() -> None:
+    results = [
+        {"original": "A.TXT", "renamed": "a.txt", "changed": True},
+        {"original": "B.TXT", "renamed": "b.txt", "changed": True},
+    ]
+    assert detect_conflicts(results) == []

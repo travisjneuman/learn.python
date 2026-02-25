@@ -1,107 +1,119 @@
 """Level 0 project: Duplicate Line Finder.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a text file and find lines that appear more than once.
+Report which lines are duplicated and how many times.
+
+Concepts: dictionaries for counting, sets for uniqueness, file I/O.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Duplicate Line Finder"
-PROJECT_FOCUS = "set usage and duplicate detection"
 
+def count_line_occurrences(lines: list[str]) -> dict[str, int]:
+    """Count how many times each line appears.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY a dict? -- A dictionary maps each unique line (the key) to its
+    count (the value).  This is the fundamental pattern for counting
+    things in Python.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    counts = {}
+    for line in lines:
+        if line in counts:
+            counts[line] += 1
+        else:
+            counts[line] = 1
+    return counts
+
+
+def find_duplicates(lines: list[str]) -> list[dict]:
+    """Find lines that appear more than once and report details.
+
+    Returns a list of dicts, each containing the duplicated text,
+    the count, and the line numbers where it appears.
+    """
+    counts = count_line_occurrences(lines)
+
+    duplicates = []
+    for text, count in counts.items():
+        if count > 1:
+            # Find all line numbers (1-based) where this text appears.
+            positions = []
+            for i, line in enumerate(lines):
+                if line == text:
+                    positions.append(i + 1)
+
+            duplicates.append({
+                "text": text,
+                "count": count,
+                "line_numbers": positions,
+            })
+
+    return duplicates
+
+
+def load_lines(path: Path) -> list[str]:
+    """Load all lines from a file, stripping trailing whitespace.
+
+    WHY strip each line? -- Trailing spaces are invisible but would
+    make 'hello' and 'hello ' look like different lines.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    raw = path.read_text(encoding="utf-8").splitlines()
+    return [line.strip() for line in raw]
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+def build_report(lines: list[str]) -> dict:
+    """Build a full report about duplicates in the file."""
+    non_empty = [line for line in lines if line]
+    duplicates = find_duplicates(non_empty)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "total_lines": len(non_empty),
+        "unique_lines": len(set(non_empty)),
+        "duplicate_count": len(duplicates),
+        "duplicates": duplicates,
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Duplicate Line Finder")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    lines = load_lines(Path(args.input))
+    report = build_report(lines)
+
+    print("=== Duplicate Line Report ===")
+    print(f"  Total lines: {report['total_lines']}")
+    print(f"  Unique lines: {report['unique_lines']}")
+    print(f"  Duplicated lines: {report['duplicate_count']}")
+
+    if report["duplicates"]:
+        print("\n  Duplicates found:")
+        for dup in report["duplicates"]:
+            positions = ", ".join(str(n) for n in dup["line_numbers"])
+            print(f"    '{dup['text']}' appears {dup['count']} times (lines {positions})")
+    else:
+        print("\n  No duplicates found.")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(f"\n  Report written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

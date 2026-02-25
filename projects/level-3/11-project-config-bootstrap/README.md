@@ -13,48 +13,54 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/11-project-config-bootstrap
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py show
+python project.py show --config-file config.json
+python project.py validate --config-file config.json
+python project.py generate default_config.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"app_name": "myapp", "debug": false, "port": 8000, ...}
+Sources:
+  app_name: myapp (from default)
+  port: 5000 (from file)
+12 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Config output on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add support for TOML config files alongside JSON.
+2. Add a `--mask-secrets` flag that hides secret_key and database_url in output.
+3. Add a `diff` subcommand that shows which values differ from defaults.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `APP_PORT=notanumber` as an environment variable — what happens?
+2. Pass a config file with an unknown key — is it ignored or does it crash?
+3. Set `port` to -1 in the config — does `validate` catch it?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add type coercion error handling with clear messages.
+2. Warn about unknown config keys instead of ignoring them silently.
+3. Ensure `validate_config` catches all edge cases (negative values, etc.).
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why do configs need precedence (defaults < file < env < CLI)?
+2. How does `os.environ` work and what are environment variables?
+3. What is type coercion and why is it needed for env/CLI string values?
+4. How does `monkeypatch.setenv` work in pytest?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- load configuration from multiple sources with precedence,
+- coerce string values to typed Python values,
+- validate configuration for common issues,
+- test environment variable handling with `monkeypatch`.
 
 ---
 

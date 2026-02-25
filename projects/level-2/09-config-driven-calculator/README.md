@@ -13,48 +13,50 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/09-config-driven-calculator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --config data/sample_input.txt --list
+python project.py --config data/sample_input.txt --op add --a 10 --b 5
+python project.py --config data/sample_input.txt --op divide --a 10 --b 0
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"success": true, "operation": "add", "a": 10.0, "b": 5.0, "result": 15.0}
+10 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Calculation results on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `sqrt` operation that only uses the `--a` operand.
+2. Add a `--chain` mode: `--chain "add:5,multiply:2"` starting from `--a`.
+3. Use `settings.precision` from the config to control decimal places.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a config file with missing "operations" key.
+2. Compute `2 ** 1000` — does the result overflow?
+3. Pass non-numeric values for `--a` or `--b`.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add `config.setdefault` for missing keys.
+2. Check for overflow/infinity in calculate results.
+3. Wrap float() conversion in try/except in batch mode.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is config-driven design useful vs hard-coding operations?
+2. How does `dict.setdefault` differ from `dict.get`?
+3. What is the Strategy pattern and how does this project resemble it?
+4. When would you use JSON config files in real applications?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- load and validate JSON config from memory,
+- add a new operation by editing only the config file,
+- explain the difference between hard-coded and config-driven behaviour,
+- implement operation chaining from scratch.
 
 ---
 

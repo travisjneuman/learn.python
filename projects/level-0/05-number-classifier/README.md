@@ -5,49 +5,53 @@ Home: [README](../../../README.md)
 - if-elif-else decision trees
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Classify numbers as positive/negative/zero, even/odd, and prime/composite. You will build decision trees with if/elif/else and learn the modulo operator for divisibility checks.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/05-number-classifier
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+       7  =>  positive, odd, prime
+      -3  =>  negative, odd, composite
+       0  =>  zero, even, composite
+
+  Summary: 1 primes out of 3 valid numbers
+  Output written to data/output.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a "perfect number" check (a number equal to the sum of its proper divisors, e.g. 6 = 1+2+3).
+2. Add a `--filter` flag that shows only prime numbers, only even numbers, etc.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add `0` to the input -- is it classified as prime or composite? (It should be neither.)
+2. Add `1` -- the `is_prime()` function should return `False`, but does it?
+3. Add a negative number like `-7` -- does `is_prime()` handle negatives correctly?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `is_prime()` returns `False` for values less than 2.
+2. Add the "neither prime nor composite" label for 0 and 1.
+3. Add a test that verifies `is_prime(1)` returns `False`.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `is_prime()` only check divisors up to the square root of `n`?
+2. What is the difference between `n % 2 == 0` (even check) and `n > 1 and all(...)` (prime check)?
+3. Why does `classify_number()` return a dict instead of printing directly?
+4. Where would number classification appear in real software (data validation, cryptography)?
 
 ## Mastery check
 You can move on when you can:

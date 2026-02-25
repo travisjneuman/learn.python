@@ -1,52 +1,71 @@
-"""Advanced test module with heavy comments.
+"""Tests for Monitoring API Adapter."""
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
-"""
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import json
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    Metric,
+    adapt_cpu,
+    adapt_disk,
+    adapt_memory,
+    check_alerts,
+    collect_all,
+    mock_cpu_api,
+    run,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+class TestAdapters:
+    def test_cpu_adapter(self) -> None:
+        metrics = adapt_cpu(mock_cpu_api())
+        assert len(metrics) == 2
+        assert metrics[0].unit == "percent"
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+    def test_memory_adapter(self) -> None:
+        raw = [{"type": "mem", "value_mb": 4000, "server": "s1", "at": "t"}]
+        metrics = adapt_memory(raw)
+        assert metrics[0].value == 4000
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    def test_disk_adapter(self) -> None:
+        raw = [{"check": "disk", "free_pct": 50.0, "node": "n1", "ts": "t"}]
+        metrics = adapt_disk(raw)
+        assert metrics[0].name == "disk_free"
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+class TestAlerts:
+    @pytest.mark.parametrize("value,should_alert", [
+        (45.0, False),
+        (91.0, True),
+        (90.0, False),
+    ])
+    def test_cpu_threshold(self, value: float, should_alert: bool) -> None:
+        m = Metric(name="cpu_usage", value=value, unit="pct", source="h", timestamp="t")
+        check_alerts([m])
+        assert m.alert is should_alert
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+    def test_disk_low_free(self) -> None:
+        m = Metric(name="disk_free", value=10.0, unit="pct", source="h", timestamp="t")
+        check_alerts([m])
+        assert m.alert is True
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_no_alert_for_unknown_metric(self) -> None:
+        m = Metric(name="custom_metric", value=999, unit="x", source="h", timestamp="t")
+        check_alerts([m])
+        assert m.alert is False
+
+
+class TestCollector:
+    def test_collect_all_returns_metrics(self) -> None:
+        metrics = collect_all()
+        assert len(metrics) == 6  # 2 cpu + 2 memory + 2 disk
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    out = tmp_path / "out.json"
+    summary = run(tmp_path / "nope.json", out)
+    assert summary["total_metrics"] == 6
+    assert summary["alerts"] >= 1
+    assert out.exists()

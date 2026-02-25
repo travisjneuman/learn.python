@@ -1,52 +1,113 @@
-"""Advanced test module with heavy comments.
+"""Tests for Concurrency Queue Simulator.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: work items, producer/consumer, stats, simulation, and error handling.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import queue
+import threading
 
+import pytest
 
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
-
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+from project import (
+    SimulationStats,
+    TaskStatus,
+    WorkItem,
+    WorkResult,
+    _SHUTDOWN,
+    consumer,
+    producer,
+    run_simulation,
+    send_shutdown,
+)
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- SimulationStats ----------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestSimulationStats:
+    def test_avg_processing_zero_consumed(self) -> None:
+        stats = SimulationStats()
+        assert stats.avg_processing_ms == 0.0
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    @pytest.mark.parametrize("consumed,total_ms,expected_avg", [
+        (10, 100.0, 10.0),
+        (3, 30.0, 10.0),
+        (1, 5.5, 5.5),
+    ])
+    def test_avg_processing_calculation(
+        self, consumed: int, total_ms: float, expected_avg: float,
+    ) -> None:
+        stats = SimulationStats(consumed=consumed, total_processing_ms=total_ms)
+        assert stats.avg_processing_ms == expected_avg
+
+
+# --- Producer -----------------------------------------------------------
+
+class TestProducer:
+    def test_enqueues_all_items(self) -> None:
+        q: queue.Queue = queue.Queue()
+        items = [WorkItem(f"t-{i}", {"i": i}) for i in range(5)]
+        stats = SimulationStats()
+        producer(q, items, stats=stats)
+        assert stats.produced == 5
+        assert q.qsize() == 5
+
+
+# --- Consumer -----------------------------------------------------------
+
+class TestConsumer:
+    def test_processes_items_until_shutdown(self) -> None:
+        work_q: queue.Queue = queue.Queue()
+        result_q: queue.Queue = queue.Queue()
+        stats = SimulationStats()
+
+        items = [WorkItem(f"t-{i}", i) for i in range(3)]
+        for item in items:
+            work_q.put(item)
+        work_q.put(_SHUTDOWN)
+
+        consumer("w-0", work_q, result_q, lambda x: x * 2, stats)
+
+        assert stats.consumed == 3
+        assert result_q.qsize() == 3
+
+    def test_handles_processing_failure(self) -> None:
+        work_q: queue.Queue = queue.Queue()
+        result_q: queue.Queue = queue.Queue()
+        stats = SimulationStats()
+
+        work_q.put(WorkItem("fail-1", "data"))
+        work_q.put(_SHUTDOWN)
+
+        def fail_fn(payload):
+            raise ValueError("boom")
+
+        consumer("w-0", work_q, result_q, fail_fn, stats)
+        assert stats.failed == 1
+        result: WorkResult = result_q.get()
+        assert result.status == TaskStatus.FAILED
+        assert "boom" in result.error
+
+
+# --- Full simulation ----------------------------------------------------
+
+class TestSimulation:
+    def test_all_items_processed(self) -> None:
+        result = run_simulation(
+            num_items=10, num_consumers=2,
+            queue_capacity=5, processing_time=0.001,
+            failure_rate=0.0,
+        )
+        assert result["stats"]["produced"] == 10
+        assert result["stats"]["consumed"] == 10
+        assert result["stats"]["failed"] == 0
+
+    def test_failure_rate_produces_failures(self) -> None:
+        result = run_simulation(
+            num_items=50, num_consumers=2,
+            queue_capacity=10, processing_time=0.001,
+            failure_rate=1.0,  # all fail
+        )
+        assert result["stats"]["failed"] == 50
+        assert result["stats"]["consumed"] == 0

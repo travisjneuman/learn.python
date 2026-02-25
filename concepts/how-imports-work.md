@@ -2,6 +2,11 @@
 
 When your Python file needs code from another file or library, you use `import`.
 
+## Visualize It
+
+See how Python searches for and loads modules when you import:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=import%20math%0Aprint%28math.sqrt%2816%29%29%0A%0Afrom%20math%20import%20pi%0Aprint%28round%28pi%2C%204%29%29%0A%0Aimport%20os.path%0Aprint%28os.path.join%28%22a%22%2C%20%22b%22%29%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Basic import
 
 ```python
@@ -128,15 +133,10 @@ import random    # Imports YOUR random.py instead of Python's
 from my_package import calculator    # May fail in some Python versions
 ```
 
-## Related exercises
+## Practice
 
-- [Module 11 — Package Publishing](../projects/modules/11-package-publishing/) (creating packages)
-- [Level 01 projects](../projects/level-1/) (using imports in projects)
-
----
-
-## Practice This
-
+- [Module 11 Package Publishing](../projects/modules/11-package-publishing/)
+- [Level 01 projects](../projects/level-1/)
 - [Level 0 / 15 Level0 Mini Toolkit](../projects/level-0/15-level0-mini-toolkit/README.md)
 - [Level 1 / 01 Input Validator Lab](../projects/level-1/01-input-validator-lab/README.md)
 - [Level 1 / 02 Password Strength Checker](../projects/level-1/02-password-strength-checker/README.md)

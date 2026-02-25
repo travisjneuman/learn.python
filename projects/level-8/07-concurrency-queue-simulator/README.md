@@ -2,59 +2,70 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- queueing and worker flow simulation
+- Producer-consumer pattern with `threading.Thread`
+- Thread-safe message passing via `queue.Queue`
+- Backpressure with bounded queues (`maxsize`)
+- Graceful shutdown using sentinel values
+- Simulation statistics: throughput, queue depth, failure rates
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Concurrent processing is fundamental to scalable systems — from web servers handling
+multiple requests to data pipelines processing millions of events. The producer-consumer
+pattern coordinates work between threads without explicit locks. This project simulates
+producers pushing work items into a bounded queue and consumers processing them with
+configurable failure rates — teaching thread coordination, backpressure, and safe
+shutdown, the same architecture behind task workers like Celery, RabbitMQ consumers,
+and Kafka pipelines.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/07-concurrency-queue-simulator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --items 20 --consumers 3 --capacity 10 --failure-rate 0.1
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "config": {"num_items": 20, "num_consumers": 3, "queue_capacity": 10},
+  "stats": {"produced": 20, "consumed": 18, "failed": 2, ...},
+  "results_sample": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with simulation results
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `priority` field to `WorkItem` and change consumers to process higher-priority items first (use `queue.PriorityQueue`).
+2. Add a `--timeout` flag that limits how long consumers wait for new items.
+3. Change `SimulationStats` to track average processing time per consumer thread.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `num_consumers=0` — does the simulation hang or raise an error?
+2. Make a producer add items faster than consumers can process — observe queue growth.
+3. Remove the sentinel `None` value from the producer — what happens to consumer threads?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `num_consumers >= 1` before starting the simulation.
+2. Add a maximum queue size to apply backpressure on producers.
+3. Add a test that verifies all consumer threads terminate cleanly.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the producer-consumer pattern and why is `threading.Queue` thread-safe?
+2. How does the sentinel value (`None`) signal consumers to stop — why not just join threads?
+3. What is the GIL and how does it affect this threading simulation?
+4. When would you use `multiprocessing` instead of `threading` in Python?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain why `queue.Queue` is thread-safe without explicit locks,
+- describe how sentinel values enable graceful shutdown,
+- run the simulation with different producer/consumer ratios and predict throughput,
+- explain the difference between CPU-bound and I/O-bound concurrency in Python.
 
 ---
 

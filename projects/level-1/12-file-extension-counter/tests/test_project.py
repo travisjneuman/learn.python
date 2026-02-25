@@ -1,48 +1,35 @@
-"""Beginner test module with heavy comments.
+"""Tests for File Extension Counter."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+from project import count_extensions, count_extensions_from_list, sort_by_count
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_count_extensions_from_list() -> None:
+    paths = ["file.py", "test.py", "data.csv", "readme.md", "config.py"]
+    counts = count_extensions_from_list(paths)
+    assert counts[".py"] == 3
+    assert counts[".csv"] == 1
+    assert counts[".md"] == 1
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_count_extensions_no_extension() -> None:
+    paths = ["Makefile", "Dockerfile", "README"]
+    counts = count_extensions_from_list(paths)
+    assert counts["(no extension)"] == 3
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_count_extensions_real_dir(tmp_path: Path) -> None:
+    (tmp_path / "a.txt").write_text("a", encoding="utf-8")
+    (tmp_path / "b.txt").write_text("b", encoding="utf-8")
+    (tmp_path / "c.py").write_text("c", encoding="utf-8")
+    counts = count_extensions(tmp_path)
+    assert counts[".txt"] == 2
+    assert counts[".py"] == 1
+
+
+def test_sort_by_count() -> None:
+    counts = {".py": 5, ".txt": 2, ".md": 8}
+    sorted_counts = sort_by_count(counts)
+    assert sorted_counts[0] == (".md", 8)
+    assert sorted_counts[1] == (".py", 5)

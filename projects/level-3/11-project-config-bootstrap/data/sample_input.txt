@@ -1,5 +1,20 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Save the following as config.json:
+{
+    "app_name": "my-web-app",
+    "debug": true,
+    "log_level": "DEBUG",
+    "host": "0.0.0.0",
+    "port": 5000,
+    "database_url": "postgresql://user:pass@localhost/mydb",
+    "secret_key": "change-me-in-production",
+    "max_retries": 5,
+    "timeout_seconds": 60.0
+}
+
+Usage:
+    python project.py show --config-file config.json
+    python project.py validate --config-file config.json
+    python project.py generate default_config.json
+
+Environment variable override:
+    APP_PORT=9000 APP_DEBUG=false python project.py show

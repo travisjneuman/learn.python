@@ -1,107 +1,127 @@
 """Level 1 project: Path Exists Checker.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a list of file/directory paths, check whether each exists,
+and report type (file/dir), size, and permissions.
+
+Concepts: pathlib, os.path, file metadata, error handling.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Path Exists Checker"
-PROJECT_FOCUS = "filesystem existence and type checks"
 
+def check_path(path_str: str) -> dict:
+    """Check a single path and return its metadata.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY pathlib? -- Path objects provide clean methods like .exists(),
+    .is_file(), .is_dir(), and .stat() that work across operating systems.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    p = Path(path_str.strip())
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    result = {
+        "path": str(p),
+        "exists": p.exists(),
+    }
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    if not p.exists():
+        result["type"] = "missing"
+        return result
+
+    if p.is_file():
+        result["type"] = "file"
+        stat = p.stat()
+        result["size_bytes"] = stat.st_size
+        result["readable"] = True  # If we can stat it, we can read it.
+        result["extension"] = p.suffix if p.suffix else "(none)"
+    elif p.is_dir():
+        result["type"] = "directory"
+        # Count items in the directory.
+        try:
+            items = list(p.iterdir())
+            result["item_count"] = len(items)
+        except PermissionError:
+            result["item_count"] = -1
+            result["error"] = "Permission denied"
+    else:
+        result["type"] = "other"
+
+    return result
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def format_size(size_bytes: int) -> str:
+    """Convert bytes to a human-readable size string.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY loop with units? -- Each iteration divides by 1024 to move
+    to the next size unit (B -> KB -> MB -> GB).
+    """
+    size = float(size_bytes)
+    for unit in ["B", "KB", "MB", "GB"]:
+        if size < 1024:
+            return f"{size:.1f} {unit}"
+        size /= 1024
+    return f"{size:.1f} TB"
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+
+def process_paths(path_list: list[str]) -> list[dict]:
+    """Check each path and return results."""
+    return [check_path(p) for p in path_list if p.strip()]
+
+
+def summary(results: list[dict]) -> dict:
+    """Build a summary of path check results."""
+    existing = [r for r in results if r["exists"]]
+    missing = [r for r in results if not r["exists"]]
+    files = [r for r in existing if r["type"] == "file"]
+    dirs = [r for r in existing if r["type"] == "directory"]
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "total_checked": len(results),
+        "existing": len(existing),
+        "missing": len(missing),
+        "files": len(files),
+        "directories": len(dirs),
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Path Exists Checker")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
-
-    # Convert raw argument strings into Path objects.
     input_path = Path(args.input)
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+
+    paths = input_path.read_text(encoding="utf-8").splitlines()
+    results = process_paths(paths)
+    stats = summary(results)
+
+    print("=== Path Exists Checker ===\n")
+    for r in results:
+        if r["type"] == "missing":
+            print(f"  MISSING  {r['path']}")
+        elif r["type"] == "file":
+            size = format_size(r.get("size_bytes", 0))
+            print(f"  FILE     {r['path']}  ({size})")
+        elif r["type"] == "directory":
+            count = r.get("item_count", "?")
+            print(f"  DIR      {r['path']}  ({count} items)")
+
+    print(f"\n  {stats['existing']} exist, {stats['missing']} missing "
+          f"({stats['files']} files, {stats['directories']} dirs)")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps({"results": results, "summary": stats}, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

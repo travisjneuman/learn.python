@@ -1,0 +1,8 @@
+name,age,city,department
+Alice,30,New York,Engineering
+Bob,25
+Charlie,28,Chicago,Marketing
+,35,Austin,Design
+Diana,32,Seattle,Engineering,extra_field
+Eve,29,Boston,Sales
+Frank,,Denver,Operations

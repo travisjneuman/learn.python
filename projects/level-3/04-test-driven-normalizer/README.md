@@ -13,48 +13,48 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/04-test-driven-normalizer
-python project.py --input data/sample_input.txt --output data/output_summary.json
 pytest -q
+python project.py contacts.json --fields "email:email,name:name,phone:phone" --json
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+14 passed
+[{"name": "Jane Doe", "email": "jane.doe@example.com", ...}]
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- Normalised records on stdout
+- All tests passing (written before implementation — TDD)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `normalise_zip_code` function that pads US ZIP codes to 5 digits.
+2. Add a `--report` flag that shows which fields were changed.
+3. Add support for nested field types: `"address.zip:zip_code"`.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a phone number with letters ("555-HELP") — what happens?
+2. Pass a date in an unsupported format ("Jan 15, 2024") — does it error or pass through?
+3. Pass an empty JSON array — does the batch normaliser handle it?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add graceful handling for unparseable phone numbers.
+2. Add a fallback for unrecognised date formats (return as-is with a warning).
+3. Validate that field_types reference real normaliser keys.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is TDD and how does writing tests first change your design?
+2. How does the `NORMALISERS` registry pattern work?
+3. Why return a `NormalisationResult` dataclass instead of just the cleaned string?
+4. What is `@pytest.mark.parametrize` and when should you use it?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- write tests before implementation (TDD workflow),
+- build a registry of normalisation functions,
+- use `@dataclass` for function return values,
+- use `pytest.mark.parametrize` for table-driven tests.
 
 ---
 

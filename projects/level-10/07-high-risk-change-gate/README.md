@@ -2,59 +2,54 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- risk scoring before high-impact rollout
+- Weighted risk scoring pipeline with pluggable factors
+- Gate policy enforcement (auto-approve, review, block)
+- Immutable change request modeling
+- Rollback detection as a risk reducer
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Production incidents often stem from changes deployed without proportionate review. This system quantifies risk with multiple weighted factors and enforces proportionate gates: small doc fixes auto-approve, while schema migrations to three services get blocked until multiple reviewers sign off.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/07-high-risk-change-gate
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"change_id": "CHG-001", "risk_level": "LOW", "decision": "approved", ...}
+{"change_id": "CHG-002", "risk_level": "HIGH", "decision": "needs_review", ...}
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `TimeOfDayFactor` that scores higher for deployments during peak traffic hours.
+2. Add an override mechanism: certain users (e.g., "oncall-lead") can bypass the gate with an audit trail.
+3. Re-run tests and verify the new factor integrates into the scoring pipeline.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a change that hits every risk factor — observe how scores accumulate to CRITICAL.
+2. Register no factors and observe a zero-score auto-approval for a clearly risky change.
+3. Set `is_rollback=True` with many other risk factors and see if it still reduces risk.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a minimum-score floor per factor type so rollback alone cannot bring risk to zero for a critical change.
+2. Require at least one factor registered before `evaluate` can be called.
+3. Add tests for both safeguards.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is risk quantified as a numeric score rather than a categorical label?
+2. How does the `RollbackFactor` negative score interact with the floor at zero?
+3. What is the relationship between risk level and the number of required approvers?
+4. How would you integrate this gate into a CI/CD pipeline?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- add a custom risk factor and see it reflected in the gate decision,
+- explain the risk level thresholds and why they map to specific policies,
+- trace how a rollback reduces total risk score,
+- describe why immutable `ChangeRequest` prevents accidental mutation.
 
 ---
 

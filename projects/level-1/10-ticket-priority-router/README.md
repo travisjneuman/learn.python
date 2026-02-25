@@ -5,49 +5,57 @@ Home: [README](../../../README.md)
 - business rules to route work
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Route support tickets to priority queues (critical/high/medium/low) by scanning for keywords in the ticket text. You will learn keyword matching, priority ordering, and grouping data into categories with dictionaries.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/10-ticket-priority-router
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Ticket Priority Router ===
+
+  [CRITICAL] (1 tickets)
+    #1: Website is completely down, customers cannot access...
+
+  [HIGH] (1 tickets)
+    #2: Login page error for users in Europe
+
+  [MEDIUM] (1 tickets)
+    #3: Dashboard loading slow during peak hours
+4 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a `--priority` filter flag that shows only tickets matching a given priority level.
+2. Add an "escalation" rule: tickets containing "urgent" get bumped up one priority level.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a ticket with no keywords at all like `"Everything is fine"` -- does it correctly default to "low"?
+2. Add a ticket matching keywords from multiple priorities -- which priority wins?
+3. Add an empty line in the ticket file -- does `process_tickets()` skip it or crash?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `classify_ticket()` checks keywords in priority order (critical first) so the highest match wins.
+2. Handle blank lines by skipping them in `process_tickets()`.
+3. Add a test for the multi-keyword-match priority resolution.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `PRIORITY_KEYWORDS` use a dict mapping priority names to keyword lists?
+2. What does `any(kw in text.lower() for kw in keywords)` do and why use `any()`?
+3. Why does `classify_ticket()` check priorities in order from critical to low?
+4. Where would ticket routing appear in real software (help desks, incident management, support queues)?
 
 ## Mastery check
 You can move on when you can:

@@ -1,54 +1,81 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Data Contract Enforcer."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+import json
 from pathlib import Path
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import coerce_value, enforce_contract, run
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+@pytest.mark.parametrize(
+    "raw, expected_type, should_succeed",
+    [
+        ("42", "int", True),
+        ("abc", "int", False),
+        ("3.14", "float", True),
+        ("nope", "float", False),
+        ("true", "bool", True),
+        ("yes", "bool", True),
+        ("maybe", "bool", False),
+        ("hello", "str", True),
+    ],
+)
+def test_coerce_value(raw: str, expected_type: str, should_succeed: bool) -> None:
+    _, err = coerce_value(raw, expected_type)
+    if should_succeed:
+        assert err is None
+    else:
+        assert err is not None
 
-    # Act: build structured records.
-    records = build_records(raw_items)
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_enforce_contract_required_field() -> None:
+    contract = {"columns": {"name": {"type": "str", "required": True}}}
+    headers = ["name"]
+    rows = [{"name": "Alice"}, {"name": ""}]
+    report = enforce_contract(headers, rows, contract)
+    assert report["clean_rows"] == 1
+    assert report["violation_count"] == 1
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_enforce_contract_range_check() -> None:
+    contract = {"columns": {"age": {"type": "int", "required": True, "min": 0, "max": 150}}}
+    headers = ["age"]
+    rows = [{"age": "25"}, {"age": "-5"}, {"age": "200"}]
+    report = enforce_contract(headers, rows, contract)
+    assert report["clean_rows"] == 1
+    assert report["violation_count"] == 2
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_enforce_contract_allowed_values() -> None:
+    contract = {"columns": {"status": {"type": "str", "required": True, "allowed": ["active", "inactive"]}}}
+    headers = ["status"]
+    rows = [{"status": "active"}, {"status": "deleted"}]
+    report = enforce_contract(headers, rows, contract)
+    assert report["violation_count"] == 1
+
+
+def test_enforce_contract_detects_missing_columns() -> None:
+    contract = {"columns": {"a": {"type": "str"}, "b": {"type": "str"}}}
+    headers = ["a"]  # 'b' is missing from the actual data
+    rows = [{"a": "x"}]
+    report = enforce_contract(headers, rows, contract)
+    assert "b" in report["missing_columns"]
+
+
+def test_full_run(tmp_path: Path) -> None:
+    contract_file = tmp_path / "contract.json"
+    contract_file.write_text(json.dumps({
+        "columns": {
+            "name": {"type": "str", "required": True},
+            "age": {"type": "int", "required": True, "min": 0},
+        }
+    }), encoding="utf-8")
+
+    data_file = tmp_path / "data.csv"
+    data_file.write_text("name,age\nAlice,30\nBob,abc\n", encoding="utf-8")
+
+    output = tmp_path / "report.json"
+    report = run(contract_file, data_file, output)
+    assert output.exists()
+    assert report["clean_rows"] == 1
+    assert report["violation_count"] >= 1

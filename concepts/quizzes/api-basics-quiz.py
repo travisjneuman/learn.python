@@ -3,6 +3,8 @@ Quiz: API Basics
 Review: concepts/api-basics.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) Automated Program Integration")
     print("  d) Application Process Integration")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Application Programming Interface — a way for")
@@ -40,7 +42,7 @@ def run_quiz():
     print("  c) GET /users?id=42")
     print("  d) FETCH /users/42")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! GET /users/42 follows REST conventions.")
@@ -59,7 +61,7 @@ def run_quiz():
     print("  c) Converts a dict to JSON")
     print("  d) Checks if the response is valid JSON")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! .json() parses the response body from JSON")
@@ -78,7 +80,7 @@ def run_quiz():
     print("  c) 204")
     print("  d) 301")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 201 Created is the standard response for")
@@ -99,7 +101,7 @@ def run_quiz():
     print("  c) Python does not allow string URLs")
     print("  d) It is not bad practice")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Store the base URL in a variable or config.")
@@ -118,7 +120,7 @@ def run_quiz():
     print("  c) Raises an exception if the response is a 4xx or 5xx error")
     print("  d) Sets the status code to 200")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! raise_for_status() throws an exception for error")
@@ -139,7 +141,7 @@ def run_quiz():
     print("  c) API keys are more secure")
     print("  d) Bearer tokens do not work with Python")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! API keys are simple static secrets. Bearer tokens")

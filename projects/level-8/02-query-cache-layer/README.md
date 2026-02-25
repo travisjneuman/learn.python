@@ -2,59 +2,65 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- cache lookup and fallback strategy
+- LRU (Least Recently Used) cache with OrderedDict
+- TTL (Time-To-Live) expiration with lazy invalidation
+- Cache statistics: hit rate, evictions, expirations
+- Decorator pattern for transparent function caching
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Every production system uses caching — from database query results to API responses.
+This project builds an LRU cache from scratch so you understand eviction policies, TTL
+management, and hit-rate metrics before using tools like Redis or functools.lru_cache.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/02-query-cache-layer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --capacity 5 --ttl 10
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "queries_executed": 10,
+  "cache_stats": {"hits": 4, "misses": 6, ...},
+  ...
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console output with cache stats
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `max_memory_bytes` limit that evicts entries when total value size exceeds a threshold.
+2. Implement a `get_or_compute(key, factory_fn)` method that combines lookup and population.
+3. Add a `--stats-file` CLI flag that writes cache statistics to a JSON file.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set TTL to 0 — does every `get` immediately expire?
+2. Store `None` as a cache value — can the cache distinguish "miss" from "cached None"?
+3. Use a non-hashable type as a key in the `@cached` decorator.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle TTL=0 as "no caching" or raise a clear error.
+2. Use a sentinel value instead of `None` to distinguish misses from cached nulls.
+3. Add a test for the None-value edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the LRU cache use `OrderedDict` instead of a regular `dict`?
+2. What is "lazy expiration" and why is it used instead of a background timer?
+3. How does the `@cached` decorator build its cache key? What could go wrong?
+4. In production, when would you choose an in-process LRU cache vs. Redis?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain why OrderedDict.move_to_end is O(1),
+- describe the tradeoff between eager and lazy TTL expiration,
+- implement a cache warming strategy,
+- calculate hit rate and explain what a "good" rate looks like.
 
 ---
 

@@ -1,140 +1,157 @@
-"""Level 7 project: Multi Source Reconciler.
+"""Level 7 / Project 10 — Multi-Source Reconciler.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Compares records from two or more data sources by a shared key
+and reports matches, mismatches, and records missing from one side.
+
+Key concepts:
+- Key-based record matching across sources
+- Set operations (intersection, difference)
+- Field-level mismatch detection
+- Reconciliation report generation
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Multi Source Reconciler"
-PROJECT_FOCUS = "compare source snapshots for divergence"
+
+# -- Data model ----------------------------------------------------------
+
+@dataclass
+class MismatchDetail:
+    """One field that differs between two sources."""
+    key: str
+    field_name: str
+    left_value: object
+    right_value: object
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class ReconciliationReport:
+    """Full reconciliation outcome."""
+    left_name: str
+    right_name: str
+    matched: int = 0
+    mismatched: int = 0
+    left_only: list[str] = field(default_factory=list)
+    right_only: list[str] = field(default_factory=list)
+    mismatches: list[MismatchDetail] = field(default_factory=list)
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+
+# -- Core logic ----------------------------------------------------------
+
+def index_by_key(records: list[dict], key_field: str) -> dict[str, dict]:
+    """Build a lookup dict keyed by the given field."""
+    index: dict[str, dict] = {}
+    for rec in records:
+        k = str(rec.get(key_field, ""))
+        if k:
+            index[k] = rec
+    return index
 
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+def compare_records(
+    left: dict, right: dict, compare_fields: list[str],
+) -> list[MismatchDetail]:
+    """Compare two records on specified fields, return differences."""
+    diffs: list[MismatchDetail] = []
+    key = left.get("_key", "?")
+    for f in compare_fields:
+        lv = left.get(f)
+        rv = right.get(f)
+        if lv != rv:
+            diffs.append(MismatchDetail(key=key, field_name=f,
+                                        left_value=lv, right_value=rv))
+    return diffs
+
+
+def reconcile(
+    left_records: list[dict],
+    right_records: list[dict],
+    key_field: str,
+    compare_fields: list[str],
+    left_name: str = "source_a",
+    right_name: str = "source_b",
+) -> ReconciliationReport:
+    """Run full reconciliation between two sources."""
+    left_idx = index_by_key(left_records, key_field)
+    right_idx = index_by_key(right_records, key_field)
+
+    left_keys = set(left_idx.keys())
+    right_keys = set(right_idx.keys())
+    common = left_keys & right_keys
+
+    report = ReconciliationReport(left_name=left_name, right_name=right_name)
+    report.left_only = sorted(left_keys - right_keys)
+    report.right_only = sorted(right_keys - left_keys)
+
+    for k in sorted(common):
+        l_rec = {**left_idx[k], "_key": k}
+        r_rec = {**right_idx[k], "_key": k}
+        diffs = compare_records(l_rec, r_rec, compare_fields)
+        if diffs:
+            report.mismatched += 1
+            report.mismatches.extend(diffs)
+        else:
+            report.matched += 1
+
+    logging.info(
+        "reconciled %s vs %s: matched=%d mismatched=%d left_only=%d right_only=%d",
+        left_name, right_name, report.matched, report.mismatched,
+        len(report.left_only), len(report.right_only),
     )
+    return report
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
-
-
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
+def report_to_dict(r: ReconciliationReport) -> dict:
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "left": r.left_name,
+        "right": r.right_name,
+        "matched": r.matched,
+        "mismatched": r.mismatched,
+        "left_only": r.left_only,
+        "right_only": r.right_only,
+        "mismatch_details": [
+            {"key": m.key, "field": m.field_name,
+             "left": m.left_value, "right": m.right_value}
+            for m in r.mismatches
+        ],
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+# -- Entry points --------------------------------------------------------
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
+def run(input_path: Path, output_path: Path) -> dict:
+    config = json.loads(input_path.read_text(encoding="utf-8")) if input_path.exists() else {}
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+    key_field = config.get("key_field", "id")
+    compare_fields = config.get("compare_fields", ["value"])
+    left = config.get("left", [])
+    right = config.get("right", [])
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
+    report = reconcile(left, right, key_field, compare_fields)
+    summary = report_to_dict(report)
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(description="Multi-Source Reconciler")
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

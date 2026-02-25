@@ -1,5 +1,13 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "now": 1700100000,
+  "accounts": [
+    {"name": "svc-data-loader", "permissions": ["read", "write"], "key_created_at": 1700000000, "owner": "data-team"},
+    {"name": "svc-deployer", "permissions": ["deploy", "read"], "key_created_at": 1699000000, "owner": "devops"},
+    {"name": "old-legacy-bot", "permissions": ["admin", "delete", "write", "read", "deploy", "logs:read"], "key_created_at": 1680000000, "owner": "unknown"}
+  ],
+  "rules": [
+    {"name": "permission_limit", "check": "max_permissions", "params": {"max": 4}},
+    {"name": "naming_convention", "check": "naming", "params": {"pattern": "^svc-"}},
+    {"name": "key_rotation", "check": "key_age", "params": {"max_days": 90}}
+  ]
+}

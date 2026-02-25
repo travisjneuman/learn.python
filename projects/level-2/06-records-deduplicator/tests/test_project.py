@@ -1,48 +1,102 @@
-"""Beginner test module with heavy comments.
+"""Tests for Records Deduplicator.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Covers:
+- CSV parsing
+- Dedup key generation
+- First vs last keep modes
+- Duplicate group detection
+- Edge cases
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import (
+    deduplicate,
+    find_duplicate_groups,
+    make_dedup_key,
+    parse_csv_records,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+@pytest.fixture
+def sample_csv(tmp_path: Path) -> Path:
+    """Create a CSV file with known duplicates."""
+    content = (
+        "name, email, department\n"
+        "Alice, alice@example.com, Engineering\n"
+        "Bob, bob@example.com, Marketing\n"
+        "alice, ALICE@EXAMPLE.COM, Sales\n"
+        "Charlie, charlie@test.org, Engineering\n"
+        "Bob, bob@example.com, Marketing\n"
+    )
+    p = tmp_path / "records.csv"
+    p.write_text(content, encoding="utf-8")
+    return p
 
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
 
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_parse_csv_records(sample_csv: Path) -> None:
+    """CSV should be parsed into header + record dicts."""
+    headers, records = parse_csv_records(sample_csv)
+    assert "name" in headers
+    assert len(records) == 5
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_make_dedup_key() -> None:
+    """Dedup key should normalise and join field values."""
+    record = {"name": " Alice ", "email": "ALICE@test.com"}
+    key = make_dedup_key(record, ["name", "email"])
+    assert key == "alice|alice@test.com"
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_deduplicate_keep_first(sample_csv: Path) -> None:
+    """Keep=first should retain the first occurrence of each duplicate."""
+    _, records = parse_csv_records(sample_csv)
+    result = deduplicate(records, key_fields=["email"], keep="first")
+    assert result["stats"]["unique_count"] == 4
+    assert result["stats"]["duplicate_count"] == 1
+
+
+def test_deduplicate_keep_last(sample_csv: Path) -> None:
+    """Keep=last should retain the last occurrence of each duplicate."""
+    _, records = parse_csv_records(sample_csv)
+    result = deduplicate(records, key_fields=["email"], keep="last")
+    assert result["stats"]["unique_count"] == 4
+
+
+@pytest.mark.parametrize(
+    "key_fields,expected_unique",
+    [
+        (["name"], 3),       # alice appears twice (case-insensitive)
+        (["email"], 4),      # bob@example.com appears twice
+        (["name", "email"], 4),  # combined key is more specific
+    ],
+)
+def test_deduplicate_different_keys(
+    sample_csv: Path, key_fields: list[str], expected_unique: int
+) -> None:
+    """Different key field combinations should yield different results."""
+    _, records = parse_csv_records(sample_csv)
+    result = deduplicate(records, key_fields=key_fields)
+    assert result["stats"]["unique_count"] == expected_unique
+
+
+def test_find_duplicate_groups(sample_csv: Path) -> None:
+    """Should return only groups with 2+ records."""
+    _, records = parse_csv_records(sample_csv)
+    groups = find_duplicate_groups(records, ["email"])
+    assert len(groups) == 1  # only bob@example.com has duplicates
+    assert len(list(groups.values())[0]) == 2
+
+
+def test_deduplicate_invalid_keep() -> None:
+    """Invalid keep mode should raise ValueError."""
+    with pytest.raises(ValueError, match="keep must be"):
+        deduplicate([], key_fields=["name"], keep="middle")
+
+
+def test_deduplicate_empty_records() -> None:
+    """Empty input should produce empty output."""
+    result = deduplicate([], key_fields=["name"])
+    assert result["stats"]["unique_count"] == 0

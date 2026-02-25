@@ -2,6 +2,11 @@
 
 Async lets your program do other work while waiting for slow operations (network requests, file reads, database queries).
 
+## Visualize It
+
+See how `async` and `await` allow coroutines to run concurrently:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=import%20asyncio%0A%0Aasync%20def%20greet%28name%29%3A%0A%20%20%20%20return%20f%22Hello%2C%20%7Bname%7D!%22%0A%0Aasync%20def%20main%28%29%3A%0A%20%20%20%20result%20%3D%20await%20greet%28%22Alice%22%29%0A%20%20%20%20print%28result%29%0A%0Aasyncio.run%28main%28%29%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## The problem async solves
 
 Normal (synchronous) code runs one line at a time:
@@ -127,14 +132,9 @@ async def good():
     await other_coroutine()    # Just await it directly
 ```
 
-## Related exercises
+## Practice
 
-- [Module 05 — Async Python](../projects/modules/05-async-python/) (full hands-on async module)
-
----
-
-## Practice This
-
+- [Module 05 Async Python](../projects/modules/05-async-python/)
 - [Module: Elite Track / 01 Algorithms Complexity Lab](../projects/elite-track/01-algorithms-complexity-lab/README.md)
 - [Module: Elite Track / 02 Concurrent Job System](../projects/elite-track/02-concurrent-job-system/README.md)
 - [Module: Elite Track / 03 Distributed Cache Simulator](../projects/elite-track/03-distributed-cache-simulator/README.md)

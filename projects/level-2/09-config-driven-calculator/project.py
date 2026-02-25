@@ -1,107 +1,221 @@
 """Level 2 project: Config Driven Calculator.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- load operation configs from a JSON file,
+- dispatch calculations based on config definitions,
+- support custom operations defined entirely in config.
+
+Skills practiced: nested data structures, dict lookups, try/except,
+JSON loading, list comprehensions, sorting with key functions.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import math
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Config Driven Calculator"
-PROJECT_FOCUS = "read behavior from json config"
+
+# Default operations when no config is provided.
+DEFAULT_OPERATIONS: dict[str, dict] = {
+    "add": {"symbol": "+", "description": "Addition"},
+    "subtract": {"symbol": "-", "description": "Subtraction"},
+    "multiply": {"symbol": "*", "description": "Multiplication"},
+    "divide": {"symbol": "/", "description": "Division"},
+    "power": {"symbol": "**", "description": "Exponentiation"},
+    "modulo": {"symbol": "%", "description": "Modulo (remainder)"},
+}
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def load_config(path: Path) -> dict:
+    """Load calculator configuration from a JSON file.
 
-    This function is isolated so it can be tested independently.
+    The config file should have an "operations" key with operation
+    definitions and an optional "settings" key.
+
+    Falls back to DEFAULT_OPERATIONS if the file is missing or invalid.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+        return {"operations": DEFAULT_OPERATIONS, "settings": {}}
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    try:
+        raw = path.read_text(encoding="utf-8")
+        config = json.loads(raw)
+    except (json.JSONDecodeError, OSError) as exc:
+        # Return defaults instead of crashing on bad config.
+        return {
+            "operations": DEFAULT_OPERATIONS,
+            "settings": {},
+            "config_error": str(exc),
+        }
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    # Ensure required keys exist.
+    config.setdefault("operations", DEFAULT_OPERATIONS)
+    config.setdefault("settings", {})
+    return config
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def calculate(operation: str, a: float, b: float) -> dict:
+    """Perform a calculation and return a result dict.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Handles division by zero, invalid operations, and math errors.
+    """
+    try:
+        if operation == "add":
+            result = a + b
+        elif operation == "subtract":
+            result = a - b
+        elif operation == "multiply":
+            result = a * b
+        elif operation == "divide":
+            if b == 0:
+                return {"success": False, "error": "Division by zero"}
+            result = a / b
+        elif operation == "power":
+            result = a ** b
+        elif operation == "modulo":
+            if b == 0:
+                return {"success": False, "error": "Modulo by zero"}
+            result = a % b
+        elif operation == "sqrt":
+            if a < 0:
+                return {"success": False, "error": "Cannot sqrt negative number"}
+            result = math.sqrt(a)
+        else:
+            return {"success": False, "error": f"Unknown operation: {operation}"}
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+        # Check for infinity or NaN results.
+        if math.isinf(result) or math.isnan(result):
+            return {"success": False, "error": "Result is infinity or NaN"}
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+        return {
+            "success": True,
+            "operation": operation,
+            "a": a,
+            "b": b,
+            "result": round(result, 10),
+        }
+
+    except (OverflowError, ValueError) as exc:
+        return {"success": False, "error": str(exc)}
+
+
+def batch_calculate(operations_list: list[dict]) -> list[dict]:
+    """Run a batch of calculations from a list of operation dicts.
+
+    Each dict should have: {"operation": str, "a": number, "b": number}
+    Uses enumerate to track original order.
+    """
+    results = []
+    for idx, op in enumerate(operations_list):
+        try:
+            name = op["operation"]
+            a = float(op.get("a", 0))
+            b = float(op.get("b", 0))
+            result = calculate(name, a, b)
+            result["index"] = idx
+            results.append(result)
+        except (KeyError, ValueError, TypeError) as exc:
+            results.append({
+                "index": idx,
+                "success": False,
+                "error": f"Invalid operation spec: {exc}",
+            })
+    return results
+
+
+def list_operations(config: dict) -> list[dict]:
+    """List all available operations from config.
+
+    Returns a sorted list of operation info dicts.
+    """
+    ops = config.get("operations", DEFAULT_OPERATIONS)
+    # List comprehension building info dicts, sorted by operation name.
+    return sorted(
+        [
+            {"name": name, **info}
+            for name, info in ops.items()
+        ],
+        key=lambda op: op["name"],
+    )
+
+
+def calculate_chain(operations: list[tuple[str, float]], start: float = 0) -> dict:
+    """Chain multiple operations together, feeding each result into the next.
+
+    Example: start=10, [("add", 5), ("multiply", 2)] -> (10+5)*2 = 30
+    """
+    current = start
+    steps: list[dict] = []
+
+    for op_name, operand in operations:
+        result = calculate(op_name, current, operand)
+        if not result["success"]:
+            return {
+                "success": False,
+                "error": f"Chain failed at step: {result['error']}",
+                "steps": steps,
+            }
+        steps.append({
+            "operation": op_name,
+            "input": current,
+            "operand": operand,
+            "output": result["result"],
+        })
+        current = result["result"]
+
+    return {"success": True, "final": current, "steps": steps}
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Config-driven calculator")
+    parser.add_argument(
+        "--config",
+        default="data/sample_input.txt",
+        help="Path to JSON config file",
+    )
+    parser.add_argument("--op", help="Operation to perform")
+    parser.add_argument("--a", type=float, help="First operand")
+    parser.add_argument("--b", type=float, default=0, help="Second operand")
+    parser.add_argument(
+        "--list", action="store_true", help="List available operations"
+    )
+    parser.add_argument(
+        "--batch", help="Path to JSON file with batch operations"
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: load config, run calculation or list operations."""
     args = parse_args()
+    config = load_config(Path(args.config))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    if args.list:
+        ops = list_operations(config)
+        print("Available operations:")
+        for op in ops:
+            print(f"  {op['name']}: {op.get('description', 'No description')}")
+        return
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    if args.batch:
+        batch_path = Path(args.batch)
+        batch_data = json.loads(batch_path.read_text(encoding="utf-8"))
+        results = batch_calculate(batch_data)
+        print(json.dumps(results, indent=2))
+        return
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if args.op and args.a is not None:
+        result = calculate(args.op, args.a, args.b)
+        print(json.dumps(result, indent=2))
+        return
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    # Default: show config info.
+    print("Calculator config loaded. Use --list to see operations.")
+    print(f"Operations available: {len(config.get('operations', {}))}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

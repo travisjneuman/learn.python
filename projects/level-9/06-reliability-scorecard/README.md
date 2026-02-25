@@ -2,59 +2,71 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- score service reliability factors
+- Weighted multi-criteria scoring across reliability dimensions
+- Score normalization to a 0-100 scale for different metric types
+- Letter grading (A/B/C/D/F) for non-technical stakeholder communication
+- Trend analysis comparing current vs previous scoring periods
+- Strategy pattern for dimension-specific scoring functions
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Reliability is multi-dimensional: uptime, mean time to recovery (MTTR), change failure
+rate, deployment frequency, and incident response all contribute. A service with 99.99%
+uptime but 8-hour MTTR is not truly reliable. This project builds a weighted scorecard
+that evaluates reliability across these dimensions, normalizes different units to a
+comparable scale, assigns letter grades, and generates improvement recommendations — the
+same framework SRE teams use to compare service reliability across an organization.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/06-reliability-scorecard
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "service": "checkout-api",
+  "overall_score": 78.5,
+  "grade": "B",
+  "dimensions": [...],
+  "recommendations": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with reliability scorecard
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `trend` field to `DimensionScore` that compares current vs previous period scores.
+2. Add a normalizer for boolean metrics (e.g. "has runbook" -> 100 or 0).
+3. Add a `--compare` flag that shows side-by-side scores for two services.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set all dimension weights to 0 — does the weighted score calculation handle it?
+2. Pass a raw value outside the normalizer's expected range (e.g. negative uptime) — what score results?
+3. Create a scorecard with zero dimensions — does grading still work?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that total weight is > 0 before computing the weighted average.
+2. Clamp normalized values to the 0-100 range.
+3. Return a default "unscored" grade when there are no dimensions.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a reliability scorecard and how do SRE teams use them?
+2. How does weighted scoring prioritize some dimensions over others?
+3. Why is score normalization needed — what problem does it solve?
+4. How do letter grades (A/B/C/D/F) help communicate reliability status to non-technical stakeholders?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain weighted scoring and why different reliability dimensions have different weights,
+- add a new dimension (e.g. "deployment frequency") with its own normalizer,
+- describe how normalization converts different units to a comparable 0-100 scale,
+- design a reliability scorecard for a real service with appropriate dimensions and weights.
 
 ---
 

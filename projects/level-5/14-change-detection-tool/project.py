@@ -1,106 +1,193 @@
-"""Level 5 project: Change Detection Tool.
+"""Level 5 / Project 14 — Change Detection Tool.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Detects changes between file versions using content hashing,
+line-by-line diffs, and timestamp comparison.  Reports what
+changed, when, and how much.
+
+Concepts practiced:
+- SHA-256 hashing for content integrity checks
+- Set-based line diffing (added, removed, unchanged)
+- File metadata comparison (size, modification time)
+- Handling edge cases (missing files, identical paths, binary content)
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import hashlib
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_LEVEL = 5
-PROJECT_TITLE = "Change Detection Tool"
-PROJECT_FOCUS = "baseline vs current delta detection"
 
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+    """Set up logging so every change detection step is traceable."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- hashing ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def file_hash(path: Path) -> str:
+    """Compute the SHA-256 hash of a file's contents.
 
-    We keep this separate from I/O so business logic stays testable.
+    Uses ``read_bytes()`` so that binary files are handled correctly
+    without encoding assumptions.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def is_binary_file(path: Path, sample_size: int = 8192) -> bool:
+    """Detect whether a file is binary by checking for null bytes.
+
+    Reads the first *sample_size* bytes and looks for ``\\x00``.
+    This is the same heuristic used by Git.
+    """
+    sample = path.read_bytes()[:sample_size]
+    return b"\x00" in sample
+
+
+# ---------- line diffing ----------
+
+
+def line_diff(old_lines: list[str], new_lines: list[str]) -> dict:
+    """Compute a simple line-based diff between two file versions.
+
+    Uses set operations to find added, removed, and unchanged lines.
+    This does not track moved lines — it treats each line as either
+    present or absent.
+    """
+    old_set = set(old_lines)
+    new_set = set(new_lines)
+
+    added = sorted(new_set - old_set)
+    removed = sorted(old_set - new_set)
+    unchanged_count = len(old_set & new_set)
+
+    total_lines = max(len(old_lines), len(new_lines), 1)
+    change_pct = round(
+        (len(added) + len(removed)) / total_lines * 100, 1,
+    )
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "added": added,
+        "removed": removed,
+        "added_count": len(added),
+        "removed_count": len(removed),
+        "unchanged_count": unchanged_count,
+        "change_percentage": change_pct,
     }
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+# ---------- change detection ----------
 
+
+def detect_changes(old_path: Path, new_path: Path) -> dict:
+    """Compare two files and return a structured change report.
+
+    Handles several edge cases:
+    - Old file missing -> status ``new_file``
+    - New file missing -> status ``deleted``
+    - Identical hashes -> status ``unchanged``
+    - Same path for old and new -> status ``unchanged`` (short-circuit)
+    - Binary files -> hash comparison only (no line diff)
+    - Text files -> full line-level diff
+    """
+    result: dict = {"old_file": str(old_path), "new_file": str(new_path)}
+
+    # Edge case: both paths point to the same file.
+    if old_path.resolve() == new_path.resolve() and old_path.exists():
+        result["status"] = "unchanged"
+        result["old_hash"] = file_hash(old_path)
+        result["new_hash"] = result["old_hash"]
+        logging.info("Same path — no changes possible")
+        return result
+
+    # Missing file cases.
+    if not old_path.exists():
+        result["status"] = "new_file"
+        result["new_hash"] = file_hash(new_path) if new_path.exists() else None
+        return result
+
+    if not new_path.exists():
+        result["status"] = "deleted"
+        result["old_hash"] = file_hash(old_path)
+        return result
+
+    # Both exist — compare hashes.
+    old_hash = file_hash(old_path)
+    new_hash = file_hash(new_path)
+    result["old_hash"] = old_hash
+    result["new_hash"] = new_hash
+
+    if old_hash == new_hash:
+        result["status"] = "unchanged"
+        return result
+
+    # Hashes differ — report details.
+    result["status"] = "modified"
+
+    old_stat = old_path.stat()
+    new_stat = new_path.stat()
+    result["size_change"] = new_stat.st_size - old_stat.st_size
+    result["old_modified"] = datetime.fromtimestamp(
+        old_stat.st_mtime, tz=timezone.utc,
+    ).isoformat()
+    result["new_modified"] = datetime.fromtimestamp(
+        new_stat.st_mtime, tz=timezone.utc,
+    ).isoformat()
+
+    # Skip line-level diff for binary files.
+    if is_binary_file(old_path) or is_binary_file(new_path):
+        result["binary"] = True
+        logging.info("Binary file detected — skipping line diff")
+        return result
+
+    old_lines = old_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    new_lines = new_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    result["diff"] = line_diff(old_lines, new_lines)
+
+    return result
+
+
+# ---------- pipeline ----------
+
+
+def run(old_path: Path, new_path: Path, output_path: Path) -> dict:
+    """Execute change detection and write the report."""
+    report = detect_changes(old_path, new_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info("Change detection: %s", report["status"])
+    return report
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    """Parse command-line arguments for the change detection tool."""
+    parser = argparse.ArgumentParser(
+        description="Detect changes between file versions",
+    )
+    parser.add_argument("--old", default="data/old_version.txt", help="Baseline file")
+    parser.add_argument("--new", default="data/new_version.txt", help="Current file")
+    parser.add_argument("--output", default="data/change_report.json", help="Report output path")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
+    """Entry point: configure logging, parse args, detect changes."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    report = run(Path(args.old), Path(args.new), Path(args.output))
+    print(f"Change detection: {report['status']}")
 
 
 if __name__ == "__main__":

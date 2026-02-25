@@ -1,5 +1,27 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Change Detection Tool
+----------------------------------------
+This file explains the companion old_version.txt and new_version.txt.
+
+old_version.txt (baseline configuration):
+  server_name = production-web-01
+  max_connections = 100
+  timeout_seconds = 30
+  log_level = INFO
+  cache_enabled = true
+  worker_threads = 4
+
+new_version.txt (current configuration):
+  server_name = production-web-01
+  max_connections = 200         (changed: 100 -> 200)
+  timeout_seconds = 30
+  log_level = DEBUG             (changed: INFO -> DEBUG)
+  cache_enabled = true
+  worker_threads = 8            (changed: 4 -> 8)
+  ssl_enabled = true            (added: new line)
+
+Change detection results:
+  Status: modified
+  Lines added: 1 (ssl_enabled)
+  Lines removed: 0
+  Lines changed: 3 (max_connections, log_level, worker_threads)
+  SHA-256 hashes differ: yes

@@ -1,5 +1,21 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Transformation Pipeline V1
+---------------------------------------------
+This file explains the companion sample_input.csv.
+
+sample_input.csv contains raw sensor readings to transform:
+  Row 1: header — sensor_id,timestamp,reading,unit
+  Row 2: S001,2024-03-01T08:00:00,72.5,fahrenheit
+  Row 3: S002,2024-03-01T08:05:00,23.1,celsius
+  Row 4: S001,2024-03-01T08:10:00,71.8,fahrenheit
+  Row 5: S003,2024-03-01T08:15:00,98.6,fahrenheit
+  Row 6: S002,2024-03-01T08:20:00,24.0,celsius
+  Row 7: S001,2024-03-01T08:25:00,,fahrenheit        (missing reading)
+  Row 8: S004,2024-03-01T08:30:00,300.2,kelvin
+
+Pipeline steps:
+  1. Normalize all temperatures to Celsius
+  2. Drop rows with missing readings
+  3. Round to 1 decimal place
+  4. Add a "converted" flag column
+
+Expected: 6 transformed rows, 1 dropped (missing reading)

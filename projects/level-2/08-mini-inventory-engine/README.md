@@ -13,48 +13,53 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/08-mini-inventory-engine
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --inventory data/sample_input.txt
+python project.py --inventory data/sample_input.txt --low-stock
+python project.py --inventory data/sample_input.txt --value
+python project.py --inventory data/sample_input.txt --search "key"
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Inventory (10 products):
+  bolt: qty=500, $0.50, hardware
+  ...
+12 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Inventory listing on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--remove` command: `--remove "Widget" 5` to decrease stock.
+2. Add an `--export` flag that writes current inventory to a new CSV.
+3. Add a `--category` filter to show only items in a specific category.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add an item with negative quantity — is it allowed?
+2. Remove exactly all stock of an item — does it stay at 0 or get deleted?
+3. Load a CSV with non-numeric price values — what happens?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that quantity and price must be non-negative.
+2. Decide and document what happens when stock reaches 0.
+3. Handle CSV parsing errors with try/except and skip bad rows.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is the inventory stored as a dict-of-dicts instead of a list?
+2. How does `dict.get(key, default)` help avoid KeyError?
+3. What is the difference between mutating a dict vs returning a new one?
+4. Where would this pattern be used in a real e-commerce system?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- implement add/remove/search from memory,
+- explain how nested dicts model real-world entities,
+- add a new feature (e.g. price history) without breaking existing code,
+- describe why the function returns a result dict instead of raising exceptions.
 
 ---
 

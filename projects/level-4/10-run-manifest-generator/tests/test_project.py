@@ -1,54 +1,58 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Run Manifest Generator."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import compute_checksum, scan_files, build_manifest, run
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_compute_checksum_deterministic(tmp_path: Path) -> None:
+    """Same content always produces the same checksum."""
+    file_a = tmp_path / "a.txt"
+    file_b = tmp_path / "b.txt"
+    file_a.write_text("hello world", encoding="utf-8")
+    file_b.write_text("hello world", encoding="utf-8")
+    assert compute_checksum(file_a) == compute_checksum(file_b)
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_compute_checksum_differs_for_different_content(tmp_path: Path) -> None:
+    file_a = tmp_path / "a.txt"
+    file_b = tmp_path / "b.txt"
+    file_a.write_text("hello", encoding="utf-8")
+    file_b.write_text("world", encoding="utf-8")
+    assert compute_checksum(file_a) != compute_checksum(file_b)
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_scan_files_collects_metadata(tmp_path: Path) -> None:
+    (tmp_path / "file1.txt").write_text("abc", encoding="utf-8")
+    (tmp_path / "file2.csv").write_text("x,y,z", encoding="utf-8")
+    files = scan_files(tmp_path)
+    assert len(files) == 2
+    assert all("checksum_md5" in f for f in files)
+    assert all("size_bytes" in f for f in files)
+
+
+@pytest.mark.parametrize("file_count", [0, 1, 5])
+def test_build_manifest_file_count(tmp_path: Path, file_count: int) -> None:
+    for i in range(file_count):
+        (tmp_path / f"file_{i}.txt").write_text(f"content {i}", encoding="utf-8")
+    manifest = build_manifest("test-run", tmp_path)
+    assert manifest["file_count"] == file_count
+    assert manifest["run_id"] == "test-run"
+
+
+def test_scan_files_includes_subdirectories(tmp_path: Path) -> None:
+    sub = tmp_path / "subdir"
+    sub.mkdir()
+    (sub / "nested.txt").write_text("nested", encoding="utf-8")
+    files = scan_files(tmp_path)
+    assert any("subdir" in f["relative_path"] for f in files)
+
+
+def test_run_integration(tmp_path: Path) -> None:
+    (tmp_path / "data.txt").write_text("test data", encoding="utf-8")
+    output = tmp_path / "manifest.json"
+    manifest = run(tmp_path, output, run_id="test-123")
+    assert output.exists()
+    assert manifest["run_id"] == "test-123"
+    assert manifest["file_count"] >= 1

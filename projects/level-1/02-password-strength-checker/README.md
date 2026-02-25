@@ -5,49 +5,54 @@ Home: [README](../../../README.md)
 - rule-based scoring and condition checks
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Score passwords on length, character variety, and common-password checks. You will learn rule-based scoring, the `any()` built-in with generator expressions, and how to build a multi-criteria evaluation system.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/02-password-strength-checker
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Password Strength Report ===
+
+  "password"              => Score: 1/5 (weak)
+  "abc123"                => Score: 2/5 (weak)
+  "MyStr0ng!Pass#2024"    => Score: 5/5 (strong)
+
+3 passwords checked. Output written to data/output.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a "sequential characters" penalty (e.g. "abc", "123" lose a point).
+2. Add a `--min-score` flag that only shows passwords scoring at or above the threshold.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Test an empty password (blank line) -- does `score_password()` crash or return 0?
+2. Test a password that is the string `"password"` -- does the common-password check catch it?
+3. Test a 1000-character password -- does any check break with very long input?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle empty passwords by returning a score of 0 with label "empty".
+2. Ensure the common-password list comparison is case-insensitive.
+3. Add a test for the empty-password edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `check_character_variety()` check for uppercase, lowercase, digits, and special characters separately?
+2. What does `any(c.isupper() for c in password)` do and why use `any()` instead of a loop?
+3. Why is "password" in a common-passwords list instead of checking for specific patterns?
+4. Where would password strength checking appear in real software (registration forms, password managers)?
 
 ## Mastery check
 You can move on when you can:

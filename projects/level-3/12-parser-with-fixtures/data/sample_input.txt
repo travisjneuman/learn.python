@@ -1,5 +1,19 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+# Sample INI-style configuration file
+# This file can be parsed with: python project.py data/sample_input.txt --format ini
+
+[database]
+host = localhost
+port = 5432
+name = myapp_db
+user = admin
+
+[server]
+host = 0.0.0.0
+port = 8000
+debug = true
+workers = 4
+
+[logging]
+level = INFO
+file = /var/log/myapp.log
+format = json

@@ -1,52 +1,105 @@
-"""Advanced test module with heavy comments.
+"""Tests for Data Governance Enforcer.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: retention policies, access control, PII handling, and compliance summary.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    AccessLevel,
+    AccessPolicy,
+    AccessRequest,
+    DataAsset,
+    DataClassification,
+    DataGovernanceEnforcer,
+    RetentionPolicy,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- Fixtures -----------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+@pytest.fixture
+def enforcer() -> DataGovernanceEnforcer:
+    e = DataGovernanceEnforcer()
+    e.add_retention_policy(RetentionPolicy(DataClassification.PUBLIC, 30, 365))
+    e.add_retention_policy(RetentionPolicy(DataClassification.CONFIDENTIAL, 90, 730))
+    e.add_access_policy(AccessPolicy("viewer", DataClassification.INTERNAL, {AccessLevel.READ}))
+    e.add_access_policy(AccessPolicy("admin", DataClassification.RESTRICTED,
+                                      {AccessLevel.READ, AccessLevel.WRITE, AccessLevel.DELETE, AccessLevel.ADMIN}))
+    return e
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+
+# --- Retention checks ---------------------------------------------------
+
+class TestRetention:
+    def test_retention_too_short(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("short", DataClassification.CONFIDENTIAL, "t", 30))
+        violations = enforcer.audit_assets()
+        assert any(v.policy_name == "retention_too_short" for v in violations)
+
+    def test_retention_too_long(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("long", DataClassification.PUBLIC, "t", 500))
+        violations = enforcer.audit_assets()
+        assert any(v.policy_name == "retention_too_long" for v in violations)
+
+    def test_valid_retention(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("ok", DataClassification.PUBLIC, "t", 180))
+        violations = enforcer.audit_assets()
+        retention_viols = [v for v in violations if v.asset_name == "ok"]
+        assert len(retention_viols) == 0
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- Classification checks ---------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestClassification:
+    def test_pii_public_violation(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("leak", DataClassification.PUBLIC, "t", 30, True))
+        violations = enforcer.audit_assets()
+        assert any(v.policy_name == "pii_public_data" for v in violations)
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+
+# --- Access control -----------------------------------------------------
+
+class TestAccessControl:
+    def test_allowed_access(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("doc", DataClassification.INTERNAL, "t"))
+        allowed, violations = enforcer.evaluate_access(
+            AccessRequest("alice", "viewer", "doc", AccessLevel.READ)
+        )
+        assert allowed is True
+        assert len(violations) == 0
+
+    def test_classification_exceeded(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("secret", DataClassification.RESTRICTED, "t"))
+        allowed, violations = enforcer.evaluate_access(
+            AccessRequest("bob", "viewer", "secret", AccessLevel.READ)
+        )
+        assert allowed is False
+        assert any(v.policy_name == "classification_exceeded" for v in violations)
+
+    def test_pii_requires_purpose(self, enforcer: DataGovernanceEnforcer) -> None:
+        enforcer.register_asset(DataAsset("users", DataClassification.INTERNAL, "t", 365, True))
+        allowed, violations = enforcer.evaluate_access(
+            AccessRequest("carol", "viewer", "users", AccessLevel.READ, purpose="")
+        )
+        assert any(v.policy_name == "pii_purpose_required" for v in violations)
+
+    @pytest.mark.parametrize("role,expected_allowed", [
+        ("admin", True),
+        ("viewer", False),
+    ])
+    def test_delete_access(self, enforcer: DataGovernanceEnforcer,
+                           role: str, expected_allowed: bool) -> None:
+        enforcer.register_asset(DataAsset("data", DataClassification.INTERNAL, "t"))
+        allowed, _ = enforcer.evaluate_access(
+            AccessRequest("x", role, "data", AccessLevel.DELETE)
+        )
+        assert allowed == expected_allowed
+
+    def test_unknown_asset(self, enforcer: DataGovernanceEnforcer) -> None:
+        allowed, violations = enforcer.evaluate_access(
+            AccessRequest("x", "admin", "nonexistent", AccessLevel.READ)
+        )
+        assert allowed is False

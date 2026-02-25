@@ -1,5 +1,23 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample backup history for Backup Rotation Tool
+-------------------------------------------------
+This file describes the backup rotation scenario.
+
+The project manages backup files using a retention policy:
+  - Keep last N daily backups
+  - Keep last M weekly backups (one per week)
+  - Keep last K monthly backups (one per month)
+  - Delete everything else
+
+Sample backup files (by date):
+  backup_2024-01-15.tar.gz   (monthly — keep)
+  backup_2024-02-10.tar.gz   (monthly — keep)
+  backup_2024-03-01.tar.gz   (weekly — keep)
+  backup_2024-03-08.tar.gz   (weekly — keep)
+  backup_2024-03-09.tar.gz   (daily — delete, not in last 7 days)
+  backup_2024-03-12.tar.gz   (daily — keep)
+  backup_2024-03-13.tar.gz   (daily — keep)
+  backup_2024-03-14.tar.gz   (daily — keep)
+  backup_2024-03-15.tar.gz   (daily — keep, most recent)
+
+Policy: daily=4, weekly=2, monthly=2
+Expected: 8 kept, 1 deleted

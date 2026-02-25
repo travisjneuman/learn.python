@@ -1,54 +1,76 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Audit Log Enhancer."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import json
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import classify_severity, compute_duration_ms, enrich_entry, load_log_entries, enrich_log, run
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+@pytest.mark.parametrize(
+    "event_type, expected",
+    [
+        ("login_error", "HIGH"),
+        ("request_failed", "HIGH"),
+        ("slow_query_warning", "MEDIUM"),
+        ("connection_timeout", "MEDIUM"),
+        ("user_login", "LOW"),
+        ("page_view", "LOW"),
+    ],
+)
+def test_classify_severity(event_type: str, expected: str) -> None:
+    assert classify_severity(event_type) == expected
 
-    # Act: build structured records.
-    records = build_records(raw_items)
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_compute_duration_ms() -> None:
+    start = "2025-01-15T10:00:00+00:00"
+    end = "2025-01-15T10:00:02+00:00"
+    assert compute_duration_ms(start, end) == 2000
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_compute_duration_ms_missing() -> None:
+    assert compute_duration_ms(None, "2025-01-15T10:00:00+00:00") is None
+    assert compute_duration_ms("2025-01-15T10:00:00+00:00", None) is None
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_enrich_entry_adds_fields() -> None:
+    entry = {"event_type": "user_login", "session_id": "abc"}
+    enriched = enrich_entry(entry, "corr-123")
+    assert enriched["correlation_id"] == "corr-123"
+    assert enriched["severity"] == "LOW"
+    assert "enriched_at" in enriched
+
+
+def test_enrich_log_groups_by_session() -> None:
+    entries = [
+        {"event_type": "login", "session_id": "sess-1"},
+        {"event_type": "action", "session_id": "sess-1"},
+        {"event_type": "login", "session_id": "sess-2"},
+    ]
+    enriched = enrich_log(entries)
+    # Same session should share a correlation ID
+    assert enriched[0]["correlation_id"] == enriched[1]["correlation_id"]
+    assert enriched[0]["correlation_id"] != enriched[2]["correlation_id"]
+
+
+def test_load_log_entries_skips_malformed(tmp_path: Path) -> None:
+    log_file = tmp_path / "logs.jsonl"
+    log_file.write_text(
+        '{"event_type": "ok"}\nnot-json\n{"event_type": "also_ok"}\n',
+        encoding="utf-8",
+    )
+    entries = load_log_entries(log_file)
+    assert len(entries) == 2
+
+
+def test_run_integration(tmp_path: Path) -> None:
+    log_file = tmp_path / "input.jsonl"
+    log_file.write_text(
+        '{"event_type": "user_login", "session_id": "s1"}\n'
+        '{"event_type": "request_failed", "session_id": "s1"}\n',
+        encoding="utf-8",
+    )
+    output = tmp_path / "enriched.jsonl"
+    summary = run(log_file, output)
+    assert summary["total_entries"] == 2
+    assert output.exists()

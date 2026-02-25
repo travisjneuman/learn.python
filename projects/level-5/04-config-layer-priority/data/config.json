@@ -1,0 +1,7 @@
+{
+  "app_name": "production-app",
+  "debug": false,
+  "port": 9090,
+  "log_level": "WARNING",
+  "database_url": "postgresql://prod-server:5432/appdb"
+}

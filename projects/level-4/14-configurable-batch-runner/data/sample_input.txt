@@ -1,5 +1,26 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample configuration for Configurable Batch Runner
+-----------------------------------------------------
+This file explains the companion files.
+
+batch_config.json defines the batch processing configuration:
+  {
+    "batch_size": 5,
+    "max_workers": 2,
+    "retry_on_failure": true,
+    "max_retries": 3,
+    "output_format": "json",
+    "steps": ["validate", "transform", "load"]
+  }
+
+sample_data.txt contains 12 items to process in batches:
+  item_001 through item_012
+
+Expected batch execution:
+  Batch 1: items 001-005 (5 items)
+  Batch 2: items 006-010 (5 items)
+  Batch 3: items 011-012 (2 items)
+
+Each batch runs through: validate -> transform -> load
+Failed items are retried up to 3 times before being reported as failures.
+
+Expected: 3 batches executed, per-batch timing and status in report

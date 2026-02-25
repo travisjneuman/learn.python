@@ -13,49 +13,50 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/03-data-cleaning-pipeline
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --filter "@.*\."
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Cleaning Stats ===
+{"original_count": 10, "cleaned_count": 7, ...}
+11 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Cleaning stats and cleaned records on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a cleaning step that normalizes phone numbers to a consistent format (e.g., strip dashes and parentheses).
-2. Write rejected/invalid rows to a separate `quarantine.csv` file with a reason column explaining why each was rejected.
-3. Add a `--dry-run` flag that shows what would be cleaned without writing the output file.
-4. Re-run script and tests.
+1. Add a cleaning step that normalizes phone numbers (strip dashes/parens).
+2. Write rejected records to a separate `quarantine.txt` with reasons.
+3. Add a `--dry-run` flag that reports stats without writing output.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a file where every line is whitespace — does it crash or return empty?
+2. Use a bad regex pattern in `--filter` (e.g. `[unclosed`) — what happens?
+3. Feed records with mixed encodings — does normalise_case break?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Wrap `re.compile` in a try/except for invalid regex patterns.
+2. Add a test for all-blank input files.
+3. Handle encoding errors gracefully with a `try/except UnicodeDecodeError`.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the pipeline run steps in a specific order (strip before dedupe)?
+2. How does using a set for deduplication achieve O(1) lookup?
+3. What is the difference between `re.search` and `re.match`?
+4. Where would you use a data cleaning pipeline in a real data workflow?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain why pipeline step ordering matters,
+- describe how sets enable fast deduplication,
+- add a new cleaning step without modifying existing ones,
+- explain regular expressions used in `filter_by_pattern`.
 
 ---
 

@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+resource: compute current=340 capacity=500 unit=vCPUs growth=exponential rate=0.12/month
+resource: storage current=2.8 capacity=5.0 unit=TB growth=linear rate=0.15TB/month
+resource: db_connections current=180 capacity=300 unit=connections growth=exponential rate=0.08/month
+resource: bandwidth current=45 capacity=100 unit=Gbps growth=step rate=10Gbps/quarter
+forecast_months: 18
+headroom_target: 0.20 (20% buffer)

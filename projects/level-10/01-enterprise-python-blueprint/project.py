@@ -1,141 +1,272 @@
-"""Level 10 project: Enterprise Python Blueprint.
+"""Enterprise Python Blueprint — Project template generator with enterprise standards.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: Uses the Strategy pattern for pluggable template generators and a
+Registry for discovering and composing project components. Each generator produces
+files for a specific concern (logging, config, testing, CI) so teams can mix and
+match based on their compliance tier.
+
+Design rationale: Real enterprise projects need consistent scaffolding across dozens
+of microservices. A code-driven generator ensures every new service starts with the
+same logging format, config schema, test harness, and CI pipeline — eliminating
+"snowflake services" that drift from organizational standards.
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
+from enum import Enum, auto
 from pathlib import Path
+from typing import Protocol, TypeVar
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "Enterprise Python Blueprint"
-PROJECT_FOCUS = "reference architecture synthesis"
+T = TypeVar("T", bound="FileGenerator")
+
+
+# ---------------------------------------------------------------------------
+# Domain types
+# ---------------------------------------------------------------------------
+
+class ComplianceTier(Enum):
+    """How strict the generated project must be."""
+    BASIC = auto()
+    STANDARD = auto()
+    STRICT = auto()
+
+
+@dataclass(frozen=True)
+class ProjectSpec:
+    """Immutable specification for a project to generate."""
+    name: str
+    language: str
+    tier: ComplianceTier
+    owners: list[str] = field(default_factory=list)
+    description: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.name.replace("-", "").replace("_", "").isalnum():
+            raise ValueError(f"Invalid project name: {self.name!r}")
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class GeneratedFile:
+    """A single file produced by a generator."""
+    relative_path: str
+    content: str
+    executable: bool = False
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# ---------------------------------------------------------------------------
+# Strategy pattern — pluggable file generators
+# ---------------------------------------------------------------------------
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+class FileGenerator(Protocol):
+    """Strategy interface for producing project scaffold files."""
+
+    def name(self) -> str: ...
+    def generate(self, spec: ProjectSpec) -> list[GeneratedFile]: ...
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+class LoggingGenerator:
+    """Produces structured logging configuration."""
+
+    def name(self) -> str:
+        return "logging"
+
+    def generate(self, spec: ProjectSpec) -> list[GeneratedFile]:
+        log_level = "DEBUG" if spec.tier == ComplianceTier.STRICT else "INFO"
+        config = {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "formatters": {
+                "json": {
+                    "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+                    "class": "logging.Formatter",
+                }
+            },
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "formatter": "json",
+                    "level": log_level,
+                }
+            },
+            "root": {"level": log_level, "handlers": ["console"]},
+        }
+        return [GeneratedFile("logging_config.json", json.dumps(config, indent=2))]
+
+
+class ConfigGenerator:
+    """Produces application config skeleton with environment overrides."""
+
+    def name(self) -> str:
+        return "config"
+
+    def generate(self, spec: ProjectSpec) -> list[GeneratedFile]:
+        config = {
+            "app_name": spec.name,
+            "environment": "development",
+            "debug": spec.tier == ComplianceTier.BASIC,
+            "owners": spec.owners,
+            "secrets_backend": "env" if spec.tier == ComplianceTier.BASIC else "vault",
+        }
+        return [GeneratedFile("config/settings.json", json.dumps(config, indent=2))]
+
+
+class TestHarnessGenerator:
+    """Produces pytest configuration and sample test."""
+
+    def name(self) -> str:
+        return "testing"
+
+    def generate(self, spec: ProjectSpec) -> list[GeneratedFile]:
+        files: list[GeneratedFile] = []
+        ini_lines = ["[pytest]", "testpaths = tests", "addopts = -v --tb=short"]
+        if spec.tier in (ComplianceTier.STANDARD, ComplianceTier.STRICT):
+            ini_lines.append("  --strict-markers")
+        files.append(GeneratedFile("pytest.ini", "\n".join(ini_lines)))
+        sample_test = (
+            f'"""Auto-generated smoke test for {spec.name}."""\n\n'
+            "def test_smoke() -> None:\n"
+            "    assert True\n"
         )
-    return records
+        files.append(GeneratedFile("tests/test_smoke.py", sample_test))
+        return files
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+class CIGenerator:
+    """Produces CI pipeline definition (GitHub Actions style)."""
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    def name(self) -> str:
+        return "ci"
 
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+    def generate(self, spec: ProjectSpec) -> list[GeneratedFile]:
+        steps = ["checkout", "setup-python", "install-deps", "lint", "test"]
+        if spec.tier == ComplianceTier.STRICT:
+            steps.extend(["security-scan", "compliance-check"])
+        pipeline = {
+            "name": f"CI — {spec.name}",
+            "on": {"push": {"branches": ["main"]}, "pull_request": {}},
+            "jobs": {
+                "build": {
+                    "runs-on": "ubuntu-latest",
+                    "steps": steps,
+                }
+            },
+        }
+        return [GeneratedFile(".github/workflows/ci.yml", json.dumps(pipeline, indent=2))]
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
+# ---------------------------------------------------------------------------
+# Generator registry — discovers and composes generators
+# ---------------------------------------------------------------------------
 
+class GeneratorRegistry:
+    """Registry that collects generators and orchestrates blueprint creation."""
+
+    def __init__(self) -> None:
+        self._generators: list[FileGenerator] = []
+
+    def register(self, gen: FileGenerator) -> None:
+        self._generators.append(gen)
+
+    @property
+    def generator_names(self) -> list[str]:
+        return [g.name() for g in self._generators]
+
+    def generate_blueprint(self, spec: ProjectSpec) -> Blueprint:
+        """Run every registered generator against the spec."""
+        all_files: list[GeneratedFile] = []
+        manifest_entries: list[dict[str, str]] = []
+        for gen in self._generators:
+            files = gen.generate(spec)
+            all_files.extend(files)
+            for f in files:
+                manifest_entries.append({"generator": gen.name(), "path": f.relative_path})
+        # Always add a manifest so teams know what was generated.
+        manifest = GeneratedFile(
+            "MANIFEST.json",
+            json.dumps({"project": spec.name, "files": manifest_entries}, indent=2),
+        )
+        all_files.append(manifest)
+        return Blueprint(spec=spec, files=all_files)
+
+
+@dataclass
+class Blueprint:
+    """Complete output of the generation process."""
+    spec: ProjectSpec
+    files: list[GeneratedFile]
+
+    @property
+    def file_count(self) -> int:
+        return len(self.files)
+
+    @property
+    def paths(self) -> list[str]:
+        return [f.relative_path for f in self.files]
+
+    def write_to(self, root: Path) -> int:
+        """Persist all files under *root*. Returns count written."""
+        written = 0
+        for gf in self.files:
+            target = root / gf.relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(gf.content, encoding="utf-8")
+            written += 1
+        return written
+
+
+# ---------------------------------------------------------------------------
+# Convenience factory
+# ---------------------------------------------------------------------------
+
+def build_default_registry() -> GeneratorRegistry:
+    """Pre-load the standard set of enterprise generators."""
+    registry = GeneratorRegistry()
+    registry.register(LoggingGenerator())
+    registry.register(ConfigGenerator())
+    registry.register(TestHarnessGenerator())
+    registry.register(CIGenerator())
+    return registry
+
+
+def generate_project(
+    name: str,
+    tier: str = "STANDARD",
+    owners: list[str] | None = None,
+    output_dir: Path | None = None,
+) -> Blueprint:
+    """High-level API: generate an enterprise blueprint and optionally write it."""
+    spec = ProjectSpec(
+        name=name,
+        language="python",
+        tier=ComplianceTier[tier.upper()],
+        owners=owners or [],
+    )
+    registry = build_default_registry()
+    blueprint = registry.generate_blueprint(spec)
+    if output_dir is not None:
+        blueprint.write_to(output_dir)
+    return blueprint
+
+
+# ---------------------------------------------------------------------------
+# CLI entrypoint
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+    import argparse
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
+    parser = argparse.ArgumentParser(description="Enterprise Python Blueprint Generator")
+    parser.add_argument("name", help="Project name (alphanumeric, hyphens, underscores)")
+    parser.add_argument("--tier", choices=["basic", "standard", "strict"], default="standard")
+    parser.add_argument("--owners", nargs="*", default=[])
+    parser.add_argument("--output-dir", type=Path, default=None)
+    args = parser.parse_args()
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    bp = generate_project(args.name, tier=args.tier, owners=args.owners, output_dir=args.output_dir)
+    print(f"Generated {bp.file_count} files for '{bp.spec.name}' (tier={bp.spec.tier.name}):")
+    for path in bp.paths:
+        print(f"  {path}")
 
 
 if __name__ == "__main__":

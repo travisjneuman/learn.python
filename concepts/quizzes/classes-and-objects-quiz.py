@@ -3,6 +3,8 @@ Quiz: Classes and Objects
 Review: concepts/classes-and-objects.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -23,7 +25,7 @@ def run_quiz():
     print("  c) An object is a blueprint; a class is created from it")
     print("  d) Classes are for data; objects are for functions")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! A class defines the structure. An object (instance)")
@@ -41,7 +43,7 @@ def run_quiz():
     print("  c) Sets up the initial state when an object is created")
     print("  d) Imports the class")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! __init__ is the constructor. It runs automatically")
@@ -59,7 +61,7 @@ def run_quiz():
     print("  c) The parent class")
     print("  d) Nothing — it is just a convention")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! self is the particular instance. When you call")
@@ -84,7 +86,7 @@ def run_quiz():
     print("  c) TypeError — missing self parameter")
     print("  d) No error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Every method needs self as its first parameter.")
@@ -113,7 +115,7 @@ def run_quiz():
     print('  c) "Meow!"')
     print("  d) Error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! self.name was set to 'Whiskers' in __init__,")
@@ -132,7 +134,7 @@ def run_quiz():
     print("  c) When two classes share the same name")
     print("  d) When a function calls another function")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! A child class inherits from a parent class,")
@@ -155,7 +157,7 @@ def run_quiz():
     print("  c) It causes a SyntaxError")
     print("  d) Nothing is wrong")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Mutable defaults are shared. Use None as default")

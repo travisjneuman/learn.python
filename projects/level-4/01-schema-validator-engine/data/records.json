@@ -1,0 +1,8 @@
+[
+  {"name": "Alice", "age": 30, "email": "alice@example.com", "role": "engineer"},
+  {"name": "Bob", "age": 25, "role": "designer"},
+  {"name": 42, "age": "old", "role": "manager"},
+  {"age": 28, "role": "analyst"},
+  {"name": "Eve", "age": -3, "role": "intern"},
+  {"name": "Frank", "age": 200, "email": "frank@example.com", "role": "director"}
+]

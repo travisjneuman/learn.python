@@ -13,41 +13,47 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/09-transformation-pipeline-v1
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.csv --output data/pipeline_output.json --steps strip_whitespace,lowercase_keys,filter_empty_rows,coerce_numbers,add_row_id
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "steps": [
+    {"step": "strip_whitespace", "status": "ok", ...},
+    ...
+  ],
+  "output_records": 5
+}
+8 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/pipeline_output.json` — transformed data with step log
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `transform_rename_columns` step that accepts a rename mapping (e.g., `Name -> full_name`).
+2. Add a `--dry-run` flag that shows the step log without writing output.
+3. Re-run script and tests — add a test for the rename transform.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass an unknown step name in `--steps` and verify it is logged as skipped.
+2. Reorder the steps (e.g., `add_row_id` before `filter_empty_rows`) and observe the difference.
+3. Feed it a CSV where all rows are empty and see what `filter_empty_rows` does.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add step ordering validation — warn if `add_row_id` runs before `filter_empty_rows`.
+2. Handle the case where an input CSV has no rows (only headers) gracefully.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are transforms written as pure functions (no side effects)?
+2. What is the `TRANSFORMS` registry pattern and why is it useful?
+3. Why does the step log track `records_before` and `records_after`?
+4. How would you add error handling so one failing step does not crash the whole pipeline?
 
 ## Mastery check
 You can move on when you can:

@@ -2,59 +2,61 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- large result paging behavior
+- Offset-based and cursor-based pagination strategies
+- Edge case handling: empty pages, beyond-range, partial last page
+- Stress testing with multiple page sizes
+- Invariant verification (no duplicates, no missing items)
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Pagination bugs are among the most common issues in web APIs. Off-by-one errors, empty
+last pages, and item drift during inserts all cause real production incidents. This lab
+builds both offset and cursor paginators, then stress-tests them to verify correctness.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/03-pagination-stress-lab
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --items 47 --page-sizes 1 5 10 25 100
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "data_size": 47,
+  "page_sizes_tested": [1, 5, 10, 25, 100],
+  "verification": [{"page_size": 1, "matches_total": true}, ...],
+  ...
+}
+7 passed
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--sort-descending` flag that reverses the data before paginating.
+2. Implement a `seek_to_item(item)` method that returns the page containing that item.
+3. Add response time tracking to the stress test and flag slow pages.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass `page_size=0` — does the paginator crash or return infinity pages?
+2. Insert items mid-iteration — does offset pagination skip or duplicate items?
+3. Request page 1 of an empty dataset — is the response well-formed?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that page_size >= 1 in `total_pages()`.
+2. Handle empty datasets gracefully (total_pages should be 1, not 0).
+3. Write a test that verifies no duplicates when iterating all pages.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the "page drift" problem and how does cursor pagination solve it?
+2. Why does the stress test go one page beyond total_pages?
+3. When would you choose cursor-based over offset-based pagination?
+4. How do databases like PostgreSQL implement `LIMIT ... OFFSET`?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain why math.ceil is needed for total_pages,
+- describe the tradeoff between offset and cursor pagination,
+- write a stress test that catches off-by-one errors,
+- explain why the last page often has fewer items than page_size.
 
 ---
 

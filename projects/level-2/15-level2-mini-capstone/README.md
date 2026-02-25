@@ -13,48 +13,56 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/15-level2-mini-capstone
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --numeric-field salary --threshold 2.0
+python project.py data/sample_input.txt --json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+============================================================
+  DATA PIPELINE REPORT
+============================================================
+Records loaded:    12
+Records valid:     10
+Records invalid:   2
+Anomalies found:   1
+10 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Pipeline report on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--rules` flag to load validation rules from a separate JSON file.
+2. Add an `--output` flag to save valid records as a new CSV.
+3. Add deduplication as a pipeline stage between cleaning and validation.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a CSV where every record is invalid — does the report handle 0% pass rate?
+2. Feed a CSV with no numeric column — does anomaly detection crash?
+3. Feed an empty CSV (header only) — does the pipeline handle zero records?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Guard against zero-record pass rate calculations.
+2. Handle missing numeric fields in anomaly detection gracefully.
+3. Add a test for empty/header-only CSV files.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How do the five pipeline stages (load, clean, validate, analyse, report) connect?
+2. Why is each stage a separate function instead of one big function?
+3. What Level 2 skills did you combine in this capstone?
+4. How would you extend this pipeline for a real data processing job?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- describe all 5 pipeline stages and what each does,
+- add a new pipeline stage without modifying existing ones,
+- explain how data flows from raw CSV to final report,
+- identify which earlier Level 2 project each stage came from.
 
 ---
 

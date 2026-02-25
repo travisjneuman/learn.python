@@ -19,35 +19,42 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "committed": 3,
+  "rolled_back": 1,
+  "final_accounts": [
+    {"id": 1, "name": "Alice", "balance": 425.0},
+    ...
+  ]
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — transfer results with account balances
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a transfer fee: deduct an extra 1% from the source account on each successful transfer.
+2. Add a `--max-amount` flag that rejects any single transfer above a threshold.
+3. Add a `rollback_all` mode: if any transfer in the batch fails, roll back the entire batch.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Transfer the exact full balance (e.g. 500.00 from an account with 500.00) — does the CHECK constraint allow balance = 0?
+2. Transfer between the same account (from=1, to=1) — what happens?
+3. Remove the SAVEPOINT logic and observe what happens when a mid-batch transfer fails.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a guard that rejects self-transfers (from_id == to_id).
+2. Ensure the CHECK constraint allows zero balance but not negative.
+3. Add a test that proves savepoints isolate failures from successful transfers.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a SAVEPOINT, and how does it differ from a regular transaction?
+2. Why can we roll back a single transfer without losing the others?
+3. What would happen without explicit transaction control (autocommit mode)?
+4. How do real banks handle the "insufficient funds" scenario at scale?
 
 ## Mastery check
 You can move on when you can:

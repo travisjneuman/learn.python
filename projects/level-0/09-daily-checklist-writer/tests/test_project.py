@@ -1,48 +1,43 @@
-"""Beginner test module with heavy comments.
+"""Tests for Daily Checklist Writer."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+from project import checklist_summary, format_checklist, load_tasks, write_checklist
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_format_checklist_has_numbers() -> None:
+    """Each task should be numbered with a checkbox."""
+    result = format_checklist("My Tasks", ["Buy milk", "Walk dog"])
+    assert "1. [ ] Buy milk" in result
+    assert "2. [ ] Walk dog" in result
+    assert "Total tasks: 2" in result
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_format_checklist_empty() -> None:
+    """An empty task list should show '(no tasks)'."""
+    result = format_checklist("Empty", [])
+    assert "(no tasks)" in result
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_load_tasks_from_file(tmp_path: Path) -> None:
+    """Tasks should be loaded from a file, blank lines skipped."""
+    f = tmp_path / "tasks.txt"
+    f.write_text("Task A\n\nTask B\n  \nTask C\n", encoding="utf-8")
+    tasks = load_tasks(f)
+    assert tasks == ["Task A", "Task B", "Task C"]
+
+
+def test_write_checklist_creates_file(tmp_path: Path) -> None:
+    """write_checklist should create the output file."""
+    out = tmp_path / "output" / "checklist.txt"
+    write_checklist(out, "test content")
+    assert out.exists()
+    assert out.read_text(encoding="utf-8") == "test content"
+
+
+def test_checklist_summary_counts() -> None:
+    """Summary should have correct total and remaining counts."""
+    summary = checklist_summary(["A", "B", "C"])
+    assert summary["total_tasks"] == 3
+    assert summary["remaining"] == 3
+    assert summary["completed"] == 0

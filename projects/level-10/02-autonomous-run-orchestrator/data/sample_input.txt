@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+# Sample ETL Pipeline Definition
+# step_name | depends_on (comma-separated) | description
+extract | | Pull raw data from source database
+validate | extract | Check schema conformance and null rates
+clean | validate | Remove duplicates and fix encodings
+transform | clean | Apply business rules and compute derived columns
+load | transform | Insert into target warehouse
+index | load | Build search indices on key columns
+notify | load,index | Send completion notification to stakeholders

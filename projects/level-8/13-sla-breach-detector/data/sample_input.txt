@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+sla: api-availability target=99.9% window=24h metric=uptime_pct
+sla: response-latency target=200ms window=1h metric=p95_latency_ms
+sla: error-rate target=0.1% window=6h metric=error_pct
+events: 1000 requests, 2 failures, p95=180ms (healthy period)
+events: 500 requests, 8 failures, p95=350ms (degraded period)

@@ -1,5 +1,15 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project checks Python files — no input data file needed.
+
+Usage:
+    python project.py project.py
+    python project.py project.py --json
+    python project.py project.py --max-lines 200
+
+The tool runs these quality gates on the target file:
+1. file_exists   — Does the file exist?
+2. syntax        — Does it compile without SyntaxError?
+3. no_print      — Are there bare print() statements?
+4. size          — Is the file under the line limit?
+
+Try pointing it at itself:
+    python project.py project.py

@@ -13,48 +13,51 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/10-mock-api-response-parser
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --validate status data message
+python project.py data/sample_input.txt --group role
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Status: {'status': 200, 'category': 'success'}
+{"count": 5, "fields": ["active", "id", "name", "role"], ...}
+11 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Parsed response summary on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--filter` flag: `--filter active=true` to show only matching items.
+2. Add support for paginated responses (read `pagination.total_pages`).
+3. Add a `--status-only` flag that just checks and prints the status category.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a file with a JSON array at the root instead of an object.
+2. Feed a response where `data` is a string instead of a list.
+3. Pass a response with no `status` field at all.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle non-object JSON roots (wrap arrays in a response dict).
+2. Guard against non-list data values in `extract_items`.
+3. Return a clear message when status code is missing.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What makes a JSON response "valid" beyond just being parseable JSON?
+2. How do HTTP status code ranges (2xx, 4xx, 5xx) map to outcomes?
+3. Why is `dict.get(key, default)` safer than `dict[key]` for API data?
+4. What is the pagination pattern and why do APIs use it?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- parse a nested JSON response and extract specific fields,
+- validate response structure against a schema,
+- categorise HTTP status codes from memory,
+- handle missing or malformed API data gracefully.
 
 ---
 

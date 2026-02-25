@@ -1,5 +1,16 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample CSV for Robust CSV Ingestor
+------------------------------------
+This file explains the companion sample_input.csv.
+
+sample_input.csv contains order records with deliberate errors:
+  Row 1: header — order_id,customer,amount,status
+  Row 2: 1001,Alice,49.99,shipped       (valid)
+  Row 3: 1002,Bob,125.00,pending        (valid)
+  Row 4: 1003,Carol                      (short row — only 2 fields)
+  Row 5: 1004,Dave,0.00,cancelled       (valid)
+  Row 6: ,,,                             (all fields empty)
+  Row 7: 1006,Eve,33.50,shipped,extra   (long row — extra field)
+  Row 8: 1007,Frank,88.00,delivered     (valid)
+
+Expected: 4 good rows written to clean_data.csv
+          3 quarantined rows in quarantined_rows.csv

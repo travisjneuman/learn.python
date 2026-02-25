@@ -1,107 +1,140 @@
 """Level 1 project: Command Dispatcher.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Map command strings to handler functions and execute them with arguments.
+A simple implementation of the command pattern.
+
+Concepts: functions as values, dictionaries mapping strings to functions, *args.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Command Dispatcher"
-PROJECT_FOCUS = "map commands to handler functions"
+
+# --- Command handler functions ---
+
+def cmd_upper(text: str) -> str:
+    """Convert text to uppercase."""
+    return text.upper()
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def cmd_lower(text: str) -> str:
+    """Convert text to lowercase."""
+    return text.lower()
 
-    This function is isolated so it can be tested independently.
+
+def cmd_reverse(text: str) -> str:
+    """Reverse the text."""
+    return text[::-1]
+
+
+def cmd_count_words(text: str) -> str:
+    """Count words in the text."""
+    count = len(text.split())
+    return f"{count} words"
+
+
+def cmd_title(text: str) -> str:
+    """Convert text to title case."""
+    return text.title()
+
+
+# --- Dispatcher ---
+
+# WHY a dict of functions? -- This is the command pattern: we map
+# string names to callable functions.  Adding a new command only
+# requires adding one entry to this dict.
+COMMANDS = {
+    "upper": cmd_upper,
+    "lower": cmd_lower,
+    "reverse": cmd_reverse,
+    "count": cmd_count_words,
+    "title": cmd_title,
+}
+
+
+def dispatch(command: str, argument: str) -> dict:
+    """Look up a command by name and execute it.
+
+    Returns a dict with the command, argument, and result (or error).
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    command = command.strip().lower()
+    argument = argument.strip()
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    if command not in COMMANDS:
+        return {
+            "command": command,
+            "argument": argument,
+            "error": f"Unknown command: {command}. Available: {', '.join(COMMANDS.keys())}",
+        }
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
-
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    handler = COMMANDS[command]
+    result = handler(argument)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "command": command,
+        "argument": argument,
+        "result": result,
     }
 
 
+def list_commands() -> list[str]:
+    """Return a list of available command names."""
+    return list(COMMANDS.keys())
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read command lines from a file and execute each.
+
+    Expected format: COMMAND argument text here
+    Example: upper hello world
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    lines = path.read_text(encoding="utf-8").splitlines()
+    results = []
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        parts = stripped.split(maxsplit=1)
+        command = parts[0]
+        argument = parts[1] if len(parts) > 1 else ""
+
+        results.append(dispatch(command, argument))
+
+    return results
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Command Dispatcher")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    results = process_file(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== Command Dispatcher ===\n")
+    print(f"  Available commands: {', '.join(list_commands())}\n")
+
+    for r in results:
+        if "error" in r:
+            print(f"  ERROR: {r['error']}")
+        else:
+            print(f"  {r['command']}({r['argument']!r}) => {r['result']!r}")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

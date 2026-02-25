@@ -1,107 +1,150 @@
 """Level 1 project: Input Validator Lab.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Validate common input formats: email addresses, phone numbers,
+and zip codes using string methods (no regex at this level).
+
+Concepts: string methods (find, count, isdigit), validation patterns, re basics.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import re
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Input Validator Lab"
-PROJECT_FOCUS = "validate required fields and safe defaults"
 
+def validate_email(email: str) -> dict:
+    """Check whether a string looks like a valid email address.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+    Rules:
+    - Must contain exactly one @
+    - Must have text before and after the @
+    - The part after @ must contain at least one dot
+    - No spaces allowed
 
-    This function is isolated so it can be tested independently.
+    WHY string methods first? -- Before learning regex, you can do
+    a lot of validation with find(), count(), and split().
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    email = email.strip()
+    errors = []
+
+    if " " in email:
+        errors.append("contains spaces")
+    if email.count("@") != 1:
+        errors.append("must contain exactly one @")
+    elif "@" in email:
+        local, domain = email.split("@")
+        if not local:
+            errors.append("nothing before @")
+        if not domain or "." not in domain:
+            errors.append("domain must contain a dot")
+
+    return {"value": email, "type": "email", "valid": len(errors) == 0, "errors": errors}
+
+
+def validate_phone(phone: str) -> dict:
+    """Check whether a string looks like a US phone number.
+
+    Accepts: 555-123-4567, 5551234567, (555) 123-4567
+    Must have exactly 10 digits after stripping formatting.
+    """
+    phone = phone.strip()
+    # Extract only digits.
+    digits = ""
+    for char in phone:
+        if char.isdigit():
+            digits += char
+
+    errors = []
+    if len(digits) != 10:
+        errors.append(f"expected 10 digits, got {len(digits)}")
+
+    return {"value": phone, "type": "phone", "valid": len(errors) == 0, "errors": errors}
+
+
+def validate_zip_code(zipcode: str) -> dict:
+    """Check whether a string looks like a US zip code.
+
+    Accepts: 12345 or 12345-6789
+    """
+    zipcode = zipcode.strip()
+    errors = []
+
+    # Use a simple regex pattern for zip codes.
+    pattern = r"^\d{5}(-\d{4})?$"
+    if not re.match(pattern, zipcode):
+        errors.append("must be 5 digits or 5+4 format (12345-6789)")
+
+    return {"value": zipcode, "type": "zip", "valid": len(errors) == 0, "errors": errors}
+
+
+def validate_input(line: str) -> dict:
+    """Parse a line like 'email: user@example.com' and validate it.
+
+    WHY a dispatcher? -- The line tells us which validator to use.
+    This pattern scales: add a new type, add a new validator.
+    """
+    if ":" not in line:
+        return {"raw": line.strip(), "error": "Expected format: type: value"}
+
+    input_type, value = line.split(":", maxsplit=1)
+    input_type = input_type.strip().lower()
+    value = value.strip()
+
+    validators = {
+        "email": validate_email,
+        "phone": validate_phone,
+        "zip": validate_zip_code,
+    }
+
+    if input_type not in validators:
+        return {"raw": line.strip(), "error": f"Unknown type: {input_type}"}
+
+    return validators[input_type](value)
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read input lines and validate each one."""
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
-
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+    lines = path.read_text(encoding="utf-8").splitlines()
+    results = []
+    for line in lines:
+        if not line.strip():
+            continue
+        results.append(validate_input(line))
+    return results
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Input Validator Lab")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    results = process_file(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== Validation Results ===\n")
+    for r in results:
+        if "error" in r:
+            print(f"  PARSE ERROR: {r['error']}")
+        elif r["valid"]:
+            print(f"  PASS  [{r['type']}] {r['value']}")
+        else:
+            print(f"  FAIL  [{r['type']}] {r['value']} -- {', '.join(r['errors'])}")
+
+    valid_count = sum(1 for r in results if r.get("valid", False))
+    print(f"\n  {valid_count}/{len(results)} passed validation")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

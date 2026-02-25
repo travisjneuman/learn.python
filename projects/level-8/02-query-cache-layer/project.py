@@ -1,141 +1,258 @@
-"""Level 8 project: Query Cache Layer.
+"""Query Cache Layer — LRU cache with TTL expiration for expensive computations.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Caching is fundamental to performance-sensitive systems. This project
+    implements a from-scratch LRU cache with time-to-live expiration,
+    hit/miss statistics, and eviction callbacks — teaching how caches work
+    beneath abstractions like functools.lru_cache or Redis.
+
+Concepts practised:
+    - OrderedDict for LRU ordering
+    - time-based expiration (TTL)
+    - dataclasses for cache entries and statistics
+    - decorator pattern for transparent caching
+    - cache invalidation strategies
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from collections import OrderedDict
+from dataclasses import dataclass, field
+from typing import Any, Callable
 
-PROJECT_LEVEL = 8
-PROJECT_TITLE = "Query Cache Layer"
-PROJECT_FOCUS = "cache lookup and fallback strategy"
+
+# --- Domain types -------------------------------------------------------
+
+@dataclass
+class CacheEntry:
+    """A single cached value with metadata."""
+    key: str
+    value: Any
+    created_at: float
+    ttl_seconds: float
+    access_count: int = 0
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if entry has exceeded its TTL."""
+        return (time.monotonic() - self.created_at) > self.ttl_seconds
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class CacheStats:
+    """Accumulated cache performance statistics."""
+    hits: int = 0
+    misses: int = 0
+    evictions: int = 0
+    expirations: int = 0
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def total_requests(self) -> int:
+        return self.hits + self.misses
+
+    @property
+    def hit_rate(self) -> float:
+        """Return hit rate as a percentage, 0.0 if no requests yet."""
+        if self.total_requests == 0:
+            return 0.0
+        return round(self.hits / self.total_requests * 100, 2)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "hits": self.hits,
+            "misses": self.misses,
+            "evictions": self.evictions,
+            "expirations": self.expirations,
+            "total_requests": self.total_requests,
+            "hit_rate_pct": self.hit_rate,
+        }
 
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+# --- LRU Cache implementation -------------------------------------------
 
+class LRUCache:
+    """Least-Recently-Used cache with TTL expiration.
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    When capacity is reached, the least-recently-accessed entry is evicted.
+    Entries that exceed their TTL are lazily expired on access.
+    """
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    def __init__(
+        self,
+        capacity: int = 128,
+        default_ttl: float = 60.0,
+        on_evict: Callable[[str, Any], None] | None = None,
+    ) -> None:
+        if capacity < 1:
+            raise ValueError("Cache capacity must be at least 1")
+        self._capacity = capacity
+        self._default_ttl = default_ttl
+        self._store: OrderedDict[str, CacheEntry] = OrderedDict()
+        self._stats = CacheStats()
+        self._on_evict = on_evict
 
+    @property
+    def stats(self) -> CacheStats:
+        return self._stats
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+    @property
+    def size(self) -> int:
+        return len(self._store)
+
+    def get(self, key: str) -> Any | None:
+        """Retrieve a value by key, returning None on miss or expiration."""
+        if key not in self._store:
+            self._stats.misses += 1
+            return None
+
+        entry = self._store[key]
+
+        # Lazy expiration: check TTL on access
+        if entry.is_expired:
+            self._remove(key)
+            self._stats.expirations += 1
+            self._stats.misses += 1
+            return None
+
+        # Move to end (most recently used)
+        self._store.move_to_end(key)
+        entry.access_count += 1
+        self._stats.hits += 1
+        return entry.value
+
+    def put(self, key: str, value: Any, ttl: float | None = None) -> None:
+        """Insert or update a cache entry."""
+        effective_ttl = ttl if ttl is not None else self._default_ttl
+
+        # Update existing key — move to end
+        if key in self._store:
+            self._store[key] = CacheEntry(
+                key=key, value=value,
+                created_at=time.monotonic(), ttl_seconds=effective_ttl,
+            )
+            self._store.move_to_end(key)
+            return
+
+        # Evict LRU if at capacity
+        if len(self._store) >= self._capacity:
+            self._evict_lru()
+
+        self._store[key] = CacheEntry(
+            key=key, value=value,
+            created_at=time.monotonic(), ttl_seconds=effective_ttl,
         )
-    return records
+
+    def invalidate(self, key: str) -> bool:
+        """Remove a specific key. Returns True if key existed."""
+        if key in self._store:
+            self._remove(key)
+            return True
+        return False
+
+    def clear(self) -> None:
+        """Remove all entries from the cache."""
+        self._store.clear()
+
+    def keys(self) -> list[str]:
+        """Return all non-expired keys in LRU order (oldest first)."""
+        expired = [k for k, v in self._store.items() if v.is_expired]
+        for k in expired:
+            self._remove(k)
+            self._stats.expirations += 1
+        return list(self._store.keys())
+
+    def _evict_lru(self) -> None:
+        """Remove the least-recently-used entry."""
+        if not self._store:
+            return
+        key, entry = self._store.popitem(last=False)
+        self._stats.evictions += 1
+        if self._on_evict:
+            self._on_evict(key, entry.value)
+
+    def _remove(self, key: str) -> None:
+        """Remove an entry by key."""
+        entry = self._store.pop(key, None)
+        if entry and self._on_evict:
+            self._on_evict(key, entry.value)
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# --- Decorator for transparent caching ----------------------------------
+
+def cached(cache: LRUCache, ttl: float | None = None) -> Callable:
+    """Decorator that transparently caches function results.
+
+    The cache key is built from the function name and its arguments.
+    """
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            key_parts = [func.__name__] + [repr(a) for a in args]
+            key_parts += [f"{k}={repr(v)}" for k, v in sorted(kwargs.items())]
+            cache_key = "|".join(key_parts)
+
+            result = cache.get(cache_key)
+            if result is not None:
+                return result
+
+            result = func(*args, **kwargs)
+            cache.put(cache_key, result, ttl=ttl)
+            return result
+        wrapper.__wrapped__ = func  # type: ignore[attr-defined]
+        return wrapper
+    return decorator
+
+
+# --- Demo: simulate expensive queries -----------------------------------
+
+def simulate_expensive_query(query_id: str, delay: float = 0.01) -> dict[str, Any]:
+    """Simulate a slow database or API query."""
+    time.sleep(delay)
+    return {"query_id": query_id, "result": f"data_for_{query_id}", "rows": 42}
+
+
+def run_demo(cache_size: int = 5, ttl: float = 10.0, queries: list[str] | None = None) -> dict[str, Any]:
+    """Run a demonstration of the cache with repeated queries."""
+    cache = LRUCache(capacity=cache_size, default_ttl=ttl)
+
+    if queries is None:
+        queries = ["users", "orders", "users", "products", "users", "orders",
+                    "inventory", "reports", "users", "analytics"]
+
+    results: list[dict[str, Any]] = []
+    for q in queries:
+        cached_result = cache.get(q)
+        if cached_result is not None:
+            results.append({"query": q, "source": "cache", "data": cached_result})
+        else:
+            data = simulate_expensive_query(q, delay=0.001)
+            cache.put(q, data)
+            results.append({"query": q, "source": "computed", "data": data})
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "queries_executed": len(queries),
+        "cache_stats": cache.stats.to_dict(),
+        "cache_keys": cache.keys(),
+        "results_preview": results[:5],
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+# --- CLI ----------------------------------------------------------------
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="LRU cache with TTL expiration demo")
+    parser.add_argument("--capacity", type=int, default=5, help="Max cache entries")
+    parser.add_argument("--ttl", type=float, default=10.0, help="Default TTL in seconds")
+    parser.add_argument("--queries", nargs="*", default=None, help="Query IDs to run")
+    return parser.parse_args(argv)
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    output = run_demo(cache_size=args.capacity, ttl=args.ttl, queries=args.queries)
+    print(json.dumps(output, indent=2))
 
 
 if __name__ == "__main__":

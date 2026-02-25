@@ -1,5 +1,25 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Cross File Joiner
+------------------------------------
+This file explains the companion employees.csv and departments.csv.
+
+employees.csv:
+  emp_id,name,dept_id,salary
+  E001,Alice,D10,95000
+  E002,Bob,D20,72000
+  E003,Carol,D10,88000
+  E004,Dave,D30,65000
+  E005,Eve,D99,70000      (dept D99 does not exist in departments)
+
+departments.csv:
+  dept_id,dept_name,location
+  D10,Engineering,Building A
+  D20,Marketing,Building B
+  D30,Sales,Building C
+  D40,HR,Building D        (no employees in D40)
+
+Join modes:
+  inner: E001,E002,E003,E004 matched (4 rows, D99 and D40 excluded)
+  left:  all 5 employees, Eve has null dept_name/location
+  full:  all employees + HR department with null employee fields
+
+Expected inner join: 4 matched rows on key "dept_id"

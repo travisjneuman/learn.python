@@ -1,5 +1,23 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "contract": {
+    "version": "2.0.0",
+    "fields": [
+      {"name": "order_id", "type": "int"},
+      {"name": "customer", "type": "str"},
+      {"name": "total", "type": "float"},
+      {"name": "tags", "type": "list", "required": false}
+    ]
+  },
+  "old_contract": {
+    "version": "1.0.0",
+    "fields": [
+      {"name": "order_id", "type": "int"},
+      {"name": "customer", "type": "str"}
+    ]
+  },
+  "payloads": [
+    {"order_id": 1, "customer": "Alice", "total": 29.99},
+    {"order_id": "bad", "customer": "Bob", "total": 15.0},
+    {"order_id": 3, "customer": "Carol", "total": 42.50, "tags": ["vip"]}
+  ]
+}

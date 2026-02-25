@@ -1,5 +1,21 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Multi-File ETL Runner
+----------------------------------------
+This file explains the ETL source files.
+
+The project extracts data from multiple source files, transforms it,
+and loads the combined result into a single output.
+
+Source directory (data/sources/) contains:
+  sales_east.csv   — regional sales from East division
+  sales_west.csv   — regional sales from West division
+  sales_north.csv  — regional sales from North division
+
+Each CSV has columns: date,product,quantity,revenue,region
+
+ETL steps:
+  1. Extract: read all CSV files from source directory
+  2. Transform: normalize column names, convert types, add source_file column
+  3. Load: merge into single output with deduplication
+
+Expected: 3 files extracted, rows merged, duplicates removed,
+combined output written to data/etl_output.json

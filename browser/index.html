@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 00 - Python in the Browser</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.subtitle {
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.exercise-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exercise-list a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.exercise-list a:hover {
+  border-color: var(--accent);
+  background: #292e42;
+}
+
+.exercise-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.exercise-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.exercise-desc {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.note {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border-left: 3px solid var(--yellow);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.note strong { color: var(--yellow); }
+
+.back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Level 00 &mdash; Python in the Browser</h1>
+  <p class="subtitle">No installation needed. Run real Python code right here using Pyodide.</p>
+
+  <ol class="exercise-list">
+    <li><a href="exercise.html?ex=01">
+      <span class="exercise-num">01</span>
+      <div><div class="exercise-title">First Steps</div>
+      <div class="exercise-desc">Open Python, do some math, print a message</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=02">
+      <span class="exercise-num">02</span>
+      <div><div class="exercise-title">Hello World</div>
+      <div class="exercise-desc">Your first print() statements</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=03">
+      <span class="exercise-num">03</span>
+      <div><div class="exercise-title">Your First Script</div>
+      <div class="exercise-desc">Run multiple lines of code from top to bottom</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=04">
+      <span class="exercise-num">04</span>
+      <div><div class="exercise-title">Variables</div>
+      <div class="exercise-desc">Store values and use them later</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=05">
+      <span class="exercise-num">05</span>
+      <div><div class="exercise-title">Numbers and Math</div>
+      <div class="exercise-desc">Arithmetic operations and order of operations</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=06">
+      <span class="exercise-num">06</span>
+      <div><div class="exercise-title">Strings and Text</div>
+      <div class="exercise-desc">Working with text, f-strings, string methods</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=07">
+      <span class="exercise-num">07</span>
+      <div><div class="exercise-title">User Input</div>
+      <div class="exercise-desc">Interactive programs with input()</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=08">
+      <span class="exercise-num">08</span>
+      <div><div class="exercise-title">Making Decisions</div>
+      <div class="exercise-desc">if, elif, else and comparisons</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=09">
+      <span class="exercise-num">09</span>
+      <div><div class="exercise-title">Lists</div>
+      <div class="exercise-desc">Collecting multiple items together</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=10">
+      <span class="exercise-num">10</span>
+      <div><div class="exercise-title">For Loops</div>
+      <div class="exercise-desc">Doing something for each item</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=11">
+      <span class="exercise-num">11</span>
+      <div><div class="exercise-title">While Loops</div>
+      <div class="exercise-desc">Repeating until a condition is met</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=12">
+      <span class="exercise-num">12</span>
+      <div><div class="exercise-title">Dictionaries</div>
+      <div class="exercise-desc">Labeled data storage with key-value pairs</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=13">
+      <span class="exercise-num">13</span>
+      <div><div class="exercise-title">Functions</div>
+      <div class="exercise-desc">Reusable blocks of code</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=14">
+      <span class="exercise-num">14</span>
+      <div><div class="exercise-title">Reading Files</div>
+      <div class="exercise-desc">Getting data from files (simulated)</div></div>
+    </a></li>
+    <li><a href="exercise.html?ex=15">
+      <span class="exercise-num">15</span>
+      <div><div class="exercise-title">Putting It Together</div>
+      <div class="exercise-desc">A complete mini-program using everything</div></div>
+    </a></li>
+  </ol>
+
+  <div class="note">
+    <strong>Note:</strong> These browser exercises use <a href="https://pyodide.org/" style="color:var(--accent)">Pyodide</a> to run real Python in your browser.
+    For the full experience (file I/O, user input), install Python locally using the
+    <a href="../03_SETUP_ALL_PLATFORMS.md" style="color:var(--accent)">Setup Guide</a>.
+  </div>
+
+  <a class="back-link" href="../projects/level-00-absolute-beginner/README.md">&larr; Back to Level 00</a>
+</div>
+</body>
+</html>

@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+critical | web-server-01 | CPU usage above 95%
+warning | db-primary | Replication lag 30 seconds
+info | load-balancer | Health check passed
+critical | web-server-02 | Out of memory
+warning | cache-01 | Hit ratio below 60%
+info | monitoring | All systems nominal
+warning | web-server-01 | Disk usage at 80%

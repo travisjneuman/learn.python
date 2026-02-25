@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/09-template-report-renderer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --template data/report_template.txt --data data/report_data.json --output data/rendered_report.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Report rendered: 25 lines written
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/rendered_report.txt`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add `{{IF NOT condition}}...{{END IF}}` blocks for negated conditionals.
+2. Add a `{{DATE}}` placeholder that inserts the current date.
+3. Support nested variable access like `{{config.max_retries}}`.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Use a template with `{{variable}}` that is not in the data JSON.
+2. Create an `{{EACH items}}` block where `items` is not a list.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Replace missing variables with `[MISSING: variable]` instead of crashing.
+2. Skip `EACH` blocks when the data is not iterable, with a warning.
+3. Add tests for missing variables and non-iterable EACH data.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does `render_variables` find and replace `{{name}}` placeholders?
+2. Why are `EACH` blocks processed before `IF` blocks?
+3. What regex pattern matches the `{{EACH items}}...{{END EACH}}` block?
+4. Where do you see template engines in production (Jinja2, Handlebars, Mustache)?
 
 ## Mastery check
 You can move on when you can:

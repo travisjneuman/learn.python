@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+incident: database-outage complexity=high novelty=false
+team_size: 4
+has_runbook: true
+phase: detection min=5 expected=10 max=30 unit=minutes
+phase: diagnosis min=15 expected=30 max=90 unit=minutes
+phase: fix min=10 expected=20 max=60 unit=minutes
+phase: verification min=5 expected=15 max=45 unit=minutes
+phase: deployment min=5 expected=10 max=30 unit=minutes
+simulation_runs: 10000

@@ -1,5 +1,16 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+# Sample log file for the Logging Baseline Tool
+# Format: LEVEL | source | message
+INFO | auth | User admin logged in successfully
+INFO | api | GET /dashboard returned 200
+DEBUG | cache | Cache hit for session=abc123
+WARNING | db | Query took 2.3s (threshold: 1.0s)
+INFO | api | POST /users returned 201
+ERROR | api | GET /reports timeout after 30s
+INFO | auth | User admin logged out
+WARNING | cache | Cache eviction — memory at 90%
+DEBUG | db | Connection pool: 8/10 active
+CRITICAL | db | Connection pool exhausted — all 10 in use
+INFO | api | GET /health returned 200
+ERROR | auth | Failed login attempt for user=unknown
+INFO | api | GET /dashboard returned 200
+WARNING | api | Rate limit approaching for client=192.168.1.50

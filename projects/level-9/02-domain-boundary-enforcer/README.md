@@ -2,59 +2,70 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- validate module boundary contracts
+- Graph-based dependency modeling for module boundaries
+- Allow/deny rule engine for cross-module imports
+- DFS-based cycle detection in directed dependency graphs
+- Layered architecture validation (lower layers cannot depend on upper)
+- Chain of Responsibility pattern for rule evaluation
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+As codebases grow, uncontrolled cross-module dependencies create "Big Ball of Mud"
+architectures where everything depends on everything. A small change in one module
+breaks 15 others. This project builds a dependency rule engine that defines
+allowed/forbidden imports between domains, detects cycles, and validates layering
+rules — the same pattern used by tools like ArchUnit, deptry, and import-linter
+to enforce architectural boundaries in real Python and Java projects.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/02-domain-boundary-enforcer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "modules": 6,
+  "violations": [...],
+  "cycles": [],
+  "layer_violations": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with boundary enforcement results
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `visualize_graph()` method that outputs the dependency graph in DOT format.
+2. Add wildcard support for boundary rules (e.g. `infra.*` blocks all infra sub-modules).
+3. Add a `--strict` flag that treats layer violations as errors (exit code 1).
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a circular dependency (A -> B -> C -> A) — does `detect_cycles` catch it?
+2. Add a dependency from a lower layer to a higher layer — does the layer rule catch it?
+3. Remove a module that others depend on — what happens during `enforce()`?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Improve the cycle detection error message to show the full cycle path.
+2. Add validation that modules in rules must exist in the dependency graph.
+3. Add a test for multi-step transitive dependency violations.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What are domain boundaries and why do large codebases need enforced module rules?
+2. How does DFS-based cycle detection work in a directed graph?
+3. What is the layered architecture pattern and why should lower layers never depend on upper ones?
+4. How do tools like `deptry` or `import-linter` enforce boundaries in real Python projects?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain dependency graphs, cycles, and topological ordering,
+- add a new boundary rule and verify it with existing tests,
+- describe how layered architecture prevents spaghetti dependencies,
+- detect and break a circular dependency given a graph description.
 
 ---
 

@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add an `auto_recover` feature: if all active stages succeed, automatically transition back to normal.
+2. Add a `duration()` method to IncidentEvent that calculates how long the system stayed in each mode.
+3. Re-run script and tests — verify auto-recovery and duration tracking work.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Attempt an invalid transition (e.g. maintenance to degraded) and observe the rejection.
+2. Pass an unknown mode string (e.g. `"panic"`) and watch the ValueError from the Enum.
+3. Capture the error and confirm the system stays in its previous valid mode.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Wrap the `Mode(target)` conversion in a try/except to handle unknown mode strings gracefully.
+2. Return a clear error message listing valid modes when an invalid one is provided.
+3. Add tests for unknown mode strings and all invalid transition paths.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does limiting mode transitions prevent accidental state corruption?
+2. What happened when an invalid mode string was passed?
+3. How did the try/except with a helpful message improve operability?
+4. How do real incident management systems (PagerDuty, OpsGenie) model severity levels?
 
 ## Mastery check
 You can move on when you can:

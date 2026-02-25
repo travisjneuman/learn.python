@@ -1,107 +1,134 @@
 """Level 0 project: Calculator Basics.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+A four-operation calculator that reads expressions from a file,
+computes results, and writes an output report.
+
+Concepts: arithmetic operators, float/int conversion, input validation, functions.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Calculator Basics"
-PROJECT_FOCUS = "numeric input, arithmetic, and safe casting"
+
+def add(a: float, b: float) -> float:
+    """Return the sum of two numbers."""
+    return a + b
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def subtract(a: float, b: float) -> float:
+    """Return the difference of two numbers."""
+    return a - b
 
-    This function is isolated so it can be tested independently.
+
+def multiply(a: float, b: float) -> float:
+    """Return the product of two numbers."""
+    return a * b
+
+
+def divide(a: float, b: float) -> float:
+    """Return the quotient of two numbers.
+
+    WHY check for zero? -- Dividing by zero crashes the program.
+    Checking first lets us return a clear error message instead.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+
+def calculate(expression: str) -> dict:
+    """Parse a simple expression like '10 + 5' and return the result.
+
+    WHY split on spaces? -- We expect the format 'number operator number'.
+    Splitting on whitespace gives us exactly three pieces to work with.
+
+    Returns a dict with the original expression and computed result,
+    or an error message if parsing fails.
+    """
+    parts = expression.strip().split()
+
+    if len(parts) != 3:
+        return {"expression": expression.strip(), "error": "Expected format: number operator number"}
+
+    raw_a, operator, raw_b = parts
+
+    # Try converting strings to numbers. If the user typed 'abc' this fails.
+    try:
+        a = float(raw_a)
+        b = float(raw_b)
+    except ValueError:
+        return {"expression": expression.strip(), "error": f"Invalid numbers: {raw_a}, {raw_b}"}
+
+    # Map the operator string to the right function.
+    operations = {
+        "+": add,
+        "-": subtract,
+        "*": multiply,
+        "/": divide,
+    }
+
+    if operator not in operations:
+        return {"expression": expression.strip(), "error": f"Unknown operator: {operator}"}
+
+    try:
+        result = operations[operator](a, b)
+    except ValueError as err:
+        return {"expression": expression.strip(), "error": str(err)}
+
+    return {"expression": expression.strip(), "result": result}
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read a file of expressions (one per line) and calculate each.
+
+    WHY return a list of dicts? -- Each dict holds one result.
+    A list of dicts is easy to convert to JSON for the output file.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    results = []
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    for line in lines:
+        # Skip blank lines so stray newlines don't cause errors.
+        if not line.strip():
+            continue
+        results.append(calculate(line))
 
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+    return results
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Calculator Basics")
+    parser.add_argument("--input", default="data/sample_input.txt", help="File with expressions")
+    parser.add_argument("--output", default="data/output.json", help="Results output file")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    results = process_file(Path(args.input))
+
+    # Print each result to the terminal.
+    for item in results:
+        if "error" in item:
+            print(f"  {item['expression']}  =>  ERROR: {item['error']}")
+        else:
+            print(f"  {item['expression']}  =>  {item['result']}")
+
+    # Write results to JSON.
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"\n{len(results)} results written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

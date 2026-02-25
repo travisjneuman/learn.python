@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+student,score1,score2,score3,score4
+Alice Johnson,92,88,95,90
+Bob Smith,75,68,72,80
+Carol Lee,88,92,85,91
+David Chen,55,60,58,62
+Eve Brown,95,98,97,93
+Frank Wilson,70,65,72,68
+Grace Kim,82,78,85,80
+Henry Park,45,50,48,52

@@ -1,107 +1,147 @@
 """Level 1 project: Password Strength Checker.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Score passwords based on length, character variety, and common patterns.
+Assign a strength rating from 'weak' to 'strong'.
+
+Concepts: string methods (isupper, isdigit), boolean conditions, scoring.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Password Strength Checker"
-PROJECT_FOCUS = "rule-based scoring and condition checks"
+
+# Common weak passwords to check against.
+COMMON_PASSWORDS = [
+    "password", "123456", "qwerty", "abc123", "letmein",
+    "admin", "welcome", "monkey", "dragon", "master",
+]
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def check_length(password: str) -> int:
+    """Score based on password length.
 
-    This function is isolated so it can be tested independently.
+    WHY different thresholds? -- Short passwords are trivially
+    crackable.  Each length tier earns more points.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    length = len(password)
+    if length >= 16:
+        return 3
+    elif length >= 12:
+        return 2
+    elif length >= 8:
+        return 1
+    return 0
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def check_character_variety(password: str) -> dict:
+    """Check which character classes are present.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Returns a dict of booleans so the caller can see exactly
+    which classes are missing.
+    """
+    has_upper = False
+    has_lower = False
+    has_digit = False
+    has_special = False
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    for char in password:
+        if char.isupper():
+            has_upper = True
+        elif char.islower():
+            has_lower = True
+        elif char.isdigit():
+            has_digit = True
+        else:
+            has_special = True
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "uppercase": has_upper,
+        "lowercase": has_lower,
+        "digit": has_digit,
+        "special": has_special,
     }
 
 
+def check_common(password: str) -> bool:
+    """Return True if the password is in the common passwords list.
+
+    WHY lowercase comparison? -- Users might type 'Password' or
+    'PASSWORD' which are just as weak as 'password'.
+    """
+    return password.lower() in COMMON_PASSWORDS
+
+
+def score_password(password: str) -> dict:
+    """Calculate a full strength assessment for a password.
+
+    Scoring:
+    - Length: 0-3 points
+    - Each character class present: 1 point each (max 4)
+    - Not a common password: 1 point
+    - Max possible: 8 points
+    """
+    length_score = check_length(password)
+    variety = check_character_variety(password)
+    variety_score = sum(1 for v in variety.values() if v)
+    is_common = check_common(password)
+    common_score = 0 if is_common else 1
+
+    total = length_score + variety_score + common_score
+
+    # Map total score to a strength label.
+    if total >= 7:
+        strength = "strong"
+    elif total >= 5:
+        strength = "moderate"
+    elif total >= 3:
+        strength = "weak"
+    else:
+        strength = "very weak"
+
+    return {
+        "password": password,
+        "length": len(password),
+        "length_score": length_score,
+        "variety": variety,
+        "variety_score": variety_score,
+        "is_common": is_common,
+        "total_score": total,
+        "strength": strength,
+    }
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read passwords from a file (one per line) and score each."""
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return [score_password(line.strip()) for line in lines if line.strip()]
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Password Strength Checker")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    results = process_file(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== Password Strength Report ===\n")
+    for r in results:
+        print(f"  {r['password']:<25} => {r['strength'].upper():<12} (score: {r['total_score']}/8)")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"\n  Output written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

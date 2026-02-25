@@ -1,5 +1,4 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "ttl_seconds": 3600,
+  "operations": ["generate", "rotate", "rotate", "rotate"]
+}

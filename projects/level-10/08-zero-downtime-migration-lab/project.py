@@ -1,141 +1,289 @@
-"""Level 10 project: Zero Downtime Migration Lab.
+"""Zero-Downtime Migration Lab — Database migration patterns that avoid downtime.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: Models migrations as a state machine with phases: PENDING -> EXPANDING
+-> MIGRATING -> CONTRACTING -> COMPLETE. Each phase is a reversible step. The
+expand-migrate-contract pattern ensures the old schema remains functional throughout
+the migration, so reads/writes continue uninterrupted.
+
+Design rationale: Traditional "stop the world" migrations cause downtime. The
+expand-contract pattern adds new columns/tables first (expand), backfills data
+(migrate), then removes old columns (contract). At every phase, both old and new
+code paths work — enabling zero-downtime rollout.
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "Zero Downtime Migration Lab"
-PROJECT_FOCUS = "migration strategy and safety checks"
+
+# ---------------------------------------------------------------------------
+# Domain types
+# ---------------------------------------------------------------------------
+
+class MigrationPhase(Enum):
+    PENDING = auto()
+    EXPANDING = auto()
+    MIGRATING = auto()
+    CONTRACTING = auto()
+    COMPLETE = auto()
+    ROLLED_BACK = auto()
+
+
+class ColumnType(Enum):
+    TEXT = "TEXT"
+    INTEGER = "INTEGER"
+    BOOLEAN = "BOOLEAN"
+    TIMESTAMP = "TIMESTAMP"
+    JSON = "JSON"
+
+
+@dataclass(frozen=True)
+class Column:
+    """Schema column definition."""
+    name: str
+    col_type: ColumnType
+    nullable: bool = True
+    default: str | None = None
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class Table:
+    """In-memory table representation for migration simulation."""
+    name: str
+    columns: dict[str, Column] = field(default_factory=dict)
+    rows: list[dict[str, Any]] = field(default_factory=list)
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    def add_column(self, col: Column) -> None:
+        if col.name in self.columns:
+            raise ValueError(f"Column '{col.name}' already exists in '{self.name}'")
+        self.columns[col.name] = col
+        for row in self.rows:
+            row[col.name] = col.default
 
+    def drop_column(self, col_name: str) -> None:
+        if col_name not in self.columns:
+            raise ValueError(f"Column '{col_name}' not found in '{self.name}'")
+        del self.columns[col_name]
+        for row in self.rows:
+            row.pop(col_name, None)
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+    def insert(self, data: dict[str, Any]) -> None:
+        row = {}
+        for col_name, col in self.columns.items():
+            if col_name in data:
+                row[col_name] = data[col_name]
+            elif col.nullable or col.default is not None:
+                row[col_name] = col.default
+            else:
+                raise ValueError(f"Missing required column: {col_name}")
+        self.rows.append(row)
 
+    @property
+    def row_count(self) -> int:
+        return len(self.rows)
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
-
-
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    @property
+    def column_names(self) -> list[str]:
+        return list(self.columns.keys())
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+# ---------------------------------------------------------------------------
+# Migration step definitions
+# ---------------------------------------------------------------------------
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
+@dataclass
+class MigrationStep:
+    """A single migration operation (expand, migrate, or contract)."""
+    phase: MigrationPhase
+    description: str
+    forward_fn: str  # Description of forward operation
+    rollback_fn: str  # Description of rollback operation
+    executed: bool = False
+    rolled_back: bool = False
+
+
+@dataclass
+class MigrationPlan:
+    """Complete migration plan with ordered steps."""
+    migration_id: str
+    title: str
+    steps: list[MigrationStep] = field(default_factory=list)
+    current_phase: MigrationPhase = MigrationPhase.PENDING
+
+    @property
+    def progress_pct(self) -> float:
+        if not self.steps:
+            return 0.0
+        executed = sum(1 for s in self.steps if s.executed and not s.rolled_back)
+        return (executed / len(self.steps)) * 100
+
+    @property
+    def is_complete(self) -> bool:
+        return self.current_phase == MigrationPhase.COMPLETE
+
+
+# ---------------------------------------------------------------------------
+# Migration executor (state machine)
+# ---------------------------------------------------------------------------
+
+class MigrationError(Exception):
+    """Raised when a migration step fails."""
+
+
+class MigrationExecutor:
+    """Executes migration plans using the expand-migrate-contract pattern.
+
+    State transitions:
+    PENDING -> EXPANDING -> MIGRATING -> CONTRACTING -> COMPLETE
+    Any phase can transition to ROLLED_BACK.
     """
-    start_time = time.time()
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+    PHASE_ORDER = [
+        MigrationPhase.PENDING,
+        MigrationPhase.EXPANDING,
+        MigrationPhase.MIGRATING,
+        MigrationPhase.CONTRACTING,
+        MigrationPhase.COMPLETE,
+    ]
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
+    def __init__(self, table: Table) -> None:
+        self._table = table
+        self._history: list[dict[str, str]] = []
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
+    @property
+    def history(self) -> list[dict[str, str]]:
+        return list(self._history)
 
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    def execute_plan(self, plan: MigrationPlan) -> MigrationPlan:
+        """Execute all steps in order. Rolls back on failure."""
+        for step in plan.steps:
+            try:
+                self._execute_step(plan, step)
+            except MigrationError:
+                self._rollback_plan(plan)
+                return plan
+        plan.current_phase = MigrationPhase.COMPLETE
+        self._log(plan.migration_id, "COMPLETE", "Migration finished successfully")
+        return plan
 
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+    def _execute_step(self, plan: MigrationPlan, step: MigrationStep) -> None:
+        """Execute a single step and advance phase."""
+        plan.current_phase = step.phase
+        self._log(plan.migration_id, step.phase.name, step.description)
+        step.executed = True
+
+    def _rollback_plan(self, plan: MigrationPlan) -> None:
+        """Roll back all executed steps in reverse order."""
+        for step in reversed(plan.steps):
+            if step.executed and not step.rolled_back:
+                step.rolled_back = True
+                self._log(plan.migration_id, "ROLLBACK", f"Rolled back: {step.description}")
+        plan.current_phase = MigrationPhase.ROLLED_BACK
+
+    def _log(self, migration_id: str, phase: str, message: str) -> None:
+        self._history.append({"migration_id": migration_id, "phase": phase, "message": message})
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
+# ---------------------------------------------------------------------------
+# Expand-Migrate-Contract builder
+# ---------------------------------------------------------------------------
 
+def build_add_column_migration(
+    migration_id: str,
+    table: Table,
+    new_column: Column,
+    old_column: str | None = None,
+    transform_fn: str = "direct_copy",
+) -> MigrationPlan:
+    """Build a standard expand-migrate-contract plan for adding a column."""
+    steps = [
+        MigrationStep(
+            MigrationPhase.EXPANDING,
+            f"Add column '{new_column.name}' (nullable) to '{table.name}'",
+            f"ALTER TABLE {table.name} ADD COLUMN {new_column.name} {new_column.col_type.value}",
+            f"ALTER TABLE {table.name} DROP COLUMN {new_column.name}",
+        ),
+        MigrationStep(
+            MigrationPhase.MIGRATING,
+            f"Backfill '{new_column.name}' from '{old_column or 'default'}'",
+            f"UPDATE {table.name} SET {new_column.name} = transform({old_column or 'default'})",
+            f"UPDATE {table.name} SET {new_column.name} = NULL",
+        ),
+    ]
+
+    if old_column:
+        steps.append(MigrationStep(
+            MigrationPhase.CONTRACTING,
+            f"Drop old column '{old_column}' from '{table.name}'",
+            f"ALTER TABLE {table.name} DROP COLUMN {old_column}",
+            f"ALTER TABLE {table.name} ADD COLUMN {old_column}",
+        ))
+
+    return MigrationPlan(migration_id=migration_id, title=f"Add {new_column.name}", steps=steps)
+
+
+def build_rename_column_migration(
+    migration_id: str,
+    table: Table,
+    old_name: str,
+    new_name: str,
+    col_type: ColumnType,
+) -> MigrationPlan:
+    """Build expand-migrate-contract plan for renaming a column."""
+    new_col = Column(new_name, col_type, nullable=True)
+    return build_add_column_migration(migration_id, table, new_col, old_column=old_name)
+
+
+# ---------------------------------------------------------------------------
+# Safety checks
+# ---------------------------------------------------------------------------
+
+def validate_migration_safety(plan: MigrationPlan) -> list[str]:
+    """Check a plan for common safety issues. Returns list of warnings."""
+    warnings: list[str] = []
+    if not plan.steps:
+        warnings.append("Migration plan has no steps")
+    has_expand = any(s.phase == MigrationPhase.EXPANDING for s in plan.steps)
+    has_contract = any(s.phase == MigrationPhase.CONTRACTING for s in plan.steps)
+    if has_contract and not has_expand:
+        warnings.append("Contracting without expanding — data loss risk")
+    if len(plan.steps) > 10:
+        warnings.append("Migration has many steps — consider splitting")
+    return warnings
+
+
+# ---------------------------------------------------------------------------
+# CLI demo
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+    users = Table("users", {
+        "id": Column("id", ColumnType.INTEGER, nullable=False),
+        "username": Column("username", ColumnType.TEXT, nullable=False),
+        "email": Column("email", ColumnType.TEXT),
+    })
+    users.insert({"id": 1, "username": "alice", "email": "alice@example.com"})
+    users.insert({"id": 2, "username": "bob", "email": "bob@example.com"})
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
+    new_col = Column("display_name", ColumnType.TEXT, nullable=True, default="")
+    plan = build_add_column_migration("MIG-001", users, new_col, old_column=None)
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    warnings = validate_migration_safety(plan)
+    if warnings:
+        for w in warnings:
+            print(f"WARNING: {w}")
+
+    executor = MigrationExecutor(users)
+    executor.execute_plan(plan)
+
+    print(f"Migration: {plan.title}")
+    print(f"Phase: {plan.current_phase.name}")
+    print(f"Progress: {plan.progress_pct:.0f}%")
+    print(f"\nHistory ({len(executor.history)} entries):")
+    for entry in executor.history:
+        print(f"  [{entry['phase']}] {entry['message']}")
 
 
 if __name__ == "__main__":

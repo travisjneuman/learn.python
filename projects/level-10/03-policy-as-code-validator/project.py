@@ -1,141 +1,271 @@
-"""Level 10 project: Policy As Code Validator.
+"""Policy-as-Code Validator — Define and evaluate policies as Python code (OPA-style).
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: Uses the Chain of Responsibility pattern where each policy rule is a
+link in a chain. Rules are composable: AND-chains require all to pass, OR-chains
+require at least one. A PolicyEngine collects rules, evaluates them against a
+resource, and produces an auditable verdict with per-rule evidence.
+
+Design rationale: Infrastructure-as-code demands that compliance checks live
+alongside the code they govern. By expressing policies as composable Python
+objects rather than configuration files, teams get IDE support, type checking,
+and the ability to unit-test their compliance rules the same way they test code.
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any, Callable, Protocol
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "Policy As Code Validator"
-PROJECT_FOCUS = "validate policy rules against config"
+
+# ---------------------------------------------------------------------------
+# Domain types
+# ---------------------------------------------------------------------------
+
+class Severity(Enum):
+    INFO = auto()
+    WARNING = auto()
+    ERROR = auto()
+    CRITICAL = auto()
+
+
+class Verdict(Enum):
+    PASS = "pass"
+    FAIL = "fail"
+    SKIP = "skip"
+
+
+@dataclass(frozen=True)
+class RuleResult:
+    """Outcome of evaluating a single policy rule against a resource."""
+    rule_id: str
+    verdict: Verdict
+    severity: Severity
+    message: str
+    resource_key: str = ""
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class EvaluationReport:
+    """Aggregate evaluation of all rules against a resource."""
+    resource_id: str
+    results: list[RuleResult] = field(default_factory=list)
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def passed(self) -> bool:
+        return all(r.verdict != Verdict.FAIL for r in self.results)
+
+    @property
+    def failures(self) -> list[RuleResult]:
+        return [r for r in self.results if r.verdict == Verdict.FAIL]
+
+    @property
+    def warnings(self) -> list[RuleResult]:
+        return [r for r in self.results if r.severity == Severity.WARNING and r.verdict == Verdict.FAIL]
+
+    def summary(self) -> dict[str, Any]:
+        return {
+            "resource_id": self.resource_id,
+            "total_rules": len(self.results),
+            "passed": sum(1 for r in self.results if r.verdict == Verdict.PASS),
+            "failed": sum(1 for r in self.results if r.verdict == Verdict.FAIL),
+            "skipped": sum(1 for r in self.results if r.verdict == Verdict.SKIP),
+            "overall": "PASS" if self.passed else "FAIL",
+        }
 
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+# ---------------------------------------------------------------------------
+# Policy rule protocol and implementations
+# ---------------------------------------------------------------------------
+
+class PolicyRule(Protocol):
+    """Chain-of-responsibility link: evaluate a resource dict."""
+    rule_id: str
+    severity: Severity
+
+    def evaluate(self, resource: dict[str, Any]) -> RuleResult: ...
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class RequiredFieldRule:
+    """Checks that a specific field exists and is non-empty in the resource."""
+    rule_id: str
+    field_name: str
+    severity: Severity = Severity.ERROR
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+    def evaluate(self, resource: dict[str, Any]) -> RuleResult:
+        value = resource.get(self.field_name)
+        if value is None or value == "":
+            return RuleResult(
+                self.rule_id, Verdict.FAIL, self.severity,
+                f"Required field '{self.field_name}' is missing or empty",
+                self.field_name,
+            )
+        return RuleResult(
+            self.rule_id, Verdict.PASS, self.severity,
+            f"Field '{self.field_name}' present",
+            self.field_name,
         )
-    return records
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+@dataclass
+class ValueInSetRule:
+    """Checks that a field value is within an allowed set."""
+    rule_id: str
+    field_name: str
+    allowed: set[str]
+    severity: Severity = Severity.ERROR
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+    def evaluate(self, resource: dict[str, Any]) -> RuleResult:
+        value = resource.get(self.field_name, "")
+        if str(value) not in self.allowed:
+            return RuleResult(
+                self.rule_id, Verdict.FAIL, self.severity,
+                f"'{self.field_name}' value '{value}' not in {sorted(self.allowed)}",
+                self.field_name,
+            )
+        return RuleResult(
+            self.rule_id, Verdict.PASS, self.severity,
+            f"'{self.field_name}' value '{value}' is allowed",
+            self.field_name,
+        )
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
+@dataclass
+class NumericRangeRule:
+    """Checks that a numeric field falls within [min_val, max_val]."""
+    rule_id: str
+    field_name: str
+    min_val: float | None = None
+    max_val: float | None = None
+    severity: Severity = Severity.WARNING
 
+    def evaluate(self, resource: dict[str, Any]) -> RuleResult:
+        raw = resource.get(self.field_name)
+        if raw is None:
+            return RuleResult(
+                self.rule_id, Verdict.SKIP, self.severity,
+                f"Field '{self.field_name}' not present, skipping range check",
+                self.field_name,
+            )
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            return RuleResult(
+                self.rule_id, Verdict.FAIL, self.severity,
+                f"Field '{self.field_name}' is not numeric: {raw!r}",
+                self.field_name,
+            )
+        if self.min_val is not None and value < self.min_val:
+            return RuleResult(
+                self.rule_id, Verdict.FAIL, self.severity,
+                f"'{self.field_name}' value {value} below minimum {self.min_val}",
+                self.field_name,
+            )
+        if self.max_val is not None and value > self.max_val:
+            return RuleResult(
+                self.rule_id, Verdict.FAIL, self.severity,
+                f"'{self.field_name}' value {value} above maximum {self.max_val}",
+                self.field_name,
+            )
+        return RuleResult(
+            self.rule_id, Verdict.PASS, self.severity,
+            f"'{self.field_name}' value {value} within range",
+            self.field_name,
+        )
+
+
+@dataclass
+class CustomPredicateRule:
+    """Evaluates an arbitrary predicate function against the resource."""
+    rule_id: str
+    predicate: Callable[[dict[str, Any]], bool]
+    failure_message: str
+    severity: Severity = Severity.ERROR
+
+    def evaluate(self, resource: dict[str, Any]) -> RuleResult:
+        if self.predicate(resource):
+            return RuleResult(self.rule_id, Verdict.PASS, self.severity, "Custom check passed")
+        return RuleResult(self.rule_id, Verdict.FAIL, self.severity, self.failure_message)
+
+
+# ---------------------------------------------------------------------------
+# Policy engine — collects and evaluates rules
+# ---------------------------------------------------------------------------
+
+class PolicyEngine:
+    """Collects policy rules and evaluates them against resources."""
+
+    def __init__(self) -> None:
+        self._rules: list[PolicyRule] = []
+
+    def add_rule(self, rule: PolicyRule) -> None:
+        self._rules.append(rule)
+
+    @property
+    def rule_count(self) -> int:
+        return len(self._rules)
+
+    def evaluate(self, resource_id: str, resource: dict[str, Any]) -> EvaluationReport:
+        report = EvaluationReport(resource_id=resource_id)
+        for rule in self._rules:
+            result = rule.evaluate(resource)
+            report.results.append(result)
+        return report
+
+    def evaluate_batch(
+        self, resources: dict[str, dict[str, Any]]
+    ) -> dict[str, EvaluationReport]:
+        return {rid: self.evaluate(rid, res) for rid, res in resources.items()}
+
+
+# ---------------------------------------------------------------------------
+# Convenience: load policies from a JSON config
+# ---------------------------------------------------------------------------
+
+def load_policies_from_config(config: dict[str, Any]) -> PolicyEngine:
+    """Build a PolicyEngine from a declarative JSON config."""
+    engine = PolicyEngine()
+    for rule_def in config.get("rules", []):
+        rule_type = rule_def["type"]
+        severity = Severity[rule_def.get("severity", "ERROR").upper()]
+        if rule_type == "required_field":
+            engine.add_rule(RequiredFieldRule(rule_def["id"], rule_def["field"], severity))
+        elif rule_type == "value_in_set":
+            engine.add_rule(ValueInSetRule(rule_def["id"], rule_def["field"], set(rule_def["allowed"]), severity))
+        elif rule_type == "numeric_range":
+            engine.add_rule(NumericRangeRule(
+                rule_def["id"], rule_def["field"],
+                rule_def.get("min"), rule_def.get("max"), severity,
+            ))
+        else:
+            raise ValueError(f"Unknown rule type: {rule_type}")
+    return engine
+
+
+# ---------------------------------------------------------------------------
+# CLI entrypoint
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+    import argparse
+    from pathlib import Path
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
+    parser = argparse.ArgumentParser(description="Policy-as-Code Validator")
+    parser.add_argument("--config", type=Path, default=Path("data/config.json"))
+    parser.add_argument("--resource", type=Path, default=Path("data/sample_input.txt"))
+    args = parser.parse_args()
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    config = json.loads(args.config.read_text(encoding="utf-8"))
+    resource = json.loads(args.resource.read_text(encoding="utf-8"))
+
+    engine = load_policies_from_config(config)
+    report = engine.evaluate("cli-resource", resource)
+
+    print(json.dumps(report.summary(), indent=2))
+    for r in report.results:
+        tag = r.verdict.value.upper().ljust(4)
+        print(f"  [{tag}] {r.rule_id}: {r.message}")
 
 
 if __name__ == "__main__":

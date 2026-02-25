@@ -2,59 +2,70 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- retention and access policy checks
+- Data classification taxonomy: public, internal, confidential, restricted
+- Retention policy enforcement with min/max retention periods
+- Access control matrix mapping roles to classification levels
+- Policy engine with composable rule evaluation
+- PII handling requirements tied to classification and purpose
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Data governance ensures that data is classified, retained appropriately, and accessed only
+by authorized roles. Without governance, sensitive customer data leaks through analyst
+exports, logs retain PII indefinitely, and intern accounts access production databases.
+This project builds a policy engine for data governance — classifying data assets, enforcing
+retention windows, and validating access requests against role-based policies. These are
+the same patterns used in GDPR/CCPA compliance systems at every regulated organization.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/10-data-governance-enforcer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "assets": 4,
+  "retention_violations": [...],
+  "access_decisions": [...],
+  "compliance_summary": {...}
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with governance enforcement results
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add an `encryption_required` check — CONFIDENTIAL and RESTRICTED assets should require encryption.
+2. Add an audit log that records all access evaluations (granted and denied).
+3. Add a `--report` flag that outputs the full compliance summary as formatted JSON.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Register an asset with a classification not covered by any retention policy — what happens?
+2. Request access with a role that has no access policy defined — what error occurs?
+3. Set `min_retention_days > max_retention_days` in a `RetentionPolicy` — does validation catch it?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that `min_retention_days <= max_retention_days` in `RetentionPolicy.__post_init__`.
+2. Return a clear warning when an asset's classification has no retention policy.
+3. Add a test for the missing retention policy case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is data classification (PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED) and why does it matter?
+2. How does the access control matrix map roles to allowed classification levels?
+3. Why does PII access require a stated purpose — what regulation drives this?
+4. How do real organizations implement data governance for GDPR/CCPA compliance?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain data classification levels and give examples of each,
+- add a new access policy role with specific permissions,
+- describe how retention policies prevent both premature deletion and data hoarding,
+- explain the relationship between PII handling and privacy regulations.
 
 ---
 

@@ -1,48 +1,36 @@
-"""Beginner test module with heavy comments.
+"""Tests for Ticket Priority Router."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import classify_ticket, group_by_priority, route_ticket
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_classify_critical() -> None:
+    assert classify_ticket("Website is down, total outage") == "critical"
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_classify_high() -> None:
+    assert classify_ticket("Login page is broken for all users") == "high"
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_classify_medium() -> None:
+    assert classify_ticket("Dashboard is loading slow") == "medium"
+
+
+def test_classify_default_low() -> None:
+    assert classify_ticket("Can you change the button color?") == "low"
+
+
+def test_route_ticket_structure() -> None:
+    result = route_ticket(42, "Server crash at 3am")
+    assert result["id"] == 42
+    assert result["priority"] == "critical"
+
+
+def test_group_by_priority() -> None:
+    tickets = [
+        {"priority": "high", "id": 1},
+        {"priority": "low", "id": 2},
+        {"priority": "high", "id": 3},
+    ]
+    groups = group_by_priority(tickets)
+    assert len(groups["high"]) == 2
+    assert len(groups["low"]) == 1

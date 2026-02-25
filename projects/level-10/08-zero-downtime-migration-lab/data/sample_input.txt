@@ -1,5 +1,25 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "table": {
+    "name": "users",
+    "columns": [
+      {"name": "id", "type": "INTEGER", "nullable": false},
+      {"name": "username", "type": "TEXT", "nullable": false},
+      {"name": "email", "type": "TEXT", "nullable": true},
+      {"name": "created_at", "type": "TIMESTAMP", "nullable": true}
+    ]
+  },
+  "migrations": [
+    {
+      "id": "MIG-001",
+      "title": "Add display_name column",
+      "new_column": {"name": "display_name", "type": "TEXT", "default": ""},
+      "old_column": null
+    },
+    {
+      "id": "MIG-002",
+      "title": "Rename username to login_name",
+      "old_column": "username",
+      "new_column": {"name": "login_name", "type": "TEXT"}
+    }
+  ]
+}

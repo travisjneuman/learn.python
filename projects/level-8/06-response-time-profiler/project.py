@@ -1,141 +1,240 @@
-"""Level 8 project: Response Time Profiler.
+"""Response Time Profiler — profile function execution with percentile reporting.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Understanding where time is spent is essential for optimization.
+    This project builds a profiling toolkit that measures function execution
+    times, computes percentile distributions (p50, p90, p99), and identifies
+    bottlenecks — the same approach used by APM tools like New Relic and Datadog.
+
+Concepts practised:
+    - context managers for timing blocks
+    - decorator-based profiling
+    - percentile calculation (p50, p90, p95, p99)
+    - dataclasses for profile results
+    - statistical distribution analysis
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
+import math
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from typing import Any, Callable, Generator
 
-PROJECT_LEVEL = 8
-PROJECT_TITLE = "Response Time Profiler"
-PROJECT_FOCUS = "measure endpoint/query latencies"
+
+# --- Domain types -------------------------------------------------------
+
+@dataclass
+class TimingRecord:
+    """A single execution timing measurement."""
+    function_name: str
+    duration_ms: float
+    timestamp: float = field(default_factory=time.monotonic)
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class ProfileReport:
+    """Statistical summary of timings for one function."""
+    function_name: str
+    call_count: int
+    total_ms: float
+    mean_ms: float
+    median_ms: float
+    p90_ms: float
+    p95_ms: float
+    p99_ms: float
+    min_ms: float
+    max_ms: float
+    std_dev_ms: float
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "function": self.function_name,
+            "calls": self.call_count,
+            "total_ms": round(self.total_ms, 3),
+            "mean_ms": round(self.mean_ms, 3),
+            "median_ms": round(self.median_ms, 3),
+            "p90_ms": round(self.p90_ms, 3),
+            "p95_ms": round(self.p95_ms, 3),
+            "p99_ms": round(self.p99_ms, 3),
+            "min_ms": round(self.min_ms, 3),
+            "max_ms": round(self.max_ms, 3),
+            "std_dev_ms": round(self.std_dev_ms, 3),
+        }
 
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+# --- Statistical helpers ------------------------------------------------
+
+def percentile(sorted_values: list[float], pct: float) -> float:
+    """Compute percentile using linear interpolation method."""
+    if not sorted_values:
+        return 0.0
+    if len(sorted_values) == 1:
+        return sorted_values[0]
+    rank = (pct / 100.0) * (len(sorted_values) - 1)
+    lower = int(math.floor(rank))
+    upper = min(lower + 1, len(sorted_values) - 1)
+    weight = rank - lower
+    return sorted_values[lower] + weight * (sorted_values[upper] - sorted_values[lower])
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+def std_dev(values: list[float], mean: float) -> float:
+    """Population standard deviation."""
+    if len(values) < 2:
+        return 0.0
+    variance = sum((v - mean) ** 2 for v in values) / len(values)
+    return math.sqrt(variance)
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
 
+# --- Profiler -----------------------------------------------------------
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+class ResponseTimeProfiler:
+    """Collects timing data and generates statistical reports.
+
+    Usage:
+        profiler = ResponseTimeProfiler()
+
+        @profiler.track
+        def my_function():
+            ...
+
+        # Or use context manager:
+        with profiler.measure("operation_name"):
+            ...
+
+        report = profiler.report("my_function")
+    """
+
+    def __init__(self) -> None:
+        self._records: dict[str, list[float]] = {}
+
+    def record(self, name: str, duration_ms: float) -> None:
+        """Record a timing measurement."""
+        if name not in self._records:
+            self._records[name] = []
+        self._records[name].append(duration_ms)
+
+    @contextmanager
+    def measure(self, name: str) -> Generator[None, None, None]:
+        """Context manager that times the enclosed block."""
+        start = time.perf_counter()
+        try:
+            yield
+        finally:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            self.record(name, elapsed_ms)
+
+    def track(self, func: Callable) -> Callable:
+        """Decorator that automatically profiles a function."""
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            start = time.perf_counter()
+            try:
+                return func(*args, **kwargs)
+            finally:
+                elapsed_ms = (time.perf_counter() - start) * 1000
+                self.record(func.__name__, elapsed_ms)
+        wrapper.__name__ = func.__name__
+        wrapper.__wrapped__ = func  # type: ignore[attr-defined]
+        return wrapper
+
+    def report(self, name: str) -> ProfileReport:
+        """Generate a statistical report for a profiled function."""
+        durations = self._records.get(name, [])
+        if not durations:
+            return ProfileReport(
+                function_name=name, call_count=0,
+                total_ms=0, mean_ms=0, median_ms=0,
+                p90_ms=0, p95_ms=0, p99_ms=0,
+                min_ms=0, max_ms=0, std_dev_ms=0,
+            )
+
+        sorted_d = sorted(durations)
+        count = len(sorted_d)
+        total = sum(sorted_d)
+        mean = total / count
+
+        return ProfileReport(
+            function_name=name,
+            call_count=count,
+            total_ms=total,
+            mean_ms=mean,
+            median_ms=percentile(sorted_d, 50),
+            p90_ms=percentile(sorted_d, 90),
+            p95_ms=percentile(sorted_d, 95),
+            p99_ms=percentile(sorted_d, 99),
+            min_ms=sorted_d[0],
+            max_ms=sorted_d[-1],
+            std_dev_ms=std_dev(sorted_d, mean),
         )
-    return records
+
+    def all_reports(self) -> list[ProfileReport]:
+        """Generate reports for all tracked functions."""
+        return [self.report(name) for name in sorted(self._records)]
+
+    def names(self) -> list[str]:
+        """Return names of all profiled functions."""
+        return sorted(self._records.keys())
+
+    def find_bottleneck(self) -> ProfileReport | None:
+        """Identify the function with the highest p95 latency."""
+        reports = self.all_reports()
+        if not reports:
+            return None
+        return max(reports, key=lambda r: r.p95_ms)
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# --- Demo ---------------------------------------------------------------
+
+def run_demo() -> dict[str, Any]:
+    """Demonstrate profiling with simulated workloads."""
+    profiler = ResponseTimeProfiler()
+
+    @profiler.track
+    def fast_operation() -> None:
+        time.sleep(0.001)
+
+    @profiler.track
+    def slow_operation() -> None:
+        time.sleep(0.005)
+
+    @profiler.track
+    def variable_operation() -> None:
+        import random
+        time.sleep(random.uniform(0.001, 0.01))
+
+    # Run each function multiple times
+    for _ in range(20):
+        fast_operation()
+        slow_operation()
+        variable_operation()
+
+    # Also demonstrate context manager
+    for _ in range(10):
+        with profiler.measure("inline_block"):
+            time.sleep(0.002)
+
+    reports = profiler.all_reports()
+    bottleneck = profiler.find_bottleneck()
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "profiles": [r.to_dict() for r in reports],
+        "bottleneck": bottleneck.to_dict() if bottleneck else None,
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Response time profiler")
+    parser.add_argument("--demo", action="store_true", default=True)
+    return parser.parse_args(argv)
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    parse_args(argv)
+    output = run_demo()
+    print(json.dumps(output, indent=2))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,13 @@
+[
+  {"name": "cpu_percent", "value": 45.2, "timestamp": "2025-01-15T10:00:00Z"},
+  {"name": "cpu_percent", "value": 52.8, "timestamp": "2025-01-15T10:01:00Z"},
+  {"name": "cpu_percent", "value": 78.1, "timestamp": "2025-01-15T10:02:00Z"},
+  {"name": "cpu_percent", "value": 65.4, "timestamp": "2025-01-15T10:03:00Z"},
+  {"name": "cpu_percent", "value": 89.2, "timestamp": "2025-01-15T10:04:00Z"},
+  {"name": "memory_percent", "value": 62.1, "timestamp": "2025-01-15T10:00:00Z"},
+  {"name": "memory_percent", "value": 63.5, "timestamp": "2025-01-15T10:01:00Z"},
+  {"name": "memory_percent", "value": 71.0, "timestamp": "2025-01-15T10:02:00Z"},
+  {"name": "latency_ms", "value": 120, "timestamp": "2025-01-15T10:00:00Z"},
+  {"name": "latency_ms", "value": 450, "timestamp": "2025-01-15T10:01:00Z"},
+  {"name": "latency_ms", "value": 85, "timestamp": "2025-01-15T10:02:00Z"}
+]

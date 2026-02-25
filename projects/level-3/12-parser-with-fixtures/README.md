@@ -13,48 +13,53 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/12-parser-with-fixtures
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --format ini --json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Format: ini, Lines: 15
+[database]
+  host = localhost
+  port = 5432
+...
+18 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- Parsed output on stdout
+- Passing tests with fixture-generated files
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a YAML-like parser (indentation-based key: value pairs).
+2. Add `--validate` flag that checks all sections have at least one entry.
+3. Add line number tracking to each parsed record for error reporting.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Parse an INI file with duplicate section names — what happens?
+2. Parse a CSV with quoted fields containing commas — does simple split work?
+3. Auto-detect format on ambiguous input (e.g., `a=b,c=d`) — which parser wins?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle duplicate sections by merging entries (or warning).
+2. Document that the CSV parser doesn't handle quoted fields (limitation).
+3. Add a `--format` override so users can bypass auto-detection.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a pytest fixture and how does it differ from setup/teardown?
+2. Why do the fixtures use `tmp_path` instead of real files?
+3. How does `detect_format` use heuristics to guess the file type?
+4. What is the registry pattern (`PARSERS` dict) and why use it?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- write pytest fixtures that create temporary test data,
+- build parsers for multiple text formats,
+- use a registry pattern to dispatch to the right parser,
+- auto-detect file formats from content.
 
 ---
 

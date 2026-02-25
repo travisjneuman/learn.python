@@ -1,105 +1,235 @@
-"""Level 6 project: Data Lineage Capture.
+"""Level 6 / Project 08 — Data Lineage Capture.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Tracks data transformations in a SQLite lineage table so you can
+trace any output row back to its source and see every step it
+went through.
+
+Key concepts:
+- Lineage metadata: source, transformation, destination, timestamp
+- Foreign-key-style relationships between lineage records
+- Querying lineage chains with recursive CTEs (bonus concept)
+- Separation of business logic from lineage recording
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import sqlite3
+from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 
-PROJECT_LEVEL = 6
-PROJECT_TITLE = "Data Lineage Capture"
-PROJECT_FOCUS = "capture lineage metadata fields"
+# ---------------------------------------------------------------------------
+# Schema
+# ---------------------------------------------------------------------------
+
+LINEAGE_DDL = """\
+CREATE TABLE IF NOT EXISTS lineage (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    record_key     TEXT NOT NULL,
+    step_name      TEXT NOT NULL,
+    source         TEXT NOT NULL,
+    destination    TEXT NOT NULL,
+    transform_desc TEXT,
+    parent_id      INTEGER,
+    created_at     TEXT NOT NULL DEFAULT (datetime('now'))
+);
+"""
+
+DATA_DDL = """\
+CREATE TABLE IF NOT EXISTS processed_data (
+    id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    key   TEXT NOT NULL,
+    value TEXT NOT NULL,
+    stage TEXT NOT NULL
+);
+"""
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+def init_db(conn: sqlite3.Connection) -> None:
+    conn.execute(LINEAGE_DDL)
+    conn.execute(DATA_DDL)
+    conn.commit()
+
+
+# ---------------------------------------------------------------------------
+# Lineage recording
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class LineageEntry:
+    record_key: str
+    step_name: str
+    source: str
+    destination: str
+    transform_desc: str = ""
+    parent_id: int | None = None
+
+
+def record_lineage(conn: sqlite3.Connection, entry: LineageEntry) -> int:
+    """Insert a lineage record and return its ID."""
+    cur = conn.execute(
+        "INSERT INTO lineage (record_key, step_name, source, destination, "
+        "transform_desc, parent_id) VALUES (?, ?, ?, ?, ?, ?)",
+        (entry.record_key, entry.step_name, entry.source,
+         entry.destination, entry.transform_desc, entry.parent_id),
     )
+    conn.commit()
+    return cur.lastrowid
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+def get_lineage_chain(conn: sqlite3.Connection, record_key: str) -> list[dict]:
+    """Retrieve the full lineage chain for a given record key."""
+    rows = conn.execute(
+        "SELECT id, step_name, source, destination, transform_desc, parent_id, created_at "
+        "FROM lineage WHERE record_key = ? ORDER BY id",
+        (record_key,),
+    ).fetchall()
+    return [
+        {
+            "id": r[0], "step": r[1], "source": r[2], "destination": r[3],
+            "transform": r[4], "parent_id": r[5], "created_at": r[6],
+        }
+        for r in rows
+    ]
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+
+# ---------------------------------------------------------------------------
+# Simulated pipeline steps
+# ---------------------------------------------------------------------------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
-
-    We keep this separate from I/O so business logic stays testable.
-    """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+def step_ingest(conn: sqlite3.Connection, records: list[dict]) -> list[dict]:
+    """Step 1: Ingest raw records into the staging area."""
+    results = []
+    for rec in records:
+        key = rec.get("key", "unknown")
+        conn.execute(
+            "INSERT INTO processed_data (key, value, stage) VALUES (?, ?, 'raw')",
+            (key, json.dumps(rec)),
         )
-    return records
+        lid = record_lineage(conn, LineageEntry(
+            record_key=key, step_name="ingest",
+            source="input_file", destination="staging",
+            transform_desc="raw ingest, no transformation",
+        ))
+        results.append({"key": key, "lineage_id": lid, "stage": "raw"})
+    conn.commit()
+    return results
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def step_normalize(conn: sqlite3.Connection, records: list[dict]) -> list[dict]:
+    """Step 2: Normalize values (lowercase keys, strip whitespace)."""
+    results = []
+    for rec in records:
+        key = rec["key"]
+        normalized_value = json.dumps({k.lower().strip(): v for k, v in rec.items()})
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        conn.execute(
+            "INSERT INTO processed_data (key, value, stage) VALUES (?, ?, 'normalized')",
+            (key, normalized_value),
+        )
+        parent_chain = get_lineage_chain(conn, key)
+        parent_id = parent_chain[-1]["id"] if parent_chain else None
+
+        lid = record_lineage(conn, LineageEntry(
+            record_key=key, step_name="normalize",
+            source="staging", destination="normalized",
+            transform_desc="lowercase keys, strip whitespace",
+            parent_id=parent_id,
+        ))
+        results.append({"key": key, "lineage_id": lid, "stage": "normalized"})
+    conn.commit()
+    return results
+
+
+def step_publish(conn: sqlite3.Connection, records: list[dict]) -> list[dict]:
+    """Step 3: Mark records as published (final stage)."""
+    results = []
+    for rec in records:
+        key = rec["key"]
+        conn.execute(
+            "INSERT INTO processed_data (key, value, stage) VALUES (?, ?, 'published')",
+            (key, json.dumps({"key": key, "status": "published"})),
+        )
+        parent_chain = get_lineage_chain(conn, key)
+        parent_id = parent_chain[-1]["id"] if parent_chain else None
+
+        lid = record_lineage(conn, LineageEntry(
+            record_key=key, step_name="publish",
+            source="normalized", destination="output",
+            transform_desc="final publish",
+            parent_id=parent_id,
+        ))
+        results.append({"key": key, "lineage_id": lid, "stage": "published"})
+    conn.commit()
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run(input_path: Path, output_path: Path, db_path: str = ":memory:") -> dict:
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
+
+    records = json.loads(input_path.read_text(encoding="utf-8"))
+
+    conn = sqlite3.connect(db_path)
+    try:
+        init_db(conn)
+
+        step_ingest(conn, records)
+        step_normalize(conn, records)
+        step_publish(conn, records)
+
+        # Build lineage report
+        lineage_report = {}
+        for rec in records:
+            key = rec.get("key", "unknown")
+            lineage_report[key] = get_lineage_chain(conn, key)
+
+        total_lineage = conn.execute("SELECT COUNT(*) FROM lineage").fetchone()[0]
+    finally:
+        conn.close()
+
+    summary = {
+        "records_processed": len(records),
+        "pipeline_steps": 3,
+        "total_lineage_entries": total_lineage,
+        "lineage": lineage_report,
     }
-
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    logging.info("lineage captured: %d records, %d entries", len(records), total_lineage)
     return summary
 
 
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(
+        description="Data Lineage Capture — track every transformation step"
+    )
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
+    parser.add_argument("--db", default=":memory:")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    summary = run(Path(args.input), Path(args.output), args.db)
     print(json.dumps(summary, indent=2))
 
 

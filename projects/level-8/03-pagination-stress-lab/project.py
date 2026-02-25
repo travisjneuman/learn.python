@@ -1,141 +1,260 @@
-"""Level 8 project: Pagination Stress Lab.
+"""Pagination Stress Lab — test pagination logic with various page sizes and edge cases.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Pagination is deceptively tricky: off-by-one errors, empty last pages,
+    total-count mismatches, and cursor vs. offset strategies all create bugs
+    in production. This lab builds a paginator from scratch and stress-tests
+    it with adversarial inputs.
+
+Concepts practised:
+    - offset-based and cursor-based pagination
+    - dataclasses for page metadata
+    - edge case handling (empty collections, page > total)
+    - generator-based page iteration
+    - property validation
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+import math
+from dataclasses import dataclass, field
+from typing import Any, Generic, Iterator, TypeVar
 
-PROJECT_LEVEL = 8
-PROJECT_TITLE = "Pagination Stress Lab"
-PROJECT_FOCUS = "large result paging behavior"
+T = TypeVar("T")
+
+
+# --- Domain types -------------------------------------------------------
+
+@dataclass
+class PageRequest:
+    """Parameters for a single page request."""
+    page: int = 1
+    page_size: int = 10
+
+    def __post_init__(self) -> None:
+        if self.page < 1:
+            raise ValueError(f"Page must be >= 1, got {self.page}")
+        if self.page_size < 1:
+            raise ValueError(f"Page size must be >= 1, got {self.page_size}")
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class PageResponse:
+    """A single page of results with navigation metadata."""
+    items: list[Any]
+    page: int
+    page_size: int
+    total_items: int
+    total_pages: int
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def has_next(self) -> bool:
+        return self.page < self.total_pages
+
+    @property
+    def has_previous(self) -> bool:
+        return self.page > 1
+
+    @property
+    def is_empty(self) -> bool:
+        return len(self.items) == 0
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "items": self.items,
+            "page": self.page,
+            "page_size": self.page_size,
+            "total_items": self.total_items,
+            "total_pages": self.total_pages,
+            "has_next": self.has_next,
+            "has_previous": self.has_previous,
+        }
 
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+@dataclass
+class PaginationStats:
+    """Accumulated stats from a pagination stress run."""
+    total_requests: int = 0
+    empty_pages: int = 0
+    boundary_hits: int = 0  # first or last page
+    out_of_range: int = 0
+    items_served: int = 0
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# --- Paginator ----------------------------------------------------------
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+class OffsetPaginator:
+    """Offset-based paginator over an in-memory collection.
 
+    Slices the data list using (page - 1) * page_size as the offset.
+    This is the most common pagination strategy in REST APIs.
+    """
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+    def __init__(self, data: list[Any]) -> None:
+        self._data = data
+
+    @property
+    def total_items(self) -> int:
+        return len(self._data)
+
+    def total_pages(self, page_size: int) -> int:
+        """Calculate total pages for a given page size."""
+        if page_size < 1:
+            raise ValueError("Page size must be >= 1")
+        return max(1, math.ceil(len(self._data) / page_size))
+
+    def get_page(self, request: PageRequest) -> PageResponse:
+        """Fetch a single page of results."""
+        total_pg = self.total_pages(request.page_size)
+        offset = (request.page - 1) * request.page_size
+        items = self._data[offset : offset + request.page_size]
+
+        return PageResponse(
+            items=items,
+            page=request.page,
+            page_size=request.page_size,
+            total_items=self.total_items,
+            total_pages=total_pg,
         )
-    return records
+
+    def iter_pages(self, page_size: int) -> Iterator[PageResponse]:
+        """Yield all pages in order — useful for bulk processing."""
+        total_pg = self.total_pages(page_size)
+        for page_num in range(1, total_pg + 1):
+            yield self.get_page(PageRequest(page=page_num, page_size=page_size))
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# --- Cursor-based pagination --------------------------------------------
+
+@dataclass
+class CursorPage:
+    """A page of results using cursor-based (keyset) pagination."""
+    items: list[Any]
+    next_cursor: int | None  # index of next item, or None if at end
+    has_more: bool
+
+
+class CursorPaginator:
+    """Cursor-based paginator — avoids the "page drift" problem of offset pagination.
+
+    Instead of page numbers, the client sends a cursor (an index into the data).
+    This is more efficient for large datasets and immune to insertion/deletion drift.
+    """
+
+    def __init__(self, data: list[Any]) -> None:
+        self._data = data
+
+    def get_page(self, cursor: int = 0, limit: int = 10) -> CursorPage:
+        """Fetch items starting from *cursor* up to *limit* items."""
+        if cursor < 0:
+            raise ValueError("Cursor must be >= 0")
+        if limit < 1:
+            raise ValueError("Limit must be >= 1")
+
+        items = self._data[cursor : cursor + limit]
+        next_pos = cursor + limit
+        has_more = next_pos < len(self._data)
+
+        return CursorPage(
+            items=items,
+            next_cursor=next_pos if has_more else None,
+            has_more=has_more,
+        )
+
+
+# --- Stress testing -----------------------------------------------------
+
+def stress_test_paginator(
+    data: list[Any],
+    page_sizes: list[int] | None = None,
+) -> dict[str, Any]:
+    """Run a stress test over the paginator with various page sizes.
+
+    Tests boundary conditions: first page, last page, beyond-range pages,
+    single-item pages, and page sizes larger than the dataset.
+    """
+    if page_sizes is None:
+        page_sizes = [1, 2, 5, 10, 25, 100, len(data), len(data) + 1]
+
+    paginator = OffsetPaginator(data)
+    stats = PaginationStats()
+    results: list[dict[str, Any]] = []
+
+    for ps in page_sizes:
+        if ps < 1:
+            continue
+        total_pg = paginator.total_pages(ps)
+
+        # Test each page
+        for page_num in range(1, total_pg + 2):  # +2 to test beyond-range
+            stats.total_requests += 1
+            request = PageRequest(page=page_num, page_size=ps)
+            response = paginator.get_page(request)
+
+            if response.is_empty:
+                stats.empty_pages += 1
+            if page_num == 1 or page_num == total_pg:
+                stats.boundary_hits += 1
+            if page_num > total_pg:
+                stats.out_of_range += 1
+            stats.items_served += len(response.items)
+
+            results.append({
+                "page_size": ps,
+                "page": page_num,
+                "items_count": len(response.items),
+                "has_next": response.has_next,
+                "has_previous": response.has_previous,
+            })
+
+    # Verify invariant: all items seen exactly once per page_size
+    verification: list[dict[str, Any]] = []
+    for ps in page_sizes:
+        if ps < 1:
+            continue
+        all_items: list[Any] = []
+        for page in paginator.iter_pages(ps):
+            all_items.extend(page.items)
+        verification.append({
+            "page_size": ps,
+            "items_collected": len(all_items),
+            "matches_total": len(all_items) == len(data),
+        })
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "data_size": len(data),
+        "page_sizes_tested": page_sizes,
+        "stats": {
+            "total_requests": stats.total_requests,
+            "empty_pages": stats.empty_pages,
+            "boundary_hits": stats.boundary_hits,
+            "out_of_range": stats.out_of_range,
+            "items_served": stats.items_served,
+        },
+        "verification": verification,
+        "sample_results": results[:10],
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+# --- CLI ----------------------------------------------------------------
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
-
-
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Pagination stress testing lab")
+    parser.add_argument("--items", type=int, default=47, help="Number of items in dataset")
+    parser.add_argument(
+        "--page-sizes", nargs="*", type=int, default=None,
+        help="Page sizes to test (default: auto)",
     )
+    return parser.parse_args(argv)
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    data = [f"item_{i:04d}" for i in range(1, args.items + 1)]
+    output = stress_test_paginator(data, page_sizes=args.page_sizes)
+    print(json.dumps(output, indent=2))
 
 
 if __name__ == "__main__":

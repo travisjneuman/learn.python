@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+100 C F
+212 F C
+0 C K
+300 K C
+-40 C F
+98.6 F C

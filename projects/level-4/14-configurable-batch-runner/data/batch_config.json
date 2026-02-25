@@ -1,0 +1,28 @@
+{
+  "jobs": [
+    {
+      "name": "count-sample-lines",
+      "action": "count_lines",
+      "input": "sample_data.txt",
+      "params": {}
+    },
+    {
+      "name": "error-line-count",
+      "action": "count_lines",
+      "input": "sample_data.txt",
+      "params": {"pattern": "ERROR"}
+    },
+    {
+      "name": "word-frequency",
+      "action": "word_frequency",
+      "input": "sample_data.txt",
+      "params": {"top_n": 5}
+    },
+    {
+      "name": "file-statistics",
+      "action": "file_stats",
+      "input": "sample_data.txt",
+      "params": {}
+    }
+  ]
+}

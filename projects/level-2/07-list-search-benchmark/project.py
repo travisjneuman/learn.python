@@ -1,107 +1,216 @@
 """Level 2 project: List Search Benchmark.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- implement linear search and binary search,
+- time each approach on lists of increasing size,
+- compare performance to understand Big-O in practice.
+
+Skills practiced: sorting with key, enumerate, nested data structures,
+try/except, list comprehensions, time measurement.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import random
+import time
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "List Search Benchmark"
-PROJECT_FOCUS = "compare search approaches"
 
+def linear_search(data: list[int], target: int) -> int:
+    """Find target in data by checking every element left to right.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+    Time complexity: O(n) — worst case checks every element.
 
-    This function is isolated so it can be tested independently.
+    Returns:
+        The index of target, or -1 if not found.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    for idx, value in enumerate(data):
+        if value == target:
+            return idx
+    return -1
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def binary_search(data: list[int], target: int) -> int:
+    """Find target in a SORTED list by halving the search space.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Time complexity: O(log n) — cuts the problem in half each step.
+    IMPORTANT: data must be sorted for this to work correctly.
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    Returns:
+        The index of target in the sorted list, or -1 if not found.
+    """
+    low = 0
+    high = len(data) - 1
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+    while low <= high:
+        # Find the middle index.
+        mid = (low + high) // 2
+
+        if data[mid] == target:
+            return mid
+        elif data[mid] < target:
+            # Target is in the right half.
+            low = mid + 1
+        else:
+            # Target is in the left half.
+            high = mid - 1
+
+    return -1
+
+
+def set_search(data_set: set[int], target: int) -> bool:
+    """Check if target exists in a set.
+
+    Time complexity: O(1) average — hash table lookup.
+    But building the set is O(n), so this only wins
+    when you search the same data many times.
+    """
+    return target in data_set
+
+
+def time_search(search_func, *args, iterations: int = 100) -> float:
+    """Time a search function over multiple iterations.
+
+    Returns the average time in microseconds.
+
+    Using time.perf_counter() for high-resolution timing.
+    """
+    total = 0.0
+    for _ in range(iterations):
+        start = time.perf_counter()
+        search_func(*args)
+        end = time.perf_counter()
+        total += end - start
+
+    # Convert seconds to microseconds and return average.
+    return (total / iterations) * 1_000_000
+
+
+def generate_test_data(size: int, seed: int = 42) -> list[int]:
+    """Generate a list of unique random integers.
+
+    Using a fixed seed so results are reproducible across runs.
+    """
+    rng = random.Random(seed)
+    return rng.sample(range(size * 10), size)
+
+
+def run_benchmark(
+    sizes: list[int] | None = None,
+    iterations: int = 100,
+) -> list[dict]:
+    """Run search benchmarks across multiple list sizes.
+
+    For each size, times linear search, binary search, and set lookup.
+    Returns a list of result dicts with timing data.
+    """
+    if sizes is None:
+        sizes = [100, 1000, 5000, 10000, 50000]
+
+    results: list[dict] = []
+
+    for size in sizes:
+        data = generate_test_data(size)
+        # Pick a target that exists (middle element) and one that does not.
+        sorted_data = sorted(data)
+        existing_target = sorted_data[size // 2]
+        missing_target = -1  # guaranteed not in data (all positive)
+
+        # Time linear search (needs unsorted data).
+        linear_found = time_search(
+            linear_search, data, existing_target, iterations=iterations
+        )
+        linear_miss = time_search(
+            linear_search, data, missing_target, iterations=iterations
+        )
+
+        # Time binary search (needs sorted data).
+        binary_found = time_search(
+            binary_search, sorted_data, existing_target, iterations=iterations
+        )
+        binary_miss = time_search(
+            binary_search, sorted_data, missing_target, iterations=iterations
+        )
+
+        # Time set search (needs a set).
+        data_set = set(data)
+        set_found = time_search(
+            set_search, data_set, existing_target, iterations=iterations
+        )
+        set_miss = time_search(
+            set_search, data_set, missing_target, iterations=iterations
+        )
+
+        results.append({
+            "size": size,
+            "linear_found_us": round(linear_found, 2),
+            "linear_miss_us": round(linear_miss, 2),
+            "binary_found_us": round(binary_found, 2),
+            "binary_miss_us": round(binary_miss, 2),
+            "set_found_us": round(set_found, 2),
+            "set_miss_us": round(set_miss, 2),
+        })
+
+    return results
+
+
+def format_results(results: list[dict]) -> str:
+    """Format benchmark results as a readable table."""
+    lines = [
+        f"{'Size':>8} | {'Linear(hit)':>12} | {'Linear(miss)':>12} | "
+        f"{'Binary(hit)':>12} | {'Binary(miss)':>12} | "
+        f"{'Set(hit)':>10} | {'Set(miss)':>10}",
+        "-" * 90,
+    ]
+    for r in results:
+        lines.append(
+            f"{r['size']:>8} | {r['linear_found_us']:>10.2f}us | "
+            f"{r['linear_miss_us']:>10.2f}us | {r['binary_found_us']:>10.2f}us | "
+            f"{r['binary_miss_us']:>10.2f}us | {r['set_found_us']:>8.2f}us | "
+            f"{r['set_miss_us']:>8.2f}us"
+        )
+    return "\n".join(lines)
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="List search benchmark")
+    parser.add_argument(
+        "--sizes",
+        nargs="+",
+        type=int,
+        default=[100, 1000, 5000, 10000],
+        help="List sizes to benchmark",
+    )
+    parser.add_argument(
+        "--iterations",
+        type=int,
+        default=50,
+        help="Number of iterations per measurement",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: run benchmarks and display results."""
     args = parse_args()
+    results = run_benchmark(sizes=args.sizes, iterations=args.iterations)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    if args.json:
+        print(json.dumps(results, indent=2))
+    else:
+        print("=== Search Algorithm Benchmark ===\n")
+        print(format_results(results))
+        print("\nAll times in microseconds (us). Lower is faster.")
+        print("Binary search requires sorted data. Set search requires set construction.")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

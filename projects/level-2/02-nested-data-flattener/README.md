@@ -13,48 +13,49 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/02-nested-data-flattener
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --separator /
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"server.host": "localhost", "server.port": 8080, ...}
+9 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Flattened JSON on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--max-depth` flag that stops flattening beyond N levels.
+2. Change the separator to `__` (double underscore) and observe the output.
+3. Add a `--keys-only` flag that prints just the flattened key names.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a JSON file whose root is a list `[1, 2, 3]` — what error appears?
+2. Create a key that already contains a dot, e.g. `{"a.b": 1}` — what happens?
+3. Flatten then unflatten a structure with lists — is the roundtrip perfect?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a guard in `flatten_from_file` for non-dict JSON roots.
+2. Handle keys that contain the separator character (escape or warn).
+3. Add a test for empty dict input `{}`.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is recursion and why is it useful for nested data?
+2. How does `isinstance(value, dict)` decide the recursion path?
+3. Why might flattening lose information about list vs. dict structure?
+4. Where would you use flatten/unflatten in real DevOps or data pipelines?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- trace the recursion for a 3-level nested dict on paper,
+- explain the difference between `dict.update()` and `dict[key] = value`,
+- add support for a new data type (e.g. sets) without breaking existing tests,
+- describe when flattening is useful vs. when it loses information.
 
 ---
 

@@ -1,105 +1,186 @@
-"""Level 6 project: Staging Table Loader.
+"""Level 6 / Project 02 — Staging Table Loader.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Loads CSV data into a SQLite staging table with row-level validation.
+Invalid rows are logged and skipped without blocking the overall load.
+
+Key concepts:
+- csv.DictReader for parsing structured text files
+- CREATE TABLE with column constraints (NOT NULL, CHECK)
+- executemany vs. row-by-row inserts (and why we choose row-by-row here)
+- Row-level validation: reject bad rows, keep the rest
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import sqlite3
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 6
-PROJECT_TITLE = "Staging Table Loader"
-PROJECT_FOCUS = "staging ingestion contract simulation"
+# ---------------------------------------------------------------------------
+# Schema
+# ---------------------------------------------------------------------------
+
+STAGING_DDL = """\
+CREATE TABLE IF NOT EXISTS staging_events (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp TEXT    NOT NULL,
+    level     TEXT    NOT NULL,
+    source    TEXT    NOT NULL,
+    message   TEXT    NOT NULL
+);
+"""
+
+VALID_LEVELS = frozenset({"INFO", "WARN", "ERROR", "CRITICAL"})
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+@dataclass
+class LoadResult:
+    """Accumulates accept/reject counts during a load."""
+
+    accepted: int = 0
+    rejected: int = 0
+    errors: list[str] = field(default_factory=list)
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------------------------------------------------------------------------
+# Validation
+# ---------------------------------------------------------------------------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def validate_row(row: dict, row_num: int) -> str | None:
+    """Return an error string if *row* is invalid, else None.
 
-    We keep this separate from I/O so business logic stays testable.
+    Checks every required column is present and non-empty, and that the
+    level value is one of the known constants.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+    required = ("timestamp", "level", "source", "message")
+    for col in required:
+        value = row.get(col, "")
+        if not value or not value.strip():
+            return f"row={row_num} missing_field={col}"
+
+    if row["level"].strip().upper() not in VALID_LEVELS:
+        return f"row={row_num} bad_level={row['level']}"
+
+    return None
+
+
+# ---------------------------------------------------------------------------
+# CSV reader
+# ---------------------------------------------------------------------------
+
+
+def load_csv(path: Path) -> list[dict]:
+    """Parse a CSV file into a list of row dictionaries."""
+    if not path.exists():
+        raise FileNotFoundError(f"CSV not found: {path}")
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+# ---------------------------------------------------------------------------
+# Database loader
+# ---------------------------------------------------------------------------
+
+
+def create_staging_table(conn: sqlite3.Connection) -> None:
+    """Ensure the staging table exists (idempotent)."""
+    conn.execute(STAGING_DDL)
+    conn.commit()
+
+
+def load_rows(conn: sqlite3.Connection, rows: list[dict]) -> LoadResult:
+    """Insert valid rows into staging_events, skip invalid ones.
+
+    We insert row-by-row (not executemany) so that one bad row does not
+    abort the entire batch.  In production you might use a savepoint per
+    row for even finer control.
+    """
+    result = LoadResult()
+
+    for idx, row in enumerate(rows, start=1):
+        error = validate_row(row, idx)
+        if error:
+            result.rejected += 1
+            result.errors.append(error)
+            logging.warning("reject %s", error)
+            continue
+
+        conn.execute(
+            "INSERT INTO staging_events (timestamp, level, source, message) "
+            "VALUES (?, ?, ?, ?)",
+            (
+                row["timestamp"].strip(),
+                row["level"].strip().upper(),
+                row["source"].strip(),
+                row["message"].strip(),
+            ),
         )
-    return records
+        result.accepted += 1
+
+    conn.commit()
+    return result
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def count_staged(conn: sqlite3.Connection) -> int:
+    """Return total row count in the staging table."""
+    return conn.execute("SELECT COUNT(*) FROM staging_events").fetchone()[0]
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run(input_path: Path, output_path: Path, db_path: str = ":memory:") -> dict:
+    """Full pipeline: read CSV → validate → load staging → write summary."""
+    rows = load_csv(input_path)
+
+    conn = sqlite3.connect(db_path)
+    try:
+        create_staging_table(conn)
+        result = load_rows(conn, rows)
+        total = count_staged(conn)
+    finally:
+        conn.close()
+
+    summary = {
+        "input_rows": len(rows),
+        "accepted": result.accepted,
+        "rejected": result.rejected,
+        "errors": result.errors,
+        "total_in_staging": total,
     }
-
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    logging.info("load complete accepted=%d rejected=%d", result.accepted, result.rejected)
     return summary
 
 
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(
+        description="Staging Table Loader — CSV to SQLite with validation"
+    )
+    parser.add_argument("--input", default="data/sample_input.csv")
     parser.add_argument("--output", default="data/output_summary.json")
+    parser.add_argument("--db", default=":memory:")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    summary = run(Path(args.input), Path(args.output), db_path=args.db)
     print(json.dumps(summary, indent=2))
 
 

@@ -13,41 +13,44 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/13-operational-run-logger
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt --output data/processed.json --log data/run_log.json --run-id demo-001
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"run_id": "demo-001", "status": "completed", "events": 9}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/processed.json`
+- `data/run_log.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--verbose` flag that prints each event to stdout as it is logged.
+2. Add error counting: track how many errors occurred and include in the summary.
+3. Add a `log_warning` method to `RunLogger` for non-fatal issues.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Point `--input` at a file that does not exist and observe the error handling.
+2. Pass an empty input file (0 lines) and check the event count.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `RunLogger.finish` is always called even when exceptions occur.
+2. Handle empty input gracefully (0 items processed, status still "completed").
+3. Add tests for missing input and empty input.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `RunLogger` generate a unique `run_id` for each execution?
+2. How does `finish()` calculate `duration_ms` from start and end times?
+3. What is the purpose of separating `log_event` and `log_error`?
+4. Where do you see structured run logging in production (CI/CD pipelines, ETL jobs, cron tasks)?
 
 ## Mastery check
 You can move on when you can:

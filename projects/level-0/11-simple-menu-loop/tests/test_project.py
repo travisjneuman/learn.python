@@ -1,48 +1,35 @@
-"""Beginner test module with heavy comments.
+"""Tests for Simple Menu Loop."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import action_greet, action_reverse, execute_choice, run_batch
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_action_greet() -> None:
+    """Greet should return a greeting string."""
+    result = action_greet()
+    assert "Hello" in result
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_action_reverse() -> None:
+    """Reverse should reverse the input string."""
+    result = action_reverse("hello")
+    assert "olleh" in result
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_execute_choice_unknown() -> None:
+    """An invalid choice should return an error message."""
+    result = execute_choice("99")
+    assert "Unknown option" in result
+
+
+def test_execute_choice_quit() -> None:
+    """Choice 5 should say goodbye."""
+    assert execute_choice("5") == "Goodbye!"
+
+
+def test_run_batch_stops_at_quit() -> None:
+    """Batch mode should stop processing when it hits choice 5."""
+    commands = ["1", "4 world", "5", "1"]
+    results = run_batch(commands)
+    # Should have 3 results: greet, reverse, goodbye (not the final '1').
+    assert len(results) == 3
+    assert results[-1]["output"] == "Goodbye!"

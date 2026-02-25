@@ -3,6 +3,8 @@ Quiz: Types and Conversions
 Review: concepts/types-and-conversions.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) str")
     print("  d) bool")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Anything in quotes is a string, even if it")
@@ -40,7 +42,7 @@ def run_quiz():
     print("  c) A string")
     print("  d) None")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! input() always returns a string.")
@@ -58,7 +60,7 @@ def run_quiz():
     print("  c) Error")
     print('  d) "5"')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! A string and an integer are never equal in Python,")
@@ -76,7 +78,7 @@ def run_quiz():
     print("  c) [1, 2, 3]")
     print("  d) 0")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "d":
         score += 1
         print("Correct! 0 is falsy. Other falsy values include: False,")
@@ -95,7 +97,7 @@ def run_quiz():
     print("  c) ValueError")
     print('  d) "3"')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! int() cannot convert a float-format string directly.")
@@ -114,7 +116,7 @@ def run_quiz():
     print("  c) None")
     print("  d) Error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! An empty list is falsy. bool([]) returns False.")
@@ -136,7 +138,7 @@ def run_quiz():
     print("  c) <class 'str'>")
     print("  d) Error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Division with / always returns a float in Python,")

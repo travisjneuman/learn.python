@@ -1,48 +1,46 @@
-"""Beginner test module with heavy comments.
+"""Tests for First File Reader."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import file_summary, format_with_line_numbers, read_file_lines
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_read_file_lines_basic(tmp_path: Path) -> None:
+    """Reading a simple file should return each line."""
+    f = tmp_path / "test.txt"
+    f.write_text("line one\nline two\nline three\n", encoding="utf-8")
+    lines = read_file_lines(f)
+    assert len(lines) == 3
+    assert lines[0] == "line one"
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_read_file_lines_missing_raises(tmp_path: Path) -> None:
+    """A missing file should raise FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        read_file_lines(tmp_path / "nope.txt")
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_format_with_line_numbers() -> None:
+    """Each line should be prefixed with its line number."""
+    lines = ["alpha", "beta", "gamma"]
+    output = format_with_line_numbers(lines)
+    assert "1 | alpha" in output
+    assert "3 | gamma" in output
+
+
+def test_format_empty_file() -> None:
+    """An empty file should produce an '(empty file)' message."""
+    assert format_with_line_numbers([]) == "(empty file)"
+
+
+def test_file_summary_counts(tmp_path: Path) -> None:
+    """The summary should have correct line and word counts."""
+    f = tmp_path / "data.txt"
+    f.write_text("hello world\ngoodbye world\n", encoding="utf-8")
+    lines = read_file_lines(f)
+    summary = file_summary(f, lines)
+    assert summary["lines"] == 2
+    assert summary["words"] == 4
+    assert summary["non_empty_lines"] == 2

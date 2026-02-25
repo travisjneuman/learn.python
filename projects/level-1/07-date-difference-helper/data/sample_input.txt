@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+diff 2024-01-01 2024-12-31
+diff 2024-06-15 2024-07-04
+add 2024-01-01 90
+add 2024-03-01 -1
+weekday 2024-01-01
+weekday 2024-07-04
+weekday 2000-01-01

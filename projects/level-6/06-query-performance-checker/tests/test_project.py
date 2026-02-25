@@ -1,54 +1,87 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Query Performance Checker.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Validates query plan analysis, index creation, and before/after
+comparison using in-memory SQLite.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+from __future__ import annotations
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import sqlite3
 
+import pytest
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    QueryReport,
+    analyze_query,
+    create_index,
+    explain_query,
+    run,
+    seed_orders,
+    ORDERS_DDL,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+@pytest.fixture()
+def conn() -> sqlite3.Connection:
+    c = sqlite3.connect(":memory:")
+    c.execute(ORDERS_DDL)
+    seed_orders(c, count=100)
+    yield c
+    c.close()
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+class TestExplainQuery:
+    def test_returns_plan_lines(self, conn: sqlite3.Connection) -> None:
+        lines = explain_query(conn, "SELECT * FROM orders WHERE customer = 'alice'")
+        assert len(lines) >= 1
+        # Should mention SCAN or SEARCH
+        assert any("SCAN" in ln or "SEARCH" in ln for ln in lines)
 
-    # Act: build summary from records.
-    summary = build_summary(records)
+    def test_plan_after_index(self, conn: sqlite3.Connection) -> None:
+        create_index(conn, "orders", "customer")
+        lines = explain_query(conn, "SELECT * FROM orders WHERE customer = 'alice'")
+        assert any("INDEX" in ln for ln in lines)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+
+class TestAnalyzeQuery:
+    def test_no_index_detected(self, conn: sqlite3.Connection) -> None:
+        report = analyze_query(conn, "SELECT * FROM orders WHERE customer = 'bob'")
+        assert report.uses_index is False
+        assert report.elapsed_ms >= 0
+
+    def test_index_detected_after_create(self, conn: sqlite3.Connection) -> None:
+        create_index(conn, "orders", "customer")
+        report = analyze_query(conn, "SELECT * FROM orders WHERE customer = 'bob'")
+        assert report.uses_index is True
+
+    @pytest.mark.parametrize(
+        "sql",
+        [
+            "SELECT * FROM orders WHERE amount > 20",
+            "SELECT * FROM orders ORDER BY created_at",
+        ],
+    )
+    def test_suggestion_present_without_index(self, conn: sqlite3.Connection, sql: str) -> None:
+        report = analyze_query(conn, sql)
+        assert report.suggestion  # non-empty suggestion
+
+
+class TestCreateIndex:
+    def test_index_creation_returns_ddl(self, conn: sqlite3.Connection) -> None:
+        ddl = create_index(conn, "orders", "product")
+        assert "idx_orders_product" in ddl
+
+    def test_idempotent(self, conn: sqlite3.Connection) -> None:
+        create_index(conn, "orders", "product")
+        create_index(conn, "orders", "product")  # should not raise
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    inp = tmp_path / "queries.txt"
+    inp.write_text("SELECT * FROM orders WHERE customer = 'alice'\n", encoding="utf-8")
+    out = tmp_path / "out.json"
+
+    summary = run(inp, out)
+    assert summary["queries_analyzed"] == 1
+    assert len(summary["indexes_created"]) >= 1
+    assert out.exists()

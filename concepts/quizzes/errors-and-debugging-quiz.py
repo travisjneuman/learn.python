@@ -3,6 +3,8 @@ Quiz: Errors and Debugging
 Review: concepts/errors-and-debugging.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -23,7 +25,7 @@ def run_quiz():
     print("  c) The last line — it says what went wrong")
     print("  d) It does not matter")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Read tracebacks bottom-up. The last line tells")
@@ -43,7 +45,7 @@ def run_quiz():
     print("  c) NameError")
     print("  d) ValueError")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! NameError means Python cannot find a variable")
@@ -64,7 +66,7 @@ def run_quiz():
     print("  c) ValueError")
     print("  d) No error — it prints 'I am 30'")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! You cannot concatenate a string and an int.")
@@ -82,7 +84,7 @@ def run_quiz():
     print("  c) ValueError — 'hello' is not a valid number")
     print("  d) SyntaxError")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! The type is right (it is a string), but the value")
@@ -100,7 +102,7 @@ def run_quiz():
     print("  c) Adding print() statements to see variable values")
     print("  d) Asking someone else to fix it")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! print() debugging is simple and effective.")
@@ -122,7 +124,7 @@ def run_quiz():
     print("  c) IndentationError")
     print("  d) TypeError")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! if statements require a colon at the end.")
@@ -143,7 +145,7 @@ def run_quiz():
     print("  c) IndexError — index out of range")
     print("  d) TypeError")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! The list only has indexes 0, 1, 2.")

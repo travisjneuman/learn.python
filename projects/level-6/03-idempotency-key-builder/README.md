@@ -19,35 +19,40 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_input": 6,
+  "processed": 4,
+  "skipped": 2,
+  "stored_keys": 4
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — dedup results with key counts
+- Passing tests (`pytest -q` → 7+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--key-fields` CLI argument that lets the user choose which fields form the key (instead of hardcoded source + action).
+2. Add a TTL (time-to-live): keys older than N seconds should be considered expired and allow re-processing.
+3. Add a `list_keys` CLI subcommand that prints all stored keys with their timestamps.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Submit operations with identical `source` + `action` but different other fields — observe that they are treated as duplicates.
+2. Change the separator in `build_key` from `|` to empty string and create a collision with `build_key("ab", "cd")` vs `build_key("abc", "d")`.
+3. Pass an input file with missing `source` or `action` fields.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that required key fields exist before calling `build_key`.
+2. Write a test proving the separator prevents accidental collisions.
+3. Handle the "same key, different payload" case by logging a warning.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is SHA-256 a good choice for idempotency keys vs. a simple string concat?
+2. What does `INSERT OR IGNORE` do, and how does it differ from `INSERT OR REPLACE`?
+3. Why is the pipe separator important for avoiding hash collisions?
+4. In what real-world systems would you need idempotency keys?
 
 ## Mastery check
 You can move on when you can:

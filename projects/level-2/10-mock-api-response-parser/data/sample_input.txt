@@ -1,5 +1,17 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "status": 200,
+  "message": "Success",
+  "data": [
+    {"id": 1, "name": "Alice Johnson", "role": "engineer", "active": true},
+    {"id": 2, "name": "Bob Smith", "role": "designer", "active": true},
+    {"id": 3, "name": "Charlie Brown", "role": "engineer", "active": false},
+    {"id": 4, "name": "Diana Prince", "role": "manager", "active": true},
+    {"id": 5, "name": "Eve Torres", "role": "engineer", "active": true}
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 10,
+    "total": 5,
+    "total_pages": 1
+  }
+}

@@ -1,48 +1,42 @@
-"""Beginner test module with heavy comments.
+"""Tests for JSON Settings Loader."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import load_json, merge_settings, validate_settings
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_load_json_valid(tmp_path: Path) -> None:
+    f = tmp_path / "settings.json"
+    f.write_text('{"debug": true, "port": 9090}', encoding="utf-8")
+    result = load_json(f)
+    assert result["debug"] is True
+    assert result["port"] == 9090
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_load_json_invalid(tmp_path: Path) -> None:
+    f = tmp_path / "bad.json"
+    f.write_text("{not valid json}", encoding="utf-8")
+    with pytest.raises(ValueError, match="Invalid JSON"):
+        load_json(f)
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_merge_settings_overrides() -> None:
+    defaults = {"a": 1, "b": 2}
+    overrides = {"b": 99, "c": 3}
+    merged = merge_settings(defaults, overrides)
+    assert merged == {"a": 1, "b": 99, "c": 3}
+
+
+def test_merge_preserves_original() -> None:
+    defaults = {"a": 1}
+    merge_settings(defaults, {"a": 2})
+    assert defaults["a"] == 1  # Original unchanged.
+
+
+def test_validate_settings_finds_missing() -> None:
+    settings = {"app_name": "Test"}
+    missing = validate_settings(settings, ["app_name", "port"])
+    assert "port" in missing
+    assert "app_name" not in missing

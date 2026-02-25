@@ -5,49 +5,55 @@ Home: [README](../../../README.md)
 - template strings and alert text building
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Parse pipe-delimited alarm records, sort them by severity, and generate formatted notification messages. You will learn delimiter parsing, priority ordering with a lookup dict, and template-based text generation.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/13-alarm-message-generator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Alarm Notifications ===
+
+  [CRITICAL] web-server-01: CPU usage above 95%
+  [WARNING]  db-primary: Replication lag 30 seconds
+  [INFO]     load-balancer: Health check passed
+
+Summary: 1 critical, 1 warning, 1 info
+Output written to data/output.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a `--severity` filter flag that shows only alarms at or above a given severity level.
+2. Add timestamps to each alarm notification (use a hardcoded time for reproducibility).
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a line with an unknown severity like `unknown|server01|disk full` -- does `parse_alarm()` reject it?
+2. Add a line with missing fields like `critical|` -- does it crash or handle gracefully?
+3. Add a line with extra pipe characters -- does the parser split correctly?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `parse_alarm()` validates severity against the allowed list (critical, warning, info).
+2. Handle lines with fewer than 3 pipe-delimited fields by raising `ValueError`.
+3. Add a test for the unknown-severity edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `sort_by_severity()` use a priority dict `{"critical": 0, "warning": 1, "info": 2}` instead of alphabetical sorting?
+2. What does the pipe `|` delimiter offer over commas when data might contain commas?
+3. Why does `alarm_summary()` count by severity level instead of just total count?
+4. Where would alarm formatting appear in real software (monitoring dashboards, PagerDuty, incident management)?
 
 ## Mastery check
 You can move on when you can:

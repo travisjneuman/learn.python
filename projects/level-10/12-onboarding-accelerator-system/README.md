@@ -2,59 +2,60 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- new engineer ramp-up automation
+- Builder pattern for composing personalized onboarding plans
+- Role-based templates with priority-ordered tasks
+- Task dependency tracking and completion progress
+- Customizable plans with buddy assignments
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+New-hire onboarding is expensive and inconsistent when done ad-hoc. This project codifies role-specific checklists so every engineer gets the same high-quality start. The builder pattern allows customization without a combinatorial explosion of plan variants.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/12-onboarding-accelerator-system
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "employee": "Alice Chen",
+  "role": "backend",
+  "buddy": "Bob Smith",
+  "total_tasks": 11,
+  "completion": "18%",
+  ...
+}
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `data_engineer_template` with tasks specific to data engineering (SQL, ETL, Spark).
+2. Add task dependency enforcement — a task cannot be completed if its `depends_on` tasks are not done.
+3. Add an estimated duration field to each task and compute total onboarding time.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Try building a plan with an unknown role — observe the `ValueError`.
+2. Complete a non-existent task ID and verify it returns `False`.
+3. Create circular task dependencies and see how the system handles it.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that `depends_on` references only valid task IDs within the same plan.
+2. Add a `block_task` method that marks a task as BLOCKED and explains why.
+3. Test both fixes.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does the Builder pattern differ from just using a constructor with many parameters?
+2. Why are tasks organized by priority (DAY_ONE, FIRST_WEEK, etc.) instead of a flat list?
+3. How does the buddy assignment integrate with the onboarding workflow?
+4. How would you extend this to generate actual scripts (e.g., shell scripts for tool setup)?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- create a custom onboarding plan using the builder,
+- add a new role template with appropriate tasks,
+- track completion progress and identify blocked tasks,
+- explain why the builder returns `self` to enable method chaining.
 
 ---
 

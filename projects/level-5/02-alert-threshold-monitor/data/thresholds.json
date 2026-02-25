@@ -1,0 +1,6 @@
+{
+  "cpu": {"warning": 70, "critical": 90},
+  "memory": {"warning": 80, "critical": 95},
+  "disk": {"warning": 85, "critical": 95},
+  "latency_ms": {"warning": 200, "critical": 500}
+}

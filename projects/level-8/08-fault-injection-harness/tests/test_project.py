@@ -1,52 +1,142 @@
-"""Advanced test module with heavy comments.
+"""Tests for Fault Injection Harness.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: fault config, injection engine, decorator, corruption, and scoped rules.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    FaultConfig,
+    FaultInjector,
+    FaultType,
+    corrupt_data,
+)
+import random
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- FaultConfig validation ---------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+class TestFaultConfig:
+    def test_valid_config(self) -> None:
+        config = FaultConfig(name="test", fault_type=FaultType.EXCEPTION, probability=0.5)
+        assert config.probability == 0.5
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    @pytest.mark.parametrize("prob", [-0.1, 1.1, 2.0])
+    def test_invalid_probability_raises(self, prob: float) -> None:
+        with pytest.raises(ValueError, match="Probability"):
+            FaultConfig(name="bad", fault_type=FaultType.EXCEPTION, probability=prob)
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- FaultInjector ------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestFaultInjector:
+    def test_exception_injection(self) -> None:
+        injector = FaultInjector(seed=0)
+        injector.add_rule(FaultConfig(
+            name="always-fail", fault_type=FaultType.EXCEPTION,
+            probability=1.0, target_function="target_fn",
+        ))
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+        with pytest.raises(RuntimeError, match="FAULT:always-fail"):
+            injector.check_and_inject("target_fn")
+        assert injector.stats.faults_triggered == 1
+
+    def test_delay_injection(self) -> None:
+        injector = FaultInjector(seed=0)
+        injector.add_rule(FaultConfig(
+            name="slow", fault_type=FaultType.DELAY,
+            probability=1.0, delay_seconds=0.01,
+        ))
+        # Should not raise, just delay
+        injector.check_and_inject("any_fn")
+        assert injector.stats.faults_triggered == 1
+
+    def test_disabled_injector_skips(self) -> None:
+        injector = FaultInjector(seed=0)
+        injector.add_rule(FaultConfig(
+            name="fail", fault_type=FaultType.EXCEPTION, probability=1.0,
+        ))
+        injector.disable()
+        # Should not raise
+        injector.check_and_inject("fn")
+        assert injector.stats.calls_intercepted == 0
+
+    def test_probability_zero_never_triggers(self) -> None:
+        injector = FaultInjector(seed=0)
+        injector.add_rule(FaultConfig(
+            name="never", fault_type=FaultType.EXCEPTION, probability=0.0,
+        ))
+        for _ in range(100):
+            injector.check_and_inject("fn")
+        assert injector.stats.faults_triggered == 0
+
+
+# --- Decorator ----------------------------------------------------------
+
+class TestInjectDecorator:
+    def test_decorated_function_can_fail(self) -> None:
+        injector = FaultInjector(seed=0)
+        injector.add_rule(FaultConfig(
+            name="err", fault_type=FaultType.EXCEPTION,
+            probability=1.0, target_function="my_func",
+        ))
+
+        @injector.inject
+        def my_func() -> str:
+            return "ok"
+
+        with pytest.raises(RuntimeError):
+            my_func()
+
+    def test_decorated_function_succeeds_when_no_fault(self) -> None:
+        injector = FaultInjector(seed=0)
+        # No rules added
+
+        @injector.inject
+        def my_func() -> str:
+            return "ok"
+
+        assert my_func() == "ok"
+
+
+# --- Scoped rules -------------------------------------------------------
+
+class TestScopedRules:
+    def test_rules_removed_after_scope(self) -> None:
+        injector = FaultInjector(seed=0)
+        temp_rule = FaultConfig(
+            name="temp", fault_type=FaultType.DELAY,
+            probability=1.0, delay_seconds=0.001,
+        )
+        with injector.scope([temp_rule]):
+            injector.check_and_inject("fn")
+            assert injector.stats.faults_triggered == 1
+
+        # Rule should be gone now — verify by checking matching
+        assert len(injector._matching_rules("fn")) == 0
+
+
+# --- Data corruption ----------------------------------------------------
+
+class TestCorruptData:
+    def test_corruption_modifies_data(self) -> None:
+        original = {"name": "Alice", "score": 95, "active": True}
+        corrupted = corrupt_data(original, corruption_rate=1.0, rng=random.Random(42))
+        # At least one field should differ
+        assert corrupted != original
+
+    def test_zero_rate_preserves_data(self) -> None:
+        original = {"name": "Alice", "score": 95}
+        result = corrupt_data(original, corruption_rate=0.0)
+        assert result == original
+
+    @pytest.mark.parametrize("value,expected_type", [
+        ("hello", str),
+        (42, int),
+        (True, bool),
+    ])
+    def test_corruption_preserves_types(self, value, expected_type) -> None:
+        result = corrupt_data({"k": value}, corruption_rate=1.0, rng=random.Random(0))
+        assert isinstance(result["k"], expected_type)

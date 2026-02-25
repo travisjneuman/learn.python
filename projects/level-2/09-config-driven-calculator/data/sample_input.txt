@@ -1,5 +1,16 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "operations": {
+    "add": {"symbol": "+", "description": "Addition"},
+    "subtract": {"symbol": "-", "description": "Subtraction"},
+    "multiply": {"symbol": "*", "description": "Multiplication"},
+    "divide": {"symbol": "/", "description": "Division"},
+    "power": {"symbol": "**", "description": "Exponentiation"},
+    "modulo": {"symbol": "%", "description": "Modulo (remainder)"},
+    "sqrt": {"symbol": "sqrt", "description": "Square root (uses only first operand)"}
+  },
+  "settings": {
+    "precision": 6,
+    "allow_negative": true,
+    "max_value": 1000000
+  }
+}

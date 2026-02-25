@@ -25,7 +25,7 @@ python project.py
 Fetching http://books.toscrape.com/ ...
 Status code: 200
 Content type: text/html
-Content length: XXXXX characters
+Content length: 51696 characters
 
 First 500 characters of the page:
 --------------------------------------------------

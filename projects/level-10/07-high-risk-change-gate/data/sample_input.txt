@@ -1,5 +1,33 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "changes": [
+    {
+      "change_id": "CHG-001",
+      "title": "Fix typo in landing page",
+      "author": "alice",
+      "affected_services": ["web-frontend"],
+      "lines_changed": 5,
+      "changes_schema": false,
+      "changes_auth": false,
+      "deploy_window": "business_hours"
+    },
+    {
+      "change_id": "CHG-002",
+      "title": "Add OAuth2 provider support",
+      "author": "bob",
+      "affected_services": ["auth-service", "api-gateway", "user-service"],
+      "lines_changed": 420,
+      "changes_schema": true,
+      "changes_auth": true,
+      "deploy_window": "off_peak"
+    },
+    {
+      "change_id": "CHG-003",
+      "title": "Rollback payment processor",
+      "author": "carol",
+      "affected_services": ["payment-service"],
+      "lines_changed": 150,
+      "is_rollback": true,
+      "deploy_window": "business_hours"
+    }
+  ]
+}

@@ -2,59 +2,59 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- migration strategy and safety checks
+- Expand-migrate-contract pattern for zero-downtime schema changes
+- State machine for migration phase tracking
+- In-memory table simulation with column operations
+- Safety validation and rollback mechanisms
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Traditional "stop the world" migrations cause downtime. The expand-contract pattern adds new columns first, backfills data, then removes old columns. At every phase, both old and new code paths work — enabling zero-downtime rollout. This project simulates the entire lifecycle in Python.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/08-zero-downtime-migration-lab
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Migration: Add display_name
+Phase: COMPLETE
+Progress: 100%
+History (3 entries):
+  [EXPANDING] Add column 'display_name' ...
+  [MIGRATING] Backfill 'display_name' ...
+  [COMPLETE] Migration finished successfully
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `build_split_table_migration` that creates a new table, copies data, then drops the old one.
+2. Add a `dry_run` mode to `MigrationExecutor` that logs steps without executing them.
+3. Add a step-level progress callback so callers can monitor migration progress.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Try adding a duplicate column name — observe the `ValueError`.
+2. Create a contracting step without an expanding step and check the safety warning.
+3. Drop a non-existent column and see the error.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Make `add_column` idempotent — skip silently if the column already exists.
+2. Add validation that migration steps are in the correct phase order (EXPANDING before MIGRATING before CONTRACTING).
+3. Test the phase order validation.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why must the EXPANDING phase come before MIGRATING? What breaks if you skip it?
+2. How does the contract phase differ from just dropping a column directly?
+3. Why is rollback essential in production migrations?
+4. How does this pattern apply to real databases using tools like Alembic or Django migrations?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- build a migration plan for renaming a column and trace each phase,
+- explain why both old and new code must work during the MIGRATING phase,
+- describe what happens if a migration fails mid-way and gets rolled back,
+- compare expand-contract to "big bang" migration and explain the tradeoffs.
 
 ---
 

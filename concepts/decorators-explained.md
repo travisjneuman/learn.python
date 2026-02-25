@@ -2,6 +2,11 @@
 
 A decorator is a function that wraps another function to add extra behavior. The `@` symbol is shorthand for applying a decorator.
 
+## Visualize It
+
+See how a decorator wraps a function and changes its behavior:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=def%20shout%28func%29%3A%0A%20%20%20%20def%20wrapper%28%29%3A%0A%20%20%20%20%20%20%20%20result%20%3D%20func%28%29%0A%20%20%20%20%20%20%20%20return%20result.upper%28%29%0A%20%20%20%20return%20wrapper%0A%0A%40shout%0Adef%20greet%28%29%3A%0A%20%20%20%20return%20%22hello%2C%20world%22%0A%0Aprint%28greet%28%29%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## What decorators look like
 
 ```python
@@ -144,16 +149,11 @@ def func(): pass
 
 Whether you need `()` depends on how the decorator was written. Some take arguments (like `@app.get("/")`), some don't (like `@timer`).
 
-## Related exercises
+## Practice
 
-- [Module 02 — CLI Tools](../projects/modules/02-cli-tools/) (Click uses decorators heavily)
-- [Module 04 — FastAPI](../projects/modules/04-fastapi-web/) (route decorators)
-- [Module 08 — Advanced Testing](../projects/modules/08-testing-advanced/) (pytest decorators)
-
----
-
-## Practice This
-
+- [Module 02 CLI Tools](../projects/modules/02-cli-tools/)
+- [Module 04 FastAPI](../projects/modules/04-fastapi-web/)
+- [Module 08 Advanced Testing](../projects/modules/08-testing-advanced/)
 - [Module: Elite Track / 01 Algorithms Complexity Lab](../projects/elite-track/01-algorithms-complexity-lab/README.md)
 - [Module: Elite Track / 02 Concurrent Job System](../projects/elite-track/02-concurrent-job-system/README.md)
 - [Module: Elite Track / 03 Distributed Cache Simulator](../projects/elite-track/03-distributed-cache-simulator/README.md)

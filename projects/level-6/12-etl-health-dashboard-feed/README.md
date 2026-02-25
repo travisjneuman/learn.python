@@ -19,35 +19,41 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "runs_recorded": 5,
+  "success_rate": 80.0,
+  "avg_duration_ms": 2410.0,
+  "per_job": [...],
+  "recent_runs": [...]
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — health metrics for dashboard consumption
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `row_loss_rate` metric: `(rows_in - rows_out) / rows_in` per job, flagging jobs losing more than 5%.
+2. Add a `--window` flag to compute metrics only for runs in the last N hours.
+3. Add a trend indicator: is the success rate improving or declining over the last 5 runs?
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Record a run with `rows_in=0` and observe how `row_loss_rate` handles division by zero.
+2. Record a run with status "running" (never finished) and observe the metrics.
+3. Feed an empty runs array and observe the health output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Guard against division by zero in rate calculations.
+2. Exclude "running" status from completed metrics.
+3. Return safe defaults for empty datasets.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What metrics would a real ETL dashboard display?
+2. Why track both `rows_in` and `rows_out` instead of just one?
+3. What is a "success rate SLA" and how would you alert on violations?
+4. How do tools like Airflow or dbt track ETL health?
 
 ## Mastery check
 You can move on when you can:

@@ -2,6 +2,11 @@
 
 Programs read data from files and write results to files. Understanding how to work with files and their locations (paths) is essential.
 
+## Visualize It
+
+See how Python reads a file and processes it line by line:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=from%20pathlib%20import%20Path%0A%0Ap%20%3D%20Path%28%22data.txt%22%29%0Aprint%28p.name%29%0Aprint%28p.stem%29%0Aprint%28p.suffix%29%0Aprint%28p.parent%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Reading a file
 
 The simplest way:
@@ -98,12 +103,7 @@ path = r"C:\Users\alice\new_file.txt"    # Raw string (r prefix)
 path = Path("C:/Users/alice/new_file.txt")  # Forward slashes work too
 ```
 
-## Related exercises
-- [Level 00, Exercise 14 — Reading Files](../projects/level-00-absolute-beginner/14-reading-files/)
-
----
-
-## Practice This
+## Practice
 
 - [Level 00 / 14 Reading Files](../projects/level-00-absolute-beginner/14-reading-files/)
 - [Level 0 / 01 Terminal Hello Lab](../projects/level-0/01-terminal-hello-lab/README.md)

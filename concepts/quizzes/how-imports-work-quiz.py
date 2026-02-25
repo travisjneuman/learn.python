@@ -3,6 +3,8 @@ Quiz: How Imports Work
 Review: concepts/how-imports-work.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -26,7 +28,7 @@ def run_quiz():
     print("  c) The second is faster")
     print("  d) The first only works on Linux")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 'import math' requires the math. prefix.")
@@ -45,7 +47,7 @@ def run_quiz():
     print("  c) setup.py")
     print("  d) package.json")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! __init__.py tells Python that the folder is a")
@@ -64,7 +66,7 @@ def run_quiz():
     print("  c) It does not work")
     print("  d) It only imports one function")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Star imports pollute your namespace.")
@@ -85,7 +87,7 @@ def run_quiz():
     print("  c) Python imports both")
     print("  d) Error — duplicate names are not allowed")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Python searches the current directory first.")
@@ -104,7 +106,7 @@ def run_quiz():
     print("  c) Installs pandas")
     print("  d) Imports only the 'pd' function from pandas")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 'as pd' creates a shorter alias for the module.")
@@ -122,7 +124,7 @@ def run_quiz():
     print("  c) Importing a module inside a loop")
     print("  d) Using import inside a function")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! When file_a imports file_b and file_b imports")
@@ -141,7 +143,7 @@ def run_quiz():
     print("  c) Installed packages, current directory, standard library")
     print("  d) Alphabetical order")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Python checks the current directory first,")

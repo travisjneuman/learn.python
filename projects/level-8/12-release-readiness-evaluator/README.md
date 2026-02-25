@@ -2,59 +2,69 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- pre-release quality scoring
+- Weighted scoring with configurable criteria and weights
+- Strategy pattern for pluggable evaluation functions
+- Three-tier readiness: GO, CONDITIONAL, NO_GO
+- Required criteria that force NO_GO regardless of score
+- Structured reporting with per-criterion pass/fail detail
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Shipping software requires checking many gates: test coverage, linting, security scans,
+documentation, and changelog entries. A manual checklist is error-prone and slows down
+releases. This project builds a configurable readiness evaluator that scores a release
+candidate against weighted criteria and produces a go/no-go decision — the same pattern
+used in CI/CD release gates at companies like Google, GitHub, and Spotify.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/12-release-readiness-evaluator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "version": "v2.1.0",
+  "readiness": "GO",
+  "score": 87.5,
+  "criteria": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with readiness evaluation
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `documentation_criterion` factory that checks if README/CHANGELOG are updated.
+2. Change the `EvaluatorConfig` thresholds to be configurable via CLI flags.
+3. Add a `--verbose` flag that prints each criterion's score and pass/fail status.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a criterion with `weight=0` — does the weighted score calculation handle it?
+2. Set `go_threshold` lower than `conditional_threshold` — what readiness level results?
+3. Pass no criteria at all — does `evaluate()` return a valid report?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `go_threshold >= conditional_threshold` in `EvaluatorConfig`.
+2. Add a guard for `total_weight == 0` to avoid division by zero.
+3. Add a test for overlapping threshold values.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does weighted scoring differ from simple pass/fail gating?
+2. Why are some criteria marked `required=True` — what does that override?
+3. What is the difference between GO, CONDITIONAL, and NO_GO readiness levels?
+4. How do real CI/CD pipelines implement release gates similar to this evaluator?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain weighted scoring and how criterion weights affect the overall score,
+- add a new criterion factory end-to-end (definition + evaluation + test),
+- describe the three readiness levels and when CONDITIONAL is appropriate,
+- design a release gate for a real project with appropriate criteria and weights.
 
 ---
 

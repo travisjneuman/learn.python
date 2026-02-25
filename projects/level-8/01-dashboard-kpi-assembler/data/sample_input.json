@@ -1,0 +1,38 @@
+{
+  "kpi_definitions": [
+    {
+      "name": "response_time_ms",
+      "unit": "ms",
+      "green_threshold": 200,
+      "yellow_threshold": 500
+    },
+    {
+      "name": "error_rate_pct",
+      "unit": "%",
+      "green_threshold": 1.0,
+      "yellow_threshold": 5.0
+    },
+    {
+      "name": "cpu_usage_pct",
+      "unit": "%",
+      "green_threshold": 60,
+      "yellow_threshold": 85
+    }
+  ],
+  "samples": [
+    {"source": "api-gateway", "kpi_name": "response_time_ms", "timestamp": "2025-01-01T10:00:00Z", "value": 120},
+    {"source": "api-gateway", "kpi_name": "response_time_ms", "timestamp": "2025-01-01T10:05:00Z", "value": 135},
+    {"source": "api-gateway", "kpi_name": "response_time_ms", "timestamp": "2025-01-01T10:10:00Z", "value": 180},
+    {"source": "api-gateway", "kpi_name": "response_time_ms", "timestamp": "2025-01-01T10:15:00Z", "value": 210},
+    {"source": "api-gateway", "kpi_name": "response_time_ms", "timestamp": "2025-01-01T10:20:00Z", "value": 250},
+    {"source": "api-gateway", "kpi_name": "response_time_ms", "timestamp": "2025-01-01T10:25:00Z", "value": 310},
+    {"source": "monitoring", "kpi_name": "error_rate_pct", "timestamp": "2025-01-01T10:00:00Z", "value": 0.5},
+    {"source": "monitoring", "kpi_name": "error_rate_pct", "timestamp": "2025-01-01T10:05:00Z", "value": 0.8},
+    {"source": "monitoring", "kpi_name": "error_rate_pct", "timestamp": "2025-01-01T10:10:00Z", "value": 1.2},
+    {"source": "monitoring", "kpi_name": "error_rate_pct", "timestamp": "2025-01-01T10:15:00Z", "value": 0.9},
+    {"source": "infra-agent", "kpi_name": "cpu_usage_pct", "timestamp": "2025-01-01T10:00:00Z", "value": 45},
+    {"source": "infra-agent", "kpi_name": "cpu_usage_pct", "timestamp": "2025-01-01T10:05:00Z", "value": 52},
+    {"source": "infra-agent", "kpi_name": "cpu_usage_pct", "timestamp": "2025-01-01T10:10:00Z", "value": 58},
+    {"source": "infra-agent", "kpi_name": "cpu_usage_pct", "timestamp": "2025-01-01T10:15:00Z", "value": 55}
+  ]
+}

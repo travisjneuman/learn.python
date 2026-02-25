@@ -13,49 +13,51 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/12-csv-to-json-converter
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt --pretty
+python project.py data/sample_input.txt --format columns
+python project.py data/sample_input.txt --no-types
+python project.py data/sample_input.txt --output data/output.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+[{"name": "Alice Johnson", "age": 30, "department": "Engineering", ...}, ...]
+11 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- JSON output on stdout or file
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Support both CSV and TSV input by detecting the delimiter automatically or accepting a `--delimiter` flag.
-2. Add a `--pretty` flag that outputs indented JSON (4 spaces) instead of compact format.
-3. Validate that all rows have the same number of columns as the header -- log mismatched rows.
-4. Re-run script and tests.
+1. Add a `--columns` flag to select only specific columns: `--columns name,age`.
+2. Add row-count validation — log rows with mismatched column counts.
+3. Add a `--schema` output that shows detected types per column.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a CSV with quoted fields containing commas (e.g. `"Smith, Jr"`).
+2. Feed a file with inconsistent column counts per row.
+3. Feed a value like `"123abc"` — does type inference misfire?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add basic quoted-field handling for CSV values.
+2. Pad short rows and truncate long rows to match header length.
+3. Ensure `infer_type` only converts when the entire value is numeric.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does type inference try int before float?
+2. What is the difference between "array of objects" and "columnar" JSON formats?
+3. How does `zip(headers, values)` elegantly build record dicts?
+4. When would you choose JSON over CSV for data storage?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain how `zip` pairs two lists element-by-element,
+- implement type inference logic from memory,
+- convert between objects and columnar JSON formats,
+- describe edge cases in CSV parsing (quotes, escapes, encodings).
 
 ---
 

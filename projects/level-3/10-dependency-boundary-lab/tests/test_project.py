@@ -1,54 +1,117 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Dependency Boundary Lab.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Demonstrates testing business logic WITHOUT touching the filesystem,
+using InMemoryReader/InMemoryWriter instead of real files.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    InMemoryReader,
+    InMemoryWriter,
+    ProcessingStats,
+    enrich_records,
+    filter_records,
+    process_pipeline,
+    run,
+    transform_records,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+# --- Pure logic tests (no I/O) ---
 
-    # Act: build structured records.
-    records = build_records(raw_items)
+def test_filter_records() -> None:
+    """Should keep only records with all required fields."""
+    records = [
+        {"name": "Alice", "email": "a@b.com"},
+        {"name": "Bob", "email": ""},
+        {"name": "Carol"},
+    ]
+    result = filter_records(records, ["name", "email"])
+    assert len(result) == 1
+    assert result[0]["name"] == "Alice"
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+
+def test_filter_no_requirements() -> None:
+    """No required fields means keep everything."""
+    records = [{"a": 1}, {"b": 2}]
+    result = filter_records(records, [])
+    assert len(result) == 2
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_transform_records() -> None:
+    """Should rename fields according to map."""
+    records = [{"first_name": "Alice", "age": 30}]
+    result = transform_records(records, {"first_name": "name"})
+    assert result[0]["name"] == "Alice"
+    assert result[0]["age"] == 30
+    assert "first_name" not in result[0]
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_enrich_records() -> None:
+    """Should add defaults for missing fields."""
+    records = [{"name": "Alice"}, {"name": "Bob", "role": "admin"}]
+    result = enrich_records(records, {"role": "user", "active": True})
+    assert result[0]["role"] == "user"
+    assert result[0]["active"] is True
+    assert result[1]["role"] == "admin"  # Not overwritten.
+
+
+# --- Pipeline tests ---
+
+def test_process_pipeline_full() -> None:
+    """Full pipeline with filter + enrich + rename."""
+    records = [
+        {"first": "Alice", "email": "a@b.com"},
+        {"first": "Bob", "email": ""},
+    ]
+    result, stats = process_pipeline(
+        records,
+        required_fields=["first", "email"],
+        rename_map={"first": "name"},
+        defaults={"active": True},
+    )
+    assert len(result) == 1
+    assert result[0]["name"] == "Alice"
+    assert result[0]["active"] is True
+    assert stats.filtered_out == 1
+
+
+def test_process_pipeline_passthrough() -> None:
+    """No config means passthrough."""
+    records = [{"a": 1}]
+    result, stats = process_pipeline(records)
+    assert result == records
+    assert stats.filtered_out == 0
+
+
+# --- Integration tests (using in-memory I/O) ---
+
+def test_run_with_in_memory_io() -> None:
+    """Full run using InMemoryReader/Writer (no filesystem)."""
+    records = [
+        {"name": "Alice", "score": 90},
+        {"name": "Bob", "score": 60},
+    ]
+    reader = InMemoryReader(records)
+    writer = InMemoryWriter()
+
+    config = {"required_fields": ["name", "score"]}
+    stats = run(reader, writer, config)
+
+    assert stats.total_input == 2
+    assert stats.total_output == 2
+    assert len(writer.results) == 2
+
+
+def test_run_filters_in_memory() -> None:
+    """Filtering should work through the full pipeline."""
+    reader = InMemoryReader([
+        {"name": "Alice", "email": "a@b.com"},
+        {"name": "Bob"},
+    ])
+    writer = InMemoryWriter()
+
+    stats = run(reader, writer, {"required_fields": ["name", "email"]})
+    assert stats.total_output == 1
+    assert writer.results[0]["name"] == "Alice"

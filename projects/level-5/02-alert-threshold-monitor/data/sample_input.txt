@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Alert Threshold Monitor
+-----------------------------------------
+This file explains the companion metrics.json and thresholds.json.
+
+metrics.json contains time-series readings:
+  {"metric": "cpu_usage", "value": 85.2, "ts": "2024-03-01T10:00:00"}
+  {"metric": "cpu_usage", "value": 92.1, "ts": "2024-03-01T10:05:00"}
+  {"metric": "memory_pct", "value": 67.0, "ts": "2024-03-01T10:00:00"}
+  {"metric": "disk_free_gb", "value": 5.2, "ts": "2024-03-01T10:00:00"}
+  {"metric": "disk_free_gb", "value": 3.1, "ts": "2024-03-01T10:05:00"}
+  {"metric": "error_rate", "value": 0.05, "ts": "2024-03-01T10:00:00"}
+
+thresholds.json defines alert rules:
+  cpu_usage:     warn > 80, critical > 95
+  memory_pct:    warn > 75, critical > 90
+  disk_free_gb:  warn < 10, critical < 5
+  error_rate:    warn > 0.01, critical > 0.1
+
+Expected alerts:
+  cpu_usage at 85.2 -> WARNING (>80)
+  cpu_usage at 92.1 -> WARNING (>80 but <95)
+  disk_free_gb at 3.1 -> CRITICAL (<5)

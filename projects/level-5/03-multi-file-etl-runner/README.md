@@ -13,18 +13,18 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/03-multi-file-etl-runner
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --source-dir data/sources --output data/etl_output.json --strategy deduplicate --key id
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+ETL complete: 5 records from 2 files
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/etl_output.json`
 - Passing tests
 - Updated `notes.md`
 
@@ -35,20 +35,21 @@ pytest -q
 4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Put a CSV with different headers (e.g. `user,value`) in the sources directory alongside the existing files.
+2. Point `--source-dir` at an empty directory with no CSV files.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that all source files share the same header columns before merging.
+2. Return an empty result with a clear message when no files are found.
+3. Add tests for mixed-header and empty-directory cases.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the difference between append, deduplicate, and update merge strategies?
+2. Why does `merge_deduplicate` use a set to track seen keys?
+3. What happens if two files have overlapping keys with `merge_update`?
+4. How does this ETL pattern apply to data warehouse loading in production?
 
 ## Mastery check
 You can move on when you can:

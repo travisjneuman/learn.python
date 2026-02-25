@@ -1,5 +1,19 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project uses CLI arguments — no input file needed.
+
+Usage examples:
+    python project.py temp --c-to-f 100
+    python project.py temp --f-to-c 212
+    python project.py dist --km-to-mi 42.195
+    python project.py dist --mi-to-km 26.2
+    python project.py weight --kg-to-lbs 70
+    python project.py weight --lbs-to-kg 154
+    python project.py batch data/batch_ops.json
+    python project.py --json temp --c-to-f 100
+    python project.py -v dist --km-to-mi 10
+
+Sample batch JSON file (data/batch_ops.json):
+[
+    {"category": "temp", "conversion": "c-to-f", "value": 100},
+    {"category": "dist", "conversion": "km-to-mi", "value": 42.195},
+    {"category": "weight", "conversion": "kg-to-lbs", "value": 70}
+]

@@ -5,49 +5,54 @@ Home: [README](../../../README.md)
 - map commands to handler functions
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Map text commands (upper, lower, reverse, etc.) to handler functions using a dictionary dispatcher. You will learn the function-as-value pattern, where commands are looked up in a dict and called dynamically.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/11-command-dispatcher
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Command Dispatcher ===
+
+  upper "hello world"       => HELLO WORLD
+  lower "THIS SHOULD BE..." => this should be lowercase
+  reverse "Python is fun"   => nuf si nohtyP
+
+3 commands processed. Output written to data/output.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a new command: `replace old new text` that replaces all occurrences of `old` with `new` in the text.
+2. Add a `--list` flag that prints all available commands and exits.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Send a command with no arguments like just `upper` (no text) -- does `dispatch()` handle it?
+2. Send an unknown command like `fly to the moon` -- does the error dict include the command name?
+3. Send an empty line -- does the dispatcher skip it or crash?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `dispatch()` returns an error dict when no arguments are provided.
+2. Include the attempted command name in the "Unknown command" error message.
+3. Add a test for the no-arguments case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `COMMANDS` map command names to functions instead of using if/elif?
+2. What does `dispatch()` returning a dict (not raising an exception) mean for error handling?
+3. Why does `list_commands()` return sorted keys from the `COMMANDS` dict?
+4. Where would command dispatchers appear in real software (chatbots, CLI frameworks, REST API routers)?
 
 ## Mastery check
 You can move on when you can:

@@ -1,5 +1,18 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "system": "ecommerce-platform",
+  "services": [
+    {"name": "api-gateway", "dependencies": ["auth", "catalog", "orders"], "loc": 2000, "coverage": 85},
+    {"name": "auth", "dependencies": [], "loc": 800, "coverage": 90},
+    {"name": "catalog", "dependencies": ["database"], "loc": 3500, "coverage": 75},
+    {"name": "orders", "dependencies": ["catalog", "payment", "notification"], "loc": 6000, "coverage": 60},
+    {"name": "payment", "dependencies": ["auth"], "loc": 1200, "coverage": 80},
+    {"name": "notification", "dependencies": [], "loc": 500, "coverage": 40},
+    {"name": "database", "dependencies": [], "loc": 300, "coverage": 95}
+  ],
+  "thresholds": {
+    "max_avg_dependencies": 3.0,
+    "max_service_loc": 5000,
+    "min_test_coverage_pct": 70,
+    "max_dependency_depth": 4
+  }
+}

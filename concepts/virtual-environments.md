@@ -2,6 +2,11 @@
 
 A virtual environment is an isolated Python installation. Each project gets its own set of packages, so they don't conflict with each other.
 
+## Visualize It
+
+See how Python finds packages via `sys.path` — the key to understanding environments:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=import%20sys%0Afor%20p%20in%20sys.path%5B%3A3%5D%3A%0A%20%20%20%20print%28p%29%0A%0Aimport%20os%0Aprint%28os.name%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Why virtual environments matter
 
 Without virtual environments:
@@ -145,14 +150,9 @@ The `.venv/` folder is large and machine-specific. Only commit `requirements.txt
 python3 -m venv .venv    # Use python3 explicitly if needed
 ```
 
-## Related exercises
+## Practice
 
-- [Expansion Modules](../projects/modules/README.md) (each module uses a virtual environment)
-
----
-
-## Practice This
-
+- [Expansion Modules](../projects/modules/README.md)
 - [Level 2 / 03 Data Cleaning Pipeline](../projects/level-2/03-data-cleaning-pipeline/README.md)
 - [Level 2 / 15 Level2 Mini Capstone](../projects/level-2/15-level2-mini-capstone/README.md)
 - [Level 3 / 10 Dependency Boundary Lab](../projects/level-3/10-dependency-boundary-lab/README.md)

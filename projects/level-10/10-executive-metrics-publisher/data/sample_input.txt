@@ -1,5 +1,21 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "reliability": {
+    "uptime_pct": 99.95,
+    "incidents_this_period": 2,
+    "incidents_last_period": 3,
+    "mttr_hours": 0.5,
+    "previous_uptime": 99.9
+  },
+  "velocity": {
+    "deploys_per_week": 8,
+    "lead_time_days": 2.5,
+    "change_failure_rate_pct": 4.0,
+    "previous_deploys": 6,
+    "previous_lead_time": 3.0
+  },
+  "quality": {
+    "test_coverage_pct": 82,
+    "open_bugs": 15,
+    "tech_debt_hours": 120
+  }
+}

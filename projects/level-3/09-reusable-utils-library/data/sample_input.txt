@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project is a utility library — no input file needed.
+
+Usage:
+    python project.py slugify "Hello World!"
+    python project.py convert my_variable_name --to camel
+    python project.py convert myVariableName --to snake
+    python project.py validate user@example.com --type email
+    python project.py validate "https://example.com" --type url
+
+The real value is importing these functions in other projects:
+    from project import slugify, chunk, validate_email

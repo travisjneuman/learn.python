@@ -1,54 +1,68 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Excel Input Health Check."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    detect_delimiter,
+    check_headers,
+    check_row_completeness,
+    check_empty_columns,
+    health_check,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+@pytest.mark.parametrize(
+    "lines, expected",
+    [
+        (["a,b,c", "1,2,3"], ","),
+        (["a\tb\tc", "1\t2\t3"], "\t"),
+        (["a;b;c", "1;2;3"], ";"),
+        (["a|b|c", "1|2|3"], "|"),
+    ],
+)
+def test_detect_delimiter(lines: list[str], expected: str) -> None:
+    assert detect_delimiter(lines) == expected
 
-    # Act: build structured records.
-    records = build_records(raw_items)
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_check_headers_detects_blanks_and_dupes() -> None:
+    rows = [["name", "", "name", "age"]]
+    result = check_headers(rows)
+    assert result["present"] is True
+    assert len(result["issues"]) == 2  # one blank, one duplicate
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_check_row_completeness_finds_short_rows() -> None:
+    rows = [
+        ["a", "b", "c"],
+        ["1", "2", "3"],
+        ["4", "5"],          # short — only 2 columns
+        ["6", "7", "8", "9"],  # long — 4 columns
+    ]
+    result = check_row_completeness(rows)
+    assert result["short_rows"] == [3]
+    assert result["long_rows"] == [4]
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_check_empty_columns() -> None:
+    rows = [
+        ["a", "b", "c"],
+        ["1", "", "3"],
+        ["2", "", "4"],
+    ]
+    assert check_empty_columns(rows) == [1]
+
+
+def test_health_check_ok_file(tmp_path: Path) -> None:
+    csv_file = tmp_path / "good.csv"
+    csv_file.write_text("name,age\nAlice,30\nBob,25\n", encoding="utf-8")
+    report = health_check(csv_file)
+    assert report["status"] == "OK"
+    assert report["completeness"]["data_rows"] == 2
+
+
+def test_health_check_empty_file(tmp_path: Path) -> None:
+    csv_file = tmp_path / "empty.csv"
+    csv_file.write_text("", encoding="utf-8")
+    report = health_check(csv_file)
+    assert report["status"] == "FAIL"

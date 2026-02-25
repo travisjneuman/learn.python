@@ -13,41 +13,48 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/03-robust-csv-ingestor
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.csv --output-dir data/output
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_rows": 8,
+  "good": 5,
+  "quarantined": 3,
+  "errors": [ ... ]
+}
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output/clean_data.csv` — rows that passed validation
+- `data/output/quarantined_rows.csv` — bad rows with row numbers
+- `data/output/ingestion_report.json` — summary with error details
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--max-errors` flag that stops processing after N quarantined rows.
+2. Add type validation: check that the `age` column contains only integers.
+3. Re-run script and tests — add a parametrized test for the new type check.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed it a CSV with no header row — observe what happens to the column count logic.
+2. Create a CSV where quoted fields contain the delimiter character (`"Smith, Jr."`) — does it handle this?
+3. Add a row with embedded newlines and see if the parser splits it incorrectly.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a `--has-header` flag (default True) to handle header-less CSVs.
+2. Ensure the quarantine file includes the original error reason per row.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the quarantine file prepend the original row number?
+2. What is the difference between "too few columns" and "all fields empty"?
+3. Why do we write the quarantine file even if it is empty?
+4. How would you adapt this pattern for streaming very large files (gigabytes)?
 
 ## Mastery check
 You can move on when you can:

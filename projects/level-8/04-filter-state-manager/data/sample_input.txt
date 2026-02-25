@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+status=active operator=eq
+priority>3 operator=gt
+sort=created_at direction=desc
+search=urgent
+page_size=25

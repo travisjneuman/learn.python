@@ -1,48 +1,40 @@
-"""Beginner test module with heavy comments.
+"""Tests for Word Counter Basic."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import analyse_text, count_lines, count_words, word_frequencies
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_count_words_simple() -> None:
+    """Counting words in a simple sentence."""
+    assert count_words("hello world") == 2
+    assert count_words("one") == 1
+    assert count_words("") == 0
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_count_lines() -> None:
+    """Line counting should handle single and multi-line text."""
+    assert count_lines("line one\nline two\nline three") == 3
+    assert count_lines("single line") == 1
+    assert count_lines("") == 0
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_word_frequencies_normalises_case() -> None:
+    """'The' and 'the' should be counted as the same word."""
+    freq = word_frequencies("The the THE")
+    assert freq["the"] == 3
+
+
+def test_word_frequencies_strips_punctuation() -> None:
+    """Punctuation at word boundaries should be removed."""
+    freq = word_frequencies("hello, hello! Hello.")
+    assert freq["hello"] == 3
+
+
+def test_analyse_text_returns_all_keys() -> None:
+    """The summary should contain all expected keys."""
+    result = analyse_text("Python is great. Python is fun.")
+    assert "lines" in result
+    assert "words" in result
+    assert "characters" in result
+    assert "unique_words" in result
+    assert "top_words" in result
+    assert result["words"] == 6

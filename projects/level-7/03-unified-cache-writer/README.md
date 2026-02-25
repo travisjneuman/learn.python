@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a TTL (time-to-live) parameter so cached entries expire after N seconds.
+2. Add a `clear()` method to each backend that removes all entries and resets stats.
+3. Re-run script and tests — verify TTL expiry and clear work on all three backends.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Request an unknown backend name (e.g. `"redis"`) from `get_cache()` and observe the KeyError.
+2. Write a very large value to the file backend and check if JSON serialization handles it.
+3. Close the SQLite connection mid-operation and observe the error.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Have `get_cache()` raise a clear `ValueError` for unknown backends with the valid options listed.
+2. Add a max-size check before writing to the file backend.
+3. Add a test confirming unknown backends produce a helpful error message.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is the strategy pattern useful for swappable cache backends?
+2. What happened when an unknown backend was requested?
+3. How did the explicit `ValueError` message help debugging?
+4. When would you choose SQLite cache over memory or file cache in production?
 
 ## Mastery check
 You can move on when you can:

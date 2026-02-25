@@ -1,5 +1,18 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+incident_id: INC-2025-042
+title: "Payment processing outage"
+severity: SEV1
+affected_users: 15000
+duration_minutes: 47
+timeline:
+  14:23 Alert fired: payment error rate >5%
+  14:25 On-call engineer paged
+  14:30 Root cause identified: expired TLS certificate on payment gateway
+  14:35 Certificate renewed and deployed
+  14:40 Error rate returning to baseline
+  15:10 All-clear declared
+root_cause: "TLS certificate for payment gateway expired, no automated renewal configured"
+contributing_factors: "No certificate expiry monitoring, manual renewal process"
+action_items:
+  - "Implement cert-manager for automated TLS renewal" owner=platform-team due=2025-02-15
+  - "Add certificate expiry alerting at 30-day threshold" owner=sre-team due=2025-02-01
+  - "Document certificate renewal runbook" owner=sre-team due=2025-01-25

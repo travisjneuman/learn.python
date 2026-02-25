@@ -1,48 +1,86 @@
-"""Beginner test module with heavy comments.
+"""Tests for List Search Benchmark.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Covers:
+- Linear search correctness
+- Binary search correctness
+- Set search correctness
+- Benchmark execution
+- Edge cases
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
+import pytest
 
-# Import the function under test directly from the project module.
-from project import load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+from project import (
+    binary_search,
+    generate_test_data,
+    linear_search,
+    run_benchmark,
+    set_search,
+)
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_linear_search_found() -> None:
+    """Linear search should return the correct index."""
+    data = [10, 20, 30, 40, 50]
+    assert linear_search(data, 30) == 2
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_linear_search_not_found() -> None:
+    """Linear search should return -1 for missing values."""
+    data = [10, 20, 30]
+    assert linear_search(data, 99) == -1
+
+
+def test_binary_search_found() -> None:
+    """Binary search should find elements in sorted data."""
+    data = [10, 20, 30, 40, 50]
+    assert binary_search(data, 40) == 3
+
+
+def test_binary_search_not_found() -> None:
+    """Binary search should return -1 for missing values."""
+    data = [10, 20, 30, 40, 50]
+    assert binary_search(data, 25) == -1
+
+
+@pytest.mark.parametrize(
+    "target,expected",
+    [(10, 0), (50, 4), (30, 2), (99, -1)],
+)
+def test_binary_search_parametrized(target: int, expected: int) -> None:
+    """Binary search should handle first, last, middle, and missing."""
+    data = [10, 20, 30, 40, 50]
+    assert binary_search(data, target) == expected
+
+
+def test_set_search() -> None:
+    """Set search should return True/False for membership."""
+    data_set = {10, 20, 30}
+    assert set_search(data_set, 20) is True
+    assert set_search(data_set, 99) is False
+
+
+def test_linear_search_empty_list() -> None:
+    """Searching an empty list should return -1."""
+    assert linear_search([], 5) == -1
+
+
+def test_binary_search_empty_list() -> None:
+    """Binary search on empty list should return -1."""
+    assert binary_search([], 5) == -1
+
+
+def test_generate_test_data_reproducible() -> None:
+    """Same seed should produce identical data."""
+    d1 = generate_test_data(100, seed=42)
+    d2 = generate_test_data(100, seed=42)
+    assert d1 == d2
+
+
+def test_run_benchmark_returns_results() -> None:
+    """Benchmark should return timing data for each size."""
+    results = run_benchmark(sizes=[50, 100], iterations=5)
+    assert len(results) == 2
+    assert results[0]["size"] == 50
+    assert "linear_found_us" in results[0]
+    assert "binary_found_us" in results[0]

@@ -1,54 +1,97 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Cross File Joiner."""
+from __future__ import annotations
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+import json
+import pytest
 from pathlib import Path
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+from project import (
+    index_by_key,
+    join_inner,
+    join_left,
+    join_full,
+    validate_key_exists,
+    run,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+# ---------- index_by_key ----------
 
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+def test_index_by_key_basic() -> None:
+    records = [{"id": "1", "name": "Alice"}, {"id": "2", "name": "Bob"}]
+    idx = index_by_key(records, "id")
+    assert "1" in idx and "2" in idx
+    assert idx["1"]["name"] == "Alice"
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_index_by_key_skips_empty_keys() -> None:
+    records = [{"id": "", "name": "Ghost"}, {"id": "1", "name": "Alice"}]
+    idx = index_by_key(records, "id")
+    assert len(idx) == 1
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+# ---------- join strategies ----------
 
-    # Act: build summary from records.
-    summary = build_summary(records)
+@pytest.mark.parametrize("strategy_fn,expected_count", [
+    (join_inner, 1),
+    (join_left, 2),
+    (join_full, 3),
+])
+def test_join_strategies(strategy_fn, expected_count: int) -> None:
+    left = {"1": {"id": "1", "name": "Alice"}, "2": {"id": "2", "name": "Bob"}}
+    right = {"1": {"id": "1", "dept": "Eng"}, "3": {"id": "3", "dept": "Sales"}}
+    result = strategy_fn(left, right)
+    assert len(result) == expected_count
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+
+def test_join_inner_merges_fields() -> None:
+    left = {"1": {"id": "1", "name": "Alice"}}
+    right = {"1": {"id": "1", "dept": "Eng"}}
+    result = join_inner(left, right)
+    assert result[0]["name"] == "Alice"
+    assert result[0]["dept"] == "Eng"
+
+
+# ---------- validate_key_exists ----------
+
+def test_validate_key_exists_passes() -> None:
+    records = [{"id": "1", "name": "Alice"}]
+    validate_key_exists(records, "id", "test.csv")  # should not raise
+
+
+def test_validate_key_exists_raises_on_missing() -> None:
+    records = [{"name": "Alice"}]
+    with pytest.raises(ValueError, match="not found"):
+        validate_key_exists(records, "id", "test.csv")
+
+
+# ---------- integration: run with CSV files ----------
+
+@pytest.mark.parametrize("strategy,expected_count", [
+    ("inner", 2),
+    ("left", 3),
+    ("full", 4),
+])
+def test_run_strategies(tmp_path: Path, strategy: str, expected_count: int) -> None:
+    left = tmp_path / "left.csv"
+    left.write_text("id,name\n1,Alice\n2,Bob\n3,Charlie\n", encoding="utf-8")
+    right = tmp_path / "right.csv"
+    right.write_text("id,dept\n1,Eng\n2,Design\n4,Sales\n", encoding="utf-8")
+    output = tmp_path / "out.json"
+    report = run(left, right, output, "id", strategy)
+    assert report["joined_records"] == expected_count
+    assert output.exists()
+    saved = json.loads(output.read_text())
+    assert saved["strategy"] == strategy
+
+
+def test_run_with_json_files(tmp_path: Path) -> None:
+    left = tmp_path / "left.json"
+    left.write_text(json.dumps([{"k": "a", "v": 1}, {"k": "b", "v": 2}]))
+    right = tmp_path / "right.json"
+    right.write_text(json.dumps([{"k": "a", "x": 10}]))
+    output = tmp_path / "out.json"
+    report = run(left, right, output, "k", "inner")
+    assert report["joined_records"] == 1
+    assert report["data"][0]["v"] == 1
+    assert report["data"][0]["x"] == 10

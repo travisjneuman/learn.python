@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Short line.
+This is a medium-length line with some extra words added for variety.
+Tiny.
+This line is considerably longer than the others because it contains a detailed description of something important that takes many words to express fully.
+Another short one.
+Medium line here with a moderate number of characters in it.
+OK.
+Here is yet another line of text that falls somewhere in the medium range of length for our analysis.

@@ -1,5 +1,12 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "runbooks": [
+    {
+      "template": "table_maintenance",
+      "params": {"table_name": "orders"}
+    },
+    {
+      "template": "data_cleanup",
+      "params": {"table_name": "order_items", "fk_column": "order_id", "parent_table": "orders"}
+    }
+  ]
+}

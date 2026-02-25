@@ -1,5 +1,17 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Malformed Row Quarantine
+-------------------------------------------
+This file explains the companion sample_input.csv.
+
+sample_input.csv contains transaction records with malformed rows:
+  Row 1: header — txn_id,date,amount,currency,merchant
+  Row 2: T001,2024-01-15,49.99,USD,Amazon         (valid)
+  Row 3: T002,2024-01-16,125.00,EUR,Shopify        (valid)
+  Row 4: T003,not-a-date,30.00,USD,eBay            (malformed date)
+  Row 5: T004,2024-01-18,abc,GBP,Stripe            (malformed amount — not numeric)
+  Row 6: T005,2024-01-19,75.50,USD                  (missing merchant field)
+  Row 7: T006,2024-01-20,-10.00,USD,Refund Co       (valid — negative amount allowed)
+  Row 8: T007,2024-01-21,200.00,JPY,Nintendo,extra  (extra field)
+  Row 9: T008,2024-01-22,0.00,USD,FreeStore         (valid — zero amount)
+
+Expected: 4 valid rows, 4 quarantined rows
+Quarantine reasons: bad date, bad amount, missing field, extra field

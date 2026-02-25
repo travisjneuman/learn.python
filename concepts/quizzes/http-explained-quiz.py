@@ -3,6 +3,8 @@ Quiz: HTTP Explained
 Review: concepts/http-explained.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) Hyper Transfer Text Protocol")
     print("  d) Home Tool Transfer Protocol")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "a":
         score += 1
         print("Correct! HyperText Transfer Protocol is how browsers")
@@ -40,7 +42,7 @@ def run_quiz():
     print("  c) DELETE")
     print("  d) PATCH")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! POST is used to create new resources.")
@@ -59,7 +61,7 @@ def run_quiz():
     print("  c) The requested resource was not found")
     print("  d) You are not authorized")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! 404 means 'Not Found.' The URL you requested")
@@ -78,7 +80,7 @@ def run_quiz():
     print("  c) 3xx")
     print("  d) 4xx")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 2xx = success (200 OK, 201 Created, etc.).")
@@ -97,7 +99,7 @@ def run_quiz():
     print("  c) JSON")
     print("  d) Plain text")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! JSON (JavaScript Object Notation) is the standard")
@@ -117,7 +119,7 @@ def run_quiz():
     print("  c) The server requires it")
     print("  d) Python will crash without it")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Without a timeout, your program will wait")
@@ -136,7 +138,7 @@ def run_quiz():
     print("  c) An internal server error occurred (their fault)")
     print("  d) The request was successful")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! 5xx errors are server-side problems.")

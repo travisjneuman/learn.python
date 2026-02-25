@@ -1,5 +1,19 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "system_config": {
+    "encryption_at_rest": true,
+    "algorithm": "AES-256-GCM",
+    "key_rotation_days": 90,
+    "tls_version": "1.3"
+  },
+  "access_policies": [
+    {"name": "admin-access", "mfa_required": true, "session_timeout_min": 30},
+    {"name": "developer-access", "mfa_required": true, "session_timeout_min": 480},
+    {"name": "read-only-access", "mfa_required": false, "session_timeout_min": 60}
+  ],
+  "test_results": [
+    {"name": "auth-smoke-test", "passed": true, "duration_ms": 120},
+    {"name": "encryption-verify", "passed": true, "duration_ms": 45},
+    {"name": "access-boundary-test", "passed": true, "duration_ms": 230},
+    {"name": "key-rotation-check", "passed": false, "duration_ms": 15}
+  ]
+}

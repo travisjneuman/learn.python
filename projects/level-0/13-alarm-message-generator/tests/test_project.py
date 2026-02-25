@@ -1,48 +1,53 @@
-"""Beginner test module with heavy comments.
+"""Tests for Alarm Message Generator."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import alarm_summary, format_alarm, parse_alarm, sort_by_severity
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_parse_valid_alarm() -> None:
+    """A well-formed line should produce a structured alarm dict."""
+    result = parse_alarm("critical | web-01 | CPU at 99%")
+    assert result["severity"] == "critical"
+    assert result["source"] == "web-01"
+    assert result["message"] == "CPU at 99%"
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_parse_bad_severity() -> None:
+    """An unknown severity should return an error."""
+    result = parse_alarm("danger | web-01 | disk full")
+    assert "error" in result
+    assert "Unknown severity" in result["error"]
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_format_alarm_includes_fields() -> None:
+    """The formatted message should contain all alarm fields."""
+    alarm = {"severity": "warning", "source": "db-01", "message": "Slow query"}
+    output = format_alarm(alarm)
+    assert "WARNING" in output
+    assert "db-01" in output
+    assert "Slow query" in output
+
+
+def test_sort_by_severity_critical_first() -> None:
+    """Critical alarms should sort before warning and info."""
+    alarms = [
+        {"severity": "info", "source": "a", "message": "ok"},
+        {"severity": "critical", "source": "b", "message": "bad"},
+        {"severity": "warning", "source": "c", "message": "hmm"},
+    ]
+    sorted_alarms = sort_by_severity(alarms)
+    assert sorted_alarms[0]["severity"] == "critical"
+    assert sorted_alarms[1]["severity"] == "warning"
+    assert sorted_alarms[2]["severity"] == "info"
+
+
+def test_alarm_summary_counts() -> None:
+    """Summary should count alarms by severity."""
+    alarms = [
+        {"severity": "critical", "source": "a", "message": "x"},
+        {"severity": "critical", "source": "b", "message": "y"},
+        {"severity": "info", "source": "c", "message": "z"},
+    ]
+    summary = alarm_summary(alarms)
+    assert summary["by_severity"]["critical"] == 2
+    assert summary["by_severity"]["info"] == 1
+    assert summary["total"] == 3

@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Check server status
+Deploy new build
+Check server status
+  Run integration tests!!!
+deploy new build
+Update documentation
+CHECK SERVER STATUS
+run integration tests
+Clear old log files

@@ -1,5 +1,10 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+password
+abc123
+MyStr0ng!Pass#2024
+short
+ALLUPPERcase
+12345678
+hunter2
+Correct-Horse-Battery-Staple!
+qwerty
+P@ssw0rd99!

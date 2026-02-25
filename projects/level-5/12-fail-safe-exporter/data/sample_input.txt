@@ -1,5 +1,23 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Fail Safe Exporter
+-------------------------------------
+This file explains the companion sample_input.json.
+
+sample_input.json contains records to export:
+  [
+    {"id": 1, "name": "Widget A", "price": 9.99, "stock": 150},
+    {"id": 2, "name": "Gadget B", "price": 24.99, "stock": 75},
+    {"id": 3, "name": "Tool C", "price": 14.50, "stock": 200},
+    {"id": 4, "name": "Part D", "price": 7.25, "stock": 500}
+  ]
+
+Export formats supported:
+  JSON: data/exported.json (pretty-printed array)
+  CSV:  data/exported.csv  (headers from record keys)
+
+Atomic write strategy:
+  1. Write to temporary file (exported.json.tmp)
+  2. Verify temp file is valid (re-read and parse)
+  3. Rename temp file to final path (atomic on most filesystems)
+  4. If rename fails, clean up temp file
+
+Expected: 4 records exported atomically, no partial writes on failure

@@ -1,54 +1,62 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Configurable Batch Runner."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import json
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import action_count_lines, action_word_frequency, action_file_stats, run_batch, run
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_action_count_lines(tmp_path: Path) -> None:
+    f = tmp_path / "data.txt"
+    f.write_text("hello\nworld\nhello again\n", encoding="utf-8")
+    result = action_count_lines(f, {})
+    assert result["total_lines"] == 3
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_action_count_lines_with_pattern(tmp_path: Path) -> None:
+    f = tmp_path / "data.txt"
+    f.write_text("error: something\ninfo: ok\nerror: another\n", encoding="utf-8")
+    result = action_count_lines(f, {"pattern": "error"})
+    assert result["matching_lines"] == 2
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+@pytest.mark.parametrize("top_n", [1, 3, 5])
+def test_action_word_frequency(tmp_path: Path, top_n: int) -> None:
+    f = tmp_path / "data.txt"
+    f.write_text("the cat sat on the mat the cat", encoding="utf-8")
+    result = action_word_frequency(f, {"top_n": top_n})
+    assert len(result["top_words"]) <= top_n
+    assert result["top_words"][0][0] == "the"
+
+
+def test_action_file_stats(tmp_path: Path) -> None:
+    f = tmp_path / "data.txt"
+    f.write_text("hello world\n", encoding="utf-8")
+    result = action_file_stats(f, {})
+    assert result["line_count"] == 1
+    assert result["word_count"] == 2
+
+
+def test_run_batch_handles_unknown_action(tmp_path: Path) -> None:
+    config = {"jobs": [{"name": "bad", "action": "nonexistent", "input": "x.txt"}]}
+    results = run_batch(config, tmp_path)
+    assert results[0]["status"] == "skipped"
+
+
+def test_run_integration(tmp_path: Path) -> None:
+    data_file = tmp_path / "input.txt"
+    data_file.write_text("one two three\nfour five six\n", encoding="utf-8")
+
+    config_file = tmp_path / "config.json"
+    config_file.write_text(json.dumps({
+        "jobs": [
+            {"name": "count", "action": "count_lines", "input": "input.txt", "params": {}},
+            {"name": "stats", "action": "file_stats", "input": "input.txt", "params": {}},
+        ]
+    }), encoding="utf-8")
+
+    output = tmp_path / "report.json"
+    report = run(config_file, output)
+    assert report["succeeded"] == 2
+    assert report["failed"] == 0

@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+# Queries to analyze (one per line, lines starting with # are ignored)
+SELECT * FROM orders WHERE customer = 'alice'
+SELECT * FROM orders WHERE amount > 50 ORDER BY created_at
+SELECT customer, SUM(amount) FROM orders GROUP BY customer
+SELECT * FROM orders WHERE product = 'widget' AND amount > 30

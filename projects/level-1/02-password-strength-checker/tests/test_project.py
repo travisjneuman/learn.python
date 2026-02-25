@@ -1,48 +1,31 @@
-"""Beginner test module with heavy comments.
+"""Tests for Password Strength Checker."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import check_character_variety, check_common, check_length, score_password
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_check_length_short() -> None:
+    assert check_length("abc") == 0
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_check_length_long() -> None:
+    assert check_length("a" * 16) == 3
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_character_variety_all_types() -> None:
+    result = check_character_variety("Abc1!")
+    assert result["uppercase"] is True
+    assert result["lowercase"] is True
+    assert result["digit"] is True
+    assert result["special"] is True
+
+
+def test_common_password_detected() -> None:
+    assert check_common("password") is True
+    assert check_common("PASSWORD") is True
+    assert check_common("xK9#mP2z") is False
+
+
+def test_score_strong_password() -> None:
+    result = score_password("MyStr0ng!Pass#2024")
+    assert result["strength"] == "strong"
+    assert result["total_score"] >= 7

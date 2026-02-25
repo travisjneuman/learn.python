@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+[
+  {"source": "web-server", "action": "deploy", "version": "1.2.0"},
+  {"source": "database", "action": "backup", "target": "prod-db"},
+  {"source": "web-server", "action": "deploy", "version": "1.2.0"},
+  {"source": "cache", "action": "flush", "scope": "all"},
+  {"source": "database", "action": "backup", "target": "prod-db"},
+  {"source": "scheduler", "action": "run-etl", "pipeline": "daily-sales"}
+]

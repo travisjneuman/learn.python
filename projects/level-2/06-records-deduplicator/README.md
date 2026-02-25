@@ -13,48 +13,51 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/06-records-deduplicator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt --keys name email
+python project.py data/sample_input.txt --keys email --keep last
+python project.py data/sample_input.txt --keys email --show-groups
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"total_records": 9, "unique_count": 7, ...}
+Unique records (7): ...
+9 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Dedup results on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--output` flag that writes unique records to a new CSV file.
+2. Add a `--case-sensitive` flag that disables lowercase normalisation.
+3. Add a count of how many times each duplicate key appeared.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Use a key field that does not exist in the CSV — what happens?
+2. Feed a CSV where every row is identical — is the output correct?
+3. Use an empty file — does it crash?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that key_fields exist in the headers before processing.
+2. Handle the all-duplicates case gracefully.
+3. Add a test for missing key fields raising a clear error.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are sets used for tracking seen keys instead of lists?
+2. What is the time complexity of `set.add()` vs `list.append()` for lookups?
+3. How does the `keep="last"` mode differ in implementation from `keep="first"`?
+4. When would you use deduplication in a real data pipeline?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain O(1) vs O(n) lookup time for sets vs lists,
+- implement dedup with configurable key fields from memory,
+- describe the difference between exact and fuzzy deduplication,
+- add a new keep mode (e.g. "all") without breaking existing tests.
 
 ---
 

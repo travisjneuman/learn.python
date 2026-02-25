@@ -13,48 +13,51 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/14-anomaly-flagger
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --z-threshold 3.0
+python project.py data/sample_input.txt --iqr-factor 3.0
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Dataset: 20 values, mean=52.85, std_dev=48.62
+Anomalies found: 2
+14 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Anomaly report on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--method` flag to use only z-score or only IQR detection.
+2. Add a visual indicator (e.g. asterisks) showing where anomalies fall.
+3. Output the "cleaned" dataset with anomalies removed.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a dataset with all identical values — does z-score divide by zero?
+2. Feed a dataset with fewer than 4 values — does IQR work?
+3. Feed a dataset with only 1 value — what stats are meaningful?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Guard against zero std_dev in z_score calculation.
+2. Return empty anomalies list when dataset is too small for IQR.
+3. Handle single-value datasets gracefully in statistics.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a z-score and what does |z| > 2 mean practically?
+2. How does the IQR method differ from z-score for skewed data?
+3. Why might the same value be flagged by one method but not the other?
+4. Where is anomaly detection used in real systems (monitoring, fraud, QA)?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- calculate mean and standard deviation by hand for a small dataset,
+- explain when z-score fails (non-normal distributions),
+- describe why IQR is more robust to outliers than mean-based methods,
+- implement percentile calculation from scratch.
 
 ---
 

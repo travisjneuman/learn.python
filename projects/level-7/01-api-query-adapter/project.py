@@ -1,140 +1,208 @@
-"""Level 7 project: API Query Adapter.
+"""Level 7 / Project 01 — API Query Adapter.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Adapts different API response formats into a unified schema.
+Uses simulated API responses (no network calls) to teach
+normalization patterns.
+
+Key concepts:
+- Adapter pattern: one interface, multiple implementations
+- Schema normalization: different sources → same output shape
+- Error handling for missing/unexpected fields
+- Dataclasses for typed response containers
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "API Query Adapter"
-PROJECT_FOCUS = "API query abstraction and response parsing"
+# ---------------------------------------------------------------------------
+# Unified schema
+# ---------------------------------------------------------------------------
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class UnifiedRecord:
+    """The common shape that all API responses are normalized into."""
 
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+    id: str
+    name: str
+    value: float
+    source: str
+    timestamp: str
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# ---------------------------------------------------------------------------
+# Simulated API responses (mock data)
+# ---------------------------------------------------------------------------
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+MOCK_API_A = [
+    {"item_id": "A-001", "item_name": "Widget", "price": 9.99, "ts": "2025-01-15T08:00:00"},
+    {"item_id": "A-002", "item_name": "Gadget", "price": 24.99, "ts": "2025-01-15T09:00:00"},
+]
 
+MOCK_API_B = [
+    {"id": "B-001", "label": "Bolt Pack", "cost": 3.49, "created": "2025-01-15T10:00:00"},
+    {"id": "B-002", "label": "Nut Set", "cost": 2.99, "created": "2025-01-15T11:00:00"},
+]
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+MOCK_API_C = [
+    {"sku": "C-001", "title": "Spring", "amount": 1.50, "date": "2025-01-15T12:00:00"},
+]
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# ---------------------------------------------------------------------------
+# Adapters
+# ---------------------------------------------------------------------------
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
+
+def adapt_api_a(raw: list[dict]) -> list[UnifiedRecord]:
+    """Adapter for API A: uses item_id, item_name, price, ts."""
+    results = []
+    for r in raw:
+        results.append(UnifiedRecord(
+            id=r["item_id"], name=r["item_name"],
+            value=r["price"], source="api_a", timestamp=r["ts"],
+        ))
+    return results
+
+
+def adapt_api_b(raw: list[dict]) -> list[UnifiedRecord]:
+    """Adapter for API B: uses id, label, cost, created."""
+    results = []
+    for r in raw:
+        results.append(UnifiedRecord(
+            id=r["id"], name=r["label"],
+            value=r["cost"], source="api_b", timestamp=r["created"],
+        ))
+    return results
+
+
+def adapt_api_c(raw: list[dict]) -> list[UnifiedRecord]:
+    """Adapter for API C: uses sku, title, amount, date."""
+    results = []
+    for r in raw:
+        results.append(UnifiedRecord(
+            id=r["sku"], name=r["title"],
+            value=r["amount"], source="api_c", timestamp=r["date"],
+        ))
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Adapter registry
+# ---------------------------------------------------------------------------
+
+ADAPTERS: dict[str, callable] = {
+    "api_a": adapt_api_a,
+    "api_b": adapt_api_b,
+    "api_c": adapt_api_c,
+}
+
+
+def adapt_response(source: str, raw: list[dict]) -> list[UnifiedRecord]:
+    """Route raw data to the correct adapter by source name."""
+    adapter = ADAPTERS.get(source)
+    if adapter is None:
+        raise ValueError(f"No adapter for source '{source}'. Available: {list(ADAPTERS.keys())}")
+    return adapter(raw)
+
+
+# ---------------------------------------------------------------------------
+# Query engine
+# ---------------------------------------------------------------------------
+
+
+def query_all_sources(
+    sources: dict[str, list[dict]] | None = None,
+) -> list[UnifiedRecord]:
+    """Query all configured sources and merge into unified records."""
+    if sources is None:
+        sources = {"api_a": MOCK_API_A, "api_b": MOCK_API_B, "api_c": MOCK_API_C}
+
+    all_records: list[UnifiedRecord] = []
+    for source_name, raw_data in sources.items():
+        try:
+            records = adapt_response(source_name, raw_data)
+            all_records.extend(records)
+            logging.info("adapted source=%s records=%d", source_name, len(records))
+        except (KeyError, ValueError) as exc:
+            logging.warning("skip source=%s error=%s", source_name, exc)
+
+    return all_records
+
+
+def filter_records(
+    records: list[UnifiedRecord],
+    min_value: float | None = None,
+    source: str | None = None,
+) -> list[UnifiedRecord]:
+    """Filter unified records by optional criteria."""
+    result = records
+    if min_value is not None:
+        result = [r for r in result if r.value >= min_value]
+    if source is not None:
+        result = [r for r in result if r.source == source]
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run(input_path: Path, output_path: Path) -> dict:
+    """Load source config, adapt all APIs, write unified output."""
+    if input_path.exists():
+        config = json.loads(input_path.read_text(encoding="utf-8"))
+        sources = config.get("sources", None)
+    else:
+        sources = None  # use built-in mocks
+
+    start = time.perf_counter()
+    records = query_all_sources(sources)
+    elapsed_ms = round((time.perf_counter() - start) * 1000, 1)
+
+    summary = {
+        "total_records": len(records),
+        "sources_queried": len(sources) if sources else 3,
         "elapsed_ms": elapsed_ms,
+        "records": [
+            {"id": r.id, "name": r.name, "value": r.value,
+             "source": r.source, "timestamp": r.timestamp}
+            for r in records
+        ],
     }
 
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    logging.info("adapted %d records in %.1fms", len(records), elapsed_ms)
     return summary
 
 
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(
+        description="API Query Adapter — normalize multiple API formats"
+    )
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
     parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

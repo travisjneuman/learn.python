@@ -2,6 +2,11 @@
 
 This builds on [00_COMPUTER_LITERACY_PRIMER.md](../00_COMPUTER_LITERACY_PRIMER.md). Here we cover pipes, redirects, environment variables, and other terminal skills you need for real development.
 
+## Visualize It
+
+See how Python interacts with the operating system via `os` and `sys`:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=import%20os%0Aprint%28os.getcwd%28%29%29%0A%0Aimport%20sys%0Aprint%28sys.platform%29%0Aprint%28sys.version_info%5B%3A2%5D%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Pipes — connecting commands
 
 The `|` (pipe) sends the output of one command into another:
@@ -126,16 +131,11 @@ python -m pytest || echo "Tests failed!"
 echo "Starting..." ; python script.py ; echo "Done."
 ```
 
-## Related exercises
+## Practice
 
-- [Level 00, Exercise 01 — First Steps](../projects/level-00-absolute-beginner/01-first-steps/) (basic terminal)
-- [Module 02 — CLI Tools](../projects/modules/02-cli-tools/) (building terminal programs)
-- [Module 09 — Docker](../projects/modules/09-docker-deployment/) (Docker CLI commands)
-
----
-
-## Practice This
-
+- [Level 00 / 01 First Steps](../projects/level-00-absolute-beginner/01-first-steps/)
+- [Module 02 CLI Tools](../projects/modules/02-cli-tools/)
+- [Module 09 Docker Deployment](../projects/modules/09-docker-deployment/)
 - [Level 0 / 01 Terminal Hello Lab](../projects/level-0/01-terminal-hello-lab/README.md)
 - [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
 - [Level 0 / 03 Temperature Converter](../projects/level-0/03-temperature-converter/README.md)

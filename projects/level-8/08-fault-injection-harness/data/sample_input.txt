@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+rule: api-error type=exception probability=0.3 target=call_api message="Service unavailable"
+rule: db-delay type=delay probability=0.2 target=query_db delay_seconds=0.01
+seed: 42
+iterations: 20
+corruption_rate: 0.5

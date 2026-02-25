@@ -1,5 +1,13 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "accounts": [
+    {"id": 1, "name": "Alice", "balance": 500.00},
+    {"id": 2, "name": "Bob", "balance": 250.00},
+    {"id": 3, "name": "Charlie", "balance": 100.00}
+  ],
+  "transfers": [
+    {"from": 1, "to": 2, "amount": 75.00},
+    {"from": 2, "to": 3, "amount": 400.00},
+    {"from": 3, "to": 1, "amount": 50.00},
+    {"from": 1, "to": 3, "amount": 100.00}
+  ]
+}

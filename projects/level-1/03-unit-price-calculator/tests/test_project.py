@@ -1,48 +1,38 @@
-"""Beginner test module with heavy comments.
+"""Tests for Unit Price Calculator."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
+import pytest
 
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import calculate_unit_price, find_best_deal, parse_product_row
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_calculate_unit_price() -> None:
+    assert calculate_unit_price(10.0, 5) == 2.0
+    assert calculate_unit_price(7.99, 3) == 2.6633
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_calculate_unit_price_zero_quantity() -> None:
+    with pytest.raises(ValueError, match="Quantity must be positive"):
+        calculate_unit_price(10, 0)
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_parse_product_row_valid() -> None:
+    row = {"product": "Rice 5lb", "price": "8.99", "quantity": "5", "unit": "lb"}
+    result = parse_product_row(row)
+    assert result["unit_price"] == 1.798
+    assert "error" not in result
+
+
+def test_parse_product_row_bad_price() -> None:
+    row = {"product": "Bad", "price": "abc", "quantity": "5", "unit": "lb"}
+    result = parse_product_row(row)
+    assert "error" in result
+
+
+def test_find_best_deal() -> None:
+    products = [
+        {"product": "A", "unit_price": 2.50},
+        {"product": "B", "unit_price": 1.25},
+        {"product": "C", "unit_price": 3.00},
+    ]
+    best = find_best_deal(products)
+    assert best["product"] == "B"

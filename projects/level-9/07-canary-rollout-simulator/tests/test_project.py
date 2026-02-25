@@ -1,52 +1,109 @@
-"""Advanced test module with heavy comments.
+"""Tests for Canary Rollout Simulator.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: rollout stages, metric snapshots, rollback triggers, and successful completion.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import random
 
+import pytest
 
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    CanaryRollout,
+    MetricSnapshot,
+    RolloutPhase,
+    RolloutStage,
+    default_stages,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- MetricSnapshot -----------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+class TestMetricSnapshot:
+    def test_error_rate_delta(self) -> None:
+        snap = MetricSnapshot("s", 0.05, 0.02, 100, 100, 10)
+        assert snap.error_rate_delta == pytest.approx(0.03)
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    def test_latency_delta(self) -> None:
+        snap = MetricSnapshot("s", 0.01, 0.01, 150, 100, 10)
+        assert snap.latency_delta_ms == pytest.approx(50)
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- Successful rollout -------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestSuccessfulRollout:
+    def test_completes_all_stages(self) -> None:
+        stages = [
+            RolloutStage("s1", 5, 3, 0.1),
+            RolloutStage("s2", 50, 3, 0.1),
+            RolloutStage("s3", 100, 3, 0.1),
+        ]
+        rollout = CanaryRollout(stages, latency_threshold_ms=100)
+        result = rollout.execute(
+            baseline_error_rate=0.01, baseline_latency_ms=50,
+            rng=random.Random(42),
+        )
+        assert result.phase == RolloutPhase.COMPLETED
+        assert result.stages_completed == 3
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_default_stages_structure(self) -> None:
+        stages = default_stages()
+        assert len(stages) == 5
+        assert stages[0].traffic_pct < stages[-1].traffic_pct
+
+
+# --- Rollback on error rate ---------------------------------------------
+
+class TestRollbackOnErrors:
+    def test_rollback_on_high_error_rate(self) -> None:
+        stages = [RolloutStage("s1", 5, 3, 0.01)]
+        rollout = CanaryRollout(stages)
+
+        # Force canary to have much higher error rate
+        def bad_errors(stage, rng):
+            return 0.10  # 10% vs 1% baseline
+
+        result = rollout.execute(
+            baseline_error_rate=0.01, baseline_latency_ms=50,
+            canary_error_fn=bad_errors, rng=random.Random(0),
+        )
+        assert result.phase == RolloutPhase.ROLLED_BACK
+        assert "Error rate" in result.rollback_reason
+
+
+# --- Rollback on latency ------------------------------------------------
+
+class TestRollbackOnLatency:
+    def test_rollback_on_high_latency(self) -> None:
+        stages = [RolloutStage("s1", 5, 3, 1.0)]  # lenient error threshold
+        rollout = CanaryRollout(stages, latency_threshold_ms=20)
+
+        def slow_latency(stage, rng):
+            return 200  # 200ms vs 50ms baseline
+
+        result = rollout.execute(
+            baseline_error_rate=0.01, baseline_latency_ms=50,
+            canary_latency_fn=slow_latency, rng=random.Random(0),
+        )
+        assert result.phase == RolloutPhase.ROLLED_BACK
+        assert "Latency" in result.rollback_reason
+
+
+# --- Serialization ------------------------------------------------------
+
+class TestSerialization:
+    def test_result_to_dict(self) -> None:
+        stages = [RolloutStage("s1", 5, 3, 0.1)]
+        rollout = CanaryRollout(stages)
+        result = rollout.execute(0.01, 50, rng=random.Random(0))
+        d = result.to_dict()
+        assert "phase" in d
+        assert "snapshots" in d
+
+    @pytest.mark.parametrize("seed", [0, 42, 123])
+    def test_deterministic_with_seed(self, seed: int) -> None:
+        stages = [RolloutStage("s1", 5, 3, 0.1)]
+        r1 = CanaryRollout(stages).execute(0.01, 50, rng=random.Random(seed))
+        r2 = CanaryRollout(stages).execute(0.01, 50, rng=random.Random(seed))
+        assert r1.phase == r2.phase

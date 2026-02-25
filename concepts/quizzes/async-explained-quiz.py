@@ -3,6 +3,8 @@ Quiz: Async Explained
 Review: concepts/async-explained.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -23,7 +25,7 @@ def run_quiz():
     print("  c) Reduces memory usage")
     print("  d) Makes code easier to read")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Async is about not wasting time waiting.")
@@ -42,7 +44,7 @@ def run_quiz():
     print("  c) await def")
     print("  d) def async")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 'async def' defines a coroutine — a function")
@@ -61,7 +63,7 @@ def run_quiz():
     print("  c) Runs a function in a new thread")
     print("  d) Deletes the coroutine")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! await pauses only the current coroutine.")
@@ -81,7 +83,7 @@ def run_quiz():
     print("  c) It is too fast")
     print("  d) It raises an error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! time.sleep() blocks everything.")
@@ -103,7 +105,7 @@ def run_quiz():
     print("  c) Runs coroutines one at a time")
     print("  d) Cancels all running tasks")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! gather() starts all coroutines at once and returns")
@@ -124,7 +126,7 @@ def run_quiz():
     print("  c) Python adds await automatically")
     print("  d) The program crashes immediately")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Without await, you get a coroutine object, not the")
@@ -143,7 +145,7 @@ def run_quiz():
     print("  c) Processing a large image pixel by pixel")
     print("  d) Sorting a huge list of numbers")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Network I/O involves lots of waiting, which async")

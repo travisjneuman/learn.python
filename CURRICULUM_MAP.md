@@ -474,7 +474,7 @@ graph TB
 | Level 10 | 15 | ~60-90 hours |
 | Elite Track | 10 | ~60-80 hours |
 | Modules (12) | 56 | ~120-170 hours |
-| **Total** | **261** | **~580-840 hours** |
+| **Total** | **246** | **~580-840 hours** |
 
 ---
 

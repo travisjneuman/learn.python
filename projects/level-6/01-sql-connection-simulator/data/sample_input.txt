@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+user_login
+page_view
+api_call
+session_timeout
+error_500
+database_query
+cache_miss

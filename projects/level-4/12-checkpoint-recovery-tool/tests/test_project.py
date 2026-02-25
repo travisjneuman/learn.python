@@ -1,54 +1,77 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Checkpoint Recovery Tool."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import json
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    load_checkpoint,
+    save_checkpoint,
+    clear_checkpoint,
+    process_item,
+    process_with_checkpoints,
+    run,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_load_checkpoint_no_file(tmp_path: Path) -> None:
+    state = load_checkpoint(tmp_path / "nope.json")
+    assert state["last_processed_index"] == -1
+    assert state["results"] == []
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_save_and_load_checkpoint(tmp_path: Path) -> None:
+    cp = tmp_path / "cp.json"
+    save_checkpoint(cp, 4, [{"a": 1}])
+    state = load_checkpoint(cp)
+    assert state["last_processed_index"] == 4
+    assert len(state["results"]) == 1
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_clear_checkpoint(tmp_path: Path) -> None:
+    cp = tmp_path / "cp.json"
+    save_checkpoint(cp, 0, [])
+    assert cp.exists()
+    clear_checkpoint(cp)
+    assert not cp.exists()
+
+
+@pytest.mark.parametrize(
+    "item, expected_keys",
+    [
+        ("hello world", {"original", "length", "word_count", "uppercase"}),
+        ("", {"original", "length", "word_count", "uppercase"}),
+    ],
+)
+def test_process_item(item: str, expected_keys: set) -> None:
+    result = process_item(item)
+    assert set(result.keys()) == expected_keys
+
+
+def test_process_with_checkpoints_resumes(tmp_path: Path) -> None:
+    """Simulates crash recovery by pre-saving a checkpoint."""
+    cp = tmp_path / "cp.json"
+    # Pretend we already processed items 0 and 1
+    save_checkpoint(cp, 1, [
+        {"index": 0, "original": "aaa"},
+        {"index": 1, "original": "bbb"},
+    ])
+
+    items = ["aaa", "bbb", "ccc", "ddd"]
+    results = process_with_checkpoints(items, cp, batch_size=10)
+    # Should have 4 total: 2 from checkpoint + 2 newly processed
+    assert len(results) == 4
+    assert results[2]["index"] == 2
+
+
+def test_run_integration(tmp_path: Path) -> None:
+    input_file = tmp_path / "items.txt"
+    input_file.write_text("apple\nbanana\ncherry\ndate\n", encoding="utf-8")
+
+    output = tmp_path / "output.json"
+    cp = tmp_path / "cp.json"
+    summary = run(input_file, output, cp, batch_size=2)
+
+    assert summary["processed"] == 4
+    assert output.exists()
+    assert not cp.exists()  # checkpoint cleared on success

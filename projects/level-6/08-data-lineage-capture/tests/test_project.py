@@ -1,54 +1,101 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Data Lineage Capture.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Validates lineage recording, chain retrieval, and the full
+three-step pipeline using in-memory SQLite.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+from __future__ import annotations
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import json
+import sqlite3
 
+import pytest
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+from project import (
+    LineageEntry,
+    get_lineage_chain,
+    init_db,
+    record_lineage,
+    run,
+    step_ingest,
+    step_normalize,
+    step_publish,
+)
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+@pytest.fixture()
+def conn() -> sqlite3.Connection:
+    c = sqlite3.connect(":memory:")
+    init_db(c)
+    yield c
+    c.close()
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+SAMPLE_RECORDS = [
+    {"key": "order-1", "value": "100"},
+    {"key": "order-2", "value": "200"},
+]
+
+
+class TestLineageRecording:
+    def test_record_returns_id(self, conn: sqlite3.Connection) -> None:
+        lid = record_lineage(conn, LineageEntry(
+            record_key="k1", step_name="ingest",
+            source="file", destination="staging",
+        ))
+        assert isinstance(lid, int)
+        assert lid > 0
+
+    def test_chain_builds_incrementally(self, conn: sqlite3.Connection) -> None:
+        lid1 = record_lineage(conn, LineageEntry(
+            record_key="k1", step_name="step1",
+            source="a", destination="b",
+        ))
+        record_lineage(conn, LineageEntry(
+            record_key="k1", step_name="step2",
+            source="b", destination="c", parent_id=lid1,
+        ))
+        chain = get_lineage_chain(conn, "k1")
+        assert len(chain) == 2
+        assert chain[0]["step"] == "step1"
+        assert chain[1]["parent_id"] == lid1
+
+    @pytest.mark.parametrize("key", ["alpha", "beta", "gamma"])
+    def test_chains_isolated_by_key(self, conn: sqlite3.Connection, key: str) -> None:
+        record_lineage(conn, LineageEntry(
+            record_key=key, step_name="ingest",
+            source="src", destination="dst",
+        ))
+        chain = get_lineage_chain(conn, key)
+        assert len(chain) == 1
+        assert chain[0]["source"] == "src"
+
+
+class TestPipelineSteps:
+    def test_ingest_creates_lineage(self, conn: sqlite3.Connection) -> None:
+        results = step_ingest(conn, SAMPLE_RECORDS)
+        assert len(results) == 2
+        assert all(r["stage"] == "raw" for r in results)
+
+    def test_full_pipeline_three_steps(self, conn: sqlite3.Connection) -> None:
+        step_ingest(conn, SAMPLE_RECORDS)
+        step_normalize(conn, SAMPLE_RECORDS)
+        step_publish(conn, SAMPLE_RECORDS)
+
+        chain = get_lineage_chain(conn, "order-1")
+        assert len(chain) == 3
+        steps = [c["step"] for c in chain]
+        assert steps == ["ingest", "normalize", "publish"]
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    inp = tmp_path / "data.json"
+    inp.write_text(json.dumps(SAMPLE_RECORDS), encoding="utf-8")
+    out = tmp_path / "out.json"
+
+    summary = run(inp, out)
+    assert summary["records_processed"] == 2
+    assert summary["pipeline_steps"] == 3
+    # 2 records x 3 steps = 6 lineage entries
+    assert summary["total_lineage_entries"] == 6
+    assert out.exists()

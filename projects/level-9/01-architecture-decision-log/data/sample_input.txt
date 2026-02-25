@@ -1,5 +1,4 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+ADR-001 "Use PostgreSQL over MongoDB" status=accepted context="Need ACID transactions for financial data"
+ADR-002 "Adopt microservices architecture" status=proposed context="Monolith scaling limits reached"
+ADR-003 "Switch from REST to gRPC for internal APIs" status=superseded superseded_by=ADR-004
+ADR-004 "Use gRPC with REST gateway for external clients" status=accepted context="Need both performance and compatibility"

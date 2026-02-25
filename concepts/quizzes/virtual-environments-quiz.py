@@ -3,6 +3,8 @@ Quiz: Virtual Environments
 Review: concepts/virtual-environments.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -23,7 +25,7 @@ def run_quiz():
     print("  c) They protect your code from viruses")
     print("  d) They let you run multiple Python scripts at once")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Each project gets its own isolated set of packages,")
@@ -42,7 +44,7 @@ def run_quiz():
     print("  c) virtualenv create .venv")
     print("  d) python --venv .venv")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! python -m venv .venv creates a virtual environment")
@@ -61,7 +63,7 @@ def run_quiz():
     print("  c) A new window opens")
     print("  d) The terminal changes color")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! When activated, your prompt changes to show")
@@ -81,7 +83,7 @@ def run_quiz():
     print("  c) Only if it is small")
     print("  d) Yes, but only on the main branch")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! .venv is large and machine-specific. Add it to")
@@ -101,7 +103,7 @@ def run_quiz():
     print("     to requirements.txt")
     print("  d) Freezes the Python interpreter")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! pip freeze lists installed packages with exact")
@@ -121,7 +123,7 @@ def run_quiz():
     print("  c) It fails with an error")
     print("  d) Nothing happens")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Without an active venv, pip installs globally.")

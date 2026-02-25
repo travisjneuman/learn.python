@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise — Python in the Browser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 200px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1 id="exerciseTitle">Exercise</h1>
+    <div class="nav-links">
+      <a href="#" id="prevLink">&larr; Prev</a>
+      <a href="index.html">All Exercises</a>
+      <a href="#" id="nextLink">Next &rarr;</a>
+    </div>
+  </div>
+
+  <div class="description" id="description"></div>
+
+  <div class="editor-wrapper">
+    <textarea id="editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+// Exercise definitions — all 15 Level 00 exercises
+var EXERCISES = {
+  "01": {
+    title: "01 - First Steps",
+    description: "Try some math and print a message.\n\nPython can do math just like a calculator. The print() function shows results on screen.\n\nTry changing the numbers or adding your own calculations.",
+    code: '# Python can do math\nprint("2 + 2 =", 2 + 2)\nprint("10 - 3 =", 10 - 3)\nprint("5 * 6 =", 5 * 6)\nprint("100 / 4 =", 100 / 4)\n\nprint()\nprint("Hello, I am learning Python!")\nprint("You are off to a great start.")\n'
+  },
+  "02": {
+    title: "02 - Hello World",
+    description: "print() is the most basic command in Python. It displays text on the screen.\n\nThe text inside the quotes is called a \"string\". Try changing the messages.",
+    code: 'print("Hello, world!")\nprint("My name is Python and I do what you tell me.")\n\nprint(42)\nprint(7 + 3)\n\n# Multiple things separated by commas\nprint("The answer is", 6 * 7)\n\n# Blank line\nprint()\n\nprint(\'Single quotes work.\')\nprint("Double quotes also work.")\n'
+  },
+  "03": {
+    title: "03 - Your First Script",
+    description: "A script is a file of Python commands that run in order, from top to bottom.\n\nLines starting with # are comments -- Python ignores them.\nComments are notes for humans reading the code.",
+    code: '# Step 1: Print a greeting\nprint("Welcome to your first Python script!")\n\n# Step 2: Do some math\nprint("Let me calculate something for you...")\nprint("If you have 24 hours in a day and 7 days in a week:")\nprint("That is", 24 * 7, "hours in a week.")\n\nprint()\n\nprint("This script ran from top to bottom.")\nprint("Every line executed in order.")\nprint("That is how all Python scripts work.")\n'
+  },
+  "04": {
+    title: "04 - Variables",
+    description: "A variable is a name that holds a value. Think of it like a labeled box.\n\nThe = sign means \"store this value in this name\".\nIt does NOT mean \"equals\" like in math class.",
+    code: 'name = "Alice"\nprint(name)\n\nage = 30\ncity = "Denver"\nprint("Name:", name)\nprint("Age:", age)\nprint("City:", city)\n\n# Change a variable\nage = 31\nprint("Next year I will be", age)\n\n# Variables in math\nhours_per_day = 8\ndays_per_week = 5\nhours_per_week = hours_per_day * days_per_week\nprint("I work", hours_per_week, "hours per week")\n\n# Concatenation\nfirst_name = "Alice"\nlast_name = "Neuman"\nfull_name = first_name + " " + last_name\nprint("Full name:", full_name)\n'
+  },
+  "05": {
+    title: "05 - Numbers and Math",
+    description: "Python has integers (whole numbers) and floats (decimals).\n\nOperators: + add, - subtract, * multiply, / divide,\n// integer divide, % remainder, ** power.\n\nParentheses control order of operations.",
+    code: 'print("5 + 3 =", 5 + 3)\nprint("10 - 4 =", 10 - 4)\nprint("6 * 7 =", 6 * 7)\nprint("15 / 4 =", 15 / 4)\nprint("15 // 4 =", 15 // 4)\nprint("15 % 4 =", 15 % 4)\nprint("2 ** 8 =", 2 ** 8)\n\nprint("(2 + 3) * 4 =", (2 + 3) * 4)\nprint("2 + 3 * 4 =", 2 + 3 * 4)\n\nprice = 29.99\ntax_rate = 0.08\ntax_amount = price * tax_rate\ntotal = price + tax_amount\nprint()\nprint("Price:", price)\nprint("Tax:", tax_amount)\nprint("Total:", round(total, 2))\n'
+  },
+  "06": {
+    title: "06 - Strings and Text",
+    description: "A \"string\" is any text inside quotes.\n\nf-strings let you put variables inside text: f\"Hello, {name}!\"\nStrings are immutable -- methods like .upper() create a new string.",
+    code: 'greeting = "Hello"\nname = "Alice"\n\nmessage = greeting + ", " + name + "!"\nprint(message)\n\n# f-strings\nprint(f"Hello, {name}! Welcome to Python.")\n\nage = 30\nprint(f"{name} is {age} years old.")\nprint(f"In 10 years, {name} will be {age + 10}.")\n\nsentence = "Python is fun"\nprint(f"\\"{sentence}\\" has {len(sentence)} characters.")\n\nprint("hello".upper())\nprint("HELLO".lower())\nprint("hello world".title())\n\nold_text = "I like Java"\nnew_text = old_text.replace("Java", "Python")\nprint(new_text)\n\nwords = "one two three four".split()\nprint(words)\n'
+  },
+  "07": {
+    title: "07 - User Input",
+    description: "input() pauses the program and waits for you to type something.\n\nIn the browser, input() shows a popup dialog.\ninput() always returns a string. Use int() to convert to a number.",
+    code: 'name = input("What is your name? ")\nprint(f"Nice to meet you, {name}!")\n\ncolor = input("What is your favorite color? ")\nprint(f"{color} is a great color.")\n\nage_text = input("How old are you? ")\nage = int(age_text)\nprint(f"You will be {age + 1} next year.")\n'
+  },
+  "08": {
+    title: "08 - Making Decisions",
+    description: "if, elif, and else let programs make decisions.\n\nIndentation matters -- indented lines run when the condition is True.\nComparison: == != > < >= <=  |  Combine: and, or, not",
+    code: 'temperature = 75\n\nif temperature > 80:\n    print("It is hot outside.")\nelse:\n    print("It is not too hot.")\n\nscore = 85\nif score >= 90:\n    print("Grade: A")\nelif score >= 80:\n    print("Grade: B")\nelif score >= 70:\n    print("Grade: C")\nelif score >= 60:\n    print("Grade: D")\nelse:\n    print("Grade: F")\n\nage = 25\nhas_license = True\nif age >= 16 and has_license:\n    print("You can drive.")\nelse:\n    print("You cannot drive.")\n\nis_raining = False\nif not is_raining:\n    print("No umbrella needed.")\n'
+  },
+  "09": {
+    title: "09 - Lists",
+    description: "A list is an ordered collection using square brackets [].\nItems accessed by index (starting at 0).\nLists are mutable -- you can add, remove, and change items.",
+    code: 'colors = ["red", "blue", "green", "yellow"]\nprint("Colors:", colors)\n\nprint("First:", colors[0])\nprint("Last:", colors[-1])\nprint("Count:", len(colors))\n\ncolors.append("purple")\nprint("After append:", colors)\ncolors.remove("blue")\nprint("After remove:", colors)\n\nif "red" in colors:\n    print("Red is in the list!")\n\nscores = [95, 87, 92, 78, 100]\nprint(f"\\nScores: {scores}")\nprint(f"Highest: {max(scores)}")\nprint(f"Lowest: {min(scores)}")\nprint(f"Average: {sum(scores) / len(scores)}")\n\nnumbers = [5, 2, 8, 1, 9, 3]\nnumbers.sort()\nprint(f"\\nSorted: {numbers}")\n'
+  },
+  "10": {
+    title: "10 - For Loops",
+    description: "A for loop repeats code once for each item in a collection.\n\nrange(n) gives 0 through n-1.  range(a, b) gives a through b-1.\nPick descriptive variable names: for student in students.",
+    code: 'fruits = ["apple", "banana", "cherry", "date"]\nprint("My fruits:")\nfor fruit in fruits:\n    print(f"  - {fruit}")\n\nprint("\\nCounting 0 to 4:")\nfor number in range(5):\n    print(number)\n\nprint("\\nCounting 1 to 5:")\nfor number in range(1, 6):\n    print(number)\n\nscores = [85, 92, 78, 95, 88]\ntotal = 0\nfor score in scores:\n    total = total + score\naverage = total / len(scores)\nprint(f"\\nScores: {scores}")\nprint(f"Average: {average}")\n\nprint("\\nEven numbers 1-10:")\nfor number in range(1, 11):\n    if number % 2 == 0:\n        print(f"  {number} is even")\n'
+  },
+  "11": {
+    title: "11 - While Loops",
+    description: "A while loop repeats as long as a condition is True.\n\nFor loops: \"do this for each item.\"\nWhile loops: \"keep doing this until something changes.\"\n\nThe guessing game uses input() which shows a browser prompt dialog.",
+    code: 'count = 1\nwhile count <= 5:\n    print(f"Count is: {count}")\n    count = count + 1\nprint("Done counting!")\n\nprint()\ncountdown = 5\nwhile countdown > 0:\n    print(countdown)\n    countdown = countdown - 1\nprint("Go!")\n\nprint("\\n--- Guessing Game ---")\nsecret = 7\nguess = 0\n\nwhile guess != secret:\n    guess = int(input("Guess a number between 1 and 10: "))\n    if guess < secret:\n        print("Too low!")\n    elif guess > secret:\n        print("Too high!")\n\nprint("You got it!")\n'
+  },
+  "12": {
+    title: "12 - Dictionaries",
+    description: "A dictionary stores key-value pairs using curly braces {}.\n\nLists use positions (index 0, 1, 2...).\nDictionaries use labels (keys) to find values.",
+    code: 'person = {\n    "name": "Alice",\n    "age": 30,\n    "city": "Denver",\n    "job": "Engineer"\n}\n\nprint("Name:", person["name"])\nprint("Age:", person["age"])\n\nperson["hobby"] = "coding"\nprint("After adding hobby:", person)\n\nperson["age"] = 31\nprint("After birthday:", person)\n\ndel person["job"]\nprint("After removing job:", person)\n\nif "name" in person:\n    print("\\nName is in the dictionary.")\n\nprint("\\nAll info:")\nfor key, value in person.items():\n    print(f"  {key}: {value}")\n\nphone_book = {"Alice": "555-0101", "Bob": "555-0102"}\nprint(f"\\nBob\'s number is {phone_book[\'Bob\']}")\n'
+  },
+  "13": {
+    title: "13 - Functions",
+    description: "A function is a reusable block of code with a name.\n\nDefine with def, call by name.\nFunctions can take parameters and return values.",
+    code: 'def say_hello():\n    print("Hello from a function!")\n\nsay_hello()\nsay_hello()\n\ndef greet(name):\n    print(f"Hello, {name}!")\n\ngreet("Alice")\ngreet("Bob")\n\ndef add(a, b):\n    return a + b\n\ntotal = add(5, 3)\nprint(f"\\n5 + 3 = {total}")\nprint(f"10 + 20 = {add(10, 20)}")\n\ndef make_greeting(name, greeting="Hello"):\n    return f"{greeting}, {name}!"\n\nprint(f"\\n{make_greeting(\'Alice\')}")\nprint(make_greeting("Alice", "Hey"))\n\ndef calculate_tip(meal_price, tip_percent=18):\n    tip = meal_price * (tip_percent / 100)\n    return round(meal_price + tip, 2)\n\nprint(f"\\n$50 meal, 18% tip: ${calculate_tip(50)}")\nprint(f"$50 meal, 20% tip: ${calculate_tip(50, 20)}")\n'
+  },
+  "14": {
+    title: "14 - Reading Files",
+    description: "Programs read data from files -- logs, spreadsheets, configs.\n\nFile I/O is simulated in the browser. The code below works\nwith sample data created in memory.",
+    code: '# In the browser we simulate file reading with a string.\n# On your computer: open("data/sample.txt")\n\nfile_content = """Alice,95\nBob,87\nCharlie,92\nDiana,78\nEve,100"""\n\nprint("--- Raw file contents ---")\nprint(file_content)\n\nprint("\\n--- Parsed data ---")\nnames = []\nscores = []\n\nfor line in file_content.strip().split("\\n"):\n    parts = line.split(",")\n    name = parts[0]\n    score = int(parts[1])\n    names.append(name)\n    scores.append(score)\n    print(f"  {name}: {score}")\n\nprint(f"\\nStudents: {len(names)}")\nprint(f"Highest: {max(scores)}")\nprint(f"Lowest: {min(scores)}")\nprint(f"Average: {sum(scores) / len(scores)}")\n'
+  },
+  "15": {
+    title: "15 - Putting It Together",
+    description: "A complete mini-program combining everything:\nvariables, strings, conditions, lists, dicts, loops, functions.\n\nThis is a student grade reporter. If you understand this,\nyou are ready for Level 0.",
+    code: 'def get_letter_grade(score):\n    if score >= 90:\n        return "A"\n    elif score >= 80:\n        return "B"\n    elif score >= 70:\n        return "C"\n    elif score >= 60:\n        return "D"\n    else:\n        return "F"\n\ndef calculate_average(students):\n    total = 0\n    for student in students:\n        total = total + student["score"]\n    return total / len(students)\n\ndef print_report(students):\n    print("=" * 40)\n    print("       STUDENT GRADE REPORT")\n    print("=" * 40)\n    print()\n    for student in students:\n        name = student["name"]\n        score = student["score"]\n        grade = get_letter_grade(score)\n        print(f"  {name:<10} {score:>3}  ({grade})")\n    print()\n    print("-" * 40)\n    average = calculate_average(students)\n    print(f"  Class Average: {average:.1f}")\n    print(f"  Highest: {max(s[\'score\'] for s in students)}")\n    print(f"  Lowest:  {min(s[\'score\'] for s in students)}")\n    print(f"  Students: {len(students)}")\n    print("=" * 40)\n\n# Build data\nraw = "Alice,95\\nBob,87\\nCharlie,92\\nDiana,78\\nEve,100"\nstudents = []\nfor line in raw.split("\\n"):\n    parts = line.split(",")\n    students.append({"name": parts[0], "score": int(parts[1])})\n\nprint_report(students)\n\nlookup = input("\\nLook up a student (or Enter to skip): ")\nif lookup:\n    found = False\n    for s in students:\n        if s["name"].lower() == lookup.lower():\n            print(f"{s[\'name\']} scored {s[\'score\']} ({get_letter_grade(s[\'score\'])})")\n            found = True\n    if not found:\n        print(f"No student named \'{lookup}\' found.")\n\nprint("\\nDone!")\n'
+  }
+};
+
+// Get exercise from URL
+var params = new URLSearchParams(window.location.search);
+var exNum = params.get('ex') || '01';
+var exercise = EXERCISES[exNum];
+
+// Set title and description
+document.getElementById('exerciseTitle').textContent = exercise ? exercise.title : 'Not Found';
+document.getElementById('description').textContent = exercise ? exercise.description : 'Exercise not found.';
+document.title = exercise ? exercise.title + ' - Python in the Browser' : 'Not Found';
+
+// Navigation links
+var exNums = Object.keys(EXERCISES);
+var currentIdx = exNums.indexOf(exNum);
+var prevLink = document.getElementById('prevLink');
+var nextLink = document.getElementById('nextLink');
+if (currentIdx > 0) { prevLink.href = 'exercise.html?ex=' + exNums[currentIdx - 1]; }
+else { prevLink.style.visibility = 'hidden'; }
+if (currentIdx < exNums.length - 1) { nextLink.href = 'exercise.html?ex=' + exNums[currentIdx + 1]; }
+else { nextLink.style.visibility = 'hidden'; }
+
+// Initialize CodeMirror
+var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'python', theme: 'dracula', lineNumbers: true,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+  extraKeys: {
+    'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+    'Ctrl-Enter': function() { runCode(); },
+    'Cmd-Enter': function() { runCode(); }
+  }
+});
+if (exercise) { cmEditor.setValue(exercise.code); }
+var originalCode = exercise ? exercise.code : '';
+
+// Output
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+// Pyodide
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+// Run code
+async function runCode() {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = 'Running...';
+  runBtn.disabled = true;
+
+  var code = cmEditor.getValue();
+
+  try {
+    // Capture stdout/stderr
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    // Patch input() to use browser prompt()
+    var needsInput = code.indexOf('input(') !== -1;
+    if (needsInput) {
+      pyodideInstance.globals.set('_js_prompt', function(promptText) {
+        return prompt(promptText || 'Enter value:') || '';
+      });
+      pyodideInstance.runPython(
+        'import builtins\n_orig_input = builtins.input\n' +
+        'def _patched_input(prompt_text=""):\n' +
+        '    sys.stdout.write(str(prompt_text))\n' +
+        '    val = _js_prompt(str(prompt_text))\n' +
+        '    if hasattr(val, "to_py"): val = str(val)\n' +
+        '    sys.stdout.write(str(val) + "\\n")\n' +
+        '    return str(val)\n' +
+        'builtins.input = _patched_input\n'
+      );
+    }
+
+    pyodideInstance.runPython(code);
+
+    if (needsInput) {
+      pyodideInstance.runPython('builtins.input = _orig_input\n');
+    }
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+  }
+
+  try {
+    pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+  } catch (ignored) {}
+
+  runBtn.disabled = false;
+}
+
+// Events
+runBtn.addEventListener('click', runCode);
+document.getElementById('resetBtn').addEventListener('click', function() { cmEditor.setValue(originalCode); });
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+// Load Pyodide
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

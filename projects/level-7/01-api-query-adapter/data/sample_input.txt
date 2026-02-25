@@ -1,5 +1,15 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "sources": {
+    "api_a": [
+      {"item_id": "A-001", "item_name": "Widget", "price": 9.99, "ts": "2025-01-15T08:00:00"},
+      {"item_id": "A-002", "item_name": "Gadget", "price": 24.99, "ts": "2025-01-15T09:00:00"}
+    ],
+    "api_b": [
+      {"id": "B-001", "label": "Bolt Pack", "cost": 3.49, "created": "2025-01-15T10:00:00"},
+      {"id": "B-002", "label": "Nut Set", "cost": 2.99, "created": "2025-01-15T11:00:00"}
+    ],
+    "api_c": [
+      {"sku": "C-001", "title": "Spring", "amount": 1.50, "date": "2025-01-15T12:00:00"}
+    ]
+  }
+}

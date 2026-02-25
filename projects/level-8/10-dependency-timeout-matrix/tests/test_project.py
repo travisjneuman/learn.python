@@ -1,52 +1,126 @@
-"""Advanced test module with heavy comments.
+"""Tests for Dependency Timeout Matrix.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: dependency checks, timeout enforcement, matrix building, and analysis.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import time
 
+import pytest
 
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    DependencyChecker,
+    DependencyConfig,
+    HealthStatus,
+    TimeoutMatrix,
+    analyze_matrix,
+    build_timeout_matrix,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- DependencyConfig ---------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+class TestDependencyConfig:
+    def test_config_defaults(self) -> None:
+        config = DependencyConfig(name="db", timeout_seconds=1.0)
+        assert config.critical is True
+        assert config.retry_count == 1
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- DependencyChecker --------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestDependencyChecker:
+    def test_healthy_check(self) -> None:
+        checker = DependencyChecker()
+        config = DependencyConfig(name="fast", timeout_seconds=1.0)
+        result = checker.check(config, simulate_fn=lambda n: time.sleep(0.01) or 0.01)
+        assert result.status == HealthStatus.HEALTHY
+        assert result.timed_out is False
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_timeout_check(self) -> None:
+        checker = DependencyChecker()
+        config = DependencyConfig(name="slow", timeout_seconds=0.05)
+
+        def slow_fn(name: str) -> float:
+            time.sleep(1.0)
+            return 1.0
+
+        result = checker.check(config, simulate_fn=slow_fn)
+        assert result.status == HealthStatus.TIMEOUT
+        assert result.timed_out is True
+
+    def test_error_check(self) -> None:
+        checker = DependencyChecker()
+        config = DependencyConfig(name="broken", timeout_seconds=1.0)
+
+        def error_fn(name: str) -> float:
+            raise ConnectionError("refused")
+
+        result = checker.check(config, simulate_fn=error_fn)
+        assert result.status == HealthStatus.ERROR
+        assert "refused" in result.error_message
+
+    @pytest.mark.parametrize("retry_count,expected_retries", [
+        (1, 1),
+        (3, 3),
+    ])
+    def test_retry_behavior(self, retry_count: int, expected_retries: int) -> None:
+        checker = DependencyChecker()
+        config = DependencyConfig(
+            name="flaky", timeout_seconds=0.05, retry_count=retry_count,
+        )
+
+        def slow_fn(name: str) -> float:
+            time.sleep(1.0)
+            return 1.0
+
+        result = checker.check(config, simulate_fn=slow_fn)
+        assert result.retries_used == expected_retries
+
+
+# --- Matrix building ----------------------------------------------------
+
+class TestTimeoutMatrix:
+    def test_matrix_dimensions(self) -> None:
+        deps = [
+            DependencyConfig(name="svc-a", timeout_seconds=1.0),
+            DependencyConfig(name="svc-b", timeout_seconds=1.0),
+        ]
+        timeouts = [0.5, 1.0]
+
+        def fast_fn(name: str) -> float:
+            time.sleep(0.01)
+            return 0.01
+
+        matrix = build_timeout_matrix(deps, timeouts, simulate_fn=fast_fn)
+        assert len(matrix.results) == 2  # 2 timeout values
+        assert len(matrix.results[0]) == 2  # 2 dependencies per row
+
+    def test_matrix_to_dict(self) -> None:
+        deps = [DependencyConfig(name="svc", timeout_seconds=1.0)]
+
+        def fast_fn(name: str) -> float:
+            time.sleep(0.001)
+            return 0.001
+
+        matrix = build_timeout_matrix(deps, [0.5], simulate_fn=fast_fn)
+        d = matrix.to_dict()
+        assert "matrix" in d
+        assert "dependencies" in d
+
+
+# --- Analysis -----------------------------------------------------------
+
+class TestAnalyzeMatrix:
+    def test_finds_minimum_passing_timeout(self) -> None:
+        deps = [DependencyConfig(name="svc", timeout_seconds=1.0)]
+
+        def fast_fn(name: str) -> float:
+            time.sleep(0.01)
+            return 0.01
+
+        matrix = build_timeout_matrix(deps, [0.05, 0.1, 0.5], simulate_fn=fast_fn)
+        analysis = analyze_matrix(matrix)
+        assert "svc" in analysis
+        assert analysis["svc"]["min_passing_timeout"] is not None

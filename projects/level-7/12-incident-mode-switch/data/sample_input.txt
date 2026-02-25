@@ -1,5 +1,15 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "stages": [
+    {"name": "ingest", "criticality": "critical"},
+    {"name": "validate", "criticality": "critical"},
+    {"name": "transform", "criticality": "standard"},
+    {"name": "enrich", "criticality": "optional"},
+    {"name": "export", "criticality": "standard"}
+  ],
+  "transitions": [
+    {"mode": "degraded", "reason": "upstream API returning 500s"},
+    {"mode": "emergency", "reason": "database connection lost"},
+    {"mode": "degraded", "reason": "database restored, partial recovery"},
+    {"mode": "normal", "reason": "all systems green"}
+  ]
+}

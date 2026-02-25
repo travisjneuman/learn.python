@@ -13,42 +13,49 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/05-path-safe-file-mover
-python project.py --input data/sample_input.txt --output data/output_summary.json
+# Create sample source files first:
+mkdir -p data/source && echo "hello" > data/source/report.csv && echo "world" > data/source/data.txt
+python project.py --source data/source --dest data/dest --output data/move_log.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_files": 2,
+  "moved": 2,
+  "failed": 0,
+  "operations": [ ... ]
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/dest/` — moved files
+- `data/move_log.json` — detailed move log with timestamps
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a `--dry-run` flag that prints the planned moves without actually moving files.
-2. Handle filename collisions by appending a counter (e.g., `report_1.csv`, `report_2.csv`) instead of overwriting.
-3. Create a move log (JSON or CSV) recording source, destination, timestamp, and success/failure for each file.
-4. Re-run script and tests.
+1. Add a `--pattern` flag to only move files matching a glob (e.g., `*.csv`).
+2. Add a `--backup` flag that copies instead of moves, preserving the originals.
+3. Re-run script and tests — add a test for the glob filter.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Try to move files from a non-existent source directory — observe the error.
+2. Create a situation where a move fails mid-batch (e.g., read-only destination) and verify rollback.
+3. Run the same move twice and confirm collision handling works.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a pre-check that validates source and destination directories before planning.
+2. Ensure the move log records both successes and rollbacks clearly.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the mover use a two-phase approach (plan then execute) instead of moving immediately?
+2. How does `resolve_collision` avoid infinite loops — what guarantees it terminates?
+3. Why does `_rollback` iterate in reverse order?
+4. What are the risks of `shutil.move` across different filesystems?
 
 ## Mastery check
 You can move on when you can:

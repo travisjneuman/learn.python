@@ -13,48 +13,52 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/06-structured-error-handler
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py records.json --schema schema.json
+python project.py records.json --schema schema.json --json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Processed 4 records: 2 passed, 2 failed
+Error breakdown:
+  REQUIRED: 2
+  INVALID_FORMAT: 1
+16 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Validation results on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `range` rule that validates numeric values (e.g., age 0-150).
+2. Add an `--exit-code` flag that returns non-zero if any record fails.
+3. Add error severity levels to the schema (warning vs error).
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a schema file that doesn't exist — what error appears?
+2. Pass records with a field not in the schema — is it validated or ignored?
+3. Trigger an unexpected exception inside a validator — does `safe_process` catch it?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a friendly error message when schema or records file is missing.
+2. Validate the schema itself before processing (are rule names valid?).
+3. Ensure `capture_error` works for all built-in exception types.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why create a custom exception hierarchy (AppError, ValidationError, etc.)?
+2. What is the "Result pattern" and how does `OperationResult` implement it?
+3. How does `safe_process` differ from scattering try/except everywhere?
+4. What does `traceback.format_exception` return and when would you use it?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- design a custom exception hierarchy,
+- use the Result pattern instead of exceptions for flow control,
+- accumulate errors across a batch without crashing,
+- write structured error reports with codes and context.
 
 ---
 

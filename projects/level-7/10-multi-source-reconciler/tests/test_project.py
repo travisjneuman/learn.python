@@ -1,52 +1,96 @@
-"""Advanced test module with heavy comments.
+"""Tests for Multi-Source Reconciler."""
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
-"""
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import json
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    compare_records,
+    index_by_key,
+    reconcile,
+    report_to_dict,
+    run,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+class TestIndexByKey:
+    def test_basic_indexing(self) -> None:
+        records = [{"id": "a", "v": 1}, {"id": "b", "v": 2}]
+        idx = index_by_key(records, "id")
+        assert idx["a"]["v"] == 1
+        assert len(idx) == 2
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    def test_missing_key_skipped(self) -> None:
+        records = [{"other": "x"}]
+        idx = index_by_key(records, "id")
+        assert len(idx) == 0
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+class TestCompareRecords:
+    def test_identical_records(self) -> None:
+        left = {"_key": "1", "name": "a", "price": 10}
+        right = {"_key": "1", "name": "a", "price": 10}
+        diffs = compare_records(left, right, ["name", "price"])
+        assert len(diffs) == 0
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+    def test_field_mismatch(self) -> None:
+        left = {"_key": "1", "name": "a", "price": 10}
+        right = {"_key": "1", "name": "a", "price": 20}
+        diffs = compare_records(left, right, ["name", "price"])
+        assert len(diffs) == 1
+        assert diffs[0].field_name == "price"
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+
+class TestReconcile:
+    def test_all_match(self) -> None:
+        left = [{"id": "1", "v": "x"}, {"id": "2", "v": "y"}]
+        right = [{"id": "1", "v": "x"}, {"id": "2", "v": "y"}]
+        report = reconcile(left, right, "id", ["v"])
+        assert report.matched == 2
+        assert report.mismatched == 0
+
+    def test_left_only_and_right_only(self) -> None:
+        left = [{"id": "1", "v": "x"}, {"id": "3", "v": "z"}]
+        right = [{"id": "1", "v": "x"}, {"id": "2", "v": "y"}]
+        report = reconcile(left, right, "id", ["v"])
+        assert "3" in report.left_only
+        assert "2" in report.right_only
+
+    @pytest.mark.parametrize("left_count,right_count", [(0, 0), (5, 5), (3, 7)])
+    def test_various_sizes(self, left_count: int, right_count: int) -> None:
+        left = [{"id": str(i), "v": i} for i in range(left_count)]
+        right = [{"id": str(i), "v": i} for i in range(right_count)]
+        report = reconcile(left, right, "id", ["v"])
+        common = min(left_count, right_count)
+        assert report.matched == common
+
+    def test_mismatched_values_detected(self) -> None:
+        left = [{"id": "1", "v": "old"}]
+        right = [{"id": "1", "v": "new"}]
+        report = reconcile(left, right, "id", ["v"])
+        assert report.mismatched == 1
+        assert len(report.mismatches) == 1
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    config = {
+        "key_field": "sku",
+        "compare_fields": ["price", "stock"],
+        "left": [
+            {"sku": "A1", "price": 10, "stock": 5},
+            {"sku": "A2", "price": 20, "stock": 0},
+        ],
+        "right": [
+            {"sku": "A1", "price": 10, "stock": 3},
+            {"sku": "A3", "price": 30, "stock": 8},
+        ],
+    }
+    inp = tmp_path / "config.json"
+    inp.write_text(json.dumps(config), encoding="utf-8")
+    out = tmp_path / "out.json"
+    summary = run(inp, out)
+    assert summary["mismatched"] == 1   # A1 stock differs
+    assert "A2" in summary["left_only"]
+    assert "A3" in summary["right_only"]

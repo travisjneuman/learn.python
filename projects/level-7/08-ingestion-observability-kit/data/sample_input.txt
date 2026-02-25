@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "records": [
+    {"id": "rec_001", "value": "order_placed"},
+    {"id": "rec_002", "value": "payment_received"},
+    {"id": "rec_003"},
+    {"id": "rec_004", "value": "item_shipped"},
+    {"id": "rec_005", "value": "delivered"}
+  ]
+}

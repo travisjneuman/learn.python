@@ -1,106 +1,210 @@
 """Level 3 project: Test Driven Normalizer.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Demonstrates TDD workflow: write tests first, then implement normalisation
+functions that clean and standardise data fields.
+
+Skills practiced: pytest-first workflow, dataclasses, typing basics,
+logging, re module, string manipulation.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import re
+from dataclasses import dataclass, asdict
 from pathlib import Path
+from typing import Optional
 
-PROJECT_LEVEL = 3
-PROJECT_TITLE = "Test Driven Normalizer"
-PROJECT_FOCUS = "write tests before transform logic"
+logger = logging.getLogger(__name__)
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+@dataclass
+class NormalisationResult:
+    """Result of normalising a single field."""
+    original: str
+    normalised: str
+    rule_applied: str
+    changed: bool
+
+
+def normalise_whitespace(text: str) -> NormalisationResult:
+    """Collapse multiple spaces/tabs into single spaces and strip edges.
+
+    'hello   world ' -> 'hello world'
+    """
+    cleaned = re.sub(r"\s+", " ", text).strip()
+    return NormalisationResult(
+        original=text,
+        normalised=cleaned,
+        rule_applied="collapse_whitespace",
+        changed=cleaned != text,
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+def normalise_email(email: str) -> NormalisationResult:
+    """Normalise an email address: lowercase, strip whitespace.
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
-
-    We keep this separate from I/O so business logic stays testable.
+    ' User@Example.COM ' -> 'user@example.com'
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    cleaned = email.strip().lower()
+    return NormalisationResult(
+        original=email,
+        normalised=cleaned,
+        rule_applied="lowercase_email",
+        changed=cleaned != email,
+    )
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def normalise_phone(phone: str) -> NormalisationResult:
+    """Extract digits from a phone string, format as (XXX) XXX-XXXX.
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    '1-555-867-5309' -> '(555) 867-5309'
+    Only works for 10- or 11-digit US numbers.
+    """
+    digits = re.sub(r"\D", "", phone)
 
+    # Strip leading country code '1' if 11 digits.
+    if len(digits) == 11 and digits[0] == "1":
+        digits = digits[1:]
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+    if len(digits) == 10:
+        formatted = f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
+    else:
+        formatted = phone.strip()  # Can't normalise — return as-is.
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+    return NormalisationResult(
+        original=phone,
+        normalised=formatted,
+        rule_applied="us_phone_format",
+        changed=formatted != phone,
+    )
 
 
-def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    return parser.parse_args()
+def normalise_name(name: str) -> NormalisationResult:
+    """Title-case a person's name, handling edge cases.
+
+    'JANE DOE' -> 'Jane Doe'
+    'mcdonald' -> 'Mcdonald' (simple title case)
+    """
+    cleaned = name.strip()
+    titled = cleaned.title()
+    return NormalisationResult(
+        original=name,
+        normalised=titled,
+        rule_applied="title_case_name",
+        changed=titled != name,
+    )
+
+
+def normalise_date(date_str: str) -> NormalisationResult:
+    """Normalise common date formats to YYYY-MM-DD.
+
+    Supports: MM/DD/YYYY, DD-MM-YYYY, YYYY.MM.DD
+    """
+    date_str = date_str.strip()
+
+    # MM/DD/YYYY
+    match = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", date_str)
+    if match:
+        mm, dd, yyyy = match.groups()
+        normalised = f"{yyyy}-{mm.zfill(2)}-{dd.zfill(2)}"
+        return NormalisationResult(date_str, normalised, "mm_dd_yyyy", True)
+
+    # DD-MM-YYYY
+    match = re.match(r"^(\d{1,2})-(\d{1,2})-(\d{4})$", date_str)
+    if match:
+        dd, mm, yyyy = match.groups()
+        normalised = f"{yyyy}-{mm.zfill(2)}-{dd.zfill(2)}"
+        return NormalisationResult(date_str, normalised, "dd_mm_yyyy", True)
+
+    # YYYY.MM.DD
+    match = re.match(r"^(\d{4})\.(\d{1,2})\.(\d{1,2})$", date_str)
+    if match:
+        yyyy, mm, dd = match.groups()
+        normalised = f"{yyyy}-{mm.zfill(2)}-{dd.zfill(2)}"
+        return NormalisationResult(date_str, normalised, "yyyy_mm_dd", True)
+
+    # Already YYYY-MM-DD or unrecognised.
+    return NormalisationResult(date_str, date_str, "no_change", False)
+
+
+# Registry of all normalisation rules by field type.
+NORMALISERS = {
+    "whitespace": normalise_whitespace,
+    "email": normalise_email,
+    "phone": normalise_phone,
+    "name": normalise_name,
+    "date": normalise_date,
+}
+
+
+def normalise_record(record: dict, field_types: dict[str, str]) -> dict:
+    """Normalise all fields in a record according to field_types mapping.
+
+    field_types maps field names to normaliser keys, e.g.:
+    {"email": "email", "full_name": "name", "phone": "phone"}
+    """
+    result: dict = {}
+    for field_name, value in record.items():
+        normaliser_key = field_types.get(field_name)
+        if normaliser_key and normaliser_key in NORMALISERS:
+            nr = NORMALISERS[normaliser_key](str(value))
+            result[field_name] = nr.normalised
+            if nr.changed:
+                logger.debug("Normalised %s: %r -> %r", field_name, nr.original, nr.normalised)
+        else:
+            result[field_name] = value
+    return result
+
+
+def normalise_batch(
+    records: list[dict],
+    field_types: dict[str, str],
+) -> list[dict]:
+    """Normalise a batch of records, returning cleaned copies."""
+    results = [normalise_record(r, field_types) for r in records]
+    logger.info("Normalised %d records", len(results))
+    return results
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build CLI parser."""
+    parser = argparse.ArgumentParser(description="Test-driven data normaliser")
+    parser.add_argument("file", help="JSON file with records to normalise")
+    parser.add_argument("--fields", required=True,
+                        help="Comma-separated field:type pairs (e.g., email:email,name:name)")
+    parser.add_argument("--json", action="store_true", help="JSON output")
+    parser.add_argument("--log-level", default="INFO")
+    return parser
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
-    args = parse_args()
+    """Entry point."""
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    parser = build_parser()
+    args = parser.parse_args()
 
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    # Parse field types from CLI: "email:email,name:name,phone:phone"
+    field_types: dict[str, str] = {}
+    for pair in args.fields.split(","):
+        parts = pair.strip().split(":")
+        if len(parts) == 2:
+            field_types[parts[0]] = parts[1]
+
+    data = json.loads(Path(args.file).read_text(encoding="utf-8"))
+    records = data if isinstance(data, list) else [data]
+
+    normalised = normalise_batch(records, field_types)
+
+    if args.json:
+        print(json.dumps(normalised, indent=2))
+    else:
+        for i, rec in enumerate(normalised, 1):
+            print(f"Record {i}:")
+            for k, v in rec.items():
+                print(f"  {k}: {v}")
 
 
 if __name__ == "__main__":

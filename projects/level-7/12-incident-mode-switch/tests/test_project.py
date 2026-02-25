@@ -1,52 +1,98 @@
-"""Advanced test module with heavy comments.
+"""Tests for Incident Mode Switch."""
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
-"""
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import json
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    Criticality,
+    IncidentController,
+    Mode,
+    Stage,
+    run,
+    stages_from_config,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
-
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+@pytest.fixture
+def controller() -> IncidentController:
+    stages = [
+        Stage("ingest", Criticality.CRITICAL),
+        Stage("transform", Criticality.STANDARD),
+        Stage("enrich", Criticality.OPTIONAL),
+        Stage("export", Criticality.STANDARD),
+    ]
+    return IncidentController(stages)
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+class TestModeTransitions:
+    def test_normal_to_degraded(self, controller: IncidentController) -> None:
+        assert controller.switch_mode(Mode.DEGRADED, "high error rate") is True
+        assert controller.mode == Mode.DEGRADED
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+    def test_invalid_transition_rejected(self, controller: IncidentController) -> None:
+        controller.switch_mode(Mode.MAINTENANCE)
+        assert controller.switch_mode(Mode.DEGRADED) is False  # maintenance→degraded invalid
+        assert controller.mode == Mode.MAINTENANCE  # stays unchanged
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    @pytest.mark.parametrize("path", [
+        [Mode.DEGRADED, Mode.EMERGENCY, Mode.NORMAL],
+        [Mode.EMERGENCY, Mode.DEGRADED, Mode.NORMAL],
+        [Mode.MAINTENANCE, Mode.NORMAL],
+    ])
+    def test_valid_transition_paths(self, controller: IncidentController,
+                                     path: list[Mode]) -> None:
+        for target in path:
+            assert controller.switch_mode(target) is True
+
+    def test_timeline_recorded(self, controller: IncidentController) -> None:
+        controller.switch_mode(Mode.DEGRADED, "test")
+        assert len(controller.timeline) == 1
+        assert controller.timeline[0].reason == "test"
+
+
+class TestActiveStages:
+    def test_normal_all_active(self, controller: IncidentController) -> None:
+        assert len(controller.active_stages()) == 4
+
+    def test_degraded_drops_optional(self, controller: IncidentController) -> None:
+        controller.switch_mode(Mode.DEGRADED)
+        active = controller.active_stages()
+        assert "enrich" not in active
+        assert "ingest" in active
+
+    def test_emergency_only_critical(self, controller: IncidentController) -> None:
+        controller.switch_mode(Mode.EMERGENCY)
+        assert controller.active_stages() == ["ingest"]
+        assert len(controller.skipped_stages()) == 3
+
+
+class TestSummary:
+    def test_summary_structure(self, controller: IncidentController) -> None:
+        s = controller.summary()
+        assert s["mode"] == "normal"
+        assert "active" in s
+        assert "skipped" in s
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    config = {
+        "stages": [
+            {"name": "ingest", "criticality": "critical"},
+            {"name": "transform", "criticality": "standard"},
+            {"name": "report", "criticality": "optional"},
+        ],
+        "transitions": [
+            {"mode": "degraded", "reason": "error spike"},
+            {"mode": "emergency", "reason": "total outage"},
+            {"mode": "normal", "reason": "resolved"},
+        ],
+    }
+    inp = tmp_path / "config.json"
+    inp.write_text(json.dumps(config), encoding="utf-8")
+    out = tmp_path / "out.json"
+    summary = run(inp, out)
+    assert summary["final_mode"] == "normal"
+    assert summary["timeline_events"] == 3

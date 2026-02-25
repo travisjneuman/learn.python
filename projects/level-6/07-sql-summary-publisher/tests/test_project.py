@@ -1,54 +1,94 @@
-"""Intermediate test module with heavy comments.
+"""Tests for SQL Summary Publisher.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Validates aggregate queries, report formatting, and end-to-end
+summary generation using in-memory SQLite.
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+from __future__ import annotations
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import json
+import sqlite3
 
+import pytest
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+from project import (
+    SummaryReport,
+    build_summary,
+    format_text_report,
+    run,
+    seed_sales,
+    SALES_DDL,
+)
 
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+SAMPLE_SALES = [
+    {"region": "North", "product": "Widget", "quantity": 10, "revenue": 99.90, "sale_date": "2025-01-01"},
+    {"region": "North", "product": "Gadget", "quantity": 5, "revenue": 124.75, "sale_date": "2025-01-02"},
+    {"region": "South", "product": "Widget", "quantity": 20, "revenue": 199.80, "sale_date": "2025-01-03"},
+    {"region": "South", "product": "Bolt", "quantity": 100, "revenue": 50.00, "sale_date": "2025-01-04"},
+]
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+@pytest.fixture()
+def conn() -> sqlite3.Connection:
+    c = sqlite3.connect(":memory:")
+    c.execute(SALES_DDL)
+    seed_sales(c, SAMPLE_SALES)
+    yield c
+    c.close()
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+class TestBuildSummary:
+    def test_total_counts(self, conn: sqlite3.Connection) -> None:
+        report = build_summary(conn)
+        assert report.total_sales == 4
+        assert report.total_revenue == pytest.approx(474.45)
+
+    def test_by_region(self, conn: sqlite3.Connection) -> None:
+        report = build_summary(conn)
+        regions = {r["region"]: r for r in report.by_region}
+        assert "North" in regions
+        assert "South" in regions
+        assert regions["South"]["revenue"] > regions["North"]["revenue"]
+
+    def test_by_product(self, conn: sqlite3.Connection) -> None:
+        report = build_summary(conn)
+        products = {p["product"] for p in report.by_product}
+        assert products == {"Widget", "Gadget", "Bolt"}
+
+    def test_top_sale(self, conn: sqlite3.Connection) -> None:
+        report = build_summary(conn)
+        assert report.top_sale["product"] == "Widget"
+        assert report.top_sale["region"] == "South"
+
+    @pytest.mark.parametrize("count", [0, 1, 4])
+    def test_various_data_sizes(self, count: int) -> None:
+        c = sqlite3.connect(":memory:")
+        c.execute(SALES_DDL)
+        seed_sales(c, SAMPLE_SALES[:count])
+        report = build_summary(c)
+        assert report.total_sales == count
+        c.close()
+
+
+class TestFormatText:
+    def test_contains_key_sections(self) -> None:
+        report = SummaryReport(
+            total_sales=2, total_revenue=100.0,
+            by_region=[{"region": "East", "count": 2, "revenue": 100.0, "avg_revenue": 50.0}],
+            by_product=[{"product": "X", "quantity": 5, "revenue": 100.0}],
+        )
+        text = format_text_report(report)
+        assert "SALES SUMMARY" in text
+        assert "East" in text
+        assert "$100.00" in text
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    inp = tmp_path / "sales.json"
+    inp.write_text(json.dumps(SAMPLE_SALES), encoding="utf-8")
+    out = tmp_path / "out.json"
+
+    summary = run(inp, out)
+    assert summary["total_sales"] == 4
+    assert out.exists()
+    assert out.with_suffix(".txt").exists()

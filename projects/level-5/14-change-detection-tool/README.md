@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/14-change-detection-tool
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --old data/old_version.txt --new data/new_version.txt --output data/change_report.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Change detection: modified
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/change_report.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--summary-only` flag that prints just the status and counts, not the full diff.
+2. Add percentage change calculation: what fraction of lines were added/removed.
+3. Support comparing entire directories (detect new, deleted, and modified files).
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Compare two binary files (e.g. images) and observe what happens to `line_diff`.
+2. Compare a file against itself (both `--old` and `--new` pointing to the same path).
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Detect binary files (by checking for null bytes) and skip line-level diffing.
+2. Short-circuit when old and new paths are identical (status = "unchanged").
+3. Add tests for binary detection and same-path comparison.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does `file_hash` use SHA-256 to detect whether content changed?
+2. Why does `line_diff` use sets instead of comparing line-by-line in order?
+3. What information does the "modified" status include beyond just "changed"?
+4. Where do you see change detection in production (git, config drift, file integrity monitoring)?
 
 ## Mastery check
 You can move on when you can:

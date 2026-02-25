@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+dependency: auth-service base_latency=0.03s critical=true
+dependency: database base_latency=0.05s critical=true
+dependency: cache base_latency=0.01s critical=false
+dependency: search-api base_latency=0.08s critical=true
+dependency: notification-svc base_latency=0.15s critical=false
+timeout_values: 0.02 0.05 0.1 0.2 0.5

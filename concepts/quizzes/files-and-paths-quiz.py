@@ -3,6 +3,8 @@ Quiz: Files and Paths
 Review: concepts/files-and-paths.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) file = File('data.txt')")
     print("  d) import 'data.txt'")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! The 'with' statement automatically closes the file")
@@ -40,7 +42,7 @@ def run_quiz():
     print("  c) Opens for appending to the end")
     print("  d) Opens in binary mode")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 'w' opens for writing. It creates the file if it")
@@ -58,7 +60,7 @@ def run_quiz():
     print("  c) Splits the line into words")
     print("  d) Converts the line to lowercase")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! strip() removes leading and trailing whitespace,")
@@ -79,7 +81,7 @@ def run_quiz():
     print("  c) They are the same thing")
     print("  d) Relative paths are faster")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! An absolute path is the full address from the root.")
@@ -98,7 +100,7 @@ def run_quiz():
     print("  c) The parent directory (one level up)")
     print("  d) A hidden file")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! .. means 'go up one directory level.'")
@@ -120,7 +122,7 @@ def run_quiz():
     print('  c) ".txt"')
     print('  d) "sample.txt"')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! .suffix returns the file extension including")
@@ -141,7 +143,7 @@ def run_quiz():
     print("  c) It is too long")
     print("  d) Nothing is wrong")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! \\n in a regular string becomes a newline.")

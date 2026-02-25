@@ -1,0 +1,9 @@
+{
+  "columns": {
+    "employee_id": {"type": "int", "required": true, "min": 1},
+    "name": {"type": "str", "required": true},
+    "age": {"type": "int", "required": true, "min": 18, "max": 99},
+    "department": {"type": "str", "required": true, "allowed": ["Engineering", "Design", "Marketing", "Sales", "HR"]},
+    "salary": {"type": "float", "required": false, "min": 0}
+  }
+}

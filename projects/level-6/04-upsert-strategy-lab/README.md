@@ -19,35 +19,42 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "strategy": "on_conflict",
+  "input_rows": 6,
+  "inserted": 4,
+  "updated": 2,
+  "final_products": 4,
+  ...
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — upsert results with insert/update counts
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `last_updated_by` column that records which strategy performed the upsert.
+2. Run the same input with `--strategy replace` and `--strategy on_conflict` — compare the `products` output to see the difference.
+3. Add a `--dry-run` flag that validates and counts without actually writing to the database.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a CSV row with a non-numeric `price` (e.g. "free") and observe the error handling.
+2. Feed duplicate SKUs with conflicting data and compare how `replace` vs `on_conflict` handle it.
+3. Remove the `sku` column from the CSV and observe the KeyError.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add input validation that catches non-numeric prices before the database insert.
+2. Add a `--log-conflicts` flag that prints when an existing row is being overwritten.
+3. Handle missing columns gracefully with a clear error message.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the difference between `INSERT OR REPLACE` and `INSERT ... ON CONFLICT DO UPDATE`?
+2. Why does `REPLACE` delete and re-insert while `ON CONFLICT` updates in place?
+3. When would you choose one strategy over the other in production?
+4. What role does the `UNIQUE` constraint play in making upserts work?
 
 ## Mastery check
 You can move on when you can:

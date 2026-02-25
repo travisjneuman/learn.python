@@ -5,49 +5,56 @@ Home: [README](../../../README.md)
 - multi-step beginner automation flow
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Build a multi-step data pipeline that parses, validates, transforms, filters, and summarises records. This Level 1 capstone combines everything you have learned into a realistic ETL (Extract-Transform-Load) workflow.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/15-level1-mini-automation
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Automation Pipeline ===
+
+  Step 1: Parsed 3 records
+  Step 2: Validated 3 records (0 errors)
+  Step 3: Transformed values
+  Step 4: Filtered to 2 active records
+  Step 5: Summary -- total value: $350.00
+
+Output written to data/output.json
+8 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a Step 6: `step_export_csv()` that writes active records to a CSV file.
+2. Add a `--verbose` flag that prints the result of each pipeline step as it executes.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a line with only 2 pipe-separated values -- does `step_parse_records()` skip it or crash?
+2. Add a record with a non-numeric value field -- does `step_transform()` use the default 0.0?
+3. Use a file where all records have status "failed" -- does `step_summarise()` handle an empty active list?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `step_parse_records()` skips lines with fewer than 3 pipe-separated fields.
+2. Handle the all-filtered-out case in `step_summarise()` by returning zero counts.
+3. Add a test for the non-numeric-value fallback.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is the pipeline split into 5 separate `step_*` functions instead of one big function?
+2. What is the "pipeline pattern" and why does each step take input and return output?
+3. Why does `run_pipeline()` track counts at each step (total_lines, parsed, active)?
+4. Where would multi-step pipelines appear in real software (ETL systems, CI/CD, data processing)?
 
 ## Mastery check
 You can move on when you can:

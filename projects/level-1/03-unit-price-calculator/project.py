@@ -1,107 +1,120 @@
 """Level 1 project: Unit Price Calculator.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Compare unit prices across different package sizes from a CSV file.
+Find the best deal by calculating price-per-unit for each product.
+
+Concepts: csv module, float arithmetic, rounding, sorting, file I/O.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
+import csv
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Unit Price Calculator"
-PROJECT_FOCUS = "math accuracy and formatting"
 
+def calculate_unit_price(total_price: float, quantity: float) -> float:
+    """Calculate price per unit, rounded to 4 decimal places.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY round? -- Floating-point math can produce results like
+    3.3333333333333335.  Rounding keeps the output readable.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    if quantity <= 0:
+        raise ValueError("Quantity must be positive")
+    return round(total_price / quantity, 4)
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def parse_product_row(row: dict) -> dict:
+    """Parse a CSV row into a product dict with unit price.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Expected CSV columns: product, price, quantity, unit
+    """
+    try:
+        price = float(row["price"])
+        quantity = float(row["quantity"])
+    except (ValueError, KeyError) as err:
+        return {"raw": str(row), "error": str(err)}
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    if quantity <= 0:
+        return {"raw": str(row), "error": "Quantity must be positive"}
+
+    unit_price = calculate_unit_price(price, quantity)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "product": row.get("product", "").strip(),
+        "price": price,
+        "quantity": quantity,
+        "unit": row.get("unit", "unit").strip(),
+        "unit_price": unit_price,
     }
 
 
+def load_products(path: Path) -> list[dict]:
+    """Load products from a CSV file and compute unit prices."""
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    products = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            products.append(parse_product_row(row))
+
+    return products
+
+
+def find_best_deal(products: list[dict]) -> dict | None:
+    """Find the product with the lowest unit price.
+
+    WHY filter errors first? -- Products with parse errors have no
+    unit_price, so including them would crash the comparison.
+    """
+    valid = [p for p in products if "error" not in p]
+    if not valid:
+        return None
+
+    best = valid[0]
+    for product in valid[1:]:
+        if product["unit_price"] < best["unit_price"]:
+            best = product
+
+    return best
+
+
+def rank_products(products: list[dict]) -> list[dict]:
+    """Sort valid products by unit price (cheapest first)."""
+    valid = [p for p in products if "error" not in p]
+    return sorted(valid, key=lambda p: p["unit_price"])
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Unit Price Calculator")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    products = load_products(Path(args.input))
+    ranked = rank_products(products)
+    best = find_best_deal(products)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== Unit Price Comparison ===\n")
+    print(f"  {'Product':<25} {'Price':>8} {'Qty':>8} {'Unit':>6} {'$/Unit':>10}")
+    print(f"  {'-'*25} {'-'*8} {'-'*8} {'-'*6} {'-'*10}")
+
+    for p in ranked:
+        print(f"  {p['product']:<25} ${p['price']:>7.2f} {p['quantity']:>8.1f} {p['unit']:>6} ${p['unit_price']:>9.4f}")
+
+    if best:
+        print(f"\n  Best deal: {best['product']} at ${best['unit_price']:.4f}/{best['unit']}")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps({"ranked": ranked, "best": best}, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "flags": [
+    {"name": "stage_ingest", "enabled": true},
+    {"name": "stage_validate", "enabled": true, "requires": ["stage_ingest"]},
+    {"name": "stage_transform", "enabled": true, "rollout_pct": 50.0, "requires": ["stage_validate"]},
+    {"name": "stage_export", "enabled": false}
+  ],
+  "context_key": "pipeline_run_2024_001"
+}

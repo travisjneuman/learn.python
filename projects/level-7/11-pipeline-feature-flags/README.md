@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `time_window` parameter so a flag is only active during specific hours (e.g. 09:00-17:00).
+2. Add a `toggle()` method that flips a flag's enabled state and records it in the audit log.
+3. Re-run script and tests — verify time-windowed flags and toggle work correctly.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a circular dependency (flag A requires B, flag B requires A) and observe infinite recursion.
+2. Set `rollout_pct` to a value above 100 or below 0.
+3. Capture the RecursionError or unexpected always-on behavior.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Track visited flags during dependency resolution to detect and break circular references.
+2. Clamp `rollout_pct` to the 0-100 range in the Flag constructor.
+3. Add tests for circular dependencies and out-of-range rollout percentages.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are feature flags useful for deploying risky pipeline changes?
+2. What caused the infinite recursion with circular dependencies?
+3. How did the visited-set approach break the cycle?
+4. How do real feature flag systems (LaunchDarkly, Unleash) handle rollout percentages?
 
 ## Mastery check
 You can move on when you can:

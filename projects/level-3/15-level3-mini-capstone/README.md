@@ -13,48 +13,56 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/15-level3-mini-capstone
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py report .
+python project.py report . --json
+python project.py scan . --pattern "*.py"
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Project Health: 15-level3-mini-capstone
+Score: 90/100 (Grade: A)
+==================================================
+Files: 3
+Total lines: 250
+Code lines: 180
+...
+12 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Health report on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `check_type_hints` function that flags functions missing type annotations.
+2. Add a `--compare` flag that compares two directories side by side.
+3. Add a trend tracker that saves scores to a JSON file and shows improvement over time.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Point it at a file instead of a directory — what error appears?
+2. Scan a directory with binary files (.pyc, .jpg) — do they cause errors?
+3. Run on an empty directory — does the score calculation handle division by zero?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add clear error handling for non-directory input.
+2. Skip binary files gracefully with a warning.
+3. Handle empty directories without crashing.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does this capstone combine skills from projects 01-14?
+2. What is a "health score" and how do you weigh different issue severities?
+3. Why use `Path.rglob()` for recursive scanning?
+4. How would you extend this tool to check additional languages beyond Python?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- combine dataclasses, logging, argparse, and pathlib in one tool,
+- build composable health checks,
+- generate a scored report from metrics,
+- scan and analyse project structures recursively.
 
 ---
 

@@ -1,5 +1,14 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+# Division operations: numerator,denominator
+# Normal divisions
+100,5
+42,7
+3.14,2
+
+# Edge cases
+10,0
+0,5
+
+# Invalid inputs
+abc,5
+10,xyz
+,3

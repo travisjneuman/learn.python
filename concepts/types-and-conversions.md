@@ -2,6 +2,11 @@
 
 Every value in Python has a type. The type determines what you can do with it.
 
+## Visualize It
+
+See how type conversions change values and what happens when they fail:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=x%20%3D%20%2242%22%0Aprint%28type%28x%29%29%0A%0Ay%20%3D%20int%28x%29%0Aprint%28type%28y%29%29%0Aprint%28y%20%2B%201%29%0A%0Az%20%3D%20float%28%223.14%22%29%0Aprint%28z%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Basic types
 
 | Type | What it holds | Examples |
@@ -78,13 +83,7 @@ int("3.14")    # ValueError: cannot convert float string to int directly
 float("3.14")  # 3.14 — use float() for decimal strings
 ```
 
-## Related exercises
-- [Level 00, Exercise 05 — Numbers and Math](../projects/level-00-absolute-beginner/05-numbers-and-math/)
-- [Level 00, Exercise 07 — User Input](../projects/level-00-absolute-beginner/07-user-input/) (string to number conversion)
-
----
-
-## Practice This
+## Practice
 
 - [Level 00 / 05 Numbers and Math](../projects/level-00-absolute-beginner/05-numbers-and-math/)
 - [Level 00 / 07 User Input](../projects/level-00-absolute-beginner/07-user-input/)

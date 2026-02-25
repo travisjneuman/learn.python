@@ -2,6 +2,11 @@
 
 HTTP (HyperText Transfer Protocol) is how browsers and apps talk to servers. Every time you visit a website or call an API, you're using HTTP.
 
+## Visualize It
+
+See how Python builds and parses JSON, the data format used by most APIs:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=import%20json%0A%0Adata%20%3D%20%7B%22name%22%3A%20%22Alice%22%2C%20%22age%22%3A%2030%7D%0Atext%20%3D%20json.dumps%28data%29%0Aprint%28text%29%0Aprint%28type%28text%29%29%0A%0Aparsed%20%3D%20json.loads%28text%29%0Aprint%28parsed%5B%22name%22%5D%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## The request-response cycle
 
 1. Your code sends a **request** to a server.
@@ -134,15 +139,10 @@ requests.get(url)
 requests.get(url, timeout=10)
 ```
 
-## Related exercises
+## Practice
 
-- [Module 03 — REST APIs](../projects/modules/03-rest-apis/) (consuming APIs)
-- [Module 04 — FastAPI](../projects/modules/04-fastapi-web/) (building APIs)
-
----
-
-## Practice This
-
+- [Module 03 REST APIs](../projects/modules/03-rest-apis/)
+- [Module 04 FastAPI](../projects/modules/04-fastapi-web/)
 - [Level 3 / 14 Service Simulator](../projects/level-3/14-service-simulator/README.md)
 - [Level 4 / 13 Reconciliation Reporter](../projects/level-4/13-reconciliation-reporter/README.md)
 - [Level 5 / 10 Api Polling Simulator](../projects/level-5/10-api-polling-simulator/README.md)

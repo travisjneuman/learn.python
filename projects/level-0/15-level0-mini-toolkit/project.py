@@ -1,107 +1,159 @@
-"""Level 0 project: Level 0 Mini Toolkit.
+"""Level 0 project: Mini Toolkit.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Combine three small utilities from earlier projects into one
+command-line tool: word count, line duplicates, and string cleaning.
+
+Concepts: combining functions, argparse subcommands, code reuse.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Level 0 Mini Toolkit"
-PROJECT_FOCUS = "combine basics into one tiny utility"
 
+# --- Tool 1: Word Counter ---
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def count_words(text: str) -> dict:
+    """Count words, lines, and characters in text.
 
-    This function is isolated so it can be tested independently.
+    WHY return a dict? -- Bundling results in a dict makes the
+    function useful for both printing and saving to JSON.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
-
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
+    words = text.split()
+    lines = text.splitlines()
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "words": len(words),
+        "lines": len(lines),
+        "characters": len(text),
+    }
+
+
+# --- Tool 2: Duplicate Finder ---
+
+def find_duplicates(lines: list[str]) -> list[dict]:
+    """Find lines that appear more than once.
+
+    WHY track counts with a dict? -- A dictionary lets us count
+    occurrences in a single pass through the list.
+    """
+    counts = {}
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped in counts:
+            counts[stripped] += 1
+        else:
+            counts[stripped] = 1
+
+    return [
+        {"text": text, "count": count}
+        for text, count in counts.items()
+        if count > 1
+    ]
+
+
+# --- Tool 3: String Cleaner ---
+
+def clean_string(text: str) -> str:
+    """Strip, lowercase, and remove non-alphanumeric characters.
+
+    WHY chain operations? -- Each step does one thing.  Chaining
+    them creates a clear pipeline.
+    """
+    result = text.strip().lower()
+    cleaned = []
+    for char in result:
+        if char.isalnum() or char == " ":
+            cleaned.append(char)
+    output = "".join(cleaned)
+    # Collapse multiple spaces.
+    while "  " in output:
+        output = output.replace("  ", " ")
+    return output
+
+
+# --- Toolkit dispatcher ---
+
+def run_tool(tool_name: str, text: str) -> dict:
+    """Run one of the three tools and return results.
+
+    WHY a dispatcher? -- A single function that routes to the right
+    tool based on a name string.  This is a simple version of the
+    command pattern used in real applications.
+    """
+    if tool_name == "wordcount":
+        return {"tool": "wordcount", "result": count_words(text)}
+
+    elif tool_name == "duplicates":
+        lines = text.splitlines()
+        dupes = find_duplicates(lines)
+        return {"tool": "duplicates", "result": dupes}
+
+    elif tool_name == "clean":
+        lines = text.splitlines()
+        cleaned = [clean_string(line) for line in lines if line.strip()]
+        return {"tool": "clean", "result": cleaned}
+
+    else:
+        return {"tool": tool_name, "error": f"Unknown tool: {tool_name}"}
+
+
+def run_all_tools(text: str) -> dict:
+    """Run all three tools on the same text and collect results.
+
+    WHY run all? -- The default mode gives a complete analysis,
+    showing the learner how multiple utilities work together.
+    """
+    return {
+        "wordcount": count_words(text),
+        "duplicates": find_duplicates(text.splitlines()),
+        "clean_preview": [clean_string(line) for line in text.splitlines()[:3] if line.strip()],
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Level 0 Mini Toolkit")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--tool", choices=["wordcount", "duplicates", "clean", "all"],
+                        default="all", help="Which tool to run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
     input_path = Path(args.input)
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+
+    text = input_path.read_text(encoding="utf-8")
+
+    if args.tool == "all":
+        results = run_all_tools(text)
+        print("=== Mini Toolkit: All Tools ===\n")
+        wc = results["wordcount"]
+        print(f"  Word Count: {wc['words']} words, {wc['lines']} lines, {wc['characters']} chars")
+        dupes = results["duplicates"]
+        print(f"  Duplicates: {len(dupes)} found")
+        for d in dupes:
+            print(f"    '{d['text']}' x{d['count']}")
+        print(f"  Clean preview: {results['clean_preview'][:3]}")
+    else:
+        results = run_tool(args.tool, text)
+        print(f"=== Tool: {args.tool} ===")
+        print(json.dumps(results, indent=2))
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"\nOutput written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

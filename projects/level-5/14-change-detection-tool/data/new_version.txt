@@ -1,0 +1,8 @@
+Application Configuration v1.1
+database_host=db.production.internal
+database_port=5432
+database_name=myapp_v2
+log_level=WARNING
+max_connections=100
+cache_ttl=600
+enable_metrics=true

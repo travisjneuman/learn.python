@@ -1,52 +1,116 @@
-"""Advanced test module with heavy comments.
+"""Tests for Domain Boundary Enforcer.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: dependency graph, cycle detection, rule enforcement, layer checking.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    BoundaryEnforcer,
+    DependencyGraph,
+    DependencyRule,
+    DomainModule,
+    RuleType,
+    ViolationSeverity,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- DependencyGraph ----------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+class TestDependencyGraph:
+    def test_add_and_query_edges(self) -> None:
+        g = DependencyGraph()
+        g.add_edge("a", "b")
+        g.add_edge("a", "c")
+        assert g.dependencies_of("a") == {"b", "c"}
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    def test_dependents_of(self) -> None:
+        g = DependencyGraph()
+        g.add_edge("a", "b")
+        g.add_edge("c", "b")
+        assert g.dependents_of("b") == {"a", "c"}
+
+    def test_no_cycle(self) -> None:
+        g = DependencyGraph()
+        g.add_edge("a", "b")
+        g.add_edge("b", "c")
+        assert g.has_cycle() is False
+
+    def test_cycle_detected(self) -> None:
+        g = DependencyGraph()
+        g.add_edge("a", "b")
+        g.add_edge("b", "c")
+        g.add_edge("c", "a")
+        assert g.has_cycle() is True
+
+    def test_self_loop_is_cycle(self) -> None:
+        g = DependencyGraph()
+        g.add_edge("a", "a")
+        assert g.has_cycle() is True
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- Rule enforcement ---------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestBoundaryEnforcer:
+    def test_deny_rule_creates_violation(self) -> None:
+        enforcer = BoundaryEnforcer()
+        enforcer.add_rule(DependencyRule("a", "b", RuleType.DENY, reason="forbidden"))
+        g = DependencyGraph()
+        g.add_edge("a", "b")
+        violations = enforcer.enforce(g)
+        assert len(violations) >= 1
+        assert any(v.source == "a" and v.target == "b" for v in violations)
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_allow_rule_permits(self) -> None:
+        enforcer = BoundaryEnforcer()
+        enforcer.add_rule(DependencyRule("a", "b", RuleType.ALLOW))
+        g = DependencyGraph()
+        g.add_edge("a", "b")
+        violations = enforcer.enforce(g)
+        boundary_violations = [v for v in violations if v.source == "a" and v.target == "b"]
+        assert len(boundary_violations) == 0
+
+    def test_wildcard_deny(self) -> None:
+        enforcer = BoundaryEnforcer()
+        enforcer.add_rule(DependencyRule("*", "secret", RuleType.DENY))
+        g = DependencyGraph()
+        g.add_edge("any_module", "secret")
+        violations = enforcer.enforce(g)
+        assert any(v.target == "secret" for v in violations)
+
+    @pytest.mark.parametrize("default_allow,expect_violation", [
+        (True, False),
+        (False, True),
+    ])
+    def test_default_policy(self, default_allow: bool, expect_violation: bool) -> None:
+        enforcer = BoundaryEnforcer(default_allow=default_allow)
+        g = DependencyGraph()
+        g.add_edge("x", "y")
+        violations = enforcer.enforce(g)
+        has_violation = any(v.source == "x" and v.target == "y" for v in violations)
+        assert has_violation == expect_violation
+
+
+# --- Layer violations ---------------------------------------------------
+
+class TestLayerViolations:
+    def test_upward_dependency_flagged(self) -> None:
+        enforcer = BoundaryEnforcer()
+        enforcer.register_module(DomainModule("infra", layer=0))
+        enforcer.register_module(DomainModule("app", layer=2))
+        g = DependencyGraph()
+        g.add_edge("infra", "app")  # infra(0) -> app(2): upward violation
+        violations = enforcer.enforce(g)
+        assert any("Layer violation" in v.message for v in violations)
+
+    def test_downward_dependency_allowed(self) -> None:
+        enforcer = BoundaryEnforcer()
+        enforcer.register_module(DomainModule("app", layer=2))
+        enforcer.register_module(DomainModule("domain", layer=1))
+        g = DependencyGraph()
+        g.add_edge("app", "domain")  # downward: ok
+        violations = enforcer.enforce(g)
+        layer_violations = [v for v in violations if "Layer" in v.message]
+        assert len(layer_violations) == 0

@@ -1,107 +1,132 @@
 """Level 1 project: Simple Gradebook Engine.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Manage student grades from a CSV file: calculate averages,
+assign letter grades, and generate a class report.
+
+Concepts: csv, dictionaries, arithmetic, grade bands, sorting.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
+import csv
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Simple Gradebook Engine"
-PROJECT_FOCUS = "aggregate scores and grade bands"
 
+def letter_grade(average: float) -> str:
+    """Convert a numeric average to a letter grade.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY if/elif chains? -- Grade bands are ranges, not exact values.
+    Each condition checks a threshold from highest to lowest.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    if average >= 90:
+        return "A"
+    elif average >= 80:
+        return "B"
+    elif average >= 70:
+        return "C"
+    elif average >= 60:
+        return "D"
+    else:
+        return "F"
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+def calculate_average(scores: list[float]) -> float:
+    """Calculate the arithmetic mean of a list of scores.
+
+    WHY guard against empty? -- Dividing by zero would crash.
+    """
+    if not scores:
+        return 0.0
+    return round(sum(scores) / len(scores), 2)
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def parse_student_row(row: dict) -> dict:
+    """Parse a CSV row into a student record with computed fields.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Expected columns: student, score1, score2, score3, ...
+    Any column starting with 'score' is treated as a grade.
+    """
+    name = row.get("student", "Unknown").strip()
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    scores = []
+    for key, value in row.items():
+        if key.startswith("score"):
+            try:
+                scores.append(float(value.strip()))
+            except ValueError:
+                continue
+
+    avg = calculate_average(scores)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "student": name,
+        "scores": scores,
+        "average": avg,
+        "letter_grade": letter_grade(avg),
+        "passed": avg >= 60,
+    }
+
+
+def load_gradebook(path: Path) -> list[dict]:
+    """Load students and their grades from a CSV file."""
+    if not path.exists():
+        raise FileNotFoundError(f"Gradebook file not found: {path}")
+
+    students = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            students.append(parse_student_row(row))
+    return students
+
+
+def class_summary(students: list[dict]) -> dict:
+    """Compute class-wide statistics."""
+    if not students:
+        return {"total": 0}
+
+    averages = [s["average"] for s in students]
+    passed = sum(1 for s in students if s["passed"])
+
+    return {
+        "total_students": len(students),
+        "class_average": round(sum(averages) / len(averages), 2),
+        "highest": max(averages),
+        "lowest": min(averages),
+        "passed": passed,
+        "failed": len(students) - passed,
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Simple Gradebook Engine")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    students = load_gradebook(Path(args.input))
+    summary = class_summary(students)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== Gradebook Report ===\n")
+    print(f"  {'Student':<20} {'Average':>8} {'Grade':>6} {'Status':>8}")
+    print(f"  {'-'*20} {'-'*8} {'-'*6} {'-'*8}")
+
+    for s in sorted(students, key=lambda x: x["average"], reverse=True):
+        status = "PASS" if s["passed"] else "FAIL"
+        print(f"  {s['student']:<20} {s['average']:>8.2f} {s['letter_grade']:>6} {status:>8}")
+
+    print(f"\n  Class average: {summary['class_average']}")
+    print(f"  Passed: {summary['passed']}/{summary['total_students']}")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps({"students": students, "summary": summary}, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

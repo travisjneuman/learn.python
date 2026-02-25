@@ -1,106 +1,203 @@
-"""Level 5 project: Retry Backoff Runner.
+"""Level 5 / Project 11 — Retry Backoff Runner.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+A configurable retry mechanism with exponential backoff and jitter.
+Wraps any callable and retries on specified exception types.
+
+Concepts practiced:
+- Exponential backoff with configurable factor and cap
+- Jitter to prevent thundering-herd problems
+- Higher-order functions (wrapping callables)
+- Structured attempt logging for observability
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import random
+import time
 from pathlib import Path
 
-PROJECT_LEVEL = 5
-PROJECT_TITLE = "Retry Backoff Runner"
-PROJECT_FOCUS = "exponential backoff strategy practice"
 
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+    """Set up logging so every retry attempt is traceable."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- retry engine ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def compute_delay(
+    attempt: int,
+    base_delay: float,
+    backoff_factor: float,
+    max_delay: float,
+    jitter: bool,
+) -> float:
+    """Calculate the delay before the next retry.
 
-    We keep this separate from I/O so business logic stays testable.
+    Uses exponential backoff: delay = base * factor^(attempt-1).
+    The result is capped at *max_delay* to prevent unbounded waits.
+    When *jitter* is True a random factor between 0.5 and 1.0 is
+    applied to spread out retries from concurrent clients.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+    delay = min(base_delay * (backoff_factor ** (attempt - 1)), max_delay)
+    if jitter:
+        delay = delay * (0.5 + random.random() * 0.5)
+    return round(delay, 4)
+
+
+def retry_with_backoff(
+    func: callable,
+    max_retries: int = 3,
+    base_delay: float = 1.0,
+    max_delay: float = 60.0,
+    backoff_factor: float = 2.0,
+    jitter: bool = True,
+    retry_on: tuple[type, ...] = (Exception,),
+) -> tuple[object, list[dict]]:
+    """Execute *func* with retry and exponential backoff.
+
+    Returns ``(result, attempt_log)`` on success.
+    Raises the last caught exception if all retries are exhausted.
+
+    Each entry in *attempt_log* records the attempt number, status,
+    any error message, and the delay before the next attempt.
+    """
+    if max_retries < 1:
+        raise ValueError("max_retries must be at least 1")
+    if base_delay < 0:
+        raise ValueError("base_delay must be non-negative")
+
+    attempt_log: list[dict] = []
+    last_exc: Exception | None = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            result = func()
+            attempt_log.append({"attempt": attempt, "status": "success"})
+            logging.info("Attempt %d succeeded", attempt)
+            return result, attempt_log
+        except retry_on as exc:
+            last_exc = exc
+            delay = compute_delay(attempt, base_delay, backoff_factor, max_delay, jitter)
+            attempt_log.append({
+                "attempt": attempt,
+                "status": "failed",
+                "error": str(exc),
+                "delay_seconds": delay,
+            })
+            logging.warning(
+                "Attempt %d/%d failed: %s (retrying in %.3fs)",
+                attempt,
+                max_retries,
+                exc,
+                delay,
+            )
+            if attempt < max_retries:
+                time.sleep(delay)
+
+    # All retries exhausted — re-raise the last exception.
+    raise last_exc  # type: ignore[misc]
+
+
+# ---------- test harness ----------
+
+
+def create_flaky_function(fail_count: int = 2) -> callable:
+    """Create a function that fails *fail_count* times then succeeds.
+
+    Useful for testing the retry mechanism with a controlled number
+    of failures before eventual success.
+    """
+    state = {"calls": 0}
+
+    def flaky() -> dict:
+        state["calls"] += 1
+        if state["calls"] <= fail_count:
+            raise ConnectionError(f"Simulated failure #{state['calls']}")
+        return {"result": "success", "total_calls": state["calls"]}
+
+    return flaky
+
+
+# ---------- pipeline ----------
+
+
+def run(
+    output_path: Path,
+    max_retries: int = 5,
+    fail_count: int = 2,
+    base_delay: float = 0.01,
+) -> dict:
+    """Execute a retry demo: create a flaky function and retry it."""
+    func = create_flaky_function(fail_count=fail_count)
+    try:
+        result, attempt_log = retry_with_backoff(
+            func,
+            max_retries=max_retries,
+            base_delay=base_delay,
+            jitter=False,
         )
-    return records
+        status = "success"
+    except Exception as exc:
+        result = None
+        attempt_log = [{"error": str(exc)}]
+        status = "failed"
 
-
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    total_delay = sum(
+        entry.get("delay_seconds", 0) for entry in attempt_log
+    )
+    report = {
+        "status": status,
+        "result": result,
+        "attempts": attempt_log,
+        "total_attempts": len(attempt_log),
+        "total_delay_seconds": round(total_delay, 3),
+        "max_retries": max_retries,
     }
 
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info(
+        "Retry run: %s after %d attempts (total delay: %.3fs)",
+        status,
+        len(attempt_log),
+        total_delay,
+    )
+    return report
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    """Parse command-line arguments for the retry runner."""
+    parser = argparse.ArgumentParser(
+        description="Retry with exponential backoff",
+    )
+    parser.add_argument("--output", default="data/retry_report.json", help="Output report path")
+    parser.add_argument("--max-retries", type=int, default=5, help="Maximum retry attempts")
+    parser.add_argument("--fail-count", type=int, default=2, help="Simulated failures before success")
+    parser.add_argument("--base-delay", type=float, default=0.1, help="Base delay in seconds")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
+    """Entry point: configure logging, parse args, run the retry demo."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    report = run(Path(args.output), args.max_retries, args.fail_count, args.base_delay)
+    print(
+        f"{report['status'].capitalize()} after {report['total_attempts']} attempts "
+        f"(total delay: {report['total_delay_seconds']}s)"
+    )
 
 
 if __name__ == "__main__":

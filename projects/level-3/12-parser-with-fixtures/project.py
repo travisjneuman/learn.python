@@ -1,106 +1,223 @@
 """Level 3 project: Parser With Fixtures.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Builds a configurable text parser that handles multiple formats
+(INI-like, key=value, CSV). Tests use pytest fixtures to create
+temporary input files for each format.
+
+Skills practiced: pytest fixtures, text parsing, dataclasses,
+typing basics, logging, file I/O patterns.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import re
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
+from typing import Optional
 
-PROJECT_LEVEL = 3
-PROJECT_TITLE = "Parser With Fixtures"
-PROJECT_FOCUS = "test fixtures and parser stability"
+logger = logging.getLogger(__name__)
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+@dataclass
+class ParsedSection:
+    """A section from an INI-style file."""
+    name: str
+    entries: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
+class ParseResult:
+    """Result of parsing a file."""
+    format: str
+    source: str
+    sections: list[ParsedSection] = field(default_factory=list)
+    records: list[dict] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    line_count: int = 0
+
+
+def parse_ini(text: str) -> ParseResult:
+    """Parse INI-style text into sections with key-value pairs.
+
+    Format:
+        [section_name]
+        key = value
+        another_key = another_value
+    """
+    sections: list[ParsedSection] = []
+    current: Optional[ParsedSection] = None
+    errors: list[str] = []
+    line_count = 0
+
+    for line_num, line in enumerate(text.splitlines(), 1):
+        line_count += 1
+        stripped = line.strip()
+
+        # Skip blank lines and comments.
+        if not stripped or stripped.startswith("#") or stripped.startswith(";"):
+            continue
+
+        # Section header.
+        match = re.match(r"^\[(.+)\]$", stripped)
+        if match:
+            current = ParsedSection(name=match.group(1).strip())
+            sections.append(current)
+            continue
+
+        # Key-value pair.
+        if "=" in stripped:
+            key, _, value = stripped.partition("=")
+            if current is None:
+                current = ParsedSection(name="default")
+                sections.append(current)
+            current.entries[key.strip()] = value.strip()
+        else:
+            errors.append(f"Line {line_num}: Unrecognised format: {stripped!r}")
+
+    return ParseResult(
+        format="ini",
+        source="text",
+        sections=sections,
+        line_count=line_count,
+        errors=errors,
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+def parse_key_value(text: str, delimiter: str = "=") -> ParseResult:
+    """Parse flat key=value text (no sections).
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
-
-    We keep this separate from I/O so business logic stays testable.
+    Each line is key<delimiter>value.
     """
     records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    errors: list[str] = []
+
+    for line_num, line in enumerate(text.splitlines(), 1):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        if delimiter in stripped:
+            key, _, value = stripped.partition(delimiter)
+            records.append({"key": key.strip(), "value": value.strip()})
+        else:
+            errors.append(f"Line {line_num}: No delimiter '{delimiter}' found")
+
+    return ParseResult(
+        format="key_value",
+        source="text",
+        records=records,
+        line_count=len(text.splitlines()),
+        errors=errors,
+    )
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def parse_csv_simple(text: str) -> ParseResult:
+    """Parse simple CSV text (comma-separated, first row is header).
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    Uses basic splitting — not the csv module (for learning purposes).
+    """
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    if not lines:
+        return ParseResult(format="csv", source="text", line_count=0)
+
+    headers = [h.strip() for h in lines[0].split(",")]
+    records: list[dict] = []
+    errors: list[str] = []
+
+    for line_num, line in enumerate(lines[1:], 2):
+        values = [v.strip() for v in line.split(",")]
+        if len(values) != len(headers):
+            errors.append(f"Line {line_num}: Expected {len(headers)} columns, got {len(values)}")
+            continue
+        records.append(dict(zip(headers, values)))
+
+    return ParseResult(
+        format="csv",
+        source="text",
+        records=records,
+        line_count=len(lines),
+        errors=errors,
+    )
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+# Format registry.
+PARSERS = {
+    "ini": parse_ini,
+    "kv": parse_key_value,
+    "csv": parse_csv_simple,
+}
 
 
-def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    return parser.parse_args()
+def detect_format(text: str) -> str:
+    """Auto-detect file format from content."""
+    lines = [l.strip() for l in text.splitlines() if l.strip() and not l.startswith("#")]
+    if not lines:
+        return "kv"
+
+    if re.match(r"^\[.+\]$", lines[0]):
+        return "ini"
+    if "," in lines[0] and lines[0].count(",") >= 2:
+        return "csv"
+    return "kv"
+
+
+def parse_file(path: Path, fmt: Optional[str] = None) -> ParseResult:
+    """Parse a file, auto-detecting format if not specified."""
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {path}")
+
+    text = path.read_text(encoding="utf-8")
+
+    if fmt is None:
+        fmt = detect_format(text)
+        logger.info("Auto-detected format: %s", fmt)
+
+    parser_fn = PARSERS.get(fmt)
+    if parser_fn is None:
+        raise ValueError(f"Unknown format: {fmt}")
+
+    result = parser_fn(text)
+    result.source = str(path)
+    return result
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build CLI parser."""
+    parser = argparse.ArgumentParser(description="Parser with fixtures")
+    parser.add_argument("file", help="File to parse")
+    parser.add_argument("--format", choices=["ini", "kv", "csv"], help="Force format")
+    parser.add_argument("--json", action="store_true", help="JSON output")
+    parser.add_argument("--log-level", default="INFO")
+    return parser
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
-    args = parse_args()
+    """Entry point."""
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    parser = build_parser()
+    args = parser.parse_args()
 
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    result = parse_file(Path(args.file), args.format)
+
+    if args.json:
+        print(json.dumps(asdict(result), indent=2))
+    else:
+        print(f"Format: {result.format}, Lines: {result.line_count}")
+        if result.sections:
+            for section in result.sections:
+                print(f"\n[{section.name}]")
+                for k, v in section.entries.items():
+                    print(f"  {k} = {v}")
+        if result.records:
+            for rec in result.records:
+                print(f"  {rec}")
+        if result.errors:
+            print(f"\nErrors ({len(result.errors)}):")
+            for err in result.errors:
+                print(f"  {err}")
 
 
 if __name__ == "__main__":

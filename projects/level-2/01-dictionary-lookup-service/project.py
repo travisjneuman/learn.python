@@ -1,107 +1,167 @@
 """Level 2 project: Dictionary Lookup Service.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- build a dictionary from key=value lines,
+- look up keys with fuzzy matching and suggestions,
+- handle missing keys gracefully with try/except.
+
+Skills practiced: dict comprehensions, try/except, sets, sorting with key,
+nested data structures, enumerate.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Dictionary Lookup Service"
-PROJECT_FOCUS = "nested lookup safety and defaults"
+# difflib provides get_close_matches for fuzzy string matching.
+# This is a stdlib module — no pip install needed.
+import difflib
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def load_dictionary(path: Path) -> dict[str, str]:
+    """Load a dictionary from a file of 'key=value' lines.
 
-    This function is isolated so it can be tested independently.
+    Lines without '=' are silently skipped.  Duplicate keys keep
+    the LAST value (dict insertion order).
+
+    Returns:
+        A dict mapping term -> definition.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+        raise FileNotFoundError(f"Dictionary file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    raw = path.read_text(encoding="utf-8").splitlines()
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    # Dict comprehension — splits each valid line on the first '=' only.
+    # str.split("=", 1) returns at most 2 parts, so definitions can
+    # contain '=' characters safely.
+    entries = {
+        parts[0].strip().lower(): parts[1].strip()
+        for line in raw
+        if "=" in line
+        for parts in [line.split("=", 1)]
+    }
+    return entries
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def lookup(dictionary: dict[str, str], term: str) -> dict:
+    """Look up a term in the dictionary.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Returns a result dict with:
+      - found: bool
+      - term: the normalised search term
+      - definition: str or None
+      - suggestions: list of close matches when not found
+    """
+    # Normalise to lowercase so lookups are case-insensitive.
+    normalised = term.strip().lower()
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    try:
+        # Direct lookup — this is the happy path.
+        definition = dictionary[normalised]
+        return {
+            "found": True,
+            "term": normalised,
+            "definition": definition,
+            "suggestions": [],
+        }
+    except KeyError:
+        # When the key is missing we suggest close matches.
+        # get_close_matches uses SequenceMatcher under the hood.
+        suggestions = difflib.get_close_matches(
+            normalised, dictionary.keys(), n=3, cutoff=0.6
+        )
+        return {
+            "found": False,
+            "term": normalised,
+            "definition": None,
+            "suggestions": suggestions,
+        }
+
+
+def batch_lookup(
+    dictionary: dict[str, str], terms: list[str]
+) -> list[dict]:
+    """Look up many terms and return a list of result dicts.
+
+    Uses enumerate so the caller can track original ordering.
+    """
+    results = []
+    for idx, term in enumerate(terms):
+        result = lookup(dictionary, term)
+        result["index"] = idx
+        results.append(result)
+    return results
+
+
+def dictionary_stats(dictionary: dict[str, str]) -> dict:
+    """Compute simple statistics about the dictionary.
+
+    Demonstrates set operations and sorting with a key function.
+    """
+    # Set of unique first letters.
+    first_letters: set[str] = {k[0] for k in dictionary if k}
+
+    # Sort keys by definition length (longest first).
+    sorted_by_length = sorted(
+        dictionary.keys(),
+        key=lambda k: len(dictionary[k]),
+        reverse=True,
+    )
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "total_entries": len(dictionary),
+        "unique_first_letters": sorted(first_letters),
+        "longest_definitions": sorted_by_length[:5],
+        "shortest_definitions": sorted_by_length[-5:],
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Dictionary lookup with fuzzy matching"
+    )
+    parser.add_argument(
+        "--dict",
+        default="data/sample_input.txt",
+        help="Path to the dictionary file (key=value per line)",
+    )
+    parser.add_argument(
+        "--lookup",
+        nargs="*",
+        default=[],
+        help="Terms to look up",
+    )
+    parser.add_argument(
+        "--stats",
+        action="store_true",
+        help="Print dictionary statistics",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: load dictionary, run lookups, print results."""
     args = parse_args()
+    dictionary = load_dictionary(Path(args.dict))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    if args.stats:
+        stats = dictionary_stats(dictionary)
+        print(json.dumps(stats, indent=2))
+        return
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    if args.lookup:
+        results = batch_lookup(dictionary, args.lookup)
+    else:
+        # Default: look up a few sample terms to demonstrate behaviour.
+        samples = list(dictionary.keys())[:3] + ["nonexistent"]
+        results = batch_lookup(dictionary, samples)
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    print(json.dumps(results, indent=2))
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

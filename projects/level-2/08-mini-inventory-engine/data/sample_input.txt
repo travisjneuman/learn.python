@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+name,quantity,price,category,min_stock
+Widget,100,9.99,hardware,10
+Gadget,3,49.99,electronics,5
+Gizmo,50,19.99,electronics,10
+Bolt,500,0.50,hardware,100
+Nut,450,0.25,hardware,100
+USB Cable,25,7.99,accessories,20
+Keyboard,8,79.99,peripherals,5
+Mouse,12,29.99,peripherals,5
+Monitor Stand,2,149.99,furniture,3
+Desk Lamp,6,34.99,furniture,5

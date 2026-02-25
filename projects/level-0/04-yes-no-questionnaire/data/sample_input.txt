@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Do you enjoy learning Python?
+Is practice more important than theory?
+Should beginners start with small projects?
+Is it okay to make mistakes while learning?
+Do you prefer reading docs over watching videos?

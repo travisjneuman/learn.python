@@ -1,0 +1,8 @@
+[
+  {"name": "cpu", "value": 85.5, "timestamp": "2025-01-15T10:00:00+00:00"},
+  {"name": "cpu", "value": 92.1, "timestamp": "2025-01-15T10:01:00+00:00"},
+  {"name": "memory", "value": 72.3, "timestamp": "2025-01-15T10:00:00+00:00"},
+  {"name": "disk", "value": 45.0, "timestamp": "2025-01-15T10:00:00+00:00"},
+  {"name": "latency_ms", "value": 520, "timestamp": "2025-01-15T10:00:00+00:00"},
+  {"name": "cpu", "value": 88.0, "timestamp": "2025-01-15T10:15:00+00:00"}
+]

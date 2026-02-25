@@ -1,107 +1,119 @@
 """Level 0 project: Line Length Summarizer.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a text file, measure the length of each line, and compute
+statistics: min, max, average, and a simple text histogram.
+
+Concepts: loops, accumulation, min/max, integer division, string * repeat.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Line Length Summarizer"
-PROJECT_FOCUS = "loop metrics and summary output"
 
+def measure_lines(lines: list[str]) -> list[int]:
+    """Return a list of line lengths.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY a separate function? -- Measuring is pure logic (no I/O),
+    so it is easy to test in isolation.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return [len(line) for line in lines]
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def compute_stats(lengths: list[int]) -> dict:
+    """Compute min, max, and average line length.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY guard against empty lists? -- If the file is empty, calling
+    min() or max() on an empty list crashes.  We check first.
+    """
+    if not lengths:
+        return {"min": 0, "max": 0, "average": 0.0, "total_lines": 0}
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    total = 0
+    for length in lengths:
+        total += length
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "min": min(lengths),
+        "max": max(lengths),
+        "average": round(total / len(lengths), 2),
+        "total_lines": len(lengths),
     }
 
 
+def build_histogram(lengths: list[int], bar_char: str = "#", scale: int = 2) -> str:
+    """Build a simple text histogram of line lengths.
+
+    Each line gets a bar whose width is proportional to its length.
+    The scale parameter controls how many characters per unit of length.
+
+    WHY integer division? -- We divide the length by the scale factor
+    to keep the bars a reasonable width on screen.
+    """
+    if not lengths:
+        return "(no data)"
+
+    lines = []
+    for i, length in enumerate(lengths, start=1):
+        bar_width = length // scale
+        bar = bar_char * max(bar_width, 1)  # At least one character.
+        lines.append(f"  Line {i:>3}: {bar} ({length})")
+
+    return "\n".join(lines)
+
+
+def categorise_lengths(lengths: list[int]) -> dict:
+    """Group lines into short (< 40), medium (40-80), and long (> 80).
+
+    WHY categories? -- Raw numbers are harder to scan than categories.
+    This gives a quick overview of the file's shape.
+    """
+    short = sum(1 for l in lengths if l < 40)
+    medium = sum(1 for l in lengths if 40 <= l <= 80)
+    long = sum(1 for l in lengths if l > 80)
+    return {"short": short, "medium": medium, "long": long}
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Line Length Summarizer")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
     input_path = Path(args.input)
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+
+    lines = input_path.read_text(encoding="utf-8").splitlines()
+    lengths = measure_lines(lines)
+    stats = compute_stats(lengths)
+    categories = categorise_lengths(lengths)
+
+    print("=== Line Length Summary ===")
+    print(f"  Total lines: {stats['total_lines']}")
+    print(f"  Shortest:    {stats['min']} chars")
+    print(f"  Longest:     {stats['max']} chars")
+    print(f"  Average:     {stats['average']} chars")
+    print(f"\n  Categories: {categories['short']} short, "
+          f"{categories['medium']} medium, {categories['long']} long")
+
+    print(f"\n=== Histogram ===\n")
+    print(build_histogram(lengths))
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    result = {"stats": stats, "categories": categories, "lengths": lengths}
+    output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    print(f"\n  Output written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

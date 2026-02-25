@@ -1,5 +1,25 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Resilient JSON Loader
+----------------------------------------
+This file explains the companion primary.json and backup.json.
+
+primary.json — the main data file (may contain errors):
+  [
+    {"id": 1, "name": "Server A", "status": "running"},
+    {"id": 2, "name": "Server B", "status": "stopped"},
+    {"id": 3, "name": "Server C", "status": "running"},
+  ]
+  Note: trailing comma after last entry (common JSON error)
+
+backup.json — fallback file (clean copy):
+  [
+    {"id": 1, "name": "Server A", "status": "running"},
+    {"id": 2, "name": "Server B", "status": "stopped"}
+  ]
+
+Loading strategy:
+  1. Try primary.json with UTF-8 encoding
+  2. If JSON parse fails, attempt repair (remove trailing commas)
+  3. If repair fails, fall back to backup.json
+  4. If all fail, return empty list with error status
+
+Expected: primary loads after repair (trailing comma removed), 3 records

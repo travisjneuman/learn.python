@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "now": 1700000000,
+  "sources": [
+    {"source": "api_orders", "last_updated": 1699999950},
+    {"source": "api_inventory", "last_updated": 1699999000},
+    {"source": "api_users", "last_updated": 1699998000}
+  ],
+  "rules": [
+    {"source": "api_users", "warning": 600, "stale": 1200, "critical": 3600}
+  ]
+}

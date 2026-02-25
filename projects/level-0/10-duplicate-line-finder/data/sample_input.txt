@@ -1,5 +1,10 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+check server status
+restart web service
+check server status
+update firewall rules
+deploy new build
+restart web service
+check server status
+clear log files
+deploy new build
+monitor disk usage

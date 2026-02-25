@@ -1,54 +1,49 @@
-"""Intermediate test module with heavy comments.
-
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+"""Tests for Config Layer Priority."""
 from pathlib import Path
+import json
+import os
+import pytest
+from project import load_file_config, load_env_config, coerce_types, resolve_config, run, DEFAULT_CONFIG
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+def test_load_file_config_missing(tmp_path: Path):
+    result = load_file_config(tmp_path / "nope.json")
+    assert result == {}
 
+def test_load_file_config_valid(tmp_path: Path):
+    f = tmp_path / "config.json"
+    f.write_text('{"port": 9090}', encoding="utf-8")
+    assert load_file_config(f) == {"port": 9090}
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+def test_load_env_config(monkeypatch):
+    monkeypatch.setenv("APP_PORT", "9090")
+    monkeypatch.setenv("APP_DEBUG", "true")
+    monkeypatch.setenv("OTHER_VAR", "ignored")
+    result = load_env_config("APP_")
+    assert result == {"port": "9090", "debug": "true"}
+    assert "other_var" not in result
 
-    # Act: run loader.
-    items = load_items(sample)
+@pytest.mark.parametrize("value,default_val,expected", [
+    ("9090", 8080, 9090),
+    ("true", False, True),
+    ("false", True, False),
+    ("3.14", 0.0, 3.14),
+])
+def test_coerce_types(value, default_val, expected):
+    result = coerce_types({"key": value}, {"key": default_val})
+    assert result["key"] == expected
 
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+def test_resolve_config_priority():
+    defaults = {"port": 8080, "debug": False}
+    file_config = {"port": 9090}
+    env_config = {"port": "3000"}
+    resolved = resolve_config(defaults, file_config, env_config)
+    assert resolved["port"] == 3000  # env wins
+    assert resolved["debug"] is False  # default
 
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
-
-
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
-
-    # Act: build summary from records.
-    summary = build_summary(records)
-
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_run_integration(tmp_path: Path):
+    config = tmp_path / "config.json"
+    config.write_text('{"log_level": "DEBUG"}', encoding="utf-8")
+    output = tmp_path / "out.json"
+    report = run(config, output)
+    assert report["config"]["log_level"] == "DEBUG"
+    assert report["sources"]["log_level"] == "file"

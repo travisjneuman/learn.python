@@ -1,5 +1,37 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "components": [
+    {
+      "name": "billing-monolith",
+      "language": "Java",
+      "age_years": 12,
+      "lines_of_code": 80000,
+      "dependency_count": 25,
+      "test_coverage_pct": 30,
+      "monthly_incidents": 4.0,
+      "business_criticality": 9,
+      "has_documentation": false
+    },
+    {
+      "name": "auth-service",
+      "language": "Python",
+      "age_years": 5,
+      "lines_of_code": 5000,
+      "dependency_count": 8,
+      "test_coverage_pct": 75,
+      "monthly_incidents": 1.0,
+      "business_criticality": 8,
+      "has_documentation": true
+    },
+    {
+      "name": "report-generator",
+      "language": "Perl",
+      "age_years": 18,
+      "lines_of_code": 15000,
+      "dependency_count": 12,
+      "test_coverage_pct": 10,
+      "monthly_incidents": 2.5,
+      "business_criticality": 4,
+      "has_documentation": false
+    }
+  ]
+}

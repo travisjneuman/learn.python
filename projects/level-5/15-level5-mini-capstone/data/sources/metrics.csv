@@ -1,0 +1,6 @@
+name,amount,category
+cpu_usage,75,system
+memory_usage,45,system
+disk_io,92,storage
+network_latency,55,network
+error_rate,12,application

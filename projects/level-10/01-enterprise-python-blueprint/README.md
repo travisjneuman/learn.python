@@ -2,59 +2,64 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- reference architecture synthesis
+- Strategy pattern for pluggable code generators
+- Registry pattern for component discovery and composition
+- Compliance tiers that change generated output
+- Enterprise project scaffolding automation
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Every new microservice in an organization should start from the same standards — logging format, config schema, test harness, CI pipeline. This project builds a code-driven blueprint generator so teams get consistent scaffolding automatically, eliminating "snowflake services" that drift from organizational norms.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/01-enterprise-python-blueprint
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py my-service --tier standard --owners alice bob
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Generated 6 files for 'my-service' (tier=STANDARD):
+  logging_config.json
+  config/settings.json
+  pytest.ini
+  tests/test_smoke.py
+  .github/workflows/ci.yml
+  MANIFEST.json
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
+- Blueprint files written to `--output-dir` (if provided)
+- MANIFEST.json listing every generated file and its source generator
+- Passing tests (`pytest -v` shows ~14 passed)
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a new generator (e.g., `DockerfileGenerator`) that produces a `Dockerfile` — register it in `build_default_registry` and verify the manifest grows by one entry.
+2. Make the `STRICT` tier require a `CODEOWNERS` file — add a generator that only emits output for strict-tier specs.
+3. Re-run tests after each change to ensure nothing regresses.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a project name containing spaces or special characters — observe the `ValueError`.
+2. Remove a generator from the registry and watch downstream tests that expect its output fail.
+3. Change `ComplianceTier` enum values and see how `generate_project("x", tier="nonexistent")` raises `KeyError`.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add input sanitization that auto-slugifies project names instead of rejecting them.
+2. Make the registry validate that at least one generator is registered before generating.
+3. Add a friendly error message for unknown tier strings instead of a raw `KeyError`.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the Strategy pattern (FileGenerator protocol) make this system extensible without modifying existing code?
+2. How does the compliance tier influence each generator differently?
+3. What is the purpose of the MANIFEST.json and why is it generated last?
+4. How would you adapt this blueprint system to generate projects in languages other than Python?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- add a new generator and register it without modifying any existing generator,
+- explain how the Protocol class enables duck-typed strategy dispatch,
+- write a test for a custom generator using the existing fixtures,
+- describe why immutable `ProjectSpec` prevents accidental mutation during generation.
 
 ---
 

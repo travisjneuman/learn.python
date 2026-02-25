@@ -1,54 +1,90 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Schema Validator Engine.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Covers: required-field enforcement, type checking, range validation,
+extra-field detection, and full-run integration.
 """
 
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import json
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+from project import validate_record, validate_all, load_schema, load_records, run
 
+# -- sample schema used across tests --
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+SAMPLE_SCHEMA = {
+    "fields": {
+        "name": {"type": "string", "required": True},
+        "age": {"type": "integer", "required": True, "min": 0, "max": 150},
+        "email": {"type": "string", "required": False},
+    }
+}
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+# -- validate_record tests --
 
-    # Act: build structured records.
-    records = build_records(raw_items)
+@pytest.mark.parametrize(
+    "record, expected_error_count",
+    [
+        ({"name": "Alice", "age": 30}, 0),
+        ({"name": "Bob", "age": 25, "email": "bob@example.com"}, 0),
+        ({"age": 30}, 1),                          # missing required 'name'
+        ({"name": "X"}, 1),                         # missing required 'age'
+        ({"name": 123, "age": 30}, 1),              # wrong type for 'name'
+        ({"name": "A", "age": -5}, 1),              # age below min
+        ({"name": "A", "age": 200}, 1),             # age above max
+        ({"name": "A", "age": 30, "extra": 1}, 1),  # unexpected field
+    ],
+)
+def test_validate_record_parametrized(record: dict, expected_error_count: int) -> None:
+    errors = validate_record(record, SAMPLE_SCHEMA)
+    assert len(errors) == expected_error_count
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+
+def test_validate_record_multiple_errors() -> None:
+    """A record with several problems should collect all errors at once."""
+    record = {"age": "not_a_number"}  # missing 'name' + wrong type for 'age'
+    errors = validate_record(record, SAMPLE_SCHEMA)
+    assert len(errors) >= 2
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_validate_all_report_structure() -> None:
+    records = [
+        {"name": "Alice", "age": 30},
+        {"name": "Bob"},  # missing age
+    ]
+    report = validate_all(records, SAMPLE_SCHEMA)
+    assert report["total"] == 2
+    assert report["valid"] == 1
+    assert report["invalid"] == 1
+    assert len(report["errors"]) == 1
+    assert report["errors"][0]["record_index"] == 1
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_full_run_writes_report(tmp_path: Path) -> None:
+    """Integration test: schema + records files in, report file out."""
+    schema_file = tmp_path / "schema.json"
+    schema_file.write_text(json.dumps(SAMPLE_SCHEMA), encoding="utf-8")
+
+    records_file = tmp_path / "records.json"
+    records_file.write_text(
+        json.dumps([
+            {"name": "Alice", "age": 30},
+            {"name": 42, "age": 30},
+        ]),
+        encoding="utf-8",
+    )
+
+    output_file = tmp_path / "report.json"
+    report = run(schema_file, records_file, output_file)
+
+    assert output_file.exists()
+    assert report["valid"] == 1
+    assert report["invalid"] == 1
+
+
+def test_load_records_rejects_non_array(tmp_path: Path) -> None:
+    bad_file = tmp_path / "bad.json"
+    bad_file.write_text('{"not": "an array"}', encoding="utf-8")
+    with pytest.raises(ValueError, match="JSON array"):
+        load_records(bad_file)

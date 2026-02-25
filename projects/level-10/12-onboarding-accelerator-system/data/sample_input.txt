@@ -1,5 +1,13 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "new_hire": {
+    "name": "Alice Chen",
+    "role": "backend",
+    "start_date": "2026-03-01",
+    "buddy": "Bob Smith",
+    "team": "platform-engineering"
+  },
+  "custom_tasks": [
+    {"id": "CUSTOM-001", "title": "Set up VPN", "category": "TOOLS", "priority": "DAY_ONE"},
+    {"id": "CUSTOM-002", "title": "Complete compliance training", "category": "READING", "priority": "FIRST_WEEK"}
+  ]
+}

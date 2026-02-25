@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+version: v2.1.0
+criterion: test_coverage weight=30 required=true value=92 threshold=80
+criterion: lint_score weight=20 required=false value=98 threshold=90
+criterion: security_scan weight=25 required=true value=100 threshold=100
+criterion: changelog_updated weight=15 required=false value=100 threshold=100
+criterion: performance_regression weight=10 required=false value=85 threshold=70
+go_threshold: 80
+conditional_threshold: 60

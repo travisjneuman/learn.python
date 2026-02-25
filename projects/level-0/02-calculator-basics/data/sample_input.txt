@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+10 + 5
+20 - 8
+6 * 7
+100 / 4
+15 / 0
+abc + 2

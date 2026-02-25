@@ -1,107 +1,151 @@
 """Level 0 project: Temperature Converter.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Convert temperatures between Celsius, Fahrenheit, and Kelvin.
+Reads conversion requests from a file and prints a results table.
+
+Concepts: functions, return values, float arithmetic, rounding, if/elif/else.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Temperature Converter"
-PROJECT_FOCUS = "functions and unit conversion practice"
 
+def celsius_to_fahrenheit(c: float) -> float:
+    """Convert Celsius to Fahrenheit.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY this formula? -- The Fahrenheit scale has a different zero point
+    and different-sized degrees than Celsius.  Multiply by 9/5 to scale,
+    then add 32 to shift the zero point.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    return c * 9 / 5 + 32
+
+
+def fahrenheit_to_celsius(f: float) -> float:
+    """Convert Fahrenheit to Celsius (reverse of the above)."""
+    return (f - 32) * 5 / 9
+
+
+def celsius_to_kelvin(c: float) -> float:
+    """Convert Celsius to Kelvin.
+
+    WHY 273.15? -- The Kelvin scale starts at absolute zero, which is
+    -273.15 degrees Celsius.  Adding 273.15 shifts the scale.
+    """
+    return c + 273.15
+
+
+def kelvin_to_celsius(k: float) -> float:
+    """Convert Kelvin to Celsius."""
+    if k < 0:
+        raise ValueError("Kelvin cannot be negative")
+    return k - 273.15
+
+
+def convert_temperature(value: float, from_unit: str, to_unit: str) -> float:
+    """Convert a temperature value between any two supported units.
+
+    Strategy: convert everything to Celsius first, then to the target unit.
+    WHY go through Celsius? -- It avoids writing a separate function for
+    every possible pair (F->K, K->F, etc.).  Two hops is simpler.
+    """
+    from_unit = from_unit.upper()
+    to_unit = to_unit.upper()
+
+    # Step 1: normalise to Celsius.
+    if from_unit == "C":
+        celsius = value
+    elif from_unit == "F":
+        celsius = fahrenheit_to_celsius(value)
+    elif from_unit == "K":
+        celsius = kelvin_to_celsius(value)
+    else:
+        raise ValueError(f"Unknown unit: {from_unit}")
+
+    # Step 2: convert from Celsius to the target.
+    if to_unit == "C":
+        return round(celsius, 2)
+    elif to_unit == "F":
+        return round(celsius_to_fahrenheit(celsius), 2)
+    elif to_unit == "K":
+        return round(celsius_to_kelvin(celsius), 2)
+    else:
+        raise ValueError(f"Unknown unit: {to_unit}")
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read conversion requests from a file.
+
+    Expected format per line: VALUE FROM_UNIT TO_UNIT
+    Example: 100 C F
+    """
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    results = []
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
 
+        parts = stripped.split()
+        if len(parts) != 3:
+            results.append({"input": stripped, "error": "Expected: VALUE FROM_UNIT TO_UNIT"})
+            continue
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+        raw_value, from_unit, to_unit = parts
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+        try:
+            value = float(raw_value)
+        except ValueError:
+            results.append({"input": stripped, "error": f"Not a number: {raw_value}"})
+            continue
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+        try:
+            converted = convert_temperature(value, from_unit, to_unit)
+        except ValueError as err:
+            results.append({"input": stripped, "error": str(err)})
+            continue
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+        results.append({
+            "input": stripped,
+            "value": value,
+            "from": from_unit.upper(),
+            "to": to_unit.upper(),
+            "result": converted,
+        })
+
+    return results
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Temperature Converter")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
+    results = process_file(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    for item in results:
+        if "error" in item:
+            print(f"  {item['input']}  =>  ERROR: {item['error']}")
+        else:
+            print(f"  {item['value']} {item['from']} => {item['result']} {item['to']}")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"\n{len(results)} conversions written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

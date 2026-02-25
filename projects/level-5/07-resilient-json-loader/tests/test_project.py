@@ -1,54 +1,102 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Resilient JSON Loader."""
+from __future__ import annotations
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+import json
+import pytest
 from pathlib import Path
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+from project import try_load_json, try_repair_json, load_with_fallbacks, run
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+# ---------- try_load_json ----------
 
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+@pytest.mark.parametrize("content,should_succeed", [
+    ('[{"a": 1}]', True),
+    ('{"key": "value"}', True),
+    ("{invalid json", False),
+    ("not json", False),
+])
+def test_try_load_json_parsing(tmp_path: Path, content: str, should_succeed: bool) -> None:
+    f = tmp_path / "test.json"
+    f.write_text(content, encoding="utf-8")
+    data, err = try_load_json(f)
+    if should_succeed:
+        assert data is not None and err is None
+    else:
+        assert data is None and err is not None
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_try_load_json_missing(tmp_path: Path) -> None:
+    data, err = try_load_json(tmp_path / "nope.json")
+    assert data is None and "not found" in err
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+# ---------- try_repair_json ----------
+
+@pytest.mark.parametrize("broken_text,should_repair,expected_len", [
+    ('[{"a": 1},{"b": 2},]', True, 2),   # trailing comma in array
+    ('{"key": "val",}', True, None),       # trailing comma in object
+    ('{"a": 1}\n{"b": 2}\n', True, 2),    # JSON Lines
+    ("totally {{{ broken", False, None),   # unrepairable
+])
+def test_try_repair_json(
+    broken_text: str,
+    should_repair: bool,
+    expected_len: int | None,
+) -> None:
+    result = try_repair_json(broken_text)
+    if should_repair:
+        assert result is not None
+        if expected_len is not None:
+            assert len(result) == expected_len
+    else:
+        assert result is None
+
+
+# ---------- load_with_fallbacks ----------
+
+def test_load_primary_success(tmp_path: Path) -> None:
+    primary = tmp_path / "p.json"
+    primary.write_text("[1,2,3]", encoding="utf-8")
+    data, status = load_with_fallbacks(primary, [])
+    assert status["method"] == "primary"
+    assert data == [1, 2, 3]
+
+
+def test_load_uses_fallback_when_primary_fails(tmp_path: Path) -> None:
+    primary = tmp_path / "p.json"
+    primary.write_text("{bad", encoding="utf-8")
+    backup = tmp_path / "b.json"
+    backup.write_text("[1,2]", encoding="utf-8")
+    data, status = load_with_fallbacks(primary, [backup])
+    assert status["method"] == "fallback"
+    assert data == [1, 2]
+
+
+def test_load_uses_repair_when_all_files_fail(tmp_path: Path) -> None:
+    primary = tmp_path / "p.json"
+    primary.write_text("[1,2,3,]", encoding="utf-8")  # trailing comma — repairable
+    data, status = load_with_fallbacks(primary, [])
+    assert status["method"] == "repair"
+    assert data == [1, 2, 3]
+
+
+def test_load_all_fail_returns_empty(tmp_path: Path) -> None:
+    primary = tmp_path / "missing.json"
+    data, status = load_with_fallbacks(primary, [])
+    assert status["method"] == "none"
+    assert data == []
+
+
+# ---------- integration: run ----------
+
+def test_run_writes_report(tmp_path: Path) -> None:
+    f = tmp_path / "data.json"
+    f.write_text('[{"name": "test"}]', encoding="utf-8")
+    output = tmp_path / "out.json"
+    report = run(f, output)
+    assert output.exists()
+    assert report["records_loaded"] == 1
+    assert report["load_status"]["method"] == "primary"
+    saved = json.loads(output.read_text())
+    assert saved["records_loaded"] == 1

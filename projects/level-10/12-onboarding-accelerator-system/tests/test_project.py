@@ -1,52 +1,100 @@
-"""Advanced test module with heavy comments.
+"""Tests for Onboarding Accelerator System.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers builder pattern, role templates, task completion, progress tracking,
+and plan customization.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import pytest
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    CompletionStatus,
+    OnboardingBuilder,
+    OnboardingPlan,
+    OnboardingTask,
+    TaskCategory,
+    TaskPriority,
+    backend_engineer_template,
+    frontend_engineer_template,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
-
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+@pytest.fixture
+def backend_plan() -> OnboardingPlan:
+    return OnboardingBuilder("Alice", "backend").with_buddy("Bob").build()
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# ---------------------------------------------------------------------------
+# Role templates
+# ---------------------------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestRoleTemplates:
+    def test_backend_has_tasks(self) -> None:
+        template = backend_engineer_template()
+        assert template.task_count() >= 10
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_frontend_has_tasks(self) -> None:
+        template = frontend_engineer_template()
+        assert template.task_count() >= 7
+
+    def test_templates_have_day_one_tasks(self) -> None:
+        for template in [backend_engineer_template(), frontend_engineer_template()]:
+            day_one = [t for t in template.tasks if t.priority == TaskPriority.DAY_ONE]
+            assert len(day_one) > 0
+
+
+# ---------------------------------------------------------------------------
+# Builder pattern
+# ---------------------------------------------------------------------------
+
+class TestOnboardingBuilder:
+    def test_builds_plan_from_template(self) -> None:
+        plan = OnboardingBuilder("Test", "backend").build()
+        assert plan.employee_name == "Test"
+        assert len(plan.tasks) >= 10
+
+    def test_buddy_assignment(self) -> None:
+        plan = OnboardingBuilder("Test", "backend").with_buddy("Mentor").build()
+        assert plan.buddy == "Mentor"
+
+    def test_custom_task_added(self) -> None:
+        extra = OnboardingTask("X-001", "Custom task", TaskCategory.TOOLS, TaskPriority.DAY_ONE)
+        plan = OnboardingBuilder("Test", "backend").add_task(extra).build()
+        ids = [t.task_id for t in plan.tasks]
+        assert "X-001" in ids
+
+    def test_unknown_role_raises(self) -> None:
+        with pytest.raises(ValueError, match="Unknown role"):
+            OnboardingBuilder("Test", "data-scientist").build()
+
+
+# ---------------------------------------------------------------------------
+# Task completion and progress
+# ---------------------------------------------------------------------------
+
+class TestOnboardingPlan:
+    def test_initial_completion_zero(self, backend_plan: OnboardingPlan) -> None:
+        assert backend_plan.completion_pct == 0.0
+
+    def test_complete_task_increases_progress(self, backend_plan: OnboardingPlan) -> None:
+        backend_plan.complete_task("BE-001")
+        assert backend_plan.completion_pct > 0.0
+
+    def test_complete_all_tasks_reaches_100(self, backend_plan: OnboardingPlan) -> None:
+        for task in backend_plan.tasks:
+            task.status = CompletionStatus.DONE
+        assert backend_plan.completion_pct == 100.0
+
+    def test_complete_nonexistent_returns_false(self, backend_plan: OnboardingPlan) -> None:
+        assert backend_plan.complete_task("FAKE-999") is False
+
+    def test_tasks_by_priority(self, backend_plan: OnboardingPlan) -> None:
+        day_one = backend_plan.tasks_by_priority(TaskPriority.DAY_ONE)
+        assert len(day_one) > 0
+        assert all(t.priority == TaskPriority.DAY_ONE for t in day_one)
+
+    def test_summary_structure(self, backend_plan: OnboardingPlan) -> None:
+        summary = backend_plan.summary()
+        assert "employee" in summary
+        assert "completion" in summary
+        assert "by_priority" in summary

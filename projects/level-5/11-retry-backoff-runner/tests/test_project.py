@@ -1,54 +1,87 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Retry Backoff Runner."""
+from __future__ import annotations
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+import json
+import pytest
 from pathlib import Path
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+from project import (
+    compute_delay,
+    retry_with_backoff,
+    create_flaky_function,
+    run,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+# ---------- compute_delay ----------
 
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+@pytest.mark.parametrize("attempt,base,factor,max_d,expected", [
+    (1, 0.1, 2.0, 10.0, 0.1),    # 0.1 * 2^0
+    (2, 0.1, 2.0, 10.0, 0.2),    # 0.1 * 2^1
+    (3, 0.1, 2.0, 10.0, 0.4),    # 0.1 * 2^2
+    (10, 0.1, 2.0, 5.0, 5.0),    # capped at max_delay
+])
+def test_compute_delay_no_jitter(
+    attempt: int, base: float, factor: float, max_d: float, expected: float,
+) -> None:
+    result = compute_delay(attempt, base, factor, max_d, jitter=False)
+    assert result == pytest.approx(expected)
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_compute_delay_with_jitter() -> None:
+    delay = compute_delay(1, 1.0, 2.0, 60.0, jitter=True)
+    assert 0.5 <= delay <= 1.0  # jitter scales by 0.5-1.0
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+# ---------- retry_with_backoff ----------
+
+def test_retry_succeeds_first_try() -> None:
+    result, log = retry_with_backoff(lambda: "ok", max_retries=3, base_delay=0.001)
+    assert result == "ok"
+    assert len(log) == 1
+    assert log[0]["status"] == "success"
+
+
+def test_retry_succeeds_after_failures() -> None:
+    func = create_flaky_function(fail_count=2)
+    result, log = retry_with_backoff(func, max_retries=5, base_delay=0.001, jitter=False)
+    assert result["result"] == "success"
+    assert len(log) == 3  # 2 failures + 1 success
+
+
+def test_retry_exhausts_retries() -> None:
+    func = create_flaky_function(fail_count=10)
+    with pytest.raises(ConnectionError):
+        retry_with_backoff(func, max_retries=3, base_delay=0.001, jitter=False)
+
+
+def test_retry_validates_parameters() -> None:
+    with pytest.raises(ValueError, match="max_retries"):
+        retry_with_backoff(lambda: None, max_retries=0)
+    with pytest.raises(ValueError, match="base_delay"):
+        retry_with_backoff(lambda: None, base_delay=-1)
+
+
+def test_retry_log_tracks_delays() -> None:
+    func = create_flaky_function(fail_count=2)
+    _, log = retry_with_backoff(func, max_retries=5, base_delay=0.01, jitter=False)
+    failed_entries = [e for e in log if e["status"] == "failed"]
+    assert all("delay_seconds" in e for e in failed_entries)
+
+
+# ---------- integration: run ----------
+
+@pytest.mark.parametrize("fail_count,max_retries,expected_status", [
+    (0, 3, "success"),
+    (2, 5, "success"),
+    (10, 3, "failed"),
+])
+def test_run_scenarios(
+    tmp_path: Path, fail_count: int, max_retries: int, expected_status: str,
+) -> None:
+    output = tmp_path / "report.json"
+    report = run(output, max_retries=max_retries, fail_count=fail_count)
+    assert report["status"] == expected_status
+    assert output.exists()
+    saved = json.loads(output.read_text())
+    assert saved["status"] == expected_status

@@ -13,41 +13,48 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/13-reconciliation-reporter
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --source data/source.csv --target data/target.csv --output data/reconciliation_report.json --key id
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "source_records": 5,
+  "target_records": 4,
+  "matched": 1,
+  "mismatches": 2,
+  "only_in_source": 2,
+  "only_in_target": 1
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/reconciliation_report.json` — full comparison report
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--tolerance` flag for numeric fields (e.g., salary difference within 5% is still "matched").
+2. Add a `--format` flag to output the report as CSV instead of JSON.
+3. Re-run script and tests — add a test for numeric tolerance.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Use a key field that has duplicate values in one file — observe the "last row wins" behavior.
+2. Feed two CSVs with completely different headers and see what happens.
+3. Use an empty CSV (headers only) as one of the inputs.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle duplicate keys by reporting them as a warning instead of silently overwriting.
+2. Report header differences as part of the reconciliation.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `reconcile` use set operations (union, intersection, difference)?
+2. What is the purpose of `compare_fields` — when would you NOT compare all fields?
+3. Why does the report separate "only_in_source" from "mismatches"?
+4. How would this scale to files with millions of rows?
 
 ## Mastery check
 You can move on when you can:

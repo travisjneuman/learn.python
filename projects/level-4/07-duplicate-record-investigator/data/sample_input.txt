@@ -1,5 +1,16 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample records for Duplicate Record Investigator
+---------------------------------------------------
+This file explains the companion sample_input.csv.
+
+sample_input.csv contains customer records with duplicates:
+  Row 1: header — customer_id,name,email,signup_date
+  Row 2: C001,Alice Smith,alice@example.com,2023-01-15    (unique)
+  Row 3: C002,Bob Jones,bob@test.com,2023-02-20           (unique)
+  Row 4: C001,Alice Smith,alice@example.com,2023-01-15    (exact duplicate of row 2)
+  Row 5: C003,Carol White,carol@test.com,2023-03-10       (unique)
+  Row 6: C002,Robert Jones,bob@test.com,2023-02-20        (fuzzy dup — same id, different name)
+  Row 7: C004,Dave Brown,dave@test.com,2023-04-05         (unique)
+  Row 8: C005,Eve Davis,eve@example.com,2023-05-01        (unique)
+  Row 9: C003,Carol White,carol@other.com,2023-03-10      (fuzzy dup — same id, different email)
+
+Expected: 2 exact duplicates, 2 fuzzy duplicates, 5 unique records

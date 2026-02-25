@@ -1,140 +1,118 @@
-"""Level 7 project: Polling Cadence Manager.
+"""Level 7 / Project 05 — Polling Cadence Manager.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Implements adaptive polling intervals that speed up when data changes
+frequently and slow down during quiet periods.
+
+Key concepts:
+- Adaptive polling: adjust interval based on change rate
+- Exponential backoff for idle periods
+- Minimum/maximum interval bounds
+- Change detection via hash comparison
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
+import hashlib
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
-
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Polling Cadence Manager"
-PROJECT_FOCUS = "collect interval planning and drift checks"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class PollConfig:
+    min_interval: float = 1.0
+    max_interval: float = 60.0
+    backoff_factor: float = 1.5
+    speedup_factor: float = 0.5
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class PollState:
+    current_interval: float = 5.0
+    last_hash: str = ""
+    polls_done: int = 0
+    changes_detected: int = 0
+    history: list[dict] = field(default_factory=list)
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+
+def compute_hash(data: str) -> str:
+    return hashlib.md5(data.encode("utf-8")).hexdigest()
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+def poll_once(state: PollState, data: str, config: PollConfig) -> bool:
+    """Simulate a single poll. Returns True if data changed."""
+    new_hash = compute_hash(data)
+    changed = new_hash != state.last_hash and state.last_hash != ""
+
+    if changed:
+        state.changes_detected += 1
+        state.current_interval = max(
+            config.min_interval,
+            state.current_interval * config.speedup_factor,
         )
-    return records
+        logging.info("change detected, interval=%.1f", state.current_interval)
+    else:
+        state.current_interval = min(
+            config.max_interval,
+            state.current_interval * config.backoff_factor,
+        )
+
+    state.last_hash = new_hash
+    state.polls_done += 1
+    state.history.append({
+        "poll": state.polls_done,
+        "changed": changed,
+        "interval": round(state.current_interval, 2),
+        "hash": new_hash[:8],
+    })
+    return changed
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+def simulate_polling(data_snapshots: list[str], config: PollConfig | None = None) -> PollState:
+    """Run through a list of data snapshots, adjusting cadence."""
+    config = config or PollConfig()
+    state = PollState(current_interval=config.min_interval * 2)
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    for snapshot in data_snapshots:
+        poll_once(state, snapshot, config)
+
+    return state
+
+
+def run(input_path: Path, output_path: Path) -> dict:
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
+    config_data = json.loads(input_path.read_text(encoding="utf-8"))
+    snapshots = config_data.get("snapshots", [])
+    poll_cfg = PollConfig(**config_data.get("config", {}))
+
+    state = simulate_polling(snapshots, poll_cfg)
+
+    summary = {
+        "polls": state.polls_done,
+        "changes": state.changes_detected,
+        "final_interval": round(state.current_interval, 2),
+        "history": state.history,
     }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(description="Polling Cadence Manager")
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

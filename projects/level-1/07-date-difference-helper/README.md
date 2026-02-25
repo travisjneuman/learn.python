@@ -5,49 +5,54 @@ Home: [README](../../../README.md)
 - basic datetime parsing and deltas
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Compute differences between dates, add days to a date, and find the day of the week. You will learn the `datetime` module, `strptime`/`strftime` for parsing and formatting, and `timedelta` for date arithmetic.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/07-date-difference-helper
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Date Helper ===
+
+  diff 2024-01-01 2024-12-31 => 365 days
+  diff 2024-06-15 2024-07-04 => 19 days
+  add  2024-01-01 90         => 2024-03-31
+
+Output written to data/output.json
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a `weeks` command that returns the number of weeks and remaining days between two dates.
+2. Add support for alternate date formats like `DD/MM/YYYY` using a `--format` flag.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a line with an invalid date like `diff 2024-02-30 2024-03-01` (Feb 30 does not exist) -- does `parse_date()` crash?
+2. Add a `diff` command with dates in reversed order -- does `days_between()` return a negative number?
+3. Add a command with a misspelled action like `dif 2024-01-01 2024-01-10` -- what happens?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Wrap `parse_date()` in a try/except to handle invalid dates with a clear error message.
+2. Ensure `days_between()` always returns a non-negative value using `abs()`.
+3. Add a test for the reversed-dates case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What does `datetime.strptime("2024-01-15", "%Y-%m-%d")` do and what does each `%` code mean?
+2. Why does `timedelta(days=N)` exist and how is it different from just adding an integer to a date?
+3. What does `.strftime("%A")` return and why is day-of-week useful?
+4. Where would date calculations appear in real software (billing cycles, SLA tracking, scheduling)?
 
 ## Mastery check
 You can move on when you can:

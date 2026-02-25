@@ -1,0 +1,6 @@
+{"event_type": "user_login", "session_id": "sess-001", "user": "alice", "start_time": "2025-01-15T10:00:00+00:00", "end_time": "2025-01-15T10:00:01+00:00"}
+{"event_type": "page_view", "session_id": "sess-001", "user": "alice", "page": "/dashboard"}
+{"event_type": "request_failed", "session_id": "sess-001", "user": "alice", "error": "500 Internal Server Error"}
+{"event_type": "user_login", "session_id": "sess-002", "user": "bob", "start_time": "2025-01-15T10:05:00+00:00", "end_time": "2025-01-15T10:05:00+00:00"}
+{"event_type": "slow_query_warning", "session_id": "sess-002", "user": "bob", "query": "SELECT * FROM large_table"}
+{"event_type": "user_logout", "session_id": "sess-002", "user": "bob"}

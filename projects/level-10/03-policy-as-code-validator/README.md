@@ -2,59 +2,63 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- validate policy rules against config
+- Chain of Responsibility pattern for composable policy rules
+- Protocol-based rule interface for extensibility
+- Declarative policy configuration loaded from JSON
+- Batch evaluation with per-rule verdicts and severity levels
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Infrastructure-as-code demands that compliance checks live alongside the code they govern. By expressing policies as composable Python objects rather than config files, teams get IDE support, type checking, and the ability to unit-test compliance rules. This project builds an OPA-style policy engine in pure Python.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/03-policy-as-code-validator
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py --config data/config.json --resource data/sample_input.txt
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "resource_id": "cli-resource",
+  "total_rules": 5,
+  "passed": 5,
+  "failed": 0,
+  ...
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
+- Evaluation report printed to stdout
+- Passing tests (`pytest -v` shows ~16 passed)
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `RegexMatchRule` that validates a field against a regex pattern — register it in `load_policies_from_config`.
+2. Add AND/OR composite rules: `AllOfRule` (all sub-rules must pass) and `AnyOfRule` (at least one must pass).
+3. Re-run tests and add coverage for the new rule types.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass an unknown rule type in the JSON config and observe the `ValueError`.
+2. Evaluate a resource missing all required fields and verify every rule returns FAIL.
+3. Pass a non-numeric value to `NumericRangeRule` and confirm the FAIL verdict.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add graceful handling for malformed JSON config (catch `json.JSONDecodeError` with a friendly message).
+2. Make `NumericRangeRule` return SKIP instead of FAIL when the field is missing (distinguish "absent" from "invalid").
+3. Add tests for the fixed behavior.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does the `PolicyRule` Protocol enable adding new rule types without modifying the engine?
+2. Why is severity separate from verdict — when would a FAIL with WARNING severity be useful?
+3. How does `evaluate_batch` make it efficient to validate many resources against the same ruleset?
+4. What are the tradeoffs between policy-as-code (Python) vs policy-as-data (JSON/YAML)?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- write a new rule class that satisfies the PolicyRule protocol,
+- explain the difference between PASS/FAIL/SKIP verdicts,
+- load policies from JSON and evaluate them programmatically,
+- describe how this pattern scales to hundreds of rules across multiple frameworks.
 
 ---
 

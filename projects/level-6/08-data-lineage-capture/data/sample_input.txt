@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+[
+  {"key": "order-101", "customer": "Alice", "amount": 49.99},
+  {"key": "order-102", "customer": "Bob", "amount": 129.50},
+  {"key": "order-103", "customer": "Charlie", "amount": 75.00}
+]

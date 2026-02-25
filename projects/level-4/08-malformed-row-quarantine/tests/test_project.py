@@ -1,54 +1,77 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Malformed Row Quarantine."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
+import pytest
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    rule_column_count,
+    rule_no_empty_required,
+    rule_no_control_chars,
+    rule_max_field_length,
+    quarantine_rows,
+    run,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
+@pytest.mark.parametrize(
+    "fields, expected, has_error",
+    [
+        (["a", "b", "c"], 3, False),
+        (["a", "b"], 3, True),
+        (["a", "b", "c", "d"], 3, True),
+    ],
+)
+def test_rule_column_count(fields: list[str], expected: int, has_error: bool) -> None:
+    result = rule_column_count(fields, expected)
+    assert (result is not None) == has_error
 
-    # Act: build structured records.
-    records = build_records(raw_items)
 
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_rule_no_empty_required() -> None:
+    assert rule_no_empty_required(["Alice", "30"], [0, 1]) is None
+    assert rule_no_empty_required(["Alice", ""], [0, 1]) is not None
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_rule_no_control_chars() -> None:
+    assert rule_no_control_chars(["normal", "text"]) is None
+    assert rule_no_control_chars(["has\x00null", "ok"]) is not None
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_rule_max_field_length() -> None:
+    assert rule_max_field_length(["short"]) is None
+    assert rule_max_field_length(["x" * 600], max_len=500) is not None
+
+
+def test_quarantine_rows_separates_correctly() -> None:
+    lines = [
+        "name,age,city",       # header
+        "Alice,30,NYC",        # valid
+        "Bob,25",              # too few columns
+        "Charlie,28,Chicago",  # valid
+        ",40,Denver",          # valid (no required check by default)
+    ]
+    result = quarantine_rows(lines)
+    assert len(result["valid"]) == 3
+    assert len(result["quarantined"]) == 1
+
+
+def test_quarantine_with_required_indexes() -> None:
+    lines = [
+        "name,age",
+        "Alice,30",
+        ",25",       # empty required column 0
+    ]
+    result = quarantine_rows(lines, required_indexes=[0])
+    assert len(result["quarantined"]) == 1
+    assert "empty required" in result["quarantined"][0]["reasons"][0]
+
+
+def test_run_integration(tmp_path: Path) -> None:
+    input_file = tmp_path / "data.csv"
+    input_file.write_text("a,b,c\n1,2,3\n4,5\n6,7,8\n", encoding="utf-8")
+    output_dir = tmp_path / "output"
+
+    summary = run(input_file, output_dir)
+    assert summary["valid"] == 2
+    assert summary["quarantined"] == 1
+    assert (output_dir / "valid_rows.txt").exists()
+    assert (output_dir / "quarantined_rows.json").exists()

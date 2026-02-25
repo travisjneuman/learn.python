@@ -2,59 +2,60 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- prioritized modernization roadmap
+- Multi-dimensional scoring (urgency, effort, risk) for prioritization
+- Strangler Fig pattern for incremental migration
+- Phased roadmap generation with time estimates
+- Strategy selection (rewrite, refactor, wrap, replace, retire)
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Legacy systems are the backbone of most enterprises. Rewriting everything at once is risky and expensive. The Strangler Fig pattern wraps legacy functionality in new interfaces and redirects traffic incrementally. This project builds a planner that scores components and generates phased roadmaps.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/13-legacy-modernization-planner
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "components_analyzed": 4,
+  "total_estimated_weeks": 60,
+  "priorities": [
+    {"component": "billing-monolith", "priority": 45.2, "strategy": "WRAP"},
+    ...
+  ]
+}
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `team_capacity` parameter that limits how many weeks of work can happen in parallel.
+2. Add a `cost_estimate` based on effort score multiplied by an hourly rate.
+3. Add a RETIRE strategy for components with zero monthly traffic.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `business_criticality` to 0 — observe the validation error.
+2. Create a component with zero effort and watch how priority calculation handles division.
+3. Score a tiny well-documented component and verify it recommends REFACTOR.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a minimum effort floor of 1 to prevent division-by-zero in priority calculation.
+2. Handle the edge case where all components have the same priority — add a tiebreaker.
+3. Test both fixes.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the Strangler Fig pattern and why is it safer than a big-bang rewrite?
+2. How do the three scoring dimensions (urgency, effort, risk) interact in the priority formula?
+3. Why does `has_documentation` reduce effort score?
+4. When would you choose REPLACE over WRAP as a modernization strategy?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- score a legacy component and interpret its priority ranking,
+- generate a phased roadmap and explain the five phases (assess/wrap/migrate/validate/decommission),
+- compare Strangler Fig to branch-by-abstraction,
+- describe real-world modernization examples (e.g., Amazon's monolith decomposition).
 
 ---
 

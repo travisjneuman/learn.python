@@ -13,41 +13,46 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/01-schema-validator-engine
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --schema data/schema.json --input data/records.json --output data/validation_report.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total": 6,
+  "valid": 2,
+  "invalid": 4,
+  "errors": [ ... ]
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/validation_report.json` — structured report with per-record errors
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `"pattern"` rule to the schema (e.g., email must contain `@`) and enforce it in `validate_record`.
+2. Add a `--strict` CLI flag that treats unexpected extra fields as errors instead of warnings.
+3. Re-run script and tests — add a test for your new pattern rule.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed the validator a record where `"age"` is a float like `30.5` — it should fail the `"integer"` type check.
+2. Create a schema with an unknown type string (e.g., `"type": "uuid"`) and observe what happens.
+3. Pass an empty JSON array `[]` and confirm the report still generates correctly.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle unknown type strings gracefully — log a warning instead of silently skipping.
+2. Add a test for float-vs-integer edge cases.
+3. Re-run until all tests pass deterministically.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `validate_record` collect all errors instead of stopping at the first one?
+2. What happens if a field is optional AND absent — trace through the code path.
+3. Why is `TYPE_MAP` defined as a module-level constant instead of inside the function?
+4. How would you extend this to validate nested objects (dicts inside dicts)?
 
 ## Mastery check
 You can move on when you can:

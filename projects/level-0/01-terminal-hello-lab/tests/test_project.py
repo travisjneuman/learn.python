@@ -1,48 +1,50 @@
-"""Beginner test module with heavy comments.
+"""Tests for Terminal Hello Lab.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+These tests verify that the greeting and banner functions
+produce correct output without needing to run the full script.
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+from project import build_banner, build_info_card, greet
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_greet_includes_name() -> None:
+    """The greeting should contain the name that was passed in."""
+    result = greet("Ada")
+    assert "Ada" in result
+    assert "Hello" in result
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_greet_different_names() -> None:
+    """greet() should work for any name, not just one hard-coded value."""
+    for name in ["Bob", "Zara", "0xCAFE"]:
+        result = greet(name)
+        assert name in result
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_build_banner_contains_title() -> None:
+    """The banner should contain the title text we passed."""
+    banner = build_banner("MY TITLE")
+    assert "MY TITLE" in banner
+    # Banner has three lines: top border, title, bottom border.
+    lines = banner.split("\n")
+    assert len(lines) == 3
+
+
+def test_build_banner_respects_width() -> None:
+    """The border lines should match the requested width."""
+    banner = build_banner("HI", width=20)
+    lines = banner.split("\n")
+    # First and last lines are the border.
+    assert len(lines[0]) == 20
+    assert len(lines[2]) == 20
+
+
+def test_build_info_card_structure() -> None:
+    """The info card dict should have all expected keys."""
+    card = build_info_card("Test", "Python", 5)
+    assert card["name"] == "Test"
+    assert card["language"] == "Python"
+    assert card["learning_day"] == 5
+    assert "Test" in card["greeting"]

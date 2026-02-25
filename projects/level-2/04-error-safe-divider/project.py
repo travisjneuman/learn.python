@@ -1,107 +1,190 @@
 """Level 2 project: Error Safe Divider.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- perform division with comprehensive error handling,
+- catch ZeroDivisionError, TypeError, ValueError,
+- process batch division operations from a file.
+
+Skills practiced: try/except with multiple exception types,
+nested data structures, enumerate, dict comprehensions, sorting with key.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Error Safe Divider"
-PROJECT_FOCUS = "exception handling and graceful failure"
 
+def safe_divide(numerator: object, denominator: object) -> dict:
+    """Perform division with full error handling.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+    Instead of crashing, this function always returns a result dict
+    describing either the successful result or the error that occurred.
 
-    This function is isolated so it can be tested independently.
+    Args:
+        numerator: The value to divide (should be a number).
+        denominator: The value to divide by (should be a non-zero number).
+
+    Returns:
+        A dict with keys: success, result, error, error_type.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    try:
+        # Try converting to float first — this catches strings and None.
+        num = float(numerator)
+        den = float(denominator)
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+        # Perform the division — may raise ZeroDivisionError.
+        result = num / den
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+        return {
+            "success": True,
+            "result": result,
+            "error": None,
+            "error_type": None,
+        }
+
+    except ZeroDivisionError:
+        # Division by zero is a math error, not a code error.
+        return {
+            "success": False,
+            "result": None,
+            "error": "Cannot divide by zero",
+            "error_type": "ZeroDivisionError",
+        }
+
+    except (ValueError, TypeError) as exc:
+        # ValueError: string that cannot be converted to float, e.g. "abc".
+        # TypeError: something that float() cannot handle, e.g. a list.
+        return {
+            "success": False,
+            "result": None,
+            "error": f"Invalid input: {exc}",
+            "error_type": type(exc).__name__,
+        }
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def batch_divide(operations: list[tuple[object, object]]) -> list[dict]:
+    """Run many division operations and collect all results.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Each operation is a (numerator, denominator) tuple.
+    Results include the original index for traceability.
+    """
+    results = []
+    for idx, (num, den) in enumerate(operations):
+        result = safe_divide(num, den)
+        result["index"] = idx
+        result["input"] = {"numerator": str(num), "denominator": str(den)}
+        results.append(result)
+    return results
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+
+def summarise_results(results: list[dict]) -> dict:
+    """Summarise a batch of division results.
+
+    Groups results by success/failure and counts error types.
+    Uses dict comprehension and sorting with key functions.
+    """
+    successes = [r for r in results if r["success"]]
+    failures = [r for r in results if not r["success"]]
+
+    # Dict comprehension to count each error type.
+    error_counts: dict[str, int] = {}
+    for r in failures:
+        err_type = r["error_type"]
+        error_counts[err_type] = error_counts.get(err_type, 0) + 1
+
+    # Sort successes by result value (smallest first).
+    sorted_successes = sorted(successes, key=lambda r: r["result"])
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "total": len(results),
+        "successes": len(successes),
+        "failures": len(failures),
+        "error_counts": error_counts,
+        "success_rate": round(len(successes) / len(results) * 100, 1) if results else 0,
+        "sorted_results": [r["result"] for r in sorted_successes],
     }
 
 
+def parse_operations_file(path: Path) -> list[tuple[str, str]]:
+    """Parse a file of division operations.
+
+    Expected format: one operation per line, 'numerator,denominator'.
+    Lines starting with '#' are comments.  Blank lines are skipped.
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    operations: list[tuple[str, str]] = []
+    lines = path.read_text(encoding="utf-8").splitlines()
+
+    for line_num, line in enumerate(lines, 1):
+        stripped = line.strip()
+
+        # Skip blanks and comments.
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        parts = stripped.split(",")
+        if len(parts) != 2:
+            # Store bad lines as-is so safe_divide reports the error.
+            operations.append((stripped, "PARSE_ERROR"))
+            continue
+
+        operations.append((parts[0].strip(), parts[1].strip()))
+
+    return operations
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Error-safe division calculator"
+    )
+    parser.add_argument(
+        "--input",
+        default="data/sample_input.txt",
+        help="File with 'numerator,denominator' lines",
+    )
+    parser.add_argument(
+        "--interactive",
+        action="store_true",
+        help="Enter interactive mode for single divisions",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: run batch divisions or interactive mode."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    if args.interactive:
+        print("Error Safe Divider — interactive mode (Ctrl+C to quit)")
+        try:
+            while True:
+                num = input("  numerator: ")
+                den = input("  denominator: ")
+                result = safe_divide(num, den)
+                print(f"  -> {json.dumps(result)}\n")
+        except (KeyboardInterrupt, EOFError):
+            print("\nGoodbye!")
+        return
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    # Batch mode: read operations from file.
+    operations = parse_operations_file(Path(args.input))
+    results = batch_divide(operations)
+    summary = summarise_results(results)
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    print("=== Division Results ===")
+    for r in results:
+        status = "OK" if r["success"] else "FAIL"
+        val = r["result"] if r["success"] else r["error"]
+        print(f"  [{status}] {r['input']['numerator']} / {r['input']['denominator']} = {val}")
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
+    print(f"\n=== Summary ===")
     print(json.dumps(summary, indent=2))
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

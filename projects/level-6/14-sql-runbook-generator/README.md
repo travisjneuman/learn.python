@@ -19,35 +19,39 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "runbooks_generated": 2,
+  "runbooks": [{"name": "table_maintenance", "steps": 3, ...}, ...],
+  "history": [...]
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — generated runbook details with history
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a custom template: `"backup_restore"` with steps for backing up and restoring a table.
+2. Add a `--execute` flag that actually runs each SQL step against the database (with confirmation prompts in a real CLI).
+3. Add step numbering and estimated execution time to the formatted output.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Request a non-existent template name and observe the error.
+2. Use a template parameter that contains SQL injection (`'; DROP TABLE users; --`) and observe what happens.
+3. Leave a required template parameter unset and observe the KeyError.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate template names against available templates before generation.
+2. Add SQL injection detection in `validate_sql` for common patterns.
+3. Catch missing parameter errors and report which parameters are required.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is template-based SQL generation safer than string concatenation?
+2. What is the difference between `string.Template` substitution and parameterized queries?
+3. Why store runbook history in a database instead of just generating text files?
+4. What is an operational runbook and why do teams maintain them?
 
 ## Mastery check
 You can move on when you can:

@@ -1,48 +1,102 @@
-"""Beginner test module with heavy comments.
+"""Tests for Validation Rule Engine.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Covers:
+- Individual rule checks (required, regex, range, min_length)
+- Single record validation
+- Batch validation with statistics
+- Rule loading
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
+import pytest
 
-# Import the function under test directly from the project module.
-from project import load_items
-
-
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+from project import (
+    apply_rule,
+    check_range,
+    check_regex,
+    check_required,
+    validate_batch,
+    validate_record,
+    DEFAULT_RULES,
+)
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_check_required_present() -> None:
+    """Present non-empty field should pass."""
+    assert check_required({"name": "Alice"}, "name") is True
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_check_required_missing() -> None:
+    """Missing field should fail."""
+    assert check_required({}, "name") is False
+
+
+def test_check_required_empty_string() -> None:
+    """Empty string should fail the required check."""
+    assert check_required({"name": ""}, "name") is False
+
+
+def test_check_regex_valid_email() -> None:
+    """Valid email should match the pattern."""
+    assert check_regex(
+        {"email": "test@example.com"}, "email", r"^[^@]+@[^@]+\.[^@]+$"
+    ) is True
+
+
+def test_check_regex_invalid_email() -> None:
+    """Invalid email should not match."""
+    assert check_regex(
+        {"email": "not-an-email"}, "email", r"^[^@]+@[^@]+\.[^@]+$"
+    ) is False
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [(25, True), (0, True), (150, True), (-1, False), (200, False)],
+)
+def test_check_range(value: int, expected: bool) -> None:
+    """Range check should accept values within bounds."""
+    assert check_range({"age": value}, "age", 0, 150) is expected
+
+
+def test_apply_rule_unknown_type() -> None:
+    """Unknown rule type should fail with descriptive error."""
+    rule = {"id": "X", "field": "f", "type": "unknown_type"}
+    result = apply_rule({"f": "val"}, rule)
+    assert result["passed"] is False
+    assert "Unknown rule type" in result["message"]
+
+
+def test_validate_record_all_pass() -> None:
+    """A valid record should pass all default rules."""
+    record = {"name": "Alice", "email": "alice@example.com", "age": 30}
+    result = validate_record(record, DEFAULT_RULES)
+    assert result["valid"] is True
+    assert result["failed_count"] == 0
+
+
+def test_validate_record_failures() -> None:
+    """A record with invalid fields should report failures."""
+    record = {"name": "", "email": "bad", "age": -5}
+    result = validate_record(record, DEFAULT_RULES)
+    assert result["valid"] is False
+    assert result["failed_count"] > 0
+
+
+def test_validate_batch() -> None:
+    """Batch should report overall pass rate and failure counts."""
+    records = [
+        {"name": "Alice", "email": "alice@example.com", "age": 30},
+        {"name": "", "email": "bad", "age": -5},
+        {"name": "Charlie", "email": "c@test.com", "age": 25},
+    ]
+    result = validate_batch(records, DEFAULT_RULES)
+    assert result["total_records"] == 3
+    assert result["valid_count"] == 2
+    assert result["invalid_count"] == 1
+
+
+def test_validate_batch_empty() -> None:
+    """Empty batch should report 0 records."""
+    result = validate_batch([], DEFAULT_RULES)
+    assert result["total_records"] == 0
+    assert result["pass_rate"] == 0

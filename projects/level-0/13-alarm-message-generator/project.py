@@ -1,107 +1,157 @@
 """Level 0 project: Alarm Message Generator.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read alarm definitions from a file and generate formatted
+notification messages with severity levels and timestamps.
+
+Concepts: f-strings, template strings, dictionaries, string formatting.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Alarm Message Generator"
-PROJECT_FOCUS = "template strings and alert text building"
+
+# Severity levels and their visual indicators.
+SEVERITY_ICONS = {
+    "critical": "[!!!]",
+    "warning": "[!!]",
+    "info": "[i]",
+}
+
+SEVERITY_ORDER = {"critical": 0, "warning": 1, "info": 2}
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def parse_alarm(line: str) -> dict:
+    """Parse an alarm definition line.
 
-    This function is isolated so it can be tested independently.
+    Expected format: SEVERITY | SOURCE | MESSAGE
+    Example: critical | web-server-01 | CPU usage above 95%
+
+    WHY pipe-separated? -- Pipes are less common in regular text
+    than commas, so they work better as delimiters when messages
+    might contain commas.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    parts = line.split("|")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    if len(parts) < 3:
+        return {"raw": line.strip(), "error": "Expected: SEVERITY | SOURCE | MESSAGE"}
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    severity = parts[0].strip().lower()
+    source = parts[1].strip()
+    message = parts[2].strip()
 
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    if severity not in SEVERITY_ICONS:
+        return {"raw": line.strip(), "error": f"Unknown severity: {severity}"}
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "severity": severity,
+        "source": source,
+        "message": message,
+    }
+
+
+def format_alarm(alarm: dict, timestamp: str = "2024-01-15 09:30:00") -> str:
+    """Format an alarm dict into a human-readable notification.
+
+    WHY a timestamp parameter? -- In real systems the timestamp comes
+    from the system clock.  Making it a parameter lets us test with
+    predictable values.
+    """
+    if "error" in alarm:
+        return f"  PARSE ERROR: {alarm['error']} ({alarm['raw']})"
+
+    icon = SEVERITY_ICONS[alarm["severity"]]
+    severity_upper = alarm["severity"].upper()
+
+    # Build a formatted alert message.
+    return (
+        f"{icon} {severity_upper} ALARM\n"
+        f"    Time:    {timestamp}\n"
+        f"    Source:  {alarm['source']}\n"
+        f"    Message: {alarm['message']}"
+    )
+
+
+def process_alarms(lines: list[str]) -> list[dict]:
+    """Parse all alarm lines and return structured data."""
+    alarms = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        alarms.append(parse_alarm(stripped))
+    return alarms
+
+
+def sort_by_severity(alarms: list[dict]) -> list[dict]:
+    """Sort alarms so critical ones appear first.
+
+    WHY sort? -- In operations, the most urgent alarms should be
+    seen first.  We use SEVERITY_ORDER to define the priority.
+    """
+    def severity_key(alarm: dict) -> int:
+        if "error" in alarm:
+            return 99  # Errors go last.
+        return SEVERITY_ORDER.get(alarm["severity"], 50)
+
+    return sorted(alarms, key=severity_key)
+
+
+def alarm_summary(alarms: list[dict]) -> dict:
+    """Build a summary counting alarms by severity."""
+    valid = [a for a in alarms if "error" not in a]
+    counts = {"critical": 0, "warning": 0, "info": 0}
+    for alarm in valid:
+        counts[alarm["severity"]] += 1
+
+    return {
+        "total": len(alarms),
+        "valid": len(valid),
+        "errors": len(alarms) - len(valid),
+        "by_severity": counts,
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Alarm Message Generator")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
     input_path = Path(args.input)
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+
+    lines = input_path.read_text(encoding="utf-8").splitlines()
+    alarms = process_alarms(lines)
+    sorted_alarms = sort_by_severity(alarms)
+
+    print("=== Alarm Notifications ===\n")
+    for alarm in sorted_alarms:
+        print(format_alarm(alarm))
+        print()
+
+    summary = alarm_summary(alarms)
+    print(f"Summary: {summary['by_severity']['critical']} critical, "
+          f"{summary['by_severity']['warning']} warning, "
+          f"{summary['by_severity']['info']} info")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps({"alarms": sorted_alarms, "summary": summary}, indent=2),
+        encoding="utf-8",
+    )
+    print(f"Output written to {output_path}")
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
-
-
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

@@ -1,107 +1,165 @@
 """Level 1 project: Batch Rename Simulator.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Plan file renames without actually moving or renaming anything.
+Read a list of filenames, apply renaming rules, and show a preview
+of what would change.
+
+Concepts: string methods, Path manipulation, safe simulation patterns.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import re
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Batch Rename Simulator"
-PROJECT_FOCUS = "safe rename planning without destructive changes"
 
+def apply_rule_lower(name: str) -> str:
+    """Rename by lowercasing the entire filename.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY lowercase? -- Consistent naming avoids case-sensitivity bugs
+    across operating systems (Linux is case-sensitive, Windows is not).
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return name.lower()
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def apply_rule_replace_spaces(name: str) -> str:
+    """Replace spaces with underscores.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY underscores? -- Spaces in filenames cause problems in shell
+    commands and URLs.  Underscores are a common safe alternative.
+    """
+    return name.replace(" ", "_")
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+def apply_rule_add_prefix(name: str, prefix: str = "backup_") -> str:
+    """Prepend a prefix to the filename (not the directory part).
+
+    WHY prefix? -- Batch-prefixing is a real-world pattern for
+    organising backups, versions, or dated snapshots.
+    """
+    p = Path(name)
+    return str(p.parent / f"{prefix}{p.name}") if str(p.parent) != "." else f"{prefix}{p.name}"
+
+
+def apply_rule_strip_numbers(name: str) -> str:
+    """Remove leading digits and separators from the filename stem.
+
+    WHY strip numbers? -- Numbered prefixes like '001_' or '01-' are
+    common in downloads; removing them normalises the name.
+    """
+    p = Path(name)
+    stem = re.sub(r"^\d+[\-_ ]*", "", p.stem)
+    if not stem:
+        stem = p.stem
+    return stem + p.suffix
+
+
+RULES: dict[str, object] = {
+    "lower": apply_rule_lower,
+    "replace_spaces": apply_rule_replace_spaces,
+    "add_prefix": apply_rule_add_prefix,
+    "strip_numbers": apply_rule_strip_numbers,
+}
+
+
+def simulate_rename(filename: str, rule_name: str) -> dict[str, str]:
+    """Apply a single rule and return the before/after mapping.
+
+    WHY return a dict? -- Returning structured data instead of
+    printing makes the function testable and composable.
+    """
+    filename = filename.strip()
+    if not filename:
+        raise ValueError("Filename cannot be empty")
+
+    rule_fn = RULES.get(rule_name)
+    if rule_fn is None:
+        raise ValueError(f"Unknown rule: {rule_name}")
+
+    new_name = rule_fn(filename)
+    return {"original": filename, "renamed": new_name, "changed": filename != new_name}
+
+
+def simulate_batch(filenames: list[str], rule_name: str) -> list[dict[str, str]]:
+    """Apply a rule to every filename in the list.
+
+    WHY batch? -- Real rename operations almost always work on many
+    files at once.  Processing a list is the realistic pattern.
+    """
+    results = []
+    for name in filenames:
+        name = name.strip()
+        if not name:
+            continue
+        results.append(simulate_rename(name, rule_name))
+    return results
+
+
+def detect_conflicts(results: list[dict[str, str]]) -> list[str]:
+    """Find renamed filenames that would collide (duplicates).
+
+    WHY check conflicts? -- If two files rename to the same target,
+    one would overwrite the other.  Detecting this before acting is
+    the whole point of a *simulator*.
+    """
+    seen: dict[str, int] = {}
+    for r in results:
+        target = r["renamed"]
+        seen[target] = seen.get(target, 0) + 1
+    return [name for name, count in seen.items() if count > 1]
+
+
+def format_plan(results: list[dict[str, str]], conflicts: list[str]) -> str:
+    """Format a human-readable rename plan."""
+    lines = ["=== Batch Rename Plan ===", ""]
+    changed = 0
+    for r in results:
+        marker = " *" if r["renamed"] in conflicts else ""
+        if r["changed"]:
+            lines.append(f"  {r['original']:<30} -> {r['renamed']}{marker}")
+            changed += 1
+        else:
+            lines.append(f"  {r['original']:<30}    (no change)")
+
+    lines.append("")
+    lines.append(f"  Total files: {len(results)}")
+    lines.append(f"  Would rename: {changed}")
+    if conflicts:
+        lines.append(f"  CONFLICTS: {', '.join(conflicts)}")
+    return "\n".join(lines)
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser = argparse.ArgumentParser(description="Batch Rename Simulator")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="File with one filename per line")
+    parser.add_argument("--rule", default="lower",
+                        choices=list(RULES.keys()),
+                        help="Renaming rule to apply")
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    path = Path(args.input)
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    filenames = path.read_text(encoding="utf-8").splitlines()
+    results = simulate_batch(filenames, args.rule)
+    conflicts = detect_conflicts(results)
+
+    print(format_plan(results, conflicts))
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_data = {"rule": args.rule, "renames": results, "conflicts": conflicts}
+    output_path.write_text(json.dumps(output_data, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

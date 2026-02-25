@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `grace_period` parameter so old tokens remain valid for N seconds after rotation.
+2. Add a `list_active()` method that returns all non-revoked, non-expired tokens.
+3. Re-run script and tests — verify grace period and listing work correctly.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Call `rotate()` when no token has been generated yet (empty manager).
+2. Set `ttl_seconds` to 0 so tokens expire immediately upon creation.
+3. Observe that `is_valid` returns False for brand-new tokens.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Have `rotate()` call `generate()` if no current token exists instead of crashing.
+2. Validate that `ttl_seconds > 0` in the TokenManager constructor.
+3. Add tests for rotating with no current token and for zero-TTL edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is token rotation important for API security?
+2. What happened when rotate was called without an existing token?
+3. How did the constructor validation prevent zero-TTL tokens?
+4. How does the audit trail help in a real security incident investigation?
 
 ## Mastery check
 You can move on when you can:

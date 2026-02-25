@@ -1,105 +1,171 @@
-"""Level 4 project: Malformed Row Quarantine.
+"""Level 4 / Project 08 — Malformed Row Quarantine.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Reads a data file line-by-line, applies multiple validation rules to each
+row, and separates valid rows from malformed ones. Each quarantined row
+gets a reason annotation explaining exactly why it was rejected.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Malformed Row Quarantine"
-PROJECT_FOCUS = "reject queue and reason tracking"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
+# ---------- validation rules ----------
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# Each rule is a function that takes (fields, header_count) and returns
+# an error string or None. This pattern makes rules composable and testable.
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def rule_column_count(fields: list[str], expected: int) -> str | None:
+    """Every row must have exactly the expected number of columns."""
+    if len(fields) != expected:
+        return f"expected {expected} columns, got {len(fields)}"
+    return None
 
-    We keep this separate from I/O so business logic stays testable.
+
+def rule_no_empty_required(fields: list[str], required_indexes: list[int]) -> str | None:
+    """Specified column indexes must not be blank."""
+    missing = [i for i in required_indexes if i < len(fields) and not fields[i].strip()]
+    if missing:
+        return f"empty required column(s) at index(es): {missing}"
+    return None
+
+
+def rule_no_control_chars(fields: list[str]) -> str | None:
+    """Reject rows containing control characters (except tab/newline)."""
+    for i, field in enumerate(fields):
+        for ch in field:
+            if ord(ch) < 32 and ch not in ("\t", "\n", "\r"):
+                return f"control character in column {i}: ord={ord(ch)}"
+    return None
+
+
+def rule_max_field_length(fields: list[str], max_len: int = 500) -> str | None:
+    """Reject rows where any single field exceeds max_len characters."""
+    for i, field in enumerate(fields):
+        if len(field) > max_len:
+            return f"column {i} exceeds max length {max_len} ({len(field)} chars)"
+    return None
+
+# ---------- quarantine engine ----------
+
+
+def quarantine_rows(
+    lines: list[str],
+    delimiter: str = ",",
+    required_indexes: list[int] | None = None,
+) -> dict:
+    """Process lines and separate valid from malformed.
+
+    Returns:
+        {
+            "valid": [{"row": int, "fields": list[str]}],
+            "quarantined": [{"row": int, "raw": str, "reasons": list[str]}],
+        }
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    if not lines:
+        return {"valid": [], "quarantined": []}
+
+    # First line is the header — determines expected column count
+    header_fields = lines[0].split(delimiter)
+    expected_cols = len(header_fields)
+    required = required_indexes or []
+
+    valid: list[dict] = []
+    quarantined: list[dict] = []
+
+    for idx, line in enumerate(lines[1:], start=2):
+        fields = line.split(delimiter)
+        reasons: list[str] = []
+
+        # Apply each rule
+        err = rule_column_count(fields, expected_cols)
+        if err:
+            reasons.append(err)
+
+        err = rule_no_empty_required(fields, required)
+        if err:
+            reasons.append(err)
+
+        err = rule_no_control_chars(fields)
+        if err:
+            reasons.append(err)
+
+        err = rule_max_field_length(fields)
+        if err:
+            reasons.append(err)
+
+        if reasons:
+            quarantined.append({"row": idx, "raw": line, "reasons": reasons})
+            logging.warning("Row %d quarantined: %s", idx, reasons)
+        else:
+            valid.append({"row": idx, "fields": fields})
+
+    return {"valid": valid, "quarantined": quarantined}
+
+# ---------- runner ----------
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def run(input_path: Path, output_dir: Path, required_indexes: list[int] | None = None) -> dict:
+    """Full quarantine run: read file, separate rows, write outputs."""
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    lines = input_path.read_text(encoding="utf-8").splitlines()
+    result = quarantine_rows(lines, required_indexes=required_indexes)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write valid rows
+    valid_path = output_dir / "valid_rows.txt"
+    valid_path.write_text(
+        "\n".join(lines[0:1] + [",".join(r["fields"]) for r in result["valid"]]),
+        encoding="utf-8",
+    )
+
+    # Write quarantined rows with reasons
+    quarantine_path = output_dir / "quarantined_rows.json"
+    quarantine_path.write_text(
+        json.dumps(result["quarantined"], indent=2), encoding="utf-8",
+    )
+
+    summary = {
+        "total_data_rows": len(lines) - 1 if lines else 0,
+        "valid": len(result["valid"]),
+        "quarantined": len(result["quarantined"]),
     }
 
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    report_path = output_dir / "quarantine_report.json"
+    report_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    logging.info("Quarantine complete: %d valid, %d quarantined", summary["valid"], summary["quarantined"])
     return summary
+
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Quarantine malformed rows with reason tracking")
+    parser.add_argument("--input", default="data/sample_input.csv")
+    parser.add_argument("--output-dir", default="data/output")
+    parser.add_argument("--required", default="0,1", help="Comma-separated required column indexes")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    required = [int(i) for i in args.required.split(",") if i.strip()]
+    summary = run(Path(args.input), Path(args.output_dir), required_indexes=required)
     print(json.dumps(summary, indent=2))
 
 

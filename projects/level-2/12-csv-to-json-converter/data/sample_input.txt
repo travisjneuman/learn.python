@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+name,age,department,salary,active
+Alice Johnson,30,Engineering,95000,true
+Bob Smith,25,Marketing,72000,true
+Charlie Brown,35,Engineering,88000,false
+Diana Prince,28,Sales,68000,true
+Eve Torres,32,Marketing,75000,yes
+Frank Castle,40,Security,92000,true
+Grace Hopper,45,Research,115000,true
+Henry Ford,38,Sales,71000,no
+Iris West,27,Marketing,69000,true
+Jack Ryan,33,Research,98000,true

@@ -1,141 +1,298 @@
-"""Level 8 project: Graceful Degradation Engine.
+"""Graceful Degradation Engine — degrade service levels based on error rates.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Production systems must degrade gracefully rather than fail completely.
+    This project implements a circuit-breaker-style degradation engine that
+    monitors error rates and progressively reduces service quality — the
+    same pattern used by Netflix, AWS, and every major cloud platform.
+
+Concepts practised:
+    - circuit breaker pattern (closed, open, half-open)
+    - sliding window error rate calculation
+    - service level tiers with feature flags
+    - state machine transitions
+    - dataclasses for configuration and status
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from collections import deque
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any
 
-PROJECT_LEVEL = 8
-PROJECT_TITLE = "Graceful Degradation Engine"
-PROJECT_FOCUS = "fallback behavior under partial outage"
+
+# --- Domain types -------------------------------------------------------
+
+class CircuitState(Enum):
+    """Circuit breaker states."""
+    CLOSED = "closed"      # normal operation
+    OPEN = "open"          # all requests rejected
+    HALF_OPEN = "half_open"  # testing if recovery is possible
+
+
+class ServiceTier(Enum):
+    """Degradation levels from full to minimal."""
+    FULL = "full"
+    REDUCED = "reduced"
+    MINIMAL = "minimal"
+    OFFLINE = "offline"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class DegradationConfig:
+    """Thresholds for triggering degradation transitions."""
+    error_rate_reduced: float = 0.10   # 10% errors -> reduced
+    error_rate_minimal: float = 0.30   # 30% errors -> minimal
+    error_rate_offline: float = 0.50   # 50% errors -> offline
+    window_size: int = 100             # sliding window size
+    recovery_wait_seconds: float = 30  # time before attempting recovery
+    half_open_max_requests: int = 5    # test requests in half-open state
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class ServiceStatus:
+    """Current status of the degradation engine."""
+    circuit_state: CircuitState
+    service_tier: ServiceTier
+    error_rate: float
+    total_requests: int
+    total_errors: int
+    features_enabled: list[str]
+    last_state_change: float = 0.0
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "circuit_state": self.circuit_state.value,
+            "service_tier": self.service_tier.value,
+            "error_rate": round(self.error_rate, 4),
+            "total_requests": self.total_requests,
+            "total_errors": self.total_errors,
+            "features_enabled": self.features_enabled,
+        }
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+# --- Feature flags per tier ---------------------------------------------
+
+TIER_FEATURES: dict[ServiceTier, list[str]] = {
+    ServiceTier.FULL: [
+        "search", "recommendations", "analytics", "exports",
+        "notifications", "real_time_updates",
+    ],
+    ServiceTier.REDUCED: [
+        "search", "recommendations", "notifications",
+    ],
+    ServiceTier.MINIMAL: [
+        "search",
+    ],
+    ServiceTier.OFFLINE: [],
+}
+
+
+# --- Sliding window tracker ---------------------------------------------
+
+class SlidingWindowTracker:
+    """Tracks success/failure within a sliding window of fixed size."""
+
+    def __init__(self, window_size: int = 100) -> None:
+        self._window: deque[bool] = deque(maxlen=window_size)
+        self._total_requests = 0
+        self._total_errors = 0
+
+    def record_success(self) -> None:
+        self._window.append(True)
+        self._total_requests += 1
+
+    def record_failure(self) -> None:
+        self._window.append(False)
+        self._total_requests += 1
+        self._total_errors += 1
+
+    @property
+    def error_rate(self) -> float:
+        """Current error rate within the sliding window."""
+        if not self._window:
+            return 0.0
+        failures = sum(1 for ok in self._window if not ok)
+        return failures / len(self._window)
+
+    @property
+    def total_requests(self) -> int:
+        return self._total_requests
+
+    @property
+    def total_errors(self) -> int:
+        return self._total_errors
+
+    @property
+    def window_fill(self) -> int:
+        return len(self._window)
+
+
+# --- Degradation engine -------------------------------------------------
+
+class GracefulDegradationEngine:
+    """Manages service degradation based on error rates.
+
+    The engine acts as a circuit breaker with progressive degradation:
+    1. CLOSED + FULL: Normal operation, all features enabled.
+    2. CLOSED + REDUCED: High error rate, non-essential features disabled.
+    3. CLOSED + MINIMAL: Very high errors, only core features remain.
+    4. OPEN + OFFLINE: Error rate critical, all requests rejected.
+    5. HALF_OPEN: Testing recovery with limited requests.
+    """
+
+    def __init__(self, config: DegradationConfig | None = None) -> None:
+        self._config = config or DegradationConfig()
+        self._tracker = SlidingWindowTracker(self._config.window_size)
+        self._circuit_state = CircuitState.CLOSED
+        self._service_tier = ServiceTier.FULL
+        self._last_state_change = time.monotonic()
+        self._half_open_count = 0
+
+    @property
+    def circuit_state(self) -> CircuitState:
+        return self._circuit_state
+
+    @property
+    def service_tier(self) -> ServiceTier:
+        return self._service_tier
+
+    @property
+    def features(self) -> list[str]:
+        return TIER_FEATURES[self._service_tier]
+
+    def record_success(self) -> None:
+        """Record a successful request."""
+        self._tracker.record_success()
+        if self._circuit_state == CircuitState.HALF_OPEN:
+            self._half_open_count += 1
+            if self._half_open_count >= self._config.half_open_max_requests:
+                self._transition_to(CircuitState.CLOSED, ServiceTier.FULL)
+        else:
+            self._evaluate_tier()
+
+    def record_failure(self) -> None:
+        """Record a failed request."""
+        self._tracker.record_failure()
+        if self._circuit_state == CircuitState.HALF_OPEN:
+            self._transition_to(CircuitState.OPEN, ServiceTier.OFFLINE)
+        else:
+            self._evaluate_tier()
+
+    def should_allow_request(self) -> bool:
+        """Decide whether to allow the next request through."""
+        if self._circuit_state == CircuitState.CLOSED:
+            return True
+        if self._circuit_state == CircuitState.OPEN:
+            elapsed = time.monotonic() - self._last_state_change
+            if elapsed >= self._config.recovery_wait_seconds:
+                self._transition_to(CircuitState.HALF_OPEN, ServiceTier.MINIMAL)
+                self._half_open_count = 0
+                return True
+            return False
+        # Half-open: allow limited requests
+        return self._half_open_count < self._config.half_open_max_requests
+
+    def _evaluate_tier(self) -> None:
+        """Evaluate error rate and adjust service tier."""
+        rate = self._tracker.error_rate
+        cfg = self._config
+
+        if rate >= cfg.error_rate_offline:
+            self._transition_to(CircuitState.OPEN, ServiceTier.OFFLINE)
+        elif rate >= cfg.error_rate_minimal:
+            self._set_tier(ServiceTier.MINIMAL)
+        elif rate >= cfg.error_rate_reduced:
+            self._set_tier(ServiceTier.REDUCED)
+        else:
+            self._set_tier(ServiceTier.FULL)
+
+    def _set_tier(self, tier: ServiceTier) -> None:
+        if self._service_tier != tier:
+            self._service_tier = tier
+            self._last_state_change = time.monotonic()
+
+    def _transition_to(self, state: CircuitState, tier: ServiceTier) -> None:
+        self._circuit_state = state
+        self._service_tier = tier
+        self._last_state_change = time.monotonic()
+
+    def status(self) -> ServiceStatus:
+        return ServiceStatus(
+            circuit_state=self._circuit_state,
+            service_tier=self._service_tier,
+            error_rate=self._tracker.error_rate,
+            total_requests=self._tracker.total_requests,
+            total_errors=self._tracker.total_errors,
+            features_enabled=self.features,
         )
-    return records
+
+    def force_recovery(self) -> None:
+        """Manually force recovery to full service."""
+        self._transition_to(CircuitState.CLOSED, ServiceTier.FULL)
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# --- Demo ---------------------------------------------------------------
+
+def run_demo() -> dict[str, Any]:
+    """Simulate a degradation scenario."""
+    engine = GracefulDegradationEngine(DegradationConfig(window_size=20))
+    timeline: list[dict[str, Any]] = []
+
+    import random
+    rng = random.Random(42)
+
+    # Phase 1: Normal operation (low error rate)
+    for i in range(30):
+        if engine.should_allow_request():
+            if rng.random() < 0.05:
+                engine.record_failure()
+            else:
+                engine.record_success()
+        if i % 10 == 0:
+            timeline.append({"step": i, **engine.status().to_dict()})
+
+    # Phase 2: Spike in errors
+    for i in range(30, 60):
+        if engine.should_allow_request():
+            if rng.random() < 0.40:
+                engine.record_failure()
+            else:
+                engine.record_success()
+        if i % 10 == 0:
+            timeline.append({"step": i, **engine.status().to_dict()})
+
+    # Phase 3: Recovery
+    engine.force_recovery()
+    for i in range(60, 80):
+        if engine.should_allow_request():
+            if rng.random() < 0.02:
+                engine.record_failure()
+            else:
+                engine.record_success()
+        if i % 10 == 0:
+            timeline.append({"step": i, **engine.status().to_dict()})
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "final_status": engine.status().to_dict(),
+        "timeline": timeline,
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Graceful degradation engine")
+    parser.add_argument("--window", type=int, default=20, help="Sliding window size")
+    return parser.parse_args(argv)
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    parse_args(argv)
+    output = run_demo()
+    print(json.dumps(output, indent=2))
 
 
 if __name__ == "__main__":

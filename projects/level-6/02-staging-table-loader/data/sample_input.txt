@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+timestamp,level,source,message
+2025-01-15 08:00:00,INFO,web-server,Application started
+2025-01-15 08:05:12,WARN,database,Slow query detected (1.2s)
+2025-01-15 08:10:45,ERROR,auth-service,Failed login attempt for user=admin
+2025-01-15 08:15:00,INFO,scheduler,Cron job completed
+2025-01-15 08:20:33,CRITICAL,database,Connection pool exhausted
+,INFO,web-server,This row has no timestamp
+2025-01-15 08:30:00,DEBUG,cache,This level is invalid
+2025-01-15 08:35:00,ERROR,api-gateway,Upstream timeout after 30s

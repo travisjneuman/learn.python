@@ -2,6 +2,11 @@
 
 A loop repeats code. Instead of writing the same thing 100 times, you write it once and let the loop handle repetition.
 
+## Visualize It
+
+Watch how a for loop steps through a list, one item at a time:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=colors%20%3D%20%5B%22red%22%2C%20%22blue%22%2C%20%22green%22%5D%0Afor%20color%20in%20colors%3A%0A%20%20%20%20print%28color%29%0A%0Acount%20%3D%201%0Awhile%20count%20%3C%3D%203%3A%0A%20%20%20%20print%28count%29%0A%20%20%20%20count%20%2B%3D%201&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 Python has two kinds of loops:
 
 ## For loops — "do this for each item"
@@ -82,13 +87,7 @@ for item in my_list:
 good_items = [item for item in my_list if item != "bad"]
 ```
 
-## Related exercises
-- [Level 00, Exercise 10 — For Loops](../projects/level-00-absolute-beginner/10-for-loops/)
-- [Level 00, Exercise 11 — While Loops](../projects/level-00-absolute-beginner/11-while-loops/)
-
----
-
-## Practice This
+## Practice
 
 - [Level 00 / 10 For Loops](../projects/level-00-absolute-beginner/10-for-loops/)
 - [Level 00 / 11 While Loops](../projects/level-00-absolute-beginner/11-while-loops/)

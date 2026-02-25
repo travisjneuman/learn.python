@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+export_id=exp-2025-001
+requester=analyst@company.com
+format=csv
+columns=name,email,department,salary,ssn
+row_count=5000
+classification=confidential

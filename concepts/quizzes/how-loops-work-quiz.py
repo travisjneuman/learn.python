@@ -3,6 +3,8 @@ Quiz: How Loops Work
 Review: concepts/how-loops-work.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) 0, 1, 2, 3, 4, 5")
     print("  d) 1, 2, 3, 4")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! range(5) starts at 0 and stops before 5,")
@@ -43,7 +45,7 @@ def run_quiz():
     print("  c) H i")
     print("  d) Error")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! A for loop over a string goes through each")
@@ -62,7 +64,7 @@ def run_quiz():
     print("  c) When you do not know when to stop")
     print("  d) Always — while loops are better")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Use while when you are waiting for a condition")
@@ -84,7 +86,7 @@ def run_quiz():
     print("  c) count is never updated, so it loops forever")
     print("  d) Nothing is wrong")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Without count = count + 1 inside the loop,")
@@ -102,7 +104,7 @@ def run_quiz():
     print("  c) 2, 3, 4, 5, 6, 7")
     print("  d) 2, 8, 2")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! range(2, 8, 2) starts at 2, steps by 2, and")
@@ -118,7 +120,7 @@ def run_quiz():
     print("  for i in range(3):")
     print('      print("hello")')
     print()
-    answer = input("Your answer: ").strip()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "3":
         score += 1
         print("Correct! range(3) produces 0, 1, 2 — three values,")
@@ -137,7 +139,7 @@ def run_quiz():
     print("  c) Python automatically prevents it")
     print("  d) It deletes the list")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Removing items shifts the indexes, causing the")

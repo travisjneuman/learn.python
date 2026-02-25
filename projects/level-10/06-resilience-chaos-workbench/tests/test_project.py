@@ -1,52 +1,138 @@
-"""Advanced test module with heavy comments.
+"""Tests for Resilience Chaos Workbench.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers fault injection, rollback behavior, experiment execution,
+scorecard computation, and resilience grading.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import pytest
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    ChaosWorkbench,
+    DependencyKill,
+    ErrorInjection,
+    Experiment,
+    FaultType,
+    ImpactLevel,
+    LatencySpike,
+    MemoryPressure,
+    ResilienceScore,
+    ServiceState,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+@pytest.fixture
+def healthy_service() -> ServiceState:
+    return ServiceState(name="test-svc")
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# ---------------------------------------------------------------------------
+# Individual fault actions
+# ---------------------------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestLatencySpike:
+    def test_apply_increases_latency(self, healthy_service: ServiceState) -> None:
+        original = healthy_service.latency_ms
+        LatencySpike(200).apply(healthy_service)
+        assert healthy_service.latency_ms == original + 200
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_rollback_restores_latency(self, healthy_service: ServiceState) -> None:
+        original = healthy_service.latency_ms
+        spike = LatencySpike(200)
+        spike.apply(healthy_service)
+        spike.rollback(healthy_service)
+        assert healthy_service.latency_ms == original
+
+
+class TestErrorInjection:
+    def test_apply_sets_error_rate(self, healthy_service: ServiceState) -> None:
+        ErrorInjection(0.5).apply(healthy_service)
+        assert healthy_service.error_rate == 0.5
+
+    def test_error_rate_capped_at_one(self, healthy_service: ServiceState) -> None:
+        ErrorInjection(1.5).apply(healthy_service)
+        assert healthy_service.error_rate == 1.0
+
+
+class TestMemoryPressure:
+    def test_high_pressure_kills_service(self, healthy_service: ServiceState) -> None:
+        MemoryPressure(70.0).apply(healthy_service)
+        assert not healthy_service.healthy
+
+    def test_rollback_recovers_service(self, healthy_service: ServiceState) -> None:
+        pressure = MemoryPressure(70.0)
+        pressure.apply(healthy_service)
+        pressure.rollback(healthy_service)
+        assert healthy_service.healthy
+
+
+class TestDependencyKill:
+    def test_removes_dependency(self, healthy_service: ServiceState) -> None:
+        DependencyKill("db").apply(healthy_service)
+        assert "db" not in healthy_service.dependencies_up
+
+    def test_rollback_restores_dependency(self, healthy_service: ServiceState) -> None:
+        kill = DependencyKill("cache")
+        kill.apply(healthy_service)
+        kill.rollback(healthy_service)
+        assert "cache" in healthy_service.dependencies_up
+
+
+# ---------------------------------------------------------------------------
+# Experiment runner
+# ---------------------------------------------------------------------------
+
+class TestExperiment:
+    def test_recoverable_fault_returns_recovered(self, healthy_service: ServiceState) -> None:
+        exp = Experiment("test", LatencySpike(100))
+        result = exp.run(healthy_service)
+        assert result.recovered
+        assert result.fault_type == FaultType.LATENCY
+
+    def test_severe_fault_reports_impact(self, healthy_service: ServiceState) -> None:
+        exp = Experiment("test", MemoryPressure(80.0))
+        result = exp.run(healthy_service)
+        assert result.impact != ImpactLevel.NONE
+
+
+# ---------------------------------------------------------------------------
+# Workbench and scorecard
+# ---------------------------------------------------------------------------
+
+class TestChaosWorkbench:
+    def test_run_all_produces_results(self, healthy_service: ServiceState) -> None:
+        wb = ChaosWorkbench(healthy_service)
+        wb.add_experiment(Experiment("e1", LatencySpike(100)))
+        wb.add_experiment(Experiment("e2", ErrorInjection(0.3)))
+        results = wb.run_all()
+        assert len(results) == 2
+
+    def test_report_structure(self, healthy_service: ServiceState) -> None:
+        wb = ChaosWorkbench(healthy_service)
+        wb.add_experiment(Experiment("e1", LatencySpike(100)))
+        wb.run_all()
+        report = wb.report()
+        assert report["service"] == "test-svc"
+        assert "grade" in report
+        assert "results" in report
+
+
+class TestResilienceScore:
+    @pytest.mark.parametrize("recovered,total,expected_grade", [
+        (10, 10, "A"),
+        (8, 10, "B"),
+        (6, 10, "C"),
+        (4, 10, "D"),
+        (2, 10, "F"),
+    ])
+    def test_grading_thresholds(self, recovered: int, total: int, expected_grade: str) -> None:
+        score = ResilienceScore(total_experiments=total, recovered=recovered)
+        assert score.grade == expected_grade
+
+    def test_empty_score_zero_rate(self) -> None:
+        score = ResilienceScore()
+        assert score.recovery_rate == 0.0

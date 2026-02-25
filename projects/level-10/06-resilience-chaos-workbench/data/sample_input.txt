@@ -1,5 +1,15 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "service": {
+    "name": "order-service",
+    "baseline_latency_ms": 10,
+    "baseline_error_rate": 0.001,
+    "dependencies": ["database", "cache", "payment-gateway", "notification-queue"]
+  },
+  "experiments": [
+    {"name": "latency-spike", "fault": "LATENCY", "params": {"added_ms": 500}},
+    {"name": "error-flood", "fault": "ERROR", "params": {"error_rate": 0.8}},
+    {"name": "memory-pressure", "fault": "RESOURCE_EXHAUSTION", "params": {"added_pct": 60}},
+    {"name": "kill-database", "fault": "DEPENDENCY_DOWN", "params": {"dependency": "database"}},
+    {"name": "kill-cache", "fault": "DEPENDENCY_DOWN", "params": {"dependency": "cache"}}
+  ]
+}

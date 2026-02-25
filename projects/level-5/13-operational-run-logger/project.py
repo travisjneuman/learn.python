@@ -1,106 +1,187 @@
-"""Level 5 project: Operational Run Logger.
+"""Level 5 / Project 13 — Operational Run Logger.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Structured operational logging with run IDs, timestamps, duration
+tracking, and JSON-formatted output.  Every operation is tracked
+from start to finish with a unique run identifier.
+
+Concepts practiced:
+- Lifecycle tracking (start -> process -> finish)
+- UUID-based run identification for traceability
+- Duration measurement with timezone-aware datetimes
+- Error handling that still records partial run data
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_LEVEL = 5
-PROJECT_TITLE = "Operational Run Logger"
-PROJECT_FOCUS = "run lifecycle observability"
 
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+    """Set up logging so every run event is traceable."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- run logger ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+class RunLogger:
+    """Context-aware logger that tracks run metadata.
 
-    We keep this separate from I/O so business logic stays testable.
+    Each run has a unique ID, a start time, and a list of events.
+    Call ``finish()`` at the end to record the final status and
+    compute the total duration.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+
+    def __init__(self, run_id: str | None = None) -> None:
+        self.run_id = run_id or str(uuid.uuid4())[:8]
+        self.start_time = datetime.now(timezone.utc)
+        self.events: list[dict] = []
+        self.error_count = 0
+        self.log_event("run_started", {"run_id": self.run_id})
+
+    def log_event(self, event_type: str, data: dict | None = None) -> None:
+        """Record a timestamped event in the run log."""
+        event = {
+            "run_id": self.run_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "event_type": event_type,
+            "data": data or {},
+        }
+        self.events.append(event)
+        logging.info("[%s] %s: %s", self.run_id, event_type, data)
+
+    def log_error(self, message: str, details: dict | None = None) -> None:
+        """Record an error event and increment the error counter."""
+        self.error_count += 1
+        self.log_event("error", {"message": message, **(details or {})})
+
+    def log_warning(self, message: str, details: dict | None = None) -> None:
+        """Record a non-fatal warning event."""
+        self.log_event("warning", {"message": message, **(details or {})})
+
+    def finish(self, status: str = "completed") -> dict:
+        """Finalise the run: compute duration and return the full summary.
+
+        The summary includes the run ID, status, timing information,
+        event count, error count, and the complete event list.
+        """
+        end_time = datetime.now(timezone.utc)
+        duration_ms = int((end_time - self.start_time).total_seconds() * 1000)
+        self.log_event(
+            "run_finished",
+            {"status": status, "duration_ms": duration_ms, "errors": self.error_count},
         )
-    return records
+        return {
+            "run_id": self.run_id,
+            "status": status,
+            "start_time": self.start_time.isoformat(),
+            "end_time": end_time.isoformat(),
+            "duration_ms": duration_ms,
+            "event_count": len(self.events),
+            "error_count": self.error_count,
+            "events": self.events,
+        }
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+# ---------- processing ----------
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
+def process_items(items: list[str], logger: RunLogger) -> list[dict]:
+    """Process a list of text items while logging each step.
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    Each item is recorded as a separate event so the run log
+    provides full visibility into what was processed and in
+    what order.
+    """
+    results: list[dict] = []
+    logger.log_event("processing_started", {"item_count": len(items)})
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    for i, item in enumerate(items):
+        logger.log_event(
+            "item_processed",
+            {"index": i, "item": item, "length": len(item)},
+        )
+        results.append({"index": i, "item": item, "processed": True})
+
+    logger.log_event("processing_completed", {"results_count": len(results)})
+    return results
+
+
+# ---------- pipeline ----------
+
+
+def run(
+    input_path: Path,
+    output_path: Path,
+    log_path: Path,
+    run_id: str | None = None,
+) -> dict:
+    """Execute a full logged run: read input, process, write output and log.
+
+    Even if an error occurs, the run logger's ``finish()`` is always
+    called so that partial run data is persisted for debugging.
+    """
+    logger = RunLogger(run_id=run_id)
+
+    try:
+        if not input_path.exists():
+            raise FileNotFoundError(f"Input not found: {input_path}")
+
+        raw = input_path.read_text(encoding="utf-8")
+        items = [line.strip() for line in raw.splitlines() if line.strip()]
+
+        if not items:
+            logger.log_warning("Input file is empty — 0 items to process")
+
+        results = process_items(items, logger)
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+        summary = logger.finish("completed")
+    except Exception as exc:
+        logger.log_error(str(exc))
+        summary = logger.finish("failed")
+
+    # Always write the run log, even on failure.
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
+# ---------- CLI ----------
+
+
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    """Parse command-line arguments for the operational run logger."""
+    parser = argparse.ArgumentParser(
+        description="Operational run logger with lifecycle tracking",
+    )
+    parser.add_argument("--input", default="data/sample_input.txt", help="Input text file")
+    parser.add_argument("--output", default="data/processed.json", help="Processed output path")
+    parser.add_argument("--log", default="data/run_log.json", help="Run log output path")
+    parser.add_argument("--run-id", default=None, help="Custom run ID (auto-generated if omitted)")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
+    """Entry point: configure logging, parse args, execute the run."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    summary = run(Path(args.input), Path(args.output), Path(args.log), args.run_id)
+    print(json.dumps(
+        {"run_id": summary["run_id"], "status": summary["status"], "events": summary["event_count"]},
+        indent=2,
+    ))
 
 
 if __name__ == "__main__":

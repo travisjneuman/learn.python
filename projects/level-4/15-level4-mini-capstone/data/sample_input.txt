@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Level 4 Mini Capstone
+----------------------------------------
+This file explains the companion sample_input.csv.
+
+The capstone combines skills from Level 4:
+  - Schema validation (project 01)
+  - Health checks (project 02)
+  - Ingestion with quarantine (project 03)
+  - Checkpoint/recovery (project 12)
+
+sample_input.csv contains mixed-quality inventory records:
+  Row 1: header — sku,name,quantity,price,category,warehouse
+  Row 2: SKU001,Widget A,100,9.99,hardware,WH-East    (valid)
+  Row 3: SKU002,Gadget B,50,24.99,electronics,WH-West (valid)
+  Row 4: SKU003,,25,14.99,hardware,WH-East             (missing name)
+  Row 5: SKU004,Tool C,-5,19.99,tools,WH-North         (negative quantity)
+  Row 6: SKU005,Part D,200,abc,hardware,WH-East         (non-numeric price)
+  Row 7: SKU006,Supply E,75,7.50,supplies,WH-South     (valid)
+  Row 8: SKU001,Widget A,100,9.99,hardware,WH-East     (duplicate SKU)
+
+Pipeline: validate schema -> check health -> ingest good rows -> checkpoint
+Expected: 3 valid, 4 issues detected, checkpoint saved after processing

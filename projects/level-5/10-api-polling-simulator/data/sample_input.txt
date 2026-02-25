@@ -1,5 +1,23 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample scenario for API Polling Simulator
+--------------------------------------------
+This file describes the polling simulation.
+
+The project simulates polling a REST API with rate limiting:
+  - MockAPI returns success, error, or rate-limit responses randomly
+  - Poller retries on failure with exponential backoff
+  - Rate-limited responses trigger longer delays
+  - Results are collected and summarized
+
+Simulated API behavior (configurable):
+  Success rate:     70%  (returns {"status": "ok", "data": {...}})
+  Error rate:       10%  (returns {"status": "error", "message": "..."})
+  Rate-limit rate:  20%  (returns {"status": "rate_limited", "retry_after": N})
+
+Polling configuration:
+  max_polls: 10
+  base_delay: 0.1 seconds
+  backoff_factor: 2 (doubles delay after each rate-limit)
+  max_backoff: 5.0 seconds
+
+Expected: ~7 successful polls, ~2 rate-limited, ~1 error
+Poll results written to data/poll_results.json

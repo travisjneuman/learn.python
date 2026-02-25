@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+resource: compute type=ec2 instances=24 instance_type=m5.xlarge hours=720 pricing=on_demand
+resource: storage type=s3 quantity=5.2TB pricing=standard tier_1_rate=0.023/GB tier_2_rate=0.022/GB
+resource: database type=rds instances=3 instance_type=db.r5.large hours=720 pricing=reserved_1yr
+resource: network type=data_transfer quantity=8.5TB pricing=tiered tier_1=0.09/GB tier_2=0.085/GB
+resource: cache type=elasticache instances=2 instance_type=cache.r5.large hours=720 pricing=on_demand
+budget_monthly: 15000.00

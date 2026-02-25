@@ -13,48 +13,55 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/13-quality-gate-runner
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py project.py
+python project.py project.py --json
+python project.py project.py --max-lines 100
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Pipeline: FAIL (5.2ms)
+  [PASS] file_exists:project.py: File found
+  [PASS] syntax:project.py: No syntax errors
+  [FAIL] no_print:project.py: 3 print statement(s) found
+  [PASS] size:project.py: 165 lines (limit: 300)
+3/4 gates passed
+14 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Pipeline results on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `check_docstrings` gate that verifies all functions have docstrings.
+2. Add a `--gate` flag to run only specific gates.
+3. Add `--strict` mode where any warning is treated as a failure.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Run on a non-Python file — do syntax and print checks handle it?
+2. Run on a file that doesn't exist — does the pipeline still report all gates?
+3. Set `--max-lines 0` — does the size check handle the edge case?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add file type detection (skip syntax check for non-.py files).
+2. Ensure all gates handle missing files consistently.
+3. Add a `--quiet` flag that only shows failures.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a "quality gate" in CI/CD and how does this project simulate one?
+2. How does `compile()` check for syntax errors without running the code?
+3. Why use `time.perf_counter()` instead of `time.time()` for timing?
+4. How does the pipeline aggregate individual gate results?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- build composable quality gate checks,
+- use `compile()` for syntax validation,
+- aggregate results into a pass/fail pipeline,
+- time operations with `time.perf_counter()`.
 
 ---
 

@@ -1,5 +1,13 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project audits directories — no input file needed.
+
+Usage:
+    python project.py audit .
+    python project.py audit . --pattern "*.py"
+    python project.py audit . --max-size 500000 --json
+    python project.py scan .
+
+Point it at any directory to check for:
+- Empty files (0 bytes)
+- Large files (over configurable threshold)
+- Naming convention violations (spaces, special characters)
+- Files without extensions

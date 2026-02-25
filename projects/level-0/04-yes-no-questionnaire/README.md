@@ -5,49 +5,52 @@ Home: [README](../../../README.md)
 - boolean logic and input normalization
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Process yes/no survey answers, normalise messy input like "YES", "y", "True" into clean booleans, and tally the results with percentages. You will learn input normalisation and basic statistics.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/04-yes-no-questionnaire
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --questions data/sample_input.txt --answers data/answers.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Questionnaire Results ===
+  Total responses: 5
+  Yes: 3 (60%)
+  No:  1 (20%)
+  Invalid: 1
+4 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add "maybe" as a third valid answer category (accept "maybe", "perhaps", "unsure").
+2. Add a percentage bar using `#` characters next to each tally count.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create an answers file with only blank lines -- does `tally_answers()` crash or return zeros?
+2. Create an answers file with more answers than questions -- what happens?
+3. Use answers like "YES!!!" or "y e s" -- does `normalise_answer()` handle them?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle the empty-answers case by returning a tally with all zeros.
+2. Add bounds checking so extra answers beyond the question count are ignored.
+3. Add a test for the all-blank-answers edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `normalise_answer()` use `.strip().lower()` before checking membership in a set?
+2. What is the difference between checking `answer in {"yes", "y", "true"}` vs using if/elif?
+3. Why return "invalid" for unrecognised answers instead of raising an error?
+4. Where would answer normalisation appear in real software (survey tools, form validation)?
 
 ## Mastery check
 You can move on when you can:

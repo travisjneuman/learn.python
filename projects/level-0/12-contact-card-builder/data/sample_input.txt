@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Ada Lovelace, 555-0101, ada@example.com
+Grace Hopper, 555-0102, grace@navy.mil
+Alan Turing, 555-0103, alan@bletchley.uk
+Bad Entry Only
+Missing Email, 555-0104, not-valid
+Guido van Rossum, 555-0105, guido@python.org

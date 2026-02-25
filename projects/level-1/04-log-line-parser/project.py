@@ -1,107 +1,123 @@
 """Level 1 project: Log Line Parser.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Parse structured log lines into components: timestamp, level, and message.
+Count entries by level and filter by severity.
+
+Concepts: string splitting, datetime parsing, dictionaries, filtering.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+from datetime import datetime
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Log Line Parser"
-PROJECT_FOCUS = "split and parse structured text"
 
+def parse_log_line(line: str) -> dict:
+    """Parse a single log line into its components.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+    Expected format: 2024-01-15 09:30:00 [INFO] Server started
+    Components: timestamp, level, message
 
-    This function is isolated so it can be tested independently.
+    WHY split with maxsplit? -- The message might contain spaces,
+    so we split carefully: date (1), time (2), [LEVEL] (3), rest is message.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    parts = line.strip().split(maxsplit=3)
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    if len(parts) < 4:
+        return {"raw": line.strip(), "error": "Expected: DATE TIME [LEVEL] MESSAGE"}
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    date_str = parts[0]
+    time_str = parts[1]
+    level_raw = parts[2]
+    message = parts[3]
 
+    # Extract level from brackets: [INFO] -> INFO
+    if not (level_raw.startswith("[") and level_raw.endswith("]")):
+        return {"raw": line.strip(), "error": f"Level must be in brackets, got: {level_raw}"}
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+    level = level_raw[1:-1].upper()
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    # Try to parse the timestamp.
+    timestamp_str = f"{date_str} {time_str}"
+    try:
+        datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return {"raw": line.strip(), "error": f"Invalid timestamp: {timestamp_str}"}
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "timestamp": timestamp_str,
+        "level": level,
+        "message": message,
     }
 
 
+def count_by_level(entries: list[dict]) -> dict[str, int]:
+    """Count log entries by their level.
+
+    WHY count by level? -- In operations, knowing how many errors
+    vs info messages you have gives a quick health check.
+    """
+    counts = {}
+    for entry in entries:
+        if "error" in entry:
+            continue
+        level = entry["level"]
+        counts[level] = counts.get(level, 0) + 1
+    return counts
+
+
+def filter_by_level(entries: list[dict], level: str) -> list[dict]:
+    """Return only entries matching the specified level."""
+    level = level.upper()
+    return [e for e in entries if e.get("level") == level]
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read a log file and parse each line."""
+    if not path.exists():
+        raise FileNotFoundError(f"Log file not found: {path}")
+
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return [parse_log_line(line) for line in lines if line.strip()]
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Log Line Parser")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--level", default=None, help="Filter by log level")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    entries = process_file(Path(args.input))
+    counts = count_by_level(entries)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    display = entries
+    if args.level:
+        display = filter_by_level(entries, args.level)
+        print(f"=== Log entries filtered by {args.level.upper()} ===\n")
+    else:
+        print("=== All Log Entries ===\n")
+
+    for entry in display:
+        if "error" in entry:
+            print(f"  PARSE ERROR: {entry['error']}")
+        else:
+            print(f"  [{entry['level']:<7}] {entry['timestamp']} - {entry['message']}")
+
+    print(f"\n  Level counts: {counts}")
+    skipped = sum(1 for e in entries if "error" in e)
+    if skipped:
+        print(f"  Skipped {skipped} unparseable lines")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps({"entries": entries, "counts": counts}, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

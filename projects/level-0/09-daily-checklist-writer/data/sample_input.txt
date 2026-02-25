@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Review yesterday's notes
+Complete Python exercise
+Read one chapter of documentation
+Practice typing for 10 minutes
+Write a short code summary in notes.md
+Take a 5-minute break
+Review and commit today's work

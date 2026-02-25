@@ -1,5 +1,15 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+service: payment-api
+from_team: payments-alpha
+to_team: payments-beta
+architecture: "FastAPI service, PostgreSQL, Redis cache, Stripe integration"
+dependencies: user-api, notification-svc, stripe-webhook
+known_issues:
+  - "Occasional timeout on Stripe webhook (retry resolves)" severity=medium
+  - "Memory leak under sustained load >500 RPS" severity=high
+contacts:
+  - name="Alice Chen" role=tech-lead email=alice@company.com
+  - name="Bob Kim" role=on-call email=bob@company.com
+runbooks:
+  - "payment-failure-triage" steps=5 last_tested=2025-01-10
+  - "database-failover" steps=8 last_tested=2024-11-15
+  - "stripe-webhook-debug" steps=3 last_tested=never

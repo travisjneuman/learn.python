@@ -1,54 +1,132 @@
-"""Intermediate test module with heavy comments.
+"""Tests for SQL Connection Simulator.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Covers:
+- Connection pool acquire / release / reuse lifecycle
+- Health check on live and closed connections
+- Demo workload end-to-end with in-memory SQLite
+- Retry behaviour when connection is unavailable
 """
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+from __future__ import annotations
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import sqlite3
 
+import pytest
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+from project import (
+    ConnectionConfig,
+    ConnectionPool,
+    health_check,
+    run,
+    run_demo_queries,
+)
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+@pytest.fixture()
+def config() -> ConnectionConfig:
+    """Default in-memory config with small pool for fast tests."""
+    return ConnectionConfig(db_path=":memory:", pool_size=3, max_retries=2)
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+@pytest.fixture()
+def pool(config: ConnectionConfig) -> ConnectionPool:
+    pool = ConnectionPool(config)
+    yield pool
+    pool.close_all()
+
+
+# ---------------------------------------------------------------------------
+# Pool lifecycle
+# ---------------------------------------------------------------------------
+
+
+class TestConnectionPool:
+    def test_acquire_creates_connection(self, pool: ConnectionPool) -> None:
+        conn = pool.acquire()
+        assert isinstance(conn, sqlite3.Connection)
+        pool.release(conn)
+        assert pool.stats()["created"] == 1
+
+    def test_release_and_reuse(self, pool: ConnectionPool) -> None:
+        """After release, next acquire should reuse (not create)."""
+        conn1 = pool.acquire()
+        pool.release(conn1)
+
+        conn2 = pool.acquire()
+        pool.release(conn2)
+
+        stats = pool.stats()
+        assert stats["created"] == 1
+        assert stats["reused"] == 1
+
+    @pytest.mark.parametrize("pool_size", [1, 3, 5])
+    def test_pool_respects_max_size(self, pool_size: int) -> None:
+        cfg = ConnectionConfig(pool_size=pool_size)
+        p = ConnectionPool(cfg)
+        conns = [p.acquire() for _ in range(pool_size + 2)]
+        for c in conns:
+            p.release(c)
+        # idle connections should not exceed pool_size
+        assert p.stats()["idle"] <= pool_size
+        p.close_all()
+
+    def test_close_all_drains_pool(self, pool: ConnectionPool) -> None:
+        conn = pool.acquire()
+        pool.release(conn)
+        pool.close_all()
+        assert pool.stats()["idle"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Health check
+# ---------------------------------------------------------------------------
+
+
+class TestHealthCheck:
+    def test_healthy_connection(self) -> None:
+        conn = sqlite3.connect(":memory:")
+        result = health_check(conn)
+        assert result["status"] == "healthy"
+        assert "sqlite_version" in result
+        conn.close()
+
+    def test_closed_connection_reports_unhealthy(self) -> None:
+        conn = sqlite3.connect(":memory:")
+        conn.close()
+        result = health_check(conn)
+        assert result["status"] == "unhealthy"
+
+
+# ---------------------------------------------------------------------------
+# Demo workload
+# ---------------------------------------------------------------------------
+
+
+def test_run_demo_queries_inserts_all_labels(pool: ConnectionPool) -> None:
+    labels = ["alpha", "beta", "gamma"]
+    rows = run_demo_queries(pool, labels)
+    assert len(rows) == 3
+    assert [r["label"] for r in rows] == labels
+
+
+# ---------------------------------------------------------------------------
+# End-to-end run
+# ---------------------------------------------------------------------------
+
+
+def test_run_end_to_end(tmp_path) -> None:
+    input_file = tmp_path / "input.txt"
+    input_file.write_text("event_a\nevent_b\n", encoding="utf-8")
+    output_file = tmp_path / "out.json"
+
+    summary = run(input_file, output_file)
+
+    assert summary["rows_inserted"] == 2
+    assert summary["health"]["status"] == "healthy"
+    assert summary["pool_stats"]["created"] >= 1
+    assert output_file.exists()

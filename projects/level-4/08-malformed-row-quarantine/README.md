@@ -13,41 +13,47 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/08-malformed-row-quarantine
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.csv --output-dir data/output --required 0,1
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_data_rows": 7,
+  "valid": 4,
+  "quarantined": 3
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output/valid_rows.txt` — clean rows that passed all rules
+- `data/output/quarantined_rows.json` — rejected rows with reasons
+- `data/output/quarantine_report.json` — summary counts
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a new rule: `rule_no_duplicate_values` that rejects rows where a key field repeats a value seen in a prior row.
+2. Add a `--delimiter` CLI flag to handle TSV or pipe-delimited files.
+3. Re-run script and tests — add a parametrized test for the new rule.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed it a file with only a header and no data rows — observe the counts.
+2. Create a row with a field containing 10,000+ characters and see if `rule_max_field_length` catches it.
+3. Remove the header row entirely and observe what happens to column-count validation.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle the no-data-rows case gracefully (valid output, zero counts).
+2. Add a `--has-header` flag for header-less files.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are validation rules written as separate functions instead of one big `if/else` block?
+2. What is the advantage of collecting ALL reasons per row instead of stopping at the first?
+3. Why does the quarantine file use JSON instead of CSV?
+4. How would you add custom rules at runtime (without editing the source code)?
 
 ## Mastery check
 You can move on when you can:

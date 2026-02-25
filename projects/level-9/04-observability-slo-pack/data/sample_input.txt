@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+slo: api-availability target=99.9% window=30d sli_type=availability
+slo: checkout-latency target=200ms window=24h sli_type=latency_p99
+slo: payment-error-rate target=0.1% window=7d sli_type=error_rate
+events: api total=100000 good=99850 (30-day window)
+events: checkout total=50000 within_target=48500 (24h window)
+events: payment total=25000 errors=35 (7-day window)

@@ -13,48 +13,51 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/04-error-safe-divider
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
+python project.py --interactive
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Division Results ===
+  [OK] 100 / 5 = 20.0
+  [FAIL] 10 / 0 = Cannot divide by zero
+9 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Division results and summary on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add support for integer division (`//`) with a `--integer` flag.
+2. Add a `--precision` argument to control decimal places in results.
+3. Return results sorted by value (largest first) when `--sorted` is passed.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass `float('inf')` as a numerator — what result do you get?
+2. Pass an extremely large number — does Python overflow?
+3. Use a file with no valid operations — does the summary crash?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a check for `float('inf')` and `float('nan')` results.
+2. Handle the empty-results case in `summarise_results`.
+3. Add tests for infinity and NaN edge cases.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the difference between `except ValueError` and a bare `except`?
+2. Why is catching specific exceptions better than catching `Exception`?
+3. How does `try/except/else/finally` work — what runs when?
+4. When would error-safe patterns like this be critical in production?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- list 5 built-in exception types and when each occurs,
+- explain exception hierarchy (BaseException vs Exception),
+- write a try/except that catches multiple specific types,
+- describe why bare `except:` is dangerous.
 
 ---
 

@@ -19,35 +19,43 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "input_records": 7,
+  "staged": 5,
+  "loaded": 5,
+  "rejected": 2,
+  "dead_letters": 2,
+  "lineage_entries": 12,
+  "watermark": "2025-01-15T12:00:00"
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — full pipeline results
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Run the pipeline twice with a persistent database to confirm the watermark prevents reprocessing.
+2. Add a `--report` flag that prints a summary of lineage entries grouped by step.
+3. Add a `run_log` query to the output showing all historical pipeline runs.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a record with key `evt-003` and an older timestamp than the existing record — does the upsert overwrite with stale data?
+2. Feed only invalid records and observe that the pipeline handles an all-rejection batch gracefully.
+3. Corrupt the watermark table manually and observe the next run's behavior.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a timestamp comparison in the upsert: only update if the new timestamp is newer.
+2. Handle the case where 100% of records are rejected without errors.
+3. Add watermark validation to reject obviously invalid values.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How do the individual Level 6 patterns (staging, upsert, lineage, watermark, dead-letter) combine into a full pipeline?
+2. What would break if you removed the staging step and loaded directly to target?
+3. How does the watermark enable idempotent reruns?
+4. How would you adapt this pipeline for a production environment with millions of records?
 
 ## Mastery check
 You can move on when you can:

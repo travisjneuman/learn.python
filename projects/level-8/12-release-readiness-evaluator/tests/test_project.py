@@ -1,52 +1,127 @@
-"""Advanced test module with heavy comments.
+"""Tests for Release Readiness Evaluator.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: criteria scoring, readiness levels, required failures, and report structure.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    CriterionResult,
+    EvaluatorConfig,
+    ReadinessLevel,
+    ReleaseReadinessEvaluator,
+    changelog_criterion,
+    lint_clean_criterion,
+    performance_criterion,
+    security_scan_criterion,
+    coverage_criterion,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- Criterion factories ------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+class TestCriterionFactories:
+    @pytest.mark.parametrize("coverage,required,expected_pass", [
+        (90.0, 80.0, True),
+        (80.0, 80.0, True),
+        (79.0, 80.0, False),
+    ])
+    def test_coverage_criterion(
+        self, coverage: float, required: float, expected_pass: bool,
+    ) -> None:
+        c = coverage_criterion(coverage, required)
+        result = c.evaluate_fn()
+        assert result.passed == expected_pass
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    @pytest.mark.parametrize("issues,expected_pass", [
+        (0, True),
+        (1, False),
+        (5, False),
+    ])
+    def test_lint_criterion(self, issues: int, expected_pass: bool) -> None:
+        c = lint_clean_criterion(issues)
+        result = c.evaluate_fn()
+        assert result.passed == expected_pass
+
+    def test_security_critical_vuln_fails(self) -> None:
+        c = security_scan_criterion(vulnerabilities=3, critical=1)
+        result = c.evaluate_fn()
+        assert result.passed is False
+
+    def test_security_no_critical_passes(self) -> None:
+        c = security_scan_criterion(vulnerabilities=2, critical=0)
+        result = c.evaluate_fn()
+        assert result.passed is True
+
+    @pytest.mark.parametrize("p99,threshold,expected_pass", [
+        (200, 500, True),
+        (500, 500, True),
+        (600, 500, False),
+    ])
+    def test_performance_criterion(
+        self, p99: float, threshold: float, expected_pass: bool,
+    ) -> None:
+        c = performance_criterion(p99, threshold)
+        result = c.evaluate_fn()
+        assert result.passed == expected_pass
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- Evaluator ----------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestEvaluator:
+    def test_all_passing_gives_go(self) -> None:
+        evaluator = ReleaseReadinessEvaluator()
+        evaluator.add_criterion(coverage_criterion(95.0))
+        evaluator.add_criterion(security_scan_criterion(0, 0))
+        evaluator.add_criterion(changelog_criterion(True))
+        report = evaluator.evaluate("v1.0")
+        assert report.readiness == ReadinessLevel.GO
+        assert report.overall_score > 0.8
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_required_failure_gives_no_go(self) -> None:
+        evaluator = ReleaseReadinessEvaluator()
+        evaluator.add_criterion(coverage_criterion(50.0, 80.0))  # fails, required
+        evaluator.add_criterion(changelog_criterion(True))
+        report = evaluator.evaluate("v1.0")
+        assert report.readiness == ReadinessLevel.NO_GO
+        assert "test_coverage" in report.required_failures
+
+    def test_low_score_gives_no_go(self) -> None:
+        evaluator = ReleaseReadinessEvaluator()
+        evaluator.add_criterion(lint_clean_criterion(15))
+        evaluator.add_criterion(performance_criterion(900.0, 500.0))
+        report = evaluator.evaluate("v1.0")
+        assert report.readiness == ReadinessLevel.NO_GO
+
+    def test_no_criteria_gives_no_go(self) -> None:
+        evaluator = ReleaseReadinessEvaluator()
+        report = evaluator.evaluate("v1.0")
+        assert report.readiness == ReadinessLevel.NO_GO
+
+    def test_conditional_score_range(self) -> None:
+        evaluator = ReleaseReadinessEvaluator(
+            EvaluatorConfig(go_threshold=0.9, conditional_threshold=0.6)
+        )
+        # Use non-required criteria to avoid automatic NO_GO from required failures
+        evaluator.add_criterion(lint_clean_criterion(10))      # score: 0.5
+        evaluator.add_criterion(changelog_criterion(True))     # score: 1.0
+        evaluator.add_criterion(performance_criterion(600, 500))  # score: 0.83
+        report = evaluator.evaluate("v1.0")
+        # Weighted average ~0.78, between 0.6 and 0.9 => CONDITIONAL
+        assert report.readiness == ReadinessLevel.CONDITIONAL
+
+
+# --- Report structure ---------------------------------------------------
+
+class TestReport:
+    def test_report_to_dict(self) -> None:
+        evaluator = ReleaseReadinessEvaluator()
+        evaluator.add_criterion(changelog_criterion(True))
+        report = evaluator.evaluate("v1.0")
+        d = report.to_dict()
+        assert "release_name" in d
+        assert "overall_score" in d
+        assert "criteria" in d
+        assert d["passed"] + d["failed"] == len(d["criteria"])

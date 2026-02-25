@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `network_latency` metric adapter that returns latency in milliseconds.
+2. Add a `severity` field to alerts (info / warning / critical) based on how far above threshold the value is.
+3. Re-run script and tests — verify new metric and severity appear in output.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set a threshold to a negative number and observe what alerts are generated.
+2. Return a non-numeric value from a mock API (e.g. `"N/A"`) and watch the comparison fail.
+3. Capture the TypeError or unexpected alert behavior.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that thresholds are positive before comparing.
+2. Wrap metric values in a `float()` cast with a try/except to handle non-numeric responses.
+3. Add a test for non-numeric metric values and negative thresholds.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does each metric type need its own adapter function?
+2. What happened when the mock API returned a string instead of a number?
+3. How did input validation prevent the false alert?
+4. How would you extend this to a real Prometheus or Datadog integration?
 
 ## Mastery check
 You can move on when you can:

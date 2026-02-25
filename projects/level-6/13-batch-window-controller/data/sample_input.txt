@@ -1,5 +1,10 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "range_start": "2025-01-15T00:00",
+  "range_end": "2025-01-16T00:00",
+  "windows": [
+    {"start": "2025-01-15T00:00", "end": "2025-01-15T06:00", "status": "completed"},
+    {"start": "2025-01-15T06:00", "end": "2025-01-15T12:00", "status": "completed"},
+    {"start": "2025-01-15T10:00", "end": "2025-01-15T16:00", "status": "running"},
+    {"start": "2025-01-15T18:00", "end": "2025-01-16T00:00", "status": "pending"}
+  ]
+}

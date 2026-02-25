@@ -13,48 +13,54 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/05-refactor-monolith-drill
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt
+python project.py data/sample_input.txt --json
+python project.py data/sample_input.txt --department Engineering
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Company Report: 10 employees, $849,000.00 total payroll
+===========================================================
+Engineering (4 people)
+  Salary range: $88,000 - $115,000
+  ...
+10 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Formatted report on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--sort-by` flag (headcount, salary, tenure) to order departments.
+2. Add a median salary calculation to `DepartmentStats`.
+3. Add a `--top-earners N` flag to show the top N earners across all departments.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Use a CSV with a missing `salary` column — what error appears?
+2. Pass a non-numeric value in the salary column — does it crash or skip?
+3. Filter to a department that doesn't exist — what happens?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that all required CSV columns exist before processing.
+2. Handle non-numeric salary/years values gracefully (skip with warning).
+3. Show a clear message when `--department` matches nothing.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the "monolith" anti-pattern and why is it hard to test?
+2. How does decomposing into parse -> group -> compute -> format help?
+3. Why is `parse_csv` separate from `load_employees`?
+4. What is the Single Responsibility Principle?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- decompose a large function into small, testable units,
+- explain the Single Responsibility Principle,
+- test each function independently,
+- build a data pipeline with clear step separation.
 
 ---
 

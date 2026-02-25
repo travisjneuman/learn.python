@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `max_backfills` limit so the cache only auto-backfills N times before requiring manual intervention.
+2. Add an `evict_oldest()` method that removes the least-recently-added cache entry when at capacity.
+3. Re-run script and tests — verify backfill limiting and eviction work.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `miss_threshold` to 0.0 so every single miss triggers a backfill.
+2. Provide an empty source dict and request keys that do not exist.
+3. Observe excessive backfills (thrashing) or `None` results with misleading stats.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `miss_threshold` is between 0.01 and 1.0 to prevent thrashing.
+2. Skip backfill when the source is empty (nothing to load).
+3. Add tests for zero threshold, empty source, and backfill count limits.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does threshold-based backfill prevent unnecessary source reads?
+2. What happened when miss_threshold was set to zero?
+3. How did the minimum threshold validation prevent cache thrashing?
+4. Where would you use cache backfill in a real high-traffic web application?
 
 ## Mastery check
 You can move on when you can:

@@ -1,107 +1,122 @@
 """Level 0 project: Word Counter Basic.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a text file and count words, lines, and characters.
+Also find the most frequent words.
+
+Concepts: string splitting, counting with dicts, sorting, file I/O.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Word Counter Basic"
-PROJECT_FOCUS = "string splitting and counting"
 
+def count_words(text: str) -> int:
+    """Count the number of words in a string.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY split()? -- Calling split() with no arguments splits on any
+    whitespace (spaces, tabs, newlines) and ignores leading/trailing
+    whitespace automatically.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return len(text.split())
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def count_lines(text: str) -> int:
+    """Count the number of lines in a string.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY splitlines()? -- It handles all line-ending styles
+    (\\n, \\r\\n, \\r) so the count is correct on any OS.
+    """
+    if not text:
+        return 0
+    return len(text.splitlines())
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+
+def count_characters(text: str) -> int:
+    """Count the total number of characters (including spaces)."""
+    return len(text)
+
+
+def word_frequencies(text: str) -> dict[str, int]:
+    """Build a dictionary mapping each word to its frequency.
+
+    WHY lowercase? -- So "The" and "the" count as the same word.
+    This is called normalisation.
+    """
+    freq = {}
+    for word in text.lower().split():
+        # Strip common punctuation from the edges of each word.
+        cleaned = word.strip(".,!?;:\"'()-")
+        if cleaned:
+            # If the word is already in the dict, add 1; otherwise start at 1.
+            if cleaned in freq:
+                freq[cleaned] += 1
+            else:
+                freq[cleaned] = 1
+    return freq
+
+
+def top_words(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    """Return the top-n most frequent words as (word, count) pairs.
+
+    WHY sorted with key? -- sorted() can sort by any criterion.
+    Using key=lambda item: item[1] sorts by the count (second element).
+    reverse=True puts the highest counts first.
+    """
+    items = list(freq.items())
+    items.sort(key=lambda item: item[1], reverse=True)
+    return items[:n]
+
+
+def analyse_text(text: str) -> dict:
+    """Run all analyses and return a summary dict."""
+    freq = word_frequencies(text)
+    top = top_words(freq, 5)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "lines": count_lines(text),
+        "words": count_words(text),
+        "characters": count_characters(text),
+        "unique_words": len(freq),
+        "top_words": [{"word": w, "count": c} for w, c in top],
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Word Counter Basic")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
     input_path = Path(args.input)
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+
+    text = input_path.read_text(encoding="utf-8")
+    summary = analyse_text(text)
+
+    print("=== Word Count Summary ===")
+    print(f"  Lines:      {summary['lines']}")
+    print(f"  Words:      {summary['words']}")
+    print(f"  Characters: {summary['characters']}")
+    print(f"  Unique:     {summary['unique_words']}")
+    print("\n  Top words:")
+    for entry in summary["top_words"]:
+        print(f"    {entry['word']}: {entry['count']}")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    print(f"\n  Output written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

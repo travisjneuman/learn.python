@@ -1,105 +1,204 @@
-"""Level 4 project: Level 4 Mini Capstone.
+"""Level 4 / Project 15 — Mini Capstone: Full Data Ingestion Pipeline.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Ties together Level 4 skills: schema validation, CSV ingestion with
+error recovery, data transformation, checkpoint/recovery, and manifest
+generation — all in one end-to-end pipeline.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
+import hashlib
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Level 4 Mini Capstone"
-PROJECT_FOCUS = "data-quality-first automation workflow"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- stage 1: validation ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def validate_row(row: dict, required_fields: list[str]) -> list[str]:
+    """Check a row for missing required fields and empty values."""
+    errors: list[str] = []
+    for field in required_fields:
+        if field not in row or not str(row.get(field, "")).strip():
+            errors.append(f"missing or empty required field: {field}")
+    return errors
 
-    We keep this separate from I/O so business logic stays testable.
-    """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+# ---------- stage 2: transformation ----------
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def transform_row(row: dict) -> dict:
+    """Clean and normalize a data row."""
+    cleaned = {}
+    for key, value in row.items():
+        k = key.strip().lower().replace(" ", "_")
+        v = value.strip() if isinstance(value, str) else value
+        # Try numeric coercion
+        if isinstance(v, str):
+            try:
+                v = int(v)
+            except ValueError:
+                try:
+                    v = float(v)
+                except ValueError:
+                    pass
+        cleaned[k] = v
+    return cleaned
 
+# ---------- stage 3: checkpoint ----------
+
+
+def load_checkpoint(path: Path) -> dict:
+    if path.exists():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    return {"processed_count": 0, "valid": [], "quarantined": []}
+
+
+def save_checkpoint(path: Path, state: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(state), encoding="utf-8")
+    tmp.replace(path)
+
+# ---------- stage 4: manifest ----------
+
+
+def build_manifest(output_dir: Path, run_id: str) -> dict:
+    """Create a manifest of all output files."""
+    files = []
+    for f in sorted(output_dir.rglob("*")):
+        if f.is_file():
+            content = f.read_bytes()
+            files.append({
+                "name": f.name,
+                "size_bytes": len(content),
+                "md5": hashlib.md5(content).hexdigest(),
+            })
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "run_id": run_id,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "file_count": len(files),
+        "files": files,
     }
 
+# ---------- full pipeline ----------
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+def run_pipeline(
+    input_path: Path,
+    output_dir: Path,
+    required_fields: list[str],
+    checkpoint_path: Path | None = None,
+    batch_size: int = 10,
+) -> dict:
+    """Execute the full ingestion pipeline:
+    1. Read CSV
+    2. Validate each row
+    3. Transform valid rows
+    4. Checkpoint periodically
+    5. Write outputs + manifest
+    """
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    # Load CSV
+    text = input_path.read_text(encoding="utf-8")
+    rows = list(csv.DictReader(text.splitlines()))
+
+    # Load checkpoint if available
+    cp_path = checkpoint_path or (output_dir / ".checkpoint.json")
+    state = load_checkpoint(cp_path)
+    start = state["processed_count"]
+    valid_rows = state["valid"]
+    quarantined = state["quarantined"]
+
+    if start > 0:
+        logging.info("Resuming from checkpoint at row %d", start)
+
+    # Process rows
+    for i in range(start, len(rows)):
+        row = rows[i]
+        errors = validate_row(row, required_fields)
+
+        if errors:
+            quarantined.append({"row": i + 1, "data": row, "errors": errors})
+        else:
+            transformed = transform_row(row)
+            transformed["_row_num"] = i + 1
+            valid_rows.append(transformed)
+
+        # Checkpoint every batch_size rows
+        if (i + 1) % batch_size == 0:
+            save_checkpoint(cp_path, {
+                "processed_count": i + 1,
+                "valid": valid_rows,
+                "quarantined": quarantined,
+            })
+
+    # Write outputs
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    valid_path = output_dir / "valid_data.json"
+    valid_path.write_text(json.dumps(valid_rows, indent=2), encoding="utf-8")
+
+    quarantine_path = output_dir / "quarantined.json"
+    quarantine_path.write_text(json.dumps(quarantined, indent=2), encoding="utf-8")
+
+    # Build manifest
+    run_id = f"capstone_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
+    manifest = build_manifest(output_dir, run_id)
+    manifest_path = output_dir / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+    # Clear checkpoint on success
+    if cp_path.exists():
+        cp_path.unlink()
+
+    summary = {
+        "total_rows": len(rows),
+        "valid": len(valid_rows),
+        "quarantined": len(quarantined),
+        "run_id": run_id,
+    }
+    logging.info(
+        "Pipeline complete: %d valid, %d quarantined out of %d total",
+        summary["valid"], summary["quarantined"], summary["total_rows"],
+    )
     return summary
+
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Level 4 capstone: full data ingestion pipeline")
+    parser.add_argument("--input", default="data/sample_input.csv")
+    parser.add_argument("--output-dir", default="data/output")
+    parser.add_argument("--required", default="name,age", help="Comma-separated required fields")
+    parser.add_argument("--batch-size", type=int, default=10)
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    required = [f.strip() for f in args.required.split(",")]
+    summary = run_pipeline(
+        Path(args.input), Path(args.output_dir),
+        required, batch_size=args.batch_size,
+    )
     print(json.dumps(summary, indent=2))
 
 

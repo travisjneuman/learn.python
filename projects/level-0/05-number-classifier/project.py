@@ -1,107 +1,154 @@
 """Level 0 project: Number Classifier.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read numbers from a file and classify each one:
+  - positive / negative / zero
+  - even / odd
+  - prime / composite
+
+Concepts: if/elif/else decision trees, modulo operator, loops, functions.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Number Classifier"
-PROJECT_FOCUS = "if-elif-else decision trees"
 
+def is_even(n: int) -> bool:
+    """Return True if the number is even.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY modulo? -- The % operator gives the remainder after division.
+    If n % 2 is 0 the number divides evenly by 2, so it is even.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    return n % 2 == 0
+
+
+def is_prime(n: int) -> bool:
+    """Return True if the number is prime.
+
+    A prime number is greater than 1 and only divisible by 1 and itself.
+
+    WHY check up to n**0.5? -- If n has a factor larger than its square
+    root, the matching factor must be smaller than the square root.
+    So we only need to check up to that point.
+    """
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+
+    # Check odd numbers from 3 up to the square root of n.
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 2
+    return True
+
+
+def classify_sign(n: int) -> str:
+    """Classify a number as positive, negative, or zero."""
+    if n > 0:
+        return "positive"
+    elif n < 0:
+        return "negative"
+    else:
+        return "zero"
+
+
+def classify_number(n: int) -> dict:
+    """Build a full classification dict for one number.
+
+    Combines sign, parity (even/odd), and primality checks into
+    a single dictionary so all info is in one place.
+    """
+    return {
+        "number": n,
+        "sign": classify_sign(n),
+        "parity": "even" if is_even(n) else "odd",
+        "prime": is_prime(n),
+    }
+
+
+def process_file(path: Path) -> list[dict]:
+    """Read numbers from a file (one per line) and classify each."""
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    results = []
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        try:
+            n = int(stripped)
+        except ValueError:
+            results.append({"input": stripped, "error": "Not an integer"})
+            continue
+
+        results.append(classify_number(n))
+
+    return results
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def summarise(results: list[dict]) -> dict:
+    """Build a summary of all classifications.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
+    Counts how many numbers fell into each category so the learner
+    can see the distribution at a glance.
+    """
+    valid = [r for r in results if "error" not in r]
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "total": len(results),
+        "valid": len(valid),
+        "errors": len(results) - len(valid),
+        "positives": sum(1 for r in valid if r["sign"] == "positive"),
+        "negatives": sum(1 for r in valid if r["sign"] == "negative"),
+        "zeros": sum(1 for r in valid if r["sign"] == "zero"),
+        "evens": sum(1 for r in valid if r["parity"] == "even"),
+        "odds": sum(1 for r in valid if r["parity"] == "odd"),
+        "primes": sum(1 for r in valid if r["prime"]),
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Number Classifier")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
+    results = process_file(Path(args.input))
+    summary = summarise(results)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    # Print each classification.
+    for r in results:
+        if "error" in r:
+            print(f"  {r['input']}  =>  ERROR: {r['error']}")
+        else:
+            prime_label = "prime" if r["prime"] else "composite"
+            print(f"  {r['number']:>6}  =>  {r['sign']}, {r['parity']}, {prime_label}")
+
+    print(f"\n  Summary: {summary['primes']} primes out of {summary['valid']} valid numbers")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps({"results": results, "summary": summary}, indent=2),
+        encoding="utf-8",
+    )
+    print(f"  Output written to {output_path}")
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
-
-
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

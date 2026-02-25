@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `"nullable"` attribute to ContractField so a field can be present but None.
+2. Add a `backwards_compatible()` function that checks if new contract is safe to deploy.
+3. Re-run script and tests — verify nullable fields and compatibility check work.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a version string with only two parts (e.g. `"2.1"`) and watch `parse_version` crash.
+2. Send a payload where a required field is present but set to `None`.
+3. Observe the IndexError or false-positive validation pass.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Pad missing version parts with zero (e.g. `"2.1"` becomes `"2.1.0"`).
+2. Treat `None` values as missing for required fields in `validate_payload`.
+3. Add tests for two-part versions and None-valued required fields.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why is semantic versioning important for API contracts?
+2. What happened when the version string had only two parts?
+3. How did the padding fix prevent the IndexError?
+4. How do real API platforms handle breaking vs non-breaking changes?
 
 ## Mastery check
 You can move on when you can:

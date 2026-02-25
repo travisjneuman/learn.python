@@ -2,6 +2,11 @@
 
 A **class** is a blueprint for creating things. An **object** is a thing created from that blueprint.
 
+## Visualize It
+
+See how Python creates objects and stores attributes on each instance:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=class%20Dog%3A%0A%20%20%20%20def%20__init__%28self%2C%20name%29%3A%0A%20%20%20%20%20%20%20%20self.name%20%3D%20name%0A%20%20%20%20%20%20%20%20self.tricks%20%3D%20%5B%5D%0A%20%20%20%20def%20learn%28self%2C%20trick%29%3A%0A%20%20%20%20%20%20%20%20self.tricks.append%28trick%29%0A%0Arex%20%3D%20Dog%28%22Rex%22%29%0Arex.learn%28%22sit%22%29%0Aprint%28rex.tricks%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Why classes exist
 
 When you have data that belongs together (a person's name, age, email) and actions that operate on that data (send email, update age), a class bundles them into one unit.
@@ -149,15 +154,10 @@ class Good:
         self.items = items or []     # Each instance gets its own list
 ```
 
-## Related exercises
+## Practice
 
-- [Module 03, Project 05 — API Client Class](../projects/modules/03-rest-apis/05-api-client-class/)
-- [Module 06 — Databases & ORM](../projects/modules/06-databases-orm/) (SQLAlchemy models use classes)
-
----
-
-## Practice This
-
+- [Module 03 / 05 API Client Class](../projects/modules/03-rest-apis/05-api-client-class/)
+- [Module 06 Databases & ORM](../projects/modules/06-databases-orm/)
 - [Module: Elite Track / 01 Algorithms Complexity Lab](../projects/elite-track/01-algorithms-complexity-lab/README.md)
 - [Module: Elite Track / 02 Concurrent Job System](../projects/elite-track/02-concurrent-job-system/README.md)
 - [Module: Elite Track / 03 Distributed Cache Simulator](../projects/elite-track/03-distributed-cache-simulator/README.md)

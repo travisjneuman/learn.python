@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Welcome to your first file reader!
+
+This file has several lines of text.
+Some lines are short.
+Other lines are a bit longer and contain more words for you to count.
+
+Blank lines (like the ones above) are part of the file too.
+Your program should display them all with line numbers.

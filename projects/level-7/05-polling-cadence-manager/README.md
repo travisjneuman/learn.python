@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `jitter` parameter that adds random variation (e.g. +/- 10%) to the interval to prevent thundering herd.
+2. Track and report the average interval across all polls in the simulation.
+3. Re-run script and tests — verify jitter and average interval appear in output.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `backoff_factor` to 0 or negative and observe what happens to the interval.
+2. Set `min_interval` greater than `max_interval` and run the simulation.
+3. Capture the infinite loop or nonsensical interval values.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `backoff_factor > 1.0` and `speedup_factor` is between 0 and 1.
+2. Raise `ValueError` if `min_interval >= max_interval`.
+3. Add tests for invalid config values and boundary conditions.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does exponential backoff reduce load on an unchanged data source?
+2. What happened when backoff_factor was zero?
+3. How did the validation prevent the runaway interval?
+4. Where is adaptive polling used in real monitoring systems?
 
 ## Mastery check
 You can move on when you can:

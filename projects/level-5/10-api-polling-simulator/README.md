@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/10-api-polling-simulator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --max-polls 10 --output data/poll_results.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Polling complete: 10 attempts, 7 successful, 2 rate-limited
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/poll_results.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--timeout` flag that stops polling after N seconds regardless of max polls.
+2. Track and report the average response time per successful poll.
+3. Add a `--fail-rate` parameter to control the MockAPI's simulated failure percentage.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Set `--max-polls 0` and observe the behavior.
+2. Configure the MockAPI to always return rate-limit errors and watch backoff grow indefinitely.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that max_polls is at least 1.
+2. Cap the maximum backoff delay so it does not grow unbounded.
+3. Add tests for zero-polls and capped backoff.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does `poll_with_backoff` increase the delay after each rate-limit response?
+2. What is the purpose of the `MockAPI` class in testing?
+3. Why is exponential backoff better than fixed-interval polling?
+4. Where do you see polling with backoff in production (AWS SDK, GitHub API, payment webhooks)?
 
 ## Mastery check
 You can move on when you can:

@@ -1,48 +1,43 @@
-"""Beginner test module with heavy comments.
+"""Tests for Path Exists Checker."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+from project import check_path, format_size, summary
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_check_existing_file(tmp_path: Path) -> None:
+    f = tmp_path / "test.txt"
+    f.write_text("hello", encoding="utf-8")
+    result = check_path(str(f))
+    assert result["exists"] is True
+    assert result["type"] == "file"
+    assert result["size_bytes"] == 5
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_check_existing_directory(tmp_path: Path) -> None:
+    result = check_path(str(tmp_path))
+    assert result["exists"] is True
+    assert result["type"] == "directory"
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_check_missing_path() -> None:
+    result = check_path("/nonexistent/path/to/file.txt")
+    assert result["exists"] is False
+    assert result["type"] == "missing"
+
+
+def test_format_size() -> None:
+    assert format_size(500) == "500.0 B"
+    assert format_size(1024) == "1.0 KB"
+    assert format_size(1048576) == "1.0 MB"
+
+
+def test_summary() -> None:
+    results = [
+        {"exists": True, "type": "file"},
+        {"exists": True, "type": "directory"},
+        {"exists": False, "type": "missing"},
+    ]
+    s = summary(results)
+    assert s["existing"] == 2
+    assert s["missing"] == 1

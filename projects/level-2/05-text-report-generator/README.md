@@ -13,48 +13,53 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-2/05-text-report-generator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py data/sample_input.txt --group department --value salary
+python project.py data/sample_input.txt --json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+============================================================
+  Data Report
+============================================================
+Total records: 10
+Breakdown by department: ...
+9 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Formatted text report on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--sort-by` flag to sort groups by total, mean, or count.
+2. Add a "Bottom 5" section alongside the "Top 5" section.
+3. Add a `--output` flag to save the report to a file.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed a CSV where the salary column has some non-numeric values (e.g. "N/A").
+2. Feed a CSV with mismatched column counts (some rows have more/fewer fields).
+3. Use a group field that does not exist in the header.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `extract_numeric` handles "N/A" and blank values without crashing.
+2. Handle rows with missing fields by padding with empty strings.
+3. Show "UNKNOWN" when a group field is missing from a record.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does `zip(headers, values)` pair headers with values?
+2. Why is `sorted(groups.keys())` used instead of iterating `groups` directly?
+3. What does `dict.get(key, default)` do differently from `dict[key]`?
+4. When would you choose text reports over JSON output?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain how `zip` works with unequal-length lists,
+- write a `group_by` function from memory,
+- add a new statistic (e.g. median) to the report,
+- format output with consistent column alignment.
 
 ---
 

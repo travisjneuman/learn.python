@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+[
+  {"job_name": "daily_sales_etl", "status": "success", "rows_in": 1500, "rows_out": 1480, "duration_ms": 4500, "started_at": "2025-01-15T02:00:00", "finished_at": "2025-01-15T02:04:30"},
+  {"job_name": "daily_sales_etl", "status": "success", "rows_in": 1620, "rows_out": 1615, "duration_ms": 4800, "started_at": "2025-01-16T02:00:00", "finished_at": "2025-01-16T02:04:48"},
+  {"job_name": "daily_sales_etl", "status": "failure", "rows_in": 200, "rows_out": 0, "duration_ms": 1200, "started_at": "2025-01-17T02:00:00", "finished_at": "2025-01-17T02:01:12"},
+  {"job_name": "hourly_inventory_sync", "status": "success", "rows_in": 300, "rows_out": 300, "duration_ms": 800, "started_at": "2025-01-17T08:00:00", "finished_at": "2025-01-17T08:00:48"},
+  {"job_name": "hourly_inventory_sync", "status": "success", "rows_in": 280, "rows_out": 280, "duration_ms": 750, "started_at": "2025-01-17T09:00:00", "finished_at": "2025-01-17T09:00:45"}
+]

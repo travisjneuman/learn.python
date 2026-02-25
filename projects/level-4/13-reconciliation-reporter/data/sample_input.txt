@@ -1,5 +1,24 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Reconciliation Reporter
+------------------------------------------
+This file explains the companion source.csv and target.csv.
+
+source.csv (internal records):
+  Row 1: header — txn_id,amount,date,status
+  Row 2: T001,100.00,2024-03-01,settled
+  Row 3: T002,250.00,2024-03-02,settled
+  Row 4: T003,75.50,2024-03-03,settled
+  Row 5: T004,500.00,2024-03-04,pending
+  Row 6: T005,120.00,2024-03-05,settled
+
+target.csv (bank statement):
+  Row 1: header — ref,amount,date,status
+  Row 2: T001,100.00,2024-03-01,cleared
+  Row 3: T002,249.00,2024-03-02,cleared    (amount mismatch: 250 vs 249)
+  Row 4: T003,75.50,2024-03-03,cleared
+  Row 5: T006,200.00,2024-03-06,cleared    (in target but not source)
+
+Reconciliation results:
+  Matched: T001, T003 (2 exact matches)
+  Mismatched: T002 (amount differs by 1.00)
+  Source-only: T004, T005 (not in bank statement)
+  Target-only: T006 (not in internal records)

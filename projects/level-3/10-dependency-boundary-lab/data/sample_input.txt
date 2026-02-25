@@ -1,5 +1,17 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Save the following as records.json:
+[
+    {"first_name": "Alice", "email": "alice@example.com", "department": "Engineering"},
+    {"first_name": "Bob", "email": "", "department": "Marketing"},
+    {"first_name": "Carol", "email": "carol@example.com"},
+    {"first_name": "Dave", "email": "dave@example.com", "department": "Engineering"}
+]
+
+Save the following as config.json:
+{
+    "required_fields": ["first_name", "email"],
+    "rename_map": {"first_name": "name"},
+    "defaults": {"department": "General", "active": true}
+}
+
+Run:
+    python project.py records.json output.json --config config.json

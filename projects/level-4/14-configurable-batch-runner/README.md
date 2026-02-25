@@ -13,41 +13,45 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/14-configurable-batch-runner
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --config data/batch_config.json --output data/batch_report.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_jobs": 4,
+  "succeeded": 4,
+  "failed": 0
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/batch_report.json` — per-job results with status
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a new action: `search_pattern` that counts regex matches in a file.
+2. Add a `--dry-run` flag that validates the config without executing jobs.
+3. Re-run script and tests — add a test for the new action.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Reference a non-existent file in the config and verify the error is logged per-job.
+2. Add a job with an unknown action name and confirm it is skipped.
+3. Create a config with zero jobs and verify the runner handles it.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add config schema validation (each job must have name, action, input).
+2. Add timing to each job result (duration_ms).
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the batch runner use an `ACTIONS` registry instead of `if/elif` chains?
+2. What is the advantage of running jobs sequentially with individual error handling vs. stopping at first failure?
+3. Why does `run_batch` resolve input paths relative to the config file's directory?
+4. How would you extend this to support job dependencies (job B runs only if job A succeeds)?
 
 ## Mastery check
 You can move on when you can:

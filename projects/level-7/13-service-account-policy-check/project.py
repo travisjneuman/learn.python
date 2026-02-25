@@ -1,140 +1,188 @@
-"""Level 7 project: Service Account Policy Check.
+"""Level 7 / Project 13 — Service Account Policy Check.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Validates that service accounts conform to a security policy:
+least-privilege permissions, key rotation age, and naming conventions.
+
+Key concepts:
+- Permission sets and least-privilege validation
+- Key age / rotation deadline enforcement
+- Policy rules expressed as simple data structures
+- Compliance report generation
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
+import re
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Service Account Policy Check"
-PROJECT_FOCUS = "account usage compliance checks"
+
+# -- Data model ----------------------------------------------------------
+
+@dataclass
+class ServiceAccount:
+    name: str
+    permissions: list[str]
+    key_created_at: float      # epoch seconds
+    owner: str = ""
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class PolicyRule:
+    """One rule in the security policy."""
+    name: str
+    check: str                 # "max_permissions" | "key_age" | "naming"
+    params: dict = field(default_factory=dict)
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+@dataclass
+class Violation:
+    account: str
+    rule: str
+    message: str
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+# -- Core logic ----------------------------------------------------------
+
+ALLOWED_PERMISSIONS: set[str] = {
+    "read", "write", "delete", "admin", "deploy",
+    "logs:read", "logs:write", "metrics:read",
+}
+
+
+def check_max_permissions(
+    account: ServiceAccount, max_count: int,
+) -> Violation | None:
+    if len(account.permissions) > max_count:
+        return Violation(
+            account.name, "max_permissions",
+            f"has {len(account.permissions)} permissions, max allowed is {max_count}",
         )
-    return records
+    return None
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+def check_key_age(
+    account: ServiceAccount, max_age_days: float, now: float | None = None,
+) -> Violation | None:
+    now = now or time.time()
+    age_days = (now - account.key_created_at) / 86400
+    if age_days > max_age_days:
+        return Violation(
+            account.name, "key_age",
+            f"key is {age_days:.0f} days old, max allowed is {max_age_days:.0f}",
+        )
+    return None
 
+
+def check_naming(account: ServiceAccount, pattern: str) -> Violation | None:
+    if not re.match(pattern, account.name):
+        return Violation(
+            account.name, "naming",
+            f"name '{account.name}' does not match pattern '{pattern}'",
+        )
+    return None
+
+
+def check_unknown_permissions(account: ServiceAccount) -> list[Violation]:
+    unknown = set(account.permissions) - ALLOWED_PERMISSIONS
+    return [
+        Violation(account.name, "unknown_permission", f"unknown permission: {p}")
+        for p in sorted(unknown)
+    ]
+
+
+def run_policy_check(
+    accounts: list[ServiceAccount],
+    rules: list[PolicyRule],
+    now: float | None = None,
+) -> list[Violation]:
+    """Evaluate all rules against all accounts."""
+    violations: list[Violation] = []
+    for acct in accounts:
+        violations.extend(check_unknown_permissions(acct))
+        for rule in rules:
+            v: Violation | None = None
+            if rule.check == "max_permissions":
+                v = check_max_permissions(acct, rule.params.get("max", 5))
+            elif rule.check == "key_age":
+                v = check_key_age(acct, rule.params.get("max_days", 90), now)
+            elif rule.check == "naming":
+                v = check_naming(acct, rule.params.get("pattern", r"^svc-"))
+            if v:
+                violations.append(v)
+                logging.warning("violation: %s — %s", v.account, v.message)
+    return violations
+
+
+def compliance_summary(
+    accounts: list[ServiceAccount], violations: list[Violation],
+) -> dict:
+    violated_names = {v.account for v in violations}
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "total_accounts": len(accounts),
+        "compliant": len(accounts) - len(violated_names),
+        "non_compliant": len(violated_names),
+        "total_violations": len(violations),
+        "violations": [
+            {"account": v.account, "rule": v.rule, "message": v.message}
+            for v in violations
+        ],
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+# -- Builders ------------------------------------------------------------
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
+def accounts_from_config(raw: list[dict]) -> list[ServiceAccount]:
+    return [
+        ServiceAccount(
+            name=d["name"],
+            permissions=d.get("permissions", []),
+            key_created_at=d.get("key_created_at", time.time()),
+            owner=d.get("owner", ""),
+        )
+        for d in raw
+    ]
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
+def rules_from_config(raw: list[dict]) -> list[PolicyRule]:
+    return [
+        PolicyRule(name=d["name"], check=d["check"], params=d.get("params", {}))
+        for d in raw
+    ]
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
 
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+# -- Entry points --------------------------------------------------------
 
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+def run(input_path: Path, output_path: Path) -> dict:
+    config = json.loads(input_path.read_text(encoding="utf-8")) if input_path.exists() else {}
+
+    accounts = accounts_from_config(config.get("accounts", []))
+    rules = rules_from_config(config.get("rules", []))
+    now = config.get("now")
+
+    violations = run_policy_check(accounts, rules, now)
+    summary = compliance_summary(accounts, violations)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(description="Service Account Policy Check")
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

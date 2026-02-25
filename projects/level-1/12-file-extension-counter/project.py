@@ -1,107 +1,107 @@
 """Level 1 project: File Extension Counter.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Scan a directory tree and count files by extension.
+Report the distribution and optionally filter by extension.
+
+Concepts: pathlib.rglob, dictionaries for counting, directory traversal.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "File Extension Counter"
-PROJECT_FOCUS = "directory scanning and grouped counts"
 
+def count_extensions(directory: Path) -> dict[str, int]:
+    """Count files by extension in a directory tree.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY rglob('*')? -- rglob recursively walks all subdirectories,
+    returning every file.  The '*' pattern matches all filenames.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    if not directory.is_dir():
+        raise NotADirectoryError(f"Not a directory: {directory}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    counts = {}
+    for item in directory.rglob("*"):
+        if item.is_file():
+            ext = item.suffix.lower() if item.suffix else "(no extension)"
+            counts[ext] = counts.get(ext, 0) + 1
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return counts
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def count_extensions_from_list(file_paths: list[str]) -> dict[str, int]:
+    """Count extensions from a list of file path strings.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY a separate function? -- For testing, we can pass a list of
+    path strings without needing actual files on disk.
+    """
+    counts = {}
+    for path_str in file_paths:
+        path_str = path_str.strip()
+        if not path_str:
+            continue
+        p = Path(path_str)
+        ext = p.suffix.lower() if p.suffix else "(no extension)"
+        counts[ext] = counts.get(ext, 0) + 1
+    return counts
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+def sort_by_count(counts: dict[str, int]) -> list[tuple[str, int]]:
+    """Sort extensions by count (most common first)."""
+    items = list(counts.items())
+    items.sort(key=lambda x: x[1], reverse=True)
+    return items
+
+
+def format_report(sorted_counts: list[tuple[str, int]]) -> str:
+    """Format the extension counts as a table."""
+    if not sorted_counts:
+        return "  (no files found)"
+
+    total = sum(count for _, count in sorted_counts)
+    lines = []
+
+    for ext, count in sorted_counts:
+        pct = round(count / total * 100, 1)
+        bar = "#" * max(1, int(pct / 2))
+        lines.append(f"  {ext:<20} {count:>5}  ({pct:>5.1f}%)  {bar}")
+
+    lines.append(f"\n  Total files: {total}")
+    return "\n".join(lines)
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser = argparse.ArgumentParser(description="File Extension Counter")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="File with path list, or use --dir to scan a directory")
+    parser.add_argument("--dir", default=None, help="Directory to scan directly")
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    if args.dir:
+        counts = count_extensions(Path(args.dir))
+    else:
+        path = Path(args.input)
+        if not path.exists():
+            raise FileNotFoundError(f"Input file not found: {path}")
+        lines = path.read_text(encoding="utf-8").splitlines()
+        counts = count_extensions_from_list(lines)
+
+    sorted_counts = sort_by_count(counts)
+
+    print("=== File Extension Counter ===\n")
+    print(format_report(sorted_counts))
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(dict(sorted_counts), indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

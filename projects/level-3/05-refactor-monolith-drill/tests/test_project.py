@@ -1,54 +1,105 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Refactor Monolith Drill.
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
+Each decomposed function is tested independently.
 """
 
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import pytest
+
+from project import (
+    CompanyReport,
+    DepartmentStats,
+    Employee,
+    build_report,
+    compute_department_stats,
+    format_report_text,
+    group_by_department,
+    load_employees,
+    parse_csv,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+CSV_DATA = """\
+name,department,salary,years
+Alice,Engineering,95000,5
+Bob,Engineering,105000,8
+Carol,Marketing,72000,3
+Dave,Marketing,68000,2
+Eve,Engineering,88000,1
+"""
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+def test_parse_csv() -> None:
+    """CSV parsing should produce Employee dataclasses."""
+    employees = parse_csv(CSV_DATA)
+    assert len(employees) == 5
+    assert employees[0].name == "Alice"
+    assert employees[0].salary == 95000.0
+    assert employees[0].department == "Engineering"
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+def test_parse_csv_bad_row() -> None:
+    """Bad rows should be skipped, not crash."""
+    bad = "name,department,salary,years\nBad,Data,notanumber,x\n"
+    employees = parse_csv(bad)
+    assert len(employees) == 0
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_load_employees(tmp_path: Path) -> None:
+    """Should load from a real file."""
+    f = tmp_path / "data.csv"
+    f.write_text(CSV_DATA, encoding="utf-8")
+    employees = load_employees(f)
+    assert len(employees) == 5
+
+
+def test_load_employees_missing(tmp_path: Path) -> None:
+    """Missing file should raise FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        load_employees(tmp_path / "nope.csv")
+
+
+def test_group_by_department() -> None:
+    """Employees should group by department name."""
+    employees = parse_csv(CSV_DATA)
+    groups = group_by_department(employees)
+    assert "Engineering" in groups
+    assert "Marketing" in groups
+    assert len(groups["Engineering"]) == 3
+    assert len(groups["Marketing"]) == 2
+
+
+def test_compute_department_stats() -> None:
+    """Stats should compute correct aggregates."""
+    emps = [
+        Employee("A", "Eng", 80000, 2),
+        Employee("B", "Eng", 100000, 6),
+    ]
+    stats = compute_department_stats("Eng", emps)
+    assert stats.headcount == 2
+    assert stats.avg_salary == 90000.0
+    assert stats.min_salary == 80000
+    assert stats.max_salary == 100000
+    assert stats.avg_tenure == 4.0
+
+
+def test_build_report() -> None:
+    """Full report should have correct totals."""
+    employees = parse_csv(CSV_DATA)
+    report = build_report(employees)
+    assert report.total_employees == 5
+    assert len(report.departments) == 2
+    assert report.total_payroll == 428000.0
+
+
+def test_format_report_text() -> None:
+    """Text format should contain key information."""
+    report = CompanyReport(
+        total_employees=2,
+        total_payroll=100000,
+        departments=[DepartmentStats("Eng", 2, 100000, 50000, 40000, 60000, 3.0)],
+    )
+    text = format_report_text(report)
+    assert "Eng" in text
+    assert "100,000" in text

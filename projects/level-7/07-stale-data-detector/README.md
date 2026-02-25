@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `"degraded"` severity level between warning and stale (e.g. at 75% of stale threshold).
+2. Add a `most_stale()` method that returns the single stalest source.
+3. Re-run script and tests — verify the new severity and method appear in output.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Provide a `last_updated` timestamp in the future (ahead of `now`) and observe negative age.
+2. Remove the `source` key from one of the source records.
+3. Capture the KeyError or nonsensical "fresh" classification for future timestamps.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Clamp negative ages to zero (a future timestamp means "just refreshed").
+2. Validate that each source record has the required `source` and `last_updated` keys.
+3. Add tests for future timestamps and missing required keys.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why do different data sources need different freshness thresholds?
+2. What happened when a timestamp was in the future?
+3. How did clamping to zero prevent misleading results?
+4. Where would stale-data detection be used in a real data platform?
 
 ## Mastery check
 You can move on when you can:

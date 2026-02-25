@@ -1,106 +1,158 @@
-"""Level 4 project: Duplicate Record Investigator.
+"""Level 4 / Project 07 — Duplicate Record Investigator.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Finds near-duplicate records in a CSV dataset using simple similarity
+scoring. Exact matches use key-field comparison; fuzzy matches use
+character-level similarity (Jaccard on character bigrams).
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Duplicate Record Investigator"
-PROJECT_FOCUS = "collision analysis and root cause"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- similarity scoring ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def bigrams(text: str) -> set[str]:
+    """Generate character bigrams for fuzzy matching.
 
-    We keep this separate from I/O so business logic stays testable.
+    Example: "hello" -> {"he", "el", "ll", "lo"}
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    t = text.lower().strip()
+    return {t[i:i + 2] for i in range(len(t) - 1)} if len(t) >= 2 else {t}
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def jaccard_similarity(a: str, b: str) -> float:
+    """Compute Jaccard similarity between two strings using bigrams.
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    Returns a float between 0.0 (completely different) and 1.0 (identical).
+    """
+    set_a = bigrams(a)
+    set_b = bigrams(b)
+    if not set_a and not set_b:
+        return 1.0  # both empty = same
+    intersection = set_a & set_b
+    union = set_a | set_b
+    return len(intersection) / len(union) if union else 0.0
+
+
+def find_duplicates(
+    rows: list[dict],
+    key_fields: list[str],
+    threshold: float = 0.8,
+) -> list[dict]:
+    """Compare all record pairs and find duplicates.
+
+    Two records are considered duplicates if:
+    - Exact match: all key_fields are identical, OR
+    - Fuzzy match: average Jaccard similarity across key_fields >= threshold.
+
+    Returns a list of duplicate-pair dicts.
+    """
+    duplicates: list[dict] = []
+
+    for i in range(len(rows)):
+        for j in range(i + 1, len(rows)):
+            row_a = rows[i]
+            row_b = rows[j]
+
+            # Exact match check
+            exact = all(
+                row_a.get(f, "").strip().lower() == row_b.get(f, "").strip().lower()
+                for f in key_fields
+            )
+
+            if exact:
+                duplicates.append({
+                    "row_a": i + 1,
+                    "row_b": j + 1,
+                    "match_type": "exact",
+                    "similarity": 1.0,
+                    "fields_compared": key_fields,
+                })
+                continue
+
+            # Fuzzy match check
+            scores = []
+            for f in key_fields:
+                val_a = row_a.get(f, "")
+                val_b = row_b.get(f, "")
+                scores.append(jaccard_similarity(val_a, val_b))
+
+            avg_score = sum(scores) / len(scores) if scores else 0.0
+            if avg_score >= threshold:
+                duplicates.append({
+                    "row_a": i + 1,
+                    "row_b": j + 1,
+                    "match_type": "fuzzy",
+                    "similarity": round(avg_score, 3),
+                    "fields_compared": key_fields,
+                })
+
+    return duplicates
+
+# ---------- runner ----------
+
+
+def load_csv(path: Path) -> list[dict]:
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {path}")
+    text = path.read_text(encoding="utf-8")
+    return list(csv.DictReader(text.splitlines()))
+
+
+def run(
+    input_path: Path,
+    output_path: Path,
+    key_fields: list[str],
+    threshold: float = 0.8,
+) -> dict:
+    """Load data, find duplicates, write report."""
+    rows = load_csv(input_path)
+    duplicates = find_duplicates(rows, key_fields, threshold)
+
+    report = {
+        "total_records": len(rows),
+        "key_fields": key_fields,
+        "threshold": threshold,
+        "duplicate_pairs_found": len(duplicates),
+        "duplicates": duplicates,
     }
 
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    logging.info("Found %d duplicate pairs in %d records", len(duplicates), len(rows))
+    return report
 
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Find duplicate records in CSV data")
+    parser.add_argument("--input", default="data/sample_input.csv")
+    parser.add_argument("--output", default="data/duplicates_report.json")
+    parser.add_argument("--keys", default="name,email", help="Comma-separated key fields")
+    parser.add_argument("--threshold", type=float, default=0.8, help="Similarity threshold")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    key_fields = [k.strip() for k in args.keys.split(",")]
+    report = run(Path(args.input), Path(args.output), key_fields, args.threshold)
+    print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":

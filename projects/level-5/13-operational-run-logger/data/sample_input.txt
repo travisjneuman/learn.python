@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample input for Operational Run Logger
+------------------------------------------
+This file contains lines to process during a logged run.
+
+Each line represents a task item to process:
+  validate user records
+  sync inventory database
+  generate sales report
+  send notification emails
+  archive old transactions
+  update dashboard metrics
+  check SSL certificate expiry
+  rotate application logs
+  rebuild search index
+
+The run logger tracks each step:
+  - run_id: unique identifier for this execution
+  - Events: start, item_processed, item_failed, finish
+  - Timing: start_time, end_time, duration_ms per item
+  - Summary: total items, successes, failures, overall status
+
+Expected: 9 items processed, run log with lifecycle events written to JSON

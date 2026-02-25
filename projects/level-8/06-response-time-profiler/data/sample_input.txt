@@ -1,5 +1,4 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+fast_operation 20 iterations baseline
+slow_operation 20 iterations baseline
+variable_operation 20 iterations random(1ms-10ms)
+inline_block 10 iterations context_manager 2ms

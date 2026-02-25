@@ -19,36 +19,40 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "rows_inserted": 7,
+  "rows": [ ... ],
+  "health": {"status": "healthy", "sqlite_version": "..."},
+  "pool_stats": {"created": 1, "reused": 1, ...}
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — full run results with pool stats
+- Passing tests (`pytest -q` → 8+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add connection pooling simulation -- reuse connections instead of creating new ones each time.
-2. Add a `--timeout` flag that sets the maximum seconds to wait for a connection before failing.
-3. Log each connection attempt with timestamp, status (success/fail), and retry count.
-4. Re-run script and tests.
+1. Add a `--timeout` CLI flag that sets `ConnectionConfig.timeout` (observe what happens with very small values like 0.001).
+2. Track *peak* concurrent connections (the highest number of connections checked out simultaneously) and include it in `pool.stats()`.
+3. Add a `ConnectionPool.shrink()` method that closes idle connections down to a target count.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `pool_size=0` and observe what happens when connections cannot be pooled.
+2. Pass an invalid database path (e.g. `/nonexistent/dir/db.sqlite`) and observe the retry/failure behaviour.
+3. Close a connection manually, then return it to the pool — what happens on the next acquire?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a guard in `release()` that pings the connection before returning it to the pool (discard broken ones).
+2. Validate that `pool_size >= 1` in `ConnectionConfig.__post_init__`.
+3. Add tests for each broken case above.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why do context managers (`with` blocks) matter for database connections?
+2. What is the performance difference between creating a new connection per query vs. pooling?
+3. Why does the retry use *exponential* backoff instead of a fixed delay?
+4. In a production web server, what problems arise if the pool is too small? Too large?
 
 ## Mastery check
 You can move on when you can:

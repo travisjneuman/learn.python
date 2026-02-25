@@ -1,48 +1,47 @@
-"""Beginner test module with heavy comments.
+"""Tests for Contact Card Builder."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+from project import contacts_summary, format_card, parse_contact_line
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_parse_valid_contact() -> None:
+    """A well-formed line should produce a contact dict."""
+    result = parse_contact_line("Ada Lovelace, 555-0101, ada@example.com")
+    assert result["name"] == "Ada Lovelace"
+    assert result["phone"] == "555-0101"
+    assert result["email"] == "ada@example.com"
+    assert "error" not in result
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_parse_missing_fields() -> None:
+    """A line with too few fields should return an error."""
+    result = parse_contact_line("only name")
+    assert "error" in result
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_parse_invalid_email() -> None:
+    """An email without @ should be flagged as invalid."""
+    result = parse_contact_line("Bob, 555-0102, not-an-email")
+    assert "error" in result
+    assert "Invalid email" in result["error"]
+
+
+def test_format_card_valid() -> None:
+    """A valid contact should produce a formatted card string."""
+    contact = {"name": "Test User", "phone": "555-0000", "email": "test@x.com"}
+    card = format_card(contact)
+    assert "Test User" in card
+    assert "555-0000" in card
+
+
+def test_contacts_summary_counts() -> None:
+    """Summary should correctly count valid and error contacts."""
+    contacts = [
+        {"name": "A", "phone": "1", "email": "a@b.com"},
+        {"raw": "bad", "error": "oops"},
+        {"name": "B", "phone": "2", "email": "b@c.com"},
+    ]
+    summary = contacts_summary(contacts)
+    assert summary["valid"] == 2
+    assert summary["errors"] == 1

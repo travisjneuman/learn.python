@@ -42,7 +42,9 @@ echo "[info] full mode: $FULL_MODE"
 
 echo "[check] compiling elite python files"
 py_files=$(find "$ROOT_DIR" -type f -name '*.py' | sort)
-python3 -m py_compile $py_files
+while IFS= read -r f; do
+  python3 -m py_compile "$f"
+done <<< "$py_files"
 
 selected_projects=()
 if [[ "$FULL_MODE" -eq 1 ]]; then

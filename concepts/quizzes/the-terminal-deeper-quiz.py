@@ -3,6 +3,8 @@ Quiz: The Terminal — Going Deeper
 Review: concepts/the-terminal-deeper.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) Runs two commands at the same time")
     print("  d) Creates a new file")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! The pipe connects commands. The output of the")
@@ -41,7 +43,7 @@ def run_quiz():
     print("  c) > creates a file, >> deletes a file")
     print("  d) They do the same thing")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! > writes output to a file (replacing contents).")
@@ -60,7 +62,7 @@ def run_quiz():
     print("  c) Stops the currently running command")
     print("  d) Closes the terminal")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! Ctrl+C sends an interrupt signal that stops the")
@@ -81,7 +83,7 @@ def run_quiz():
     print("  c) Saves API_KEY permanently to a file")
     print("  d) Sends abc123 to an API")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! export sets an environment variable that programs")
@@ -102,7 +104,7 @@ def run_quiz():
     print("  c) Runs both commands at the same time")
     print("  d) Combines the output of both commands")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! && means 'run the next command only if the")
@@ -121,7 +123,7 @@ def run_quiz():
     print("  c) Git cannot read .env files")
     print("  d) They slow down the repository")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! .env files contain sensitive configuration like")
@@ -140,7 +142,7 @@ def run_quiz():
     print("  c) A list of all Python packages")
     print("  d) Whether Python is installed")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! 'which' shows the full path to the command.")

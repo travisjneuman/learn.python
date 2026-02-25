@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-learn.python's curriculum is unusually strong in breadth (261 projects, 50+ docs, 12 expansion modules) and depth (level-00 through elite track). It competes favorably with the best free platforms in terms of raw content volume and project diversity. However, several patterns emerge across all successful platforms that learn.python currently lacks: **interactive execution environments**, **community infrastructure**, **spaced repetition/review systems**, **gamification mechanics**, and **mentoring/feedback loops**. The highest-impact improvements would be adding a structured progression system with checkpoints, a review/quiz cadence baked into the curriculum flow, and better onboarding for absolute beginners who need immediate feedback.
+learn.python's curriculum is unusually strong in breadth (246 projects, 50+ docs, 12 expansion modules) and depth (level-00 through elite track). It competes favorably with the best free platforms in terms of raw content volume and project diversity. However, several patterns emerge across all successful platforms that learn.python currently lacks: **interactive execution environments**, **community infrastructure**, **spaced repetition/review systems**, **gamification mechanics**, and **mentoring/feedback loops**. The highest-impact improvements would be adding a structured progression system with checkpoints, a review/quiz cadence baked into the curriculum flow, and better onboarding for absolute beginners who need immediate feedback.
 
 ---
 
@@ -308,7 +308,7 @@ Ranked by (estimated impact on learner outcomes) x (feasibility for a single-mai
 learn.python has genuine competitive advantages that most platforms lack:
 
 ### 1. Depth and Breadth of Projects
-261 projects across 13 levels and 12 expansion modules. freeCodeCamp has ~15 Python projects. Exercism has 146 exercises but they are smaller in scope. Angela Yu has 100 projects but many are guided follow-alongs. Our projects are the most comprehensive free Python project collection available.
+246 projects across 13 levels and 12 expansion modules. freeCodeCamp has ~15 Python projects. Exercism has 146 exercises but they are smaller in scope. Angela Yu has 100 projects but many are guided follow-alongs. Our projects are the most comprehensive free Python project collection available.
 
 ### 2. True Zero-to-Production Path
 Most platforms stop at intermediate. We go from "what is a terminal?" (00_COMPUTER_LITERACY_PRIMER) through Docker, CI/CD, cloud deployment, and elite-track engineering. No other free platform covers this full range.

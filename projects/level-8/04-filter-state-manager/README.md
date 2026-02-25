@@ -2,68 +2,78 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- persist and validate filter state
+- Immutable filter state with `frozen=True` dataclasses
+- Command pattern for undo/redo state transitions
+- Multi-operator filtering (equals, contains, greater-than, in)
+- State serialization and search-text filtering
+- Page-reset semantics when filters change
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Dashboard and search UIs maintain complex filter states: date ranges, multi-select dropdowns,
+text queries, sort orders. Users expect to undo a filter change instantly — yet the filter
+itself must also apply correctly to data. This project builds a `FilterStateManager` with
+undo/redo, immutable snapshots, and multi-operator filtering — the same state-management
+pattern used in every non-trivial React, Vue, or Angular application.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/04-filter-state-manager
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "status": {"current_state": {...}, "undo_depth": 3, "redo_depth": 1},
+  "filtered_results": [...],
+  "filtered_count": 2
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output showing filter state after undo/redo
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `clear_all()` method to `FilterState` that returns a blank state while preserving `page_size`.
+2. Implement a `max_history` parameter in `FilterStateManager` that caps the undo stack size.
+3. Add a `to_query_string()` method that serialises filter state as URL query parameters.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Call `undo()` when the undo stack is empty — does it raise `RuntimeError`?
+2. Add a condition, undo, then add a different condition — verify the redo stack was cleared.
+3. Create two `FilterState` objects and mutate a list inside `value` — does `frozen=True` protect deep objects?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add deep-copy protection so that list values inside `FilterCondition` cannot be mutated externally.
+2. Add a `history_depth` limit that evicts the oldest undo entry when the cap is exceeded.
+3. Add a test proving that `page` resets to 1 whenever a condition is added or removed.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `FilterState` use `frozen=True` and tuples instead of mutable lists?
+2. How does the command pattern (undo/redo stack) differ from event sourcing?
+3. Why does adding a filter reset the page number to 1?
+4. What is the difference between shallow and deep immutability, and why does it matter here?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain the command pattern and how undo/redo stacks work,
+- add a new filter operator end-to-end without breaking existing tests,
+- describe why immutable state snapshots prevent subtle UI bugs,
+- implement undo/redo for any state-management scenario from scratch.
 
 ---
 
 ## Related Concepts
 
-- [Api Basics](../../../concepts/api-basics.md)
-- [Async Explained](../../../concepts/async-explained.md)
-- [Http Explained](../../../concepts/http-explained.md)
-- [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
+- [Collections Explained](../../../concepts/collections-explained.md)
+- [Classes and Objects](../../../concepts/classes-and-objects.md)
+- [Files and Paths](../../../concepts/files-and-paths.md)
+- [Types Explained](../../../concepts/types-explained.md)
+- [Quiz: Collections](../../../concepts/quizzes/collections-explained-quiz.py)
 
 ---
 

@@ -2,59 +2,71 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- baseline policy compliance checks
+- Rule-based auditing against security baselines (CIS, NIST, SOC2)
+- Strategy pattern for different security check types
+- Compliance scoring with pass/fail/warning/not-applicable states
+- Gap analysis identifying missing or weak configurations
+- Structured audit reporting with remediation guidance
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Security baselines like CIS Benchmarks and NIST frameworks define hundreds of required
+configuration settings: TLS versions, password policies, logging requirements, encryption
+standards. Manually checking them is slow, error-prone, and quickly outdated. This project
+builds a configurable security auditor that checks system configurations against baselines,
+scores compliance, and generates actionable gap analysis reports — the same automation that
+compliance teams run before every SOC2 or ISO 27001 audit.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/09-security-baseline-auditor
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "baseline": "CIS-v1",
+  "compliance_pct": 75.0,
+  "controls_passed": 6,
+  "controls_failed": 2,
+  "findings": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with audit results and compliance score
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `check_ip_allowlist` control that validates IP ranges against an allowed list.
+2. Add severity-weighted compliance scoring (critical failures reduce score more than medium ones).
+3. Add a `--config` flag that loads the system configuration from a JSON file.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass an empty config dictionary — how many controls fail and what compliance_pct results?
+2. Set `min_tls_version` to a non-numeric string (e.g. "abc") — does the comparison work?
+3. Add a custom check function that raises an exception — does the auditor handle it?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a fallback value for missing config keys so checks degrade gracefully.
+2. Validate TLS version format before comparison.
+3. Wrap check function calls in try/except to isolate individual control failures.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a security baseline and how do standards like CIS Benchmarks define them?
+2. How does the Strategy pattern let you plug in new security checks without modifying the auditor?
+3. Why does compliance percentage exclude NOT_APPLICABLE controls?
+4. How do real organizations automate baseline auditing in their CI/CD pipelines?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain CIS Benchmarks, NIST, and SOC2 at a high level,
+- add a new security control (check function + SecurityControl registration),
+- describe how compliance scoring works with pass/fail/warning/n-a states,
+- design a baseline audit for a real web application with appropriate controls.
 
 ---
 

@@ -13,48 +13,53 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/02-cli-arguments-workbench
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py temp --c-to-f 100
+python project.py --json dist --km-to-mi 42.195
+python project.py -v weight --kg-to-lbs 70
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+100 C = 212.0 F
+{"input_value": 42.195, ...}
+70 kg = 154.3234 lbs
+Formula: lbs = kg * 2.20462
+14 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Conversion results on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `liters-to-gallons` conversion under a new `volume` subcommand.
+2. Add a `--precision` flag that controls how many decimal places appear in output.
+3. Add `--reverse` flag to each subcommand that swaps the default conversion direction.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a string instead of a number to `temp --c-to-f` — what error appears?
+2. Pass a negative value to `dist --km-to-mi` — does `positive_float` catch it?
+3. Run `batch` with a malformed JSON file — what happens?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a friendly error message when `batch` file does not exist.
+2. Handle the case where `batch` JSON is a dict instead of a list.
+3. Add input range validation (e.g., temperature cannot be below absolute zero).
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What does `add_mutually_exclusive_group` do and why use it?
+2. How does a custom argparse type function (like `positive_float`) work?
+3. What is a `@dataclass` and why is it better than a plain dict for `ConversionResult`?
+4. How do argparse subcommands differ from positional arguments?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- build a CLI with subcommands and mutually exclusive groups,
+- write custom argparse type validators,
+- use `@dataclass` for structured return values,
+- process batch operations from a JSON file.
 
 ---
 

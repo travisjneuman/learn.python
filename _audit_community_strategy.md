@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The learn.python repo is currently **private with 0 stars, 0 forks, and 1 watcher**. It has GitHub Discussions enabled and good topic tags, but no custom social preview image, no homepage URL, and no wiki. The content (261 projects, 50 curriculum docs, 12 expansion modules) is genuinely substantial — far more comprehensive than most educational Python repos on GitHub. The gap is entirely in visibility, community infrastructure, and distribution.
+The learn.python repo is currently **private with 0 stars, 0 forks, and 1 watcher**. It has GitHub Discussions enabled and good topic tags, but no custom social preview image, no homepage URL, and no wiki. The content (246 projects, 50 curriculum docs, 12 expansion modules) is genuinely substantial — far more comprehensive than most educational Python repos on GitHub. The gap is entirely in visibility, community infrastructure, and distribution.
 
 The top educational Python repos (30-Days-Of-Python at 55K stars, project-based-learning at 259K stars) succeed through: clear time-boxed framing, visual README hooks, active community channels, classroom-friendly licensing, and aggressive cross-platform promotion. This report provides a specific, prioritized playbook to take learn.python from 0 to 1,000+ stars.
 
@@ -112,7 +112,7 @@ The current README is well-designed with a clean visual layout, good feature des
 **Effort: 1-2 weeks**
 
 - [ ] Make repo public
-- [ ] Create custom social preview image (1280x640px, branded, shows "261 Projects | Zero to Full-Stack")
+- [ ] Create custom social preview image (1280x640px, branded, shows "246 Projects | Zero to Full-Stack")
 - [ ] Add shields.io badges to README
 - [ ] Set homepage URL (GitHub Pages site or link to first lesson)
 - [ ] Add CONTRIBUTING.md with clear guidelines

@@ -198,11 +198,7 @@ The `gh repo view` command was not available in this environment, so GitHub-spec
 
 **No TODOs, FIXMEs, HACKs, or XXXs found** in any Python or markdown file (excluding irrelevant matches). This is unusually clean.
 
-**Placeholder content found:**
-- `projects/modules/01-web-scraping/01-fetch-a-webpage/README.md` contains `XXXXX` as a placeholder for content length
-- `projects/modules/10-django-fullstack/05-complete-app/README.md` contains `0.XXXs` as placeholder for test duration
-
-These are minor template artifacts.
+**Placeholder content:** All previously identified placeholders (`XXXXX`, `0.XXXs`) have been fixed.
 
 ### Consistency Issues
 
@@ -216,15 +212,15 @@ These are minor template artifacts.
 
 ### Critical
 
-1. **Fix hardcoded path in `tools/rebuild_navigation.py:10`.** Replace `Path(r"E:\Web Development\learn.python")` with `Path(__file__).parent.parent`. This is the only file with a machine-specific absolute path in tracked code. Any contributor or CI system on a different machine would get wrong behavior.
+1. ~~**Fix hardcoded path in `tools/rebuild_navigation.py:10`.**~~ **FIXED** — Now uses `Path(__file__).resolve().parent.parent`.
 
 ### High
 
 2. **Address test homogeneity across levels 0-10.** The 165 project tests largely test identical `load_items`/`build_records`/`build_summary` boilerplate rather than project-specific logic. This undermines the value of testing as a learning tool and means projects can't be individually validated. Each project's tests should verify its unique requirements.
 
-3. **Add ripgrep availability check to shell scripts.** Add `command -v rg >/dev/null 2>&1 || { echo "ERROR: ripgrep (rg) is required"; exit 1; }` to scripts that use `rg`.
+3. ~~**Add ripgrep availability check to shell scripts.**~~ **FIXED** — All shell scripts now have `command -v rg` guards.
 
-4. **Fix unquoted `$py_files` in smoke scripts.** Lines 72 of `run_smoke_checks.sh` and 45 of `run_elite_smoke_checks.sh` have word-splitting bugs. Use a `while read` loop or array.
+4. ~~**Fix unquoted `$py_files` in smoke scripts.**~~ **FIXED** — Both scripts now use `while read` loops.
 
 ### Medium
 
@@ -232,7 +228,7 @@ These are minor template artifacts.
 
 6. **Add LICENSE file.** Required for any public/open-source repository.
 
-7. **Extend portable path checker to Python files.** The current check only scans `*.md` files. Adding `--glob '*.py'` would have caught the rebuild_navigation.py issue.
+7. ~~**Extend portable path checker to Python files.**~~ **FIXED** — Now scans both `*.md` and `*.py` files.
 
 8. **Add `python`/`python3` detection logic.** Smoke scripts should try `python3` first, then fall back to `python`, or use `#!/usr/bin/env python3` headers that work cross-platform.
 
@@ -240,7 +236,7 @@ These are minor template artifacts.
 
 ### Low
 
-10. **Clean up `XXXXX` placeholder in web-scraping module README.**
+10. ~~**Clean up `XXXXX` placeholder in web-scraping module README.**~~ **FIXED**
 
 11. **Add CI status badge to README.md.**
 

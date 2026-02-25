@@ -1,0 +1,7 @@
+Application Configuration v1.0
+database_host=localhost
+database_port=5432
+database_name=myapp
+log_level=INFO
+max_connections=50
+cache_ttl=300

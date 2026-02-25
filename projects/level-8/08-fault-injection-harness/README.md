@@ -2,59 +2,69 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- intentional failure simulation framework
+- Configurable fault injection with decorator and context manager APIs
+- Fault types: exception, delay, timeout, data corruption
+- Probability-based triggering with seeded RNG for reproducibility
+- Scoped fault injection with automatic cleanup
+- Statistics tracking: trigger rates, events, interception counts
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Netflix's Chaos Monkey proved that injecting failures proactively builds more resilient
+systems. Error-handling code paths are the least tested in most codebases — they only run
+during real outages when stakes are highest. This project creates a configurable fault
+injection framework that can introduce exceptions, delays, and data corruption into any
+function call, teaching how to test the code paths that rarely execute in normal operation.
+This is the foundation of chaos engineering.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/08-fault-injection-harness
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --seed 42
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "stats": {"calls_intercepted": 40, "faults_triggered": 10, ...},
+  "results_sample": [...],
+  "corruption_demo": {"original": {...}, "corrupted": {...}}
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output showing fault injection stats and corruption demo
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `FaultType.DATA_CORRUPTION` type that calls `corrupt_data` automatically on function return values.
+2. Add a `max_triggers` field to `FaultConfig` that limits how many times a rule can fire.
+3. Add a `--report` flag that outputs all `FaultEvent` entries as a JSON summary.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `probability` to a value > 1.0 — does `FaultConfig` validation catch it?
+2. Use the `scope()` context manager and raise inside it — are temporary rules still cleaned up?
+3. Apply the `@inject` decorator to a function that takes `**kwargs` — does `func.__name__` survive?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `scope()` uses a `try/finally` so rules are removed even on exceptions.
+2. Use `functools.wraps` in the `inject` decorator to preserve function metadata.
+3. Add a test that verifies `max_triggers` stops injection after the limit.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is fault injection and why do teams use it in production (chaos engineering)?
+2. How does the `@contextmanager` decorator turn a generator into a context manager?
+3. Why does `corrupt_data` check `isinstance(value, bool)` before `isinstance(value, (int, float))`?
+4. How would you extend this to inject network-level faults (e.g. packet loss)?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain why `bool` must be checked before `int` in Python's type hierarchy,
+- add a new fault type end-to-end (config + injection + test),
+- describe the difference between chaos engineering and traditional testing,
+- explain how probability-based injection helps find intermittent bugs.
 
 ---
 

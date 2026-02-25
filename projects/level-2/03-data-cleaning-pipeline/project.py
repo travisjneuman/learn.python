@@ -1,107 +1,190 @@
 """Level 2 project: Data Cleaning Pipeline.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- chain cleaning operations on text records,
+- strip whitespace, normalise case, deduplicate,
+- filter out invalid records, report cleaning stats.
+
+Skills practiced: list comprehensions, dict comprehensions, try/except,
+sets for deduplication, re module for pattern matching, enumerate.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import re
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Data Cleaning Pipeline"
-PROJECT_FOCUS = "standardize text and required fields"
 
+def strip_whitespace(records: list[str]) -> list[str]:
+    """Remove leading/trailing whitespace from every record.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    This is always the first step — many data issues are just extra spaces.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return [r.strip() for r in records]
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def normalise_case(records: list[str]) -> list[str]:
+    """Convert every record to lowercase for consistent comparison.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Keeps the original data retrievable if you store raw + cleaned versions.
+    """
+    return [r.lower() for r in records]
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+
+def remove_blanks(records: list[str]) -> list[str]:
+    """Drop empty strings that result from blank lines or whitespace-only rows."""
+    return [r for r in records if r]
+
+
+def deduplicate(records: list[str]) -> list[str]:
+    """Remove duplicate records while preserving original order.
+
+    Uses a set to track what we have already seen.  Sets give O(1) lookup
+    which is much faster than checking a list each time.
+    """
+    seen: set[str] = set()
+    unique: list[str] = []
+
+    for record in records:
+        if record not in seen:
+            seen.add(record)
+            unique.append(record)
+
+    return unique
+
+
+def filter_by_pattern(records: list[str], pattern: str) -> tuple[list[str], list[str]]:
+    """Split records into matching and non-matching based on a regex pattern.
+
+    Args:
+        records: The list of cleaned strings.
+        pattern: A regex pattern that valid records must match.
+
+    Returns:
+        A tuple of (valid_records, rejected_records).
+    """
+    # re.compile pre-builds the regex so it runs faster when used many times.
+    compiled = re.compile(pattern)
+
+    valid: list[str] = []
+    rejected: list[str] = []
+
+    for record in records:
+        if compiled.search(record):
+            valid.append(record)
+        else:
+            rejected.append(record)
+
+    return valid, rejected
+
+
+def normalise_separators(records: list[str], target: str = ",") -> list[str]:
+    """Replace common field separators (tabs, semicolons, pipes) with target.
+
+    Many CSV files use inconsistent separators. This step standardises them.
+    """
+    # This regex matches any of the common separators.
+    separator_pattern = re.compile(r"[;\t|]")
+    return [separator_pattern.sub(target, r) for r in records]
+
+
+def run_pipeline(
+    records: list[str],
+    filter_pattern: str | None = None,
+) -> dict:
+    """Execute the full cleaning pipeline and return stats.
+
+    Pipeline order:
+    1. Strip whitespace
+    2. Remove blanks
+    3. Normalise case
+    4. Normalise separators
+    5. Deduplicate
+    6. (Optional) Filter by regex pattern
+
+    Returns a dict with cleaned records and statistics.
+    """
+    original_count = len(records)
+
+    # Step 1-4: chain cleaning operations.
+    cleaned = strip_whitespace(records)
+    cleaned = remove_blanks(cleaned)
+    cleaned = normalise_case(cleaned)
+    cleaned = normalise_separators(cleaned)
+    cleaned = deduplicate(cleaned)
+
+    rejected: list[str] = []
+    if filter_pattern:
+        cleaned, rejected = filter_by_pattern(cleaned, filter_pattern)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "original_count": original_count,
+        "cleaned_count": len(cleaned),
+        "duplicates_removed": original_count - len(remove_blanks(strip_whitespace(records)))
+            + (len(deduplicate(normalise_case(remove_blanks(strip_whitespace(records)))))
+               - len(cleaned) - len(rejected)),
+        "blanks_removed": original_count - len(remove_blanks(strip_whitespace(records))),
+        "rejected_count": len(rejected),
+        "cleaned": cleaned,
+        "rejected": rejected,
     }
 
 
+def load_and_clean(path: Path, filter_pattern: str | None = None) -> dict:
+    """Load a text file and run the cleaning pipeline.
+
+    Each line in the file is treated as one record.
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    return run_pipeline(raw_lines, filter_pattern=filter_pattern)
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Data cleaning pipeline")
+    parser.add_argument("input", help="Path to input text file")
+    parser.add_argument(
+        "--filter",
+        default=None,
+        help="Regex pattern — only records matching this are kept",
+    )
+    parser.add_argument(
+        "--output",
+        default=None,
+        help="Path to write cleaned output (default: stdout only)",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: load data, clean it, report results."""
     args = parse_args()
+    result = load_and_clean(Path(args.input), filter_pattern=args.filter)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    # Print summary stats.
+    stats = {k: v for k, v in result.items() if k not in ("cleaned", "rejected")}
+    print("=== Cleaning Stats ===")
+    print(json.dumps(stats, indent=2))
+    print(f"\n=== Cleaned Records ({result['cleaned_count']}) ===")
+    for i, record in enumerate(result["cleaned"], 1):
+        print(f"  {i}. {record}")
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    if result["rejected"]:
+        print(f"\n=== Rejected ({result['rejected_count']}) ===")
+        for record in result["rejected"]:
+            print(f"  - {record}")
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    if args.output:
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.output).write_text(
+            "\n".join(result["cleaned"]) + "\n", encoding="utf-8"
+        )
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

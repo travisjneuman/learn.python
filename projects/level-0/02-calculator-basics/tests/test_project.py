@@ -1,48 +1,47 @@
-"""Beginner test module with heavy comments.
+"""Tests for Calculator Basics.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Each test targets a specific behaviour of the calculator functions.
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import add, calculate, divide, process_file
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_add_two_numbers() -> None:
+    """Basic addition should return the correct sum."""
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_divide_by_zero_raises() -> None:
+    """Dividing by zero must raise ValueError, not crash."""
+    with pytest.raises(ValueError, match="Cannot divide by zero"):
+        divide(10, 0)
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_calculate_valid_expression() -> None:
+    """A well-formed expression should return a numeric result."""
+    result = calculate("10 + 5")
+    assert result["result"] == 15.0
+    assert "error" not in result
+
+
+def test_calculate_bad_operator() -> None:
+    """An unknown operator should produce an error dict, not a crash."""
+    result = calculate("10 ^ 5")
+    assert "error" in result
+    assert "Unknown operator" in result["error"]
+
+
+def test_process_file_reads_expressions(tmp_path: Path) -> None:
+    """process_file should calculate each line in the input file."""
+    sample = tmp_path / "calc.txt"
+    sample.write_text("3 + 4\n10 / 2\n", encoding="utf-8")
+
+    results = process_file(sample)
+    assert len(results) == 2
+    assert results[0]["result"] == 7.0
+    assert results[1]["result"] == 5.0

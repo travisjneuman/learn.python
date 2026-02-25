@@ -1,5 +1,19 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "mentors": [
+    {
+      "id": "M1", "name": "Alice Chen",
+      "skills": [{"name": "python", "level": "EXPERT"}, {"name": "sql", "level": "ADVANCED"}],
+      "years_experience": 10, "max_mentees": 2
+    },
+    {
+      "id": "M2", "name": "Bob Smith",
+      "skills": [{"name": "javascript", "level": "EXPERT"}, {"name": "react", "level": "ADVANCED"}],
+      "years_experience": 8, "max_mentees": 3
+    }
+  ],
+  "mentees": [
+    {"id": "E1", "name": "Carol Davis", "skills": [{"name": "python", "level": "BEGINNER"}], "goals": ["python", "sql"]},
+    {"id": "E2", "name": "Dave Wilson", "skills": [{"name": "javascript", "level": "INTERMEDIATE"}], "goals": ["react"]},
+    {"id": "E3", "name": "Eve Johnson", "skills": [{"name": "python", "level": "INTERMEDIATE"}], "goals": ["python"]}
+  ]
+}

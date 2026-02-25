@@ -1,5 +1,11 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project simulates unreliable operations programmatically.
+No input file is needed — run with:
+
+    python project.py --operations 10 --failure-rate 0.6 --attempts 5
+
+Arguments:
+    --operations    Number of operations to simulate
+    --failure-rate  Probability of each attempt failing (0.0 to 1.0)
+    --attempts      Maximum retry attempts per operation
+    --delay         Initial delay between retries (seconds)
+    --seed          Random seed for reproducibility

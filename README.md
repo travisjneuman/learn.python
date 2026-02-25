@@ -2,11 +2,13 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/Projects-261-2ea44f?style=for-the-badge" alt="261 Projects">
+  <img src="https://img.shields.io/badge/Projects-246-2ea44f?style=for-the-badge" alt="246 Projects">
+  <img src="https://img.shields.io/badge/Levels-13-ff6f00?style=for-the-badge" alt="13 Levels">
   <img src="https://img.shields.io/badge/Curriculum_Docs-50+-f57c00?style=for-the-badge" alt="50+ Curriculum Docs">
   <img src="https://img.shields.io/badge/Concept_Guides-16-7c4dff?style=for-the-badge" alt="16 Concept Guides">
   <img src="https://img.shields.io/badge/Quizzes-15-e53935?style=for-the-badge" alt="15 Quizzes">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=for-the-badge" alt="Contributions Welcome">
 </p>
 
 <p align="center">
@@ -23,7 +25,7 @@ This is not a bootcamp — **you go at your own pace**.
 
 This is not a reference manual — **it is a complete guided path**.
 
-261 projects, not toy examples. Every document, concept guide, project, quiz, and challenge is connected through a single click chain. Start at the beginning and follow the "Next" links. That's it.
+246 projects, not toy examples. Every document, concept guide, project, quiz, and challenge is connected through a single click chain. Start at the beginning and follow the "Next" links. That's it.
 
 ---
 
@@ -57,6 +59,8 @@ Never used a terminal before? Start with [00_COMPUTER_LITERACY_PRIMER.md](./00_C
 
 Not sure how to use this curriculum? Read the [Getting Started Guide](./GETTING_STARTED.md). Have questions? Check the [FAQ](./FAQ.md).
 
+Already know JavaScript, Java, C#, or Ruby? Jump to the [Fast Track](./FAST_TRACK.md) to skip what you already know.
+
 ---
 
 ## 🗺️ Curriculum Roadmap
@@ -74,7 +78,7 @@ The curriculum is a straight line from zero experience to production-grade engin
 | **Elite Track** | Curriculum 16–50 | Architecture, observability, resilience, security, cost modeling | 10 projects |
 | **Expansion Modules** | 12 modules | Web scraping through cloud deployment — real libraries, real tools | 56 projects |
 
-**Total: 261 projects across 13 levels and 12 technology modules.**
+**Total: 246 projects across 13 levels and 12 technology modules.**
 
 See the full [Curriculum Map](./CURRICULUM_MAP.md) for a dependency diagram and every project listed at a glance.
 
@@ -310,8 +314,14 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CON
 | [Getting Started Guide](./GETTING_STARTED.md) | How to use this curriculum, time estimates, pacing suggestions |
 | [FAQ](./FAQ.md) | Common questions from new learners |
 | [Curriculum Map](./CURRICULUM_MAP.md) | Visual dependency diagram and projects-at-a-glance table |
+| [Fast Track](./FAST_TRACK.md) | Accelerated path for developers who already know another language |
+| [Career Readiness](./CAREER_READINESS.md) | Map curriculum levels to job roles, interview prep by stage |
+| [Portfolio Guide](./PORTFOLIO_GUIDE.md) | How to present your projects to employers |
+| [Teaching Guide](./TEACHING_GUIDE.md) | Classroom adaptation: semester mappings, rubrics, fork instructions |
+| [Certification Protocol](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) | Formal completion standard with scoring rubrics and defense format |
 | [Validation](./VALIDATION.md) | What the CI checks do and how to run them locally |
 | [Tools Guide](./tools/README.md) | Documentation for all curriculum tools (grader, diagnostics, progress tracker) |
+| [Changelog](./CHANGELOG.md) | Version history and release notes |
 | [Contributing](./CONTRIBUTING.md) | How to contribute to this project |
 | [Code of Conduct](./CODE_OF_CONDUCT.md) | Community standards |
 | [License](./LICENSE) | MIT License |

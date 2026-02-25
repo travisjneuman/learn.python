@@ -1,141 +1,248 @@
-"""Level 10 project: SME Mentorship Toolkit.
+"""SME Mentorship Toolkit — Match mentors to mentees, track progress, generate reports.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: Uses a weighted matching algorithm where mentors and mentees declare
+skill areas and goals. The matcher computes compatibility scores based on skill
+overlap, experience delta, and availability. A ProgressTracker records milestones
+and produces mentorship effectiveness reports.
+
+Design rationale: Ad-hoc mentorship often fails because pairings are suboptimal
+or progress is invisible. By formalizing skill matching and milestone tracking,
+organizations can measure mentorship ROI and ensure knowledge transfer happens
+systematically rather than by chance.
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "SME Mentorship Toolkit"
-PROJECT_FOCUS = "mentorship playbook generation"
+
+# ---------------------------------------------------------------------------
+# Domain types
+# ---------------------------------------------------------------------------
+
+class SkillLevel(Enum):
+    BEGINNER = 1
+    INTERMEDIATE = 2
+    ADVANCED = 3
+    EXPERT = 4
+
+
+class MilestoneStatus(Enum):
+    PLANNED = auto()
+    IN_PROGRESS = auto()
+    COMPLETED = auto()
+    CANCELLED = auto()
+
+
+@dataclass(frozen=True)
+class Skill:
+    """A skill with proficiency level."""
+    name: str
+    level: SkillLevel
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class Person:
+    """Base for mentors and mentees."""
+    person_id: str
+    name: str
+    skills: list[Skill] = field(default_factory=list)
+    availability_hours_per_week: float = 2.0
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def skill_names(self) -> set[str]:
+        return {s.name for s in self.skills}
+
+    def skill_level(self, skill_name: str) -> SkillLevel | None:
+        for s in self.skills:
+            if s.name == skill_name:
+                return s.level
+        return None
 
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+@dataclass
+class Mentor(Person):
+    """A mentor with years of experience."""
+    years_experience: int = 5
+    max_mentees: int = 3
+
+
+@dataclass
+class Mentee(Person):
+    """A mentee with learning goals."""
+    goals: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class MatchResult:
+    """Result of matching a mentor-mentee pair."""
+    mentor_id: str
+    mentee_id: str
+    compatibility_score: float
+    matched_skills: list[str]
+    experience_gap: int
+
+
+@dataclass
+class Milestone:
+    """A trackable mentorship milestone."""
+    milestone_id: str
+    title: str
+    mentee_id: str
+    mentor_id: str
+    status: MilestoneStatus = MilestoneStatus.PLANNED
+    notes: str = ""
+
+
+# ---------------------------------------------------------------------------
+# Matching algorithm
+# ---------------------------------------------------------------------------
+
+def compute_compatibility(mentor: Mentor, mentee: Mentee) -> MatchResult:
+    """Compute how well a mentor matches a mentee based on skill overlap and goals."""
+    mentor_skills = mentor.skill_names
+    mentee_skills = mentee.skill_names
+    goal_skills = set(mentee.goals)
+
+    # Skills the mentor has that align with mentee goals
+    matched = mentor_skills & (mentee_skills | goal_skills)
+
+    # Skill overlap score (0-40)
+    overlap_score = min(len(matched) * 10, 40)
+
+    # Experience delta bonus (mentors should be more experienced)
+    exp_gap = mentor.years_experience
+    exp_score = min(exp_gap * 3, 30)
+
+    # Availability alignment (0-20)
+    avail_score = min(mentor.availability_hours_per_week, mentee.availability_hours_per_week) * 5
+    avail_score = min(avail_score, 20)
+
+    # Level gap bonus — mentor should be significantly more skilled
+    level_bonus = 0.0
+    for skill_name in matched:
+        m_level = mentor.skill_level(skill_name)
+        e_level = mentee.skill_level(skill_name)
+        if m_level and e_level and m_level.value > e_level.value:
+            level_bonus += (m_level.value - e_level.value) * 5
+    level_bonus = min(level_bonus, 20)
+
+    total = overlap_score + exp_score + avail_score + level_bonus
+
+    return MatchResult(
+        mentor_id=mentor.person_id,
+        mentee_id=mentee.person_id,
+        compatibility_score=round(total, 1),
+        matched_skills=sorted(matched),
+        experience_gap=exp_gap,
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+class MentorMatcher:
+    """Matches mentees with the best available mentors."""
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    def __init__(self, mentors: list[Mentor], mentees: list[Mentee]) -> None:
+        self._mentors = mentors
+        self._mentees = mentees
 
+    def match_all(self) -> list[MatchResult]:
+        """Greedy matching: each mentee gets the best available mentor."""
+        assignments: dict[str, int] = {m.person_id: 0 for m in self._mentors}
+        results: list[MatchResult] = []
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+        for mentee in self._mentees:
+            candidates: list[MatchResult] = []
+            for mentor in self._mentors:
+                if assignments[mentor.person_id] < mentor.max_mentees:
+                    candidates.append(compute_compatibility(mentor, mentee))
 
+            if candidates:
+                best = max(candidates, key=lambda r: r.compatibility_score)
+                results.append(best)
+                assignments[best.mentor_id] += 1
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+        return results
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    def match_single(self, mentee: Mentee) -> MatchResult | None:
+        """Find the best mentor for a single mentee."""
+        results = [compute_compatibility(m, mentee) for m in self._mentors]
+        return max(results, key=lambda r: r.compatibility_score) if results else None
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+# ---------------------------------------------------------------------------
+# Progress tracker
+# ---------------------------------------------------------------------------
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
+class ProgressTracker:
+    """Tracks milestones and computes mentorship effectiveness."""
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+    def __init__(self) -> None:
+        self._milestones: list[Milestone] = []
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
+    def add_milestone(self, milestone: Milestone) -> None:
+        self._milestones.append(milestone)
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
+    def complete_milestone(self, milestone_id: str) -> bool:
+        for m in self._milestones:
+            if m.milestone_id == milestone_id:
+                m.status = MilestoneStatus.COMPLETED
+                return True
+        return False
 
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    def milestones_for_pair(self, mentor_id: str, mentee_id: str) -> list[Milestone]:
+        return [m for m in self._milestones
+                if m.mentor_id == mentor_id and m.mentee_id == mentee_id]
 
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+    @property
+    def completion_rate(self) -> float:
+        if not self._milestones:
+            return 0.0
+        done = sum(1 for m in self._milestones if m.status == MilestoneStatus.COMPLETED)
+        return (done / len(self._milestones)) * 100
+
+    def report(self) -> dict[str, Any]:
+        by_status: dict[str, int] = {}
+        for s in MilestoneStatus:
+            by_status[s.name.lower()] = sum(1 for m in self._milestones if m.status == s)
+        return {
+            "total_milestones": len(self._milestones),
+            "completion_rate": f"{self.completion_rate:.0f}%",
+            "by_status": by_status,
+        }
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
+# ---------------------------------------------------------------------------
+# CLI demo
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+    mentors = [
+        Mentor("M1", "Alice", [Skill("python", SkillLevel.EXPERT), Skill("sql", SkillLevel.ADVANCED)],
+               years_experience=10, max_mentees=2),
+        Mentor("M2", "Bob", [Skill("javascript", SkillLevel.EXPERT), Skill("react", SkillLevel.ADVANCED)],
+               years_experience=8),
+    ]
+    mentees = [
+        Mentee("E1", "Carol", [Skill("python", SkillLevel.BEGINNER)], goals=["python", "sql"]),
+        Mentee("E2", "Dave", [Skill("javascript", SkillLevel.INTERMEDIATE)], goals=["react"]),
+        Mentee("E3", "Eve", [Skill("python", SkillLevel.INTERMEDIATE)], goals=["python"]),
+    ]
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
+    matcher = MentorMatcher(mentors, mentees)
+    matches = matcher.match_all()
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    print("Matches:")
+    for m in matches:
+        print(f"  {m.mentee_id} -> {m.mentor_id} (score: {m.compatibility_score}, skills: {m.matched_skills})")
+
+    tracker = ProgressTracker()
+    tracker.add_milestone(Milestone("MS-001", "Complete Python basics", "E1", "M1"))
+    tracker.add_milestone(Milestone("MS-002", "Build first React component", "E2", "M2"))
+    tracker.complete_milestone("MS-001")
+
+    print(f"\n{json.dumps(tracker.report(), indent=2)}")
 
 
 if __name__ == "__main__":

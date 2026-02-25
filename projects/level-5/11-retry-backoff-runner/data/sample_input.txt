@@ -1,5 +1,27 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample scenario for Retry Backoff Runner
+-------------------------------------------
+This file describes the retry with backoff scenario.
+
+The project wraps a flaky function with exponential backoff retry logic:
+  - A simulated function fails N times before succeeding
+  - Each retry doubles the wait time (exponential backoff)
+  - A jitter option adds randomness to prevent thundering herd
+  - All attempts are logged with timing information
+
+Configuration:
+  max_retries: 5
+  base_delay: 0.1 seconds
+  backoff_factor: 2.0
+  jitter: false (can be enabled)
+
+Simulated flaky function:
+  Attempt 1: raises ConnectionError("timeout")
+  Attempt 2: raises ConnectionError("timeout")
+  Attempt 3: returns {"status": "ok", "value": 42}  (success!)
+
+Retry timeline:
+  Attempt 1 -> fail -> wait 0.1s
+  Attempt 2 -> fail -> wait 0.2s
+  Attempt 3 -> success (total delay: 0.3s)
+
+Expected: success after 3 attempts, total delay 0.3s logged in report

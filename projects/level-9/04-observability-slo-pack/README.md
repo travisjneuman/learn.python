@@ -2,59 +2,70 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- sli/slo calculations and reports
+- SRE primitives: SLO, SLI, and error budget management
+- Time-window compliance calculation with rolling windows
+- Burn-rate alerting for early degradation detection
+- Strategy pattern for different SLI types (availability, latency)
+- Structured SLO dashboard reporting
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+SLOs (Service Level Objectives) are the foundation of Site Reliability Engineering.
+A team with a 99.9% availability SLO has an error budget of 0.1% — roughly 43 minutes
+of downtime per month. When the budget is exhausted, feature work stops and reliability
+becomes the priority. This project builds an SLO management system that tracks SLIs,
+computes compliance, calculates burn rates, and manages error budgets — the same system
+Google SRE teams use to balance reliability with feature velocity.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/04-observability-slo-pack
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "slo_count": 3,
+  "compliant": 2,
+  "breached": 1,
+  "burn_rate_alerts": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with SLO compliance and burn rate data
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `latency` SLI type that tracks p99 latency instead of success ratios.
+2. Add multi-window burn-rate alerting (e.g. 1-hour and 6-hour windows with different thresholds).
+3. Add a `--dashboard` flag that outputs a formatted text dashboard of all SLO statuses.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `target_pct=100.0` — what happens to the error budget (it becomes 0%)?
+2. Record zero events and check compliance — does the SLI value calculation divide by zero?
+3. Set a burn rate threshold of 0 — does every SLO trigger an alert?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `target_pct < 100.0` (a 100% target has zero error budget).
+2. Add a guard in `SLI.value` that returns 100.0 when `total_count == 0`.
+3. Validate burn rate thresholds are positive in `check_burn_rates`.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is an SLI, SLO, and error budget — how do they relate?
+2. How does burn rate indicate whether you will exhaust your error budget early?
+3. Why is a 100% availability target impractical — what is the "nines" system?
+4. How do Google SRE teams use error budgets to balance reliability vs feature velocity?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- calculate error budgets from SLO targets (e.g. 99.9% = 0.1% budget),
+- explain burn rate alerting and why it catches slow degradations,
+- add a new SLI type and wire it through the full pack,
+- describe how real teams use error budgets to decide when to freeze deployments.
 
 ---
 

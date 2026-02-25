@@ -1,52 +1,119 @@
-"""Advanced test module with heavy comments.
+"""Tests for Strategic Architecture Review.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers fitness functions, review engine, report generation,
+health scoring, and recommendation logic.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import pytest
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    ArchitectureReport,
+    ComplexityCheck,
+    CouplingCheck,
+    DependencyDepthCheck,
+    HealthStatus,
+    QualityAttribute,
+    ReviewEngine,
+    ServiceDef,
+    SystemModel,
+    TestCoverageCheck,
+    build_default_engine,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+@pytest.fixture
+def healthy_system() -> SystemModel:
+    sys = SystemModel("healthy")
+    sys.add_service(ServiceDef("api", ["db"], 1000, 90.0))
+    sys.add_service(ServiceDef("db", [], 500, 85.0))
+    return sys
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+
+@pytest.fixture
+def unhealthy_system() -> SystemModel:
+    sys = SystemModel("unhealthy")
+    sys.add_service(ServiceDef("monolith", ["a", "b", "c", "d", "e"], 10000, 30.0))
+    sys.add_service(ServiceDef("a", ["b"], 200, 50.0))
+    sys.add_service(ServiceDef("b", ["c"], 200, 50.0))
+    sys.add_service(ServiceDef("c", ["d"], 200, 50.0))
+    sys.add_service(ServiceDef("d", ["e"], 200, 50.0))
+    sys.add_service(ServiceDef("e", [], 200, 50.0))
+    return sys
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# ---------------------------------------------------------------------------
+# Individual fitness functions
+# ---------------------------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestCouplingCheck:
+    def test_low_coupling_passes(self, healthy_system: SystemModel) -> None:
+        result = CouplingCheck(max_avg_deps=3.0).evaluate(healthy_system)
+        assert result.passed
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_high_coupling_fails(self, unhealthy_system: SystemModel) -> None:
+        result = CouplingCheck(max_avg_deps=1.0).evaluate(unhealthy_system)
+        assert not result.passed
+
+    def test_generates_recommendation_on_failure(self, unhealthy_system: SystemModel) -> None:
+        check = CouplingCheck(max_avg_deps=0.5)
+        result = check.evaluate(unhealthy_system)
+        rec = check.recommend(result)
+        assert rec is not None
+        assert rec.attribute == QualityAttribute.COUPLING
+
+
+class TestComplexityCheck:
+    def test_small_services_pass(self, healthy_system: SystemModel) -> None:
+        assert ComplexityCheck(max_loc=5000).evaluate(healthy_system).passed
+
+    def test_large_service_fails(self, unhealthy_system: SystemModel) -> None:
+        assert not ComplexityCheck(max_loc=5000).evaluate(unhealthy_system).passed
+
+
+class TestCoverageChecker:
+    def test_good_coverage_passes(self, healthy_system: SystemModel) -> None:
+        assert TestCoverageCheck(min_coverage=70.0).evaluate(healthy_system).passed
+
+    def test_low_coverage_fails(self, unhealthy_system: SystemModel) -> None:
+        assert not TestCoverageCheck(min_coverage=70.0).evaluate(unhealthy_system).passed
+
+
+class TestDependencyDepthCheck:
+    def test_shallow_passes(self, healthy_system: SystemModel) -> None:
+        assert DependencyDepthCheck(max_depth=4).evaluate(healthy_system).passed
+
+    def test_deep_chain_fails(self, unhealthy_system: SystemModel) -> None:
+        assert not DependencyDepthCheck(max_depth=3).evaluate(unhealthy_system).passed
+
+
+# ---------------------------------------------------------------------------
+# Review engine and report
+# ---------------------------------------------------------------------------
+
+class TestReviewEngine:
+    def test_review_produces_report(self, healthy_system: SystemModel) -> None:
+        engine = build_default_engine()
+        report = engine.review(healthy_system)
+        assert report.system_name == "healthy"
+        assert len(report.results) == 4
+
+    def test_healthy_system_high_score(self, healthy_system: SystemModel) -> None:
+        report = build_default_engine().review(healthy_system)
+        assert report.health_score >= 75.0
+        assert report.overall_status in (HealthStatus.HEALTHY, HealthStatus.WARNING)
+
+    def test_unhealthy_system_generates_recommendations(self, unhealthy_system: SystemModel) -> None:
+        report = build_default_engine().review(unhealthy_system)
+        assert len(report.recommendations) > 0
+
+    def test_report_summary_structure(self, healthy_system: SystemModel) -> None:
+        report = build_default_engine().review(healthy_system)
+        summary = report.summary()
+        assert "health_score" in summary
+        assert "status" in summary
+        assert "recommendations" in summary

@@ -1,52 +1,131 @@
-"""Advanced test module with heavy comments.
+"""Tests for Event-Driven Pipeline Lab.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: event store, projections, subscribers, temporal queries, and filtering.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    EventCategory,
+    EventStore,
+    InventoryProjection,
+    OrderCountProjection,
+    UserActivityProjection,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- Fixtures -----------------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+@pytest.fixture
+def store() -> EventStore:
+    return EventStore()
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- Event store --------------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestEventStore:
+    def test_append_and_count(self, store: EventStore) -> None:
+        store.append(EventCategory.USER, "registered", "u1", {"name": "A"})
+        store.append(EventCategory.USER, "logged_in", "u1", {})
+        assert store.count == 2
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_auto_incrementing_ids(self, store: EventStore) -> None:
+        e1 = store.append(EventCategory.USER, "a", "u1", {})
+        e2 = store.append(EventCategory.USER, "b", "u2", {})
+        assert e2.event_id == e1.event_id + 1
+
+    def test_events_are_immutable(self, store: EventStore) -> None:
+        event = store.append(EventCategory.USER, "test", "u1", {"key": "val"})
+        with pytest.raises(AttributeError):
+            event.event_type = "modified"  # type: ignore[misc]
+
+
+# --- Querying -----------------------------------------------------------
+
+class TestQuerying:
+    def test_filter_by_aggregate(self, store: EventStore) -> None:
+        store.append(EventCategory.ORDER, "created", "o1", {})
+        store.append(EventCategory.ORDER, "created", "o2", {})
+        results = store.get_events(aggregate_id="o1")
+        assert len(results) == 1
+
+    def test_filter_by_category(self, store: EventStore) -> None:
+        store.append(EventCategory.USER, "registered", "u1", {})
+        store.append(EventCategory.ORDER, "created", "o1", {})
+        results = store.get_events(category=EventCategory.USER)
+        assert len(results) == 1
+
+    def test_filter_after_id(self, store: EventStore) -> None:
+        store.append(EventCategory.USER, "a", "u1", {})
+        store.append(EventCategory.USER, "b", "u1", {})
+        store.append(EventCategory.USER, "c", "u1", {})
+        results = store.get_events(after_id=2)
+        assert len(results) == 1
+        assert results[0].event_type == "c"
+
+
+# --- Subscribers --------------------------------------------------------
+
+class TestSubscribers:
+    def test_subscriber_receives_events(self, store: EventStore) -> None:
+        received: list[str] = []
+        store.subscribe(lambda e: received.append(e.event_type))
+        store.append(EventCategory.USER, "registered", "u1", {})
+        assert received == ["registered"]
+
+
+# --- Projections --------------------------------------------------------
+
+class TestOrderCountProjection:
+    def test_counts_by_status(self, store: EventStore) -> None:
+        proj = OrderCountProjection()
+        store.subscribe(proj.handle)
+        store.append(EventCategory.ORDER, "created", "o1", {"status": "pending"})
+        store.append(EventCategory.ORDER, "confirmed", "o2", {"status": "confirmed"})
+        store.append(EventCategory.ORDER, "created", "o3", {"status": "pending"})
+        assert proj.projection.state["by_status"]["pending"] == 2
+        assert proj.projection.state["by_status"]["confirmed"] == 1
+
+    def test_ignores_non_order_events(self, store: EventStore) -> None:
+        proj = OrderCountProjection()
+        store.subscribe(proj.handle)
+        store.append(EventCategory.USER, "registered", "u1", {})
+        assert proj.projection.events_processed == 0
+
+
+class TestInventoryProjection:
+    def test_stock_tracking(self, store: EventStore) -> None:
+        proj = InventoryProjection()
+        store.subscribe(proj.handle)
+        store.append(EventCategory.INVENTORY, "stock_added", "widget", {"quantity": 100})
+        store.append(EventCategory.INVENTORY, "stock_removed", "widget", {"quantity": 30})
+        assert proj.projection.state["products"]["widget"] == 70
+
+    def test_stock_never_negative(self, store: EventStore) -> None:
+        proj = InventoryProjection()
+        store.subscribe(proj.handle)
+        store.append(EventCategory.INVENTORY, "stock_added", "item", {"quantity": 5})
+        store.append(EventCategory.INVENTORY, "stock_removed", "item", {"quantity": 10})
+        assert proj.projection.state["products"]["item"] == 0
+
+
+# --- Temporal queries ---------------------------------------------------
+
+class TestTemporalQueries:
+    def test_state_at_timestamp(self, store: EventStore) -> None:
+        store.append(EventCategory.INVENTORY, "stock_added", "w", {"quantity": 50}, 1.0)
+        store.append(EventCategory.INVENTORY, "stock_added", "w", {"quantity": 30}, 2.0)
+        store.append(EventCategory.INVENTORY, "stock_removed", "w", {"quantity": 10}, 3.0)
+
+        def reducer(state, event):
+            qty = state.get("quantity", 0)
+            if event.event_type == "stock_added":
+                qty += event.data.get("quantity", 0)
+            elif event.event_type == "stock_removed":
+                qty -= event.data.get("quantity", 0)
+            return {"quantity": qty}
+
+        state = store.get_state_at("w", 2.0, reducer)
+        assert state["quantity"] == 80  # 50 + 30

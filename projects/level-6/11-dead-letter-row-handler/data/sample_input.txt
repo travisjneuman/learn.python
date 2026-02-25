@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+[
+  {"name": "temperature_reading", "value": 72.5},
+  {"name": "pressure_reading", "value": 1013.25},
+  {"name": "", "value": 42},
+  {"name": "humidity_reading", "value": "not_a_number"},
+  {"name": "wind_speed", "value": 15.3},
+  {"name": "rainfall", "value": null}
+]

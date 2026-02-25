@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "note": "This project uses built-in mock APIs. No external input needed.",
+  "custom_thresholds": {
+    "cpu_usage": {"max": 85.0, "reason": "CPU above 85%"},
+    "memory_used": {"max": 8000, "reason": "Memory above 8 GB"},
+    "disk_free": {"min": 25.0, "reason": "Disk free below 25%"}
+  }
+}

@@ -8,6 +8,11 @@ age = 30
 is_student = True
 ```
 
+## Visualize It
+
+See how Python stores variables in memory step by step:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=name%20%3D%20%22Alice%22%0Aage%20%3D%2030%0Anext_year%20%3D%20age%20%2B%201%0Aname%20%3D%20%22Bob%22%0Aprint%28name%2C%20next_year%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 Think of it like a labeled jar. The label is the name. The contents are the value. You can:
 - **Look at** the contents: `print(name)` shows `Alice`
 - **Replace** the contents: `name = "Alice"` — now it holds `"Alice"`
@@ -54,12 +59,7 @@ score = 100      # This line creates it
 print(score)     # Now it works
 ```
 
-## Related exercises
-- [Level 00, Exercise 04 — Variables](../projects/level-00-absolute-beginner/04-variables/)
-
----
-
-## Practice This
+## Practice
 
 - [Level 00 / 04 Variables](../projects/level-00-absolute-beginner/04-variables/)
 - [Level 00 / 05 Numbers and Math](../projects/level-00-absolute-beginner/05-numbers-and-math/)

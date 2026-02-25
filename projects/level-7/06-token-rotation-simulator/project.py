@@ -1,140 +1,139 @@
-"""Level 7 project: Token Rotation Simulator.
+"""Level 7 / Project 06 — Token Rotation Simulator.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Simulates API token lifecycle: generation, expiry checking, rotation,
+and revocation.  No real APIs — all simulated.
+
+Key concepts:
+- Token lifecycle: create → use → rotate → revoke
+- Expiry-based validity checking
+- Overlap period: old token valid during rotation
+- Audit trail of all token operations
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
+import hashlib
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
-
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Token Rotation Simulator"
-PROJECT_FOCUS = "credential lifecycle simulation"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class Token:
+    token_id: str
+    value: str
+    created_at: float
+    expires_at: float
+    revoked: bool = False
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def is_expired(self) -> bool:
+        return time.time() > self.expires_at
 
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
-
-
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    @property
+    def is_valid(self) -> bool:
+        return not self.revoked and not self.is_expired
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+class TokenManager:
+    def __init__(self, ttl_seconds: float = 3600) -> None:
+        self.ttl = ttl_seconds
+        self._tokens: dict[str, Token] = {}
+        self._current_id: str = ""
+        self._audit: list[dict] = []
+
+    def generate(self, token_id: str | None = None) -> Token:
+        now = time.time()
+        tid = token_id or f"tok_{int(now)}"
+        value = hashlib.sha256(f"{tid}:{now}".encode()).hexdigest()[:32]
+        token = Token(token_id=tid, value=value, created_at=now, expires_at=now + self.ttl)
+        self._tokens[tid] = token
+        self._current_id = tid
+        self._audit.append({"action": "generate", "token": tid, "at": now})
+        logging.info("generated token=%s", tid)
+        return token
+
+    def validate(self, token_id: str) -> bool:
+        token = self._tokens.get(token_id)
+        if not token:
+            return False
+        return token.is_valid
+
+    def rotate(self) -> Token:
+        if self._current_id and self._current_id in self._tokens:
+            old = self._tokens[self._current_id]
+            old.revoked = True
+            self._audit.append({"action": "revoke", "token": self._current_id})
+        new_token = self.generate()
+        self._audit.append({"action": "rotate", "token": new_token.token_id})
+        return new_token
+
+    def revoke(self, token_id: str) -> bool:
+        token = self._tokens.get(token_id)
+        if not token:
+            return False
+        token.revoked = True
+        self._audit.append({"action": "revoke", "token": token_id})
+        return True
+
+    @property
+    def current(self) -> Token | None:
+        return self._tokens.get(self._current_id)
+
+    @property
+    def audit_log(self) -> list[dict]:
+        return list(self._audit)
+
+    def stats(self) -> dict:
+        total = len(self._tokens)
+        active = sum(1 for t in self._tokens.values() if t.is_valid)
+        revoked = sum(1 for t in self._tokens.values() if t.revoked)
+        return {"total": total, "active": active, "revoked": revoked}
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+def run(input_path: Path, output_path: Path) -> dict:
+    if input_path.exists():
+        config = json.loads(input_path.read_text(encoding="utf-8"))
+    else:
+        config = {}
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    ttl = config.get("ttl_seconds", 3600)
+    operations = config.get("operations", ["generate", "rotate", "rotate"])
+
+    mgr = TokenManager(ttl_seconds=ttl)
+    for op in operations:
+        if op == "generate":
+            mgr.generate()
+        elif op == "rotate":
+            mgr.rotate()
+        elif op.startswith("revoke:"):
+            mgr.revoke(op.split(":")[1])
+
+    summary = {
+        "operations_run": len(operations),
+        "stats": mgr.stats(),
+        "audit": mgr.audit_log,
+        "current_token": mgr.current.token_id if mgr.current else None,
     }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(description="Token Rotation Simulator")
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

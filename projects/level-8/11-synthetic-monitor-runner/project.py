@@ -1,141 +1,272 @@
-"""Level 8 project: Synthetic Monitor Runner.
+"""Synthetic Monitor Runner — run synthetic checks and report health status.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Synthetic monitoring proactively detects outages by running scripted
+    checks against your system at regular intervals. This project builds
+    a monitor runner that executes health checks, evaluates pass/fail
+    criteria, and generates status reports — the same pattern used by
+    Pingdom, UptimeRobot, and custom health-check frameworks.
+
+Concepts practised:
+    - callable-based check definitions
+    - dataclasses for check results and reports
+    - threshold-based health evaluation
+    - scheduled execution patterns
+    - structured reporting with history
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
 import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Callable
 
-PROJECT_LEVEL = 8
-PROJECT_TITLE = "Synthetic Monitor Runner"
-PROJECT_FOCUS = "synthetic health checks and trends"
+
+# --- Domain types -------------------------------------------------------
+
+class CheckStatus(Enum):
+    PASS = "pass"
+    FAIL = "fail"
+    WARN = "warn"
+    SKIP = "skip"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class CheckDefinition:
+    """Definition of a synthetic health check."""
+    name: str
+    check_fn: Callable[[], CheckResult]
+    interval_seconds: float = 60.0
+    timeout_seconds: float = 10.0
+    critical: bool = True
+    tags: list[str] = field(default_factory=list)
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class CheckResult:
+    """Result of a single check execution."""
+    name: str
+    status: CheckStatus
+    latency_ms: float = 0.0
+    message: str = ""
+    timestamp: float = field(default_factory=time.time)
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "status": self.status.value,
+            "latency_ms": round(self.latency_ms, 2),
+            "message": self.message,
+        }
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+@dataclass
+class MonitorReport:
+    """Aggregated report from a monitoring run."""
+    total_checks: int
+    passed: int
+    failed: int
+    warnings: int
+    skipped: int
+    overall_healthy: bool
+    results: list[CheckResult]
+    duration_ms: float = 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "total_checks": self.total_checks,
+            "passed": self.passed,
+            "failed": self.failed,
+            "warnings": self.warnings,
+            "skipped": self.skipped,
+            "overall_healthy": self.overall_healthy,
+            "duration_ms": round(self.duration_ms, 2),
+            "checks": [r.to_dict() for r in self.results],
+        }
+
+
+# --- Check library (reusable check factories) --------------------------
+
+def http_check(name: str, url: str, expected_status: int = 200) -> CheckDefinition:
+    """Create a check that simulates an HTTP endpoint test."""
+    def check_fn() -> CheckResult:
+        start = time.perf_counter()
+        # Simulate HTTP call based on URL patterns
+        latency = 0.01  # simulated
+        time.sleep(latency)
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        return CheckResult(
+            name=name, status=CheckStatus.PASS,
+            latency_ms=elapsed_ms,
+            message=f"HTTP {expected_status} from {url}",
         )
-    return records
+    return CheckDefinition(name=name, check_fn=check_fn, tags=["http"])
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+def threshold_check(
+    name: str,
+    value_fn: Callable[[], float],
+    warn_threshold: float,
+    fail_threshold: float,
+    unit: str = "",
+) -> CheckDefinition:
+    """Create a check that evaluates a metric against thresholds."""
+    def check_fn() -> CheckResult:
+        start = time.perf_counter()
+        value = value_fn()
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        if value >= fail_threshold:
+            return CheckResult(
+                name=name, status=CheckStatus.FAIL,
+                latency_ms=elapsed_ms,
+                message=f"Value {value}{unit} exceeds fail threshold {fail_threshold}{unit}",
+            )
+        if value >= warn_threshold:
+            return CheckResult(
+                name=name, status=CheckStatus.WARN,
+                latency_ms=elapsed_ms,
+                message=f"Value {value}{unit} exceeds warn threshold {warn_threshold}{unit}",
+            )
+        return CheckResult(
+            name=name, status=CheckStatus.PASS,
+            latency_ms=elapsed_ms,
+            message=f"Value {value}{unit} within limits",
+        )
+    return CheckDefinition(name=name, check_fn=check_fn, tags=["threshold"])
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
+def custom_check(name: str, fn: Callable[[], bool], message: str = "") -> CheckDefinition:
+    """Create a simple pass/fail check from a boolean function."""
+    def check_fn() -> CheckResult:
+        start = time.perf_counter()
+        try:
+            passed = fn()
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            return CheckResult(
+                name=name,
+                status=CheckStatus.PASS if passed else CheckStatus.FAIL,
+                latency_ms=elapsed_ms,
+                message=message or ("Check passed" if passed else "Check failed"),
+            )
+        except Exception as exc:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            return CheckResult(
+                name=name, status=CheckStatus.FAIL,
+                latency_ms=elapsed_ms, message=str(exc),
+            )
+    return CheckDefinition(name=name, check_fn=check_fn, tags=["custom"])
 
 
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+# --- Monitor runner -----------------------------------------------------
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
+class SyntheticMonitorRunner:
+    """Executes synthetic health checks and produces reports."""
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    def __init__(self) -> None:
+        self._checks: list[CheckDefinition] = []
+        self._history: list[MonitorReport] = []
+
+    def add_check(self, check: CheckDefinition) -> None:
+        """Register a check to run."""
+        self._checks.append(check)
+
+    def run_all(self) -> MonitorReport:
+        """Execute all registered checks and build a report."""
+        start = time.perf_counter()
+        results: list[CheckResult] = []
+
+        for check in self._checks:
+            try:
+                result = check.check_fn()
+                results.append(result)
+            except Exception as exc:
+                results.append(CheckResult(
+                    name=check.name, status=CheckStatus.FAIL,
+                    message=f"Check raised exception: {exc}",
+                ))
+
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        passed = sum(1 for r in results if r.status == CheckStatus.PASS)
+        failed = sum(1 for r in results if r.status == CheckStatus.FAIL)
+        warnings = sum(1 for r in results if r.status == CheckStatus.WARN)
+        skipped = sum(1 for r in results if r.status == CheckStatus.SKIP)
+
+        # System is healthy if no critical checks failed
+        critical_failed = any(
+            r.status == CheckStatus.FAIL
+            for r, c in zip(results, self._checks)
+            if c.critical
+        )
+
+        report = MonitorReport(
+            total_checks=len(results),
+            passed=passed,
+            failed=failed,
+            warnings=warnings,
+            skipped=skipped,
+            overall_healthy=not critical_failed,
+            results=results,
+            duration_ms=elapsed_ms,
+        )
+        self._history.append(report)
+        return report
+
+    def run_by_tag(self, tag: str) -> MonitorReport:
+        """Run only checks matching a specific tag."""
+        original = self._checks
+        self._checks = [c for c in original if tag in c.tags]
+        try:
+            return self.run_all()
+        finally:
+            self._checks = original
+
+    @property
+    def history(self) -> list[MonitorReport]:
+        return list(self._history)
+
+    @property
+    def check_count(self) -> int:
+        return len(self._checks)
+
+
+# --- Demo ---------------------------------------------------------------
+
+def run_demo() -> dict[str, Any]:
+    """Demonstrate synthetic monitoring with various check types."""
+    runner = SyntheticMonitorRunner()
+
+    runner.add_check(http_check("api-health", "https://api.example.com/health"))
+    runner.add_check(http_check("web-home", "https://www.example.com/"))
+    runner.add_check(threshold_check(
+        "cpu-usage", lambda: 65.0, warn_threshold=70, fail_threshold=90, unit="%",
+    ))
+    runner.add_check(threshold_check(
+        "memory-usage", lambda: 82.0, warn_threshold=80, fail_threshold=95, unit="%",
+    ))
+    runner.add_check(custom_check(
+        "disk-space", lambda: True, "Disk space adequate",
+    ))
+    runner.add_check(custom_check(
+        "db-connection", lambda: True, "Database reachable",
+    ))
+
+    report = runner.run_all()
+    return report.to_dict()
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Synthetic monitor runner")
+    parser.add_argument("--demo", action="store_true", default=True)
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> None:
+    parse_args(argv)
+    output = run_demo()
+    print(json.dumps(output, indent=2))
 
 
 if __name__ == "__main__":

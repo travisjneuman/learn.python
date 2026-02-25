@@ -1,5 +1,18 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample records for Schema Validator Engine
+-------------------------------------------
+This file provides context for the data files in this project.
+
+schema.json defines the expected structure:
+  - "name" (string, required)
+  - "age" (integer, required, min=0, max=150)
+  - "email" (string, optional)
+
+records.json contains 6 records to validate:
+  Record 0: valid — all fields correct
+  Record 1: valid — optional email omitted
+  Record 2: invalid — missing required "name"
+  Record 3: invalid — age is a string instead of integer
+  Record 4: invalid — age exceeds max (200 > 150)
+  Record 5: invalid — has unexpected extra field "phone"
+
+Expected output: 2 valid, 4 invalid

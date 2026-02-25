@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+data/sample_input.txt
+data/output.json
+/nonexistent/path/file.txt
+..
+README.md
+tests/
+project.py
+/tmp/does_not_exist.log

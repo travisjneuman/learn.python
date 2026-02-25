@@ -143,6 +143,33 @@ mkdir -p "$HOME/python_sme/projects" "$HOME/python_sme/templates" "$HOME/python_
 - Create a `python_sme` folder in your Python app workspace.
 - Create subfolders: `projects`, `templates`, `notes`.
 
+### Step 3.5 - Install uv (recommended package manager)
+
+**uv** is a modern, fast replacement for pip and venv. It is used throughout this curriculum.
+
+#### Windows PowerShell
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+uv --version
+```
+
+#### macOS/Linux
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv --version
+```
+
+#### Android (Termux)
+```bash
+pip install uv
+uv --version
+```
+
+Expected output:
+- `uv x.x.x` (version number)
+
+> **If you prefer pip:** All `uv` commands in this curriculum have pip equivalents. Replace `uv venv` with `python -m venv .venv` and `uv pip install` with `pip install`. Everything else stays the same.
+
 ### Step 4 - Create first project and virtual environment
 
 #### Windows PowerShell
@@ -150,7 +177,7 @@ mkdir -p "$HOME/python_sme/projects" "$HOME/python_sme/templates" "$HOME/python_
 cd $HOME\Documents\python_sme\projects
 mkdir hello_sme
 cd hello_sme
-python -m venv .venv
+uv venv
 .\.venv\Scripts\Activate.ps1
 python --version
 ```
@@ -159,12 +186,14 @@ Expected output:
 - Prompt starts with `(.venv)`.
 - Python version prints.
 
+> **pip fallback:** Replace `uv venv` with `python -m venv .venv`.
+
 #### macOS/Linux
 ```bash
 cd "$HOME/python_sme/projects"
 mkdir -p hello_sme
 cd hello_sme
-python3 -m venv .venv
+uv venv
 source .venv/bin/activate
 python --version
 ```
@@ -173,12 +202,14 @@ Expected output:
 - Prompt starts with `(.venv)`.
 - Python version prints.
 
+> **pip fallback:** Replace `uv venv` with `python3 -m venv .venv`.
+
 #### Android (Termux)
 ```bash
 cd "$HOME/python_sme/projects"
 mkdir -p hello_sme
 cd hello_sme
-python -m venv .venv
+uv venv
 source .venv/bin/activate
 python --version
 ```
@@ -186,6 +217,8 @@ python --version
 Expected output:
 - Prompt starts with `(.venv)` if your shell prompt supports it.
 - Python version prints.
+
+> **pip fallback:** Replace `uv venv` with `python -m venv .venv`.
 
 #### iOS
 - Some iOS Python apps do not support full `venv` behavior.
@@ -196,15 +229,15 @@ Expected output:
 
 Desktop and Android:
 ```bash
-python -m pip install --upgrade pip
-python -m pip install pytest
+uv pip install pytest
 pytest --version
 ```
 
 Windows note: same commands work inside activated PowerShell venv.
 
+> **pip fallback:** Replace `uv pip install pytest` with `python -m pip install pytest`.
+
 Expected output:
-- pip upgrade completes.
 - pytest version is displayed.
 
 ### Step 6 - Create first script and first test
@@ -280,9 +313,12 @@ Secret handling rules:
   ```powershell
   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
   ```
+- `uv` not found:
+  - Re-run the install command from Step 3.5.
+  - Or fall back to pip: replace `uv pip install` with `pip install` and `uv venv` with `python -m venv .venv`.
 - `pytest` not found:
   - Confirm venv is active.
-  - Run `python -m pip install pytest`.
+  - Run `uv pip install pytest` (or `pip install pytest`).
 - macOS shows old system Python:
   - Use `python3` for install and venv creation.
 - Linux missing `venv` module:

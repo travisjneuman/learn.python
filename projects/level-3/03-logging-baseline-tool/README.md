@@ -13,49 +13,52 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/03-logging-baseline-tool
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py parse data/sample_input.txt
+python project.py summary data/sample_input.txt
+python project.py parse data/sample_input.txt --min-level WARNING
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+[INFO    ] auth         | User admin logged in successfully
+[WARNING ] db           | Query took 2.3s (threshold: 1.0s)
+...
+12 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Parsed log output on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a `--log-level` flag that controls the minimum level written to the log file (DEBUG, INFO, WARNING, ERROR).
-2. Add timestamps in ISO 8601 format to each log line.
-3. Write logs to both a file and stdout simultaneously (tee pattern).
-4. Re-run script and tests.
+1. Add a `--log-level` flag that controls the minimum level written to the log file.
+2. Add ISO 8601 timestamps to the text output format.
+3. Add a `--output` flag that writes results to a file instead of stdout.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Parse a file with malformed log lines (no pipe delimiters) — what happens?
+2. Pass `--min-level TRACE` (not a valid level) — does filtering still work?
+3. Pass an empty file to `summary` — does it crash or return zeroes?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation for the `--min-level` argument against known levels.
+2. Handle empty files gracefully in `summarise_entries`.
+3. Improve `parse_log_line` to handle lines with extra pipe characters.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is `logging.getLogger(__name__)` and why use `__name__`?
+2. What is the difference between `logging.basicConfig()` and adding handlers manually?
+3. How does the level ordering (DEBUG < INFO < WARNING < ERROR < CRITICAL) work?
+4. Why use `@dataclass` for `LogEntry` instead of a plain dict?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- configure Python's logging module with handlers and formatters,
+- filter log entries by level and source programmatically,
+- explain the logging level hierarchy,
+- use dataclasses for structured data in a real tool.
 
 ---
 

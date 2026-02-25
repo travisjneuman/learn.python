@@ -1,107 +1,161 @@
 """Level 1 project: Basic Expense Tracker.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read expenses from a CSV file, categorise them, compute totals and
+averages, and produce a spending summary report.
+
+Concepts: csv module, dict aggregation, basic financial calculations.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
+import csv
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Basic Expense Tracker"
-PROJECT_FOCUS = "simple ledger aggregation and reporting"
 
+def parse_expense(row: dict[str, str]) -> dict[str, object]:
+    """Parse a single CSV row into a structured expense record.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY validate here? -- Catching bad data at the parse step keeps
+    downstream code simple.  Each expense needs a date, category,
+    amount, and description.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    required = ["date", "category", "amount", "description"]
+    for key in required:
+        if key not in row or not row[key].strip():
+            raise ValueError(f"Missing required field: {key}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
-
-
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    amount = float(row["amount"])
+    if amount < 0:
+        raise ValueError(f"Negative amount not allowed: {amount}")
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "date": row["date"].strip(),
+        "category": row["category"].strip().lower(),
+        "amount": round(amount, 2),
+        "description": row["description"].strip(),
     }
 
 
+def load_expenses(path: Path) -> list[dict[str, object]]:
+    """Load expenses from a CSV file with headers.
+
+    WHY csv.DictReader? -- DictReader maps each row to a dict keyed
+    by the header names, so we can access fields by name instead of
+    index.  This is more readable and resilient to column reordering.
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    expenses = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            expenses.append(parse_expense(row))
+    return expenses
+
+
+def total_by_category(expenses: list[dict[str, object]]) -> dict[str, float]:
+    """Sum expenses per category.
+
+    WHY group by category? -- Knowing where money goes is the primary
+    purpose of expense tracking.  This is the core aggregation.
+    """
+    totals: dict[str, float] = {}
+    for exp in expenses:
+        cat = exp["category"]
+        totals[cat] = round(totals.get(cat, 0) + exp["amount"], 2)
+    return totals
+
+
+def overall_stats(expenses: list[dict[str, object]]) -> dict[str, float]:
+    """Compute total, average, min, and max across all expenses.
+
+    WHY separate function? -- Statistics are useful independently of
+    category breakdowns.  Keeping them separate makes testing easier.
+    """
+    if not expenses:
+        return {"total": 0.0, "average": 0.0, "min": 0.0, "max": 0.0, "count": 0}
+
+    amounts = [exp["amount"] for exp in expenses]
+    total = round(sum(amounts), 2)
+    return {
+        "total": total,
+        "average": round(total / len(amounts), 2),
+        "min": min(amounts),
+        "max": max(amounts),
+        "count": len(amounts),
+    }
+
+
+def top_expenses(expenses: list[dict[str, object]], n: int = 3) -> list[dict[str, object]]:
+    """Return the N largest expenses.
+
+    WHY top-N? -- Identifying big-ticket items helps prioritise
+    budget cuts.  Sorting + slicing is the standard pattern.
+    """
+    sorted_exp = sorted(expenses, key=lambda e: e["amount"], reverse=True)
+    return sorted_exp[:n]
+
+
+def format_report(
+    category_totals: dict[str, float],
+    stats: dict[str, float],
+    top: list[dict[str, object]],
+) -> str:
+    """Format a human-readable expense report."""
+    lines = ["=== Expense Report ===", ""]
+
+    lines.append("  By Category:")
+    for cat, total in sorted(category_totals.items(), key=lambda x: x[1], reverse=True):
+        lines.append(f"    {cat:<20} ${total:>10.2f}")
+
+    lines.append("")
+    lines.append(f"  Total:   ${stats['total']:>10.2f}")
+    lines.append(f"  Average: ${stats['average']:>10.2f}")
+    lines.append(f"  Min:     ${stats['min']:>10.2f}")
+    lines.append(f"  Max:     ${stats['max']:>10.2f}")
+    lines.append(f"  Count:   {stats['count']}")
+
+    if top:
+        lines.append("")
+        lines.append("  Top Expenses:")
+        for exp in top:
+            lines.append(f"    ${exp['amount']:>8.2f}  {exp['category']:<15} {exp['description']}")
+
+    return "\n".join(lines)
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser = argparse.ArgumentParser(description="Basic Expense Tracker")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="CSV file with date,category,amount,description")
+    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--top", type=int, default=3,
+                        help="Number of top expenses to show")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    expenses = load_expenses(Path(args.input))
+    cat_totals = total_by_category(expenses)
+    stats = overall_stats(expenses)
+    top = top_expenses(expenses, args.top)
+
+    print(format_report(cat_totals, stats, top))
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_data = {
+        "category_totals": cat_totals,
+        "stats": stats,
+        "top_expenses": top,
+    }
+    output_path.write_text(json.dumps(output_data, indent=2), encoding="utf-8")
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
-
-
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

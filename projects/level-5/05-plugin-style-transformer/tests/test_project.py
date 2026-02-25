@@ -1,54 +1,55 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Plugin Style Transformer."""
+import pytest
+from project import (UppercasePlugin, FilterEmptyPlugin, StripWhitespacePlugin,
+                     get_plugin, list_plugins, run_plugins, register_plugin, TransformPlugin)
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
+def test_uppercase_plugin():
+    records = [{"name": "alice", "age": 30}]
+    result = UppercasePlugin().transform(records)
+    assert result[0]["name"] == "ALICE"
+    assert result[0]["age"] == 30
 
-# Path helps build reliable temporary files in test environments.
-from pathlib import Path
+def test_filter_empty_plugin():
+    records = [{"a": "x"}, {"a": "", "b": ""}, {"a": "y"}]
+    result = FilterEmptyPlugin().transform(records)
+    assert len(result) == 2
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+def test_strip_whitespace_plugin():
+    records = [{"name": "  Alice  "}]
+    result = StripWhitespacePlugin().transform(records)
+    assert result[0]["name"] == "Alice"
 
+def test_get_plugin_found():
+    assert get_plugin("uppercase") is not None
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+def test_get_plugin_not_found():
+    assert get_plugin("nonexistent") is None
 
-    # Act: run loader.
-    items = load_items(sample)
+def test_list_plugins():
+    plugins = list_plugins()
+    names = [p["name"] for p in plugins]
+    assert "uppercase" in names
+    assert "filter_empty" in names
 
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+@pytest.mark.parametrize("plugin_name", ["uppercase", "filter_empty", "strip", "sort_by_name"])
+def test_all_builtin_plugins_run(plugin_name):
+    records = [{"name": "test", "value": "data"}]
+    plugin = get_plugin(plugin_name)
+    assert plugin is not None
+    result = plugin.transform(records)
+    assert isinstance(result, list)
 
+def test_run_plugins_chain():
+    records = [{"name": "  ALICE  "}, {"name": ""}]
+    result, log = run_plugins(records, ["strip", "filter_empty"])
+    assert len(result) == 1
+    assert result[0]["name"] == "ALICE"
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
-
-
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
-
-    # Act: build summary from records.
-    summary = build_summary(records)
-
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_custom_plugin_registration():
+    class ReversePlugin(TransformPlugin):
+        name = "reverse"
+        description = "Reverse record order"
+        def transform(self, records):
+            return list(reversed(records))
+    register_plugin(ReversePlugin)
+    assert get_plugin("reverse") is not None

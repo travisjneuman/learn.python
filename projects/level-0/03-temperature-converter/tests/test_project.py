@@ -1,48 +1,35 @@
-"""Beginner test module with heavy comments.
+"""Tests for Temperature Converter."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
+import pytest
 
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import celsius_to_fahrenheit, convert_temperature, kelvin_to_celsius
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_boiling_point_c_to_f() -> None:
+    """Water boils at 100 C which is 212 F."""
+    assert celsius_to_fahrenheit(100) == 212.0
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_freezing_point_c_to_f() -> None:
+    """Water freezes at 0 C which is 32 F."""
+    assert celsius_to_fahrenheit(0) == 32.0
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_convert_round_trip() -> None:
+    """Converting C->F->C should return the original value."""
+    original = 37.0
+    f_value = convert_temperature(original, "C", "F")
+    back = convert_temperature(f_value, "F", "C")
+    assert abs(back - original) < 0.01
+
+
+def test_negative_kelvin_raises() -> None:
+    """Kelvin cannot be negative -- that is below absolute zero."""
+    with pytest.raises(ValueError, match="Kelvin cannot be negative"):
+        kelvin_to_celsius(-1)
+
+
+def test_unknown_unit_raises() -> None:
+    """An unsupported unit letter should raise ValueError."""
+    with pytest.raises(ValueError, match="Unknown unit"):
+        convert_temperature(100, "X", "C")

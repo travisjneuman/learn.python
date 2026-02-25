@@ -1,141 +1,230 @@
-"""Level 9 project: Canary Rollout Simulator.
+"""Canary Rollout Simulator — simulate canary deployments with rollback triggers.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Canary deployments route a small percentage of traffic to new code,
+    comparing its error rate and latency against the stable version.
+    This project simulates the rollout process with configurable stages,
+    automatic promotion/rollback, and metric comparison.
+
+Concepts practised:
+    - state machine for deployment stages
+    - statistical comparison (canary vs baseline)
+    - configurable rollout strategy
+    - automatic rollback triggers
+    - dataclasses for deployment state
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+import random
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any
 
-PROJECT_LEVEL = 9
-PROJECT_TITLE = "Canary Rollout Simulator"
-PROJECT_FOCUS = "small-batch rollout risk controls"
+
+# --- Domain types -------------------------------------------------------
+
+class RolloutPhase(Enum):
+    NOT_STARTED = "not_started"
+    CANARY = "canary"
+    PROGRESSIVE = "progressive"
+    FULL = "full"
+    ROLLED_BACK = "rolled_back"
+    COMPLETED = "completed"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class RolloutStage:
+    """A single stage in the canary rollout."""
+    name: str
+    traffic_pct: float  # % of traffic going to canary
+    duration_steps: int  # number of evaluation steps
+    error_threshold: float  # max allowed error rate difference vs baseline
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class MetricSnapshot:
+    """Metrics captured during a rollout stage."""
+    stage_name: str
+    canary_error_rate: float
+    baseline_error_rate: float
+    canary_latency_ms: float
+    baseline_latency_ms: float
+    traffic_pct: float
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    @property
+    def error_rate_delta(self) -> float:
+        return self.canary_error_rate - self.baseline_error_rate
 
+    @property
+    def latency_delta_ms(self) -> float:
+        return self.canary_latency_ms - self.baseline_latency_ms
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
-
-
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "stage": self.stage_name,
+            "canary_err": round(self.canary_error_rate, 4),
+            "baseline_err": round(self.baseline_error_rate, 4),
+            "error_delta": round(self.error_rate_delta, 4),
+            "canary_lat_ms": round(self.canary_latency_ms, 1),
+            "baseline_lat_ms": round(self.baseline_latency_ms, 1),
+            "traffic_pct": self.traffic_pct,
+        }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+@dataclass
+class RolloutResult:
+    """Final result of a canary rollout."""
+    phase: RolloutPhase
+    stages_completed: int
+    total_stages: int
+    rollback_reason: str = ""
+    snapshots: list[MetricSnapshot] = field(default_factory=list)
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "phase": self.phase.value,
+            "stages_completed": self.stages_completed,
+            "total_stages": self.total_stages,
+            "rollback_reason": self.rollback_reason,
+            "snapshots": [s.to_dict() for s in self.snapshots],
+        }
+
+
+# --- Canary rollout engine ----------------------------------------------
+
+class CanaryRollout:
+    """Simulates a canary deployment with automatic promotion/rollback.
+
+    The rollout progresses through configured stages. At each stage,
+    canary metrics are compared against baseline. If the canary
+    degrades beyond the threshold, an automatic rollback is triggered.
     """
-    start_time = time.time()
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+    def __init__(
+        self,
+        stages: list[RolloutStage],
+        latency_threshold_ms: float = 50.0,
+    ) -> None:
+        self._stages = stages
+        self._latency_threshold = latency_threshold_ms
+        self._phase = RolloutPhase.NOT_STARTED
+        self._snapshots: list[MetricSnapshot] = []
+        self._stages_completed = 0
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
+    @property
+    def phase(self) -> RolloutPhase:
+        return self._phase
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
+    def execute(
+        self,
+        baseline_error_rate: float,
+        baseline_latency_ms: float,
+        canary_error_fn: Any = None,
+        canary_latency_fn: Any = None,
+        rng: random.Random | None = None,
+    ) -> RolloutResult:
+        """Execute the full rollout simulation."""
+        if rng is None:
+            rng = random.Random()
 
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        self._phase = RolloutPhase.CANARY
 
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+        for i, stage in enumerate(self._stages):
+            # Simulate canary metrics for this stage
+            if canary_error_fn:
+                canary_err = canary_error_fn(stage, rng)
+            else:
+                canary_err = baseline_error_rate + rng.gauss(0, 0.005)
+
+            if canary_latency_fn:
+                canary_lat = canary_latency_fn(stage, rng)
+            else:
+                canary_lat = baseline_latency_ms + rng.gauss(0, 10)
+
+            snapshot = MetricSnapshot(
+                stage_name=stage.name,
+                canary_error_rate=max(0, canary_err),
+                baseline_error_rate=baseline_error_rate,
+                canary_latency_ms=max(0, canary_lat),
+                baseline_latency_ms=baseline_latency_ms,
+                traffic_pct=stage.traffic_pct,
+            )
+            self._snapshots.append(snapshot)
+
+            # Check rollback conditions
+            if snapshot.error_rate_delta > stage.error_threshold:
+                self._phase = RolloutPhase.ROLLED_BACK
+                return RolloutResult(
+                    phase=self._phase,
+                    stages_completed=i,
+                    total_stages=len(self._stages),
+                    rollback_reason=f"Error rate delta {snapshot.error_rate_delta:.4f} "
+                                    f"exceeds threshold {stage.error_threshold}",
+                    snapshots=self._snapshots,
+                )
+
+            if snapshot.latency_delta_ms > self._latency_threshold:
+                self._phase = RolloutPhase.ROLLED_BACK
+                return RolloutResult(
+                    phase=self._phase,
+                    stages_completed=i,
+                    total_stages=len(self._stages),
+                    rollback_reason=f"Latency delta {snapshot.latency_delta_ms:.1f}ms "
+                                    f"exceeds threshold {self._latency_threshold}ms",
+                    snapshots=self._snapshots,
+                )
+
+            self._stages_completed = i + 1
+            if stage.traffic_pct >= 50:
+                self._phase = RolloutPhase.PROGRESSIVE
+
+        self._phase = RolloutPhase.COMPLETED
+        return RolloutResult(
+            phase=self._phase,
+            stages_completed=len(self._stages),
+            total_stages=len(self._stages),
+            snapshots=self._snapshots,
+        )
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
+# --- Default rollout strategy -------------------------------------------
+
+def default_stages() -> list[RolloutStage]:
+    """Standard canary rollout stages: 1% -> 5% -> 25% -> 50% -> 100%."""
+    return [
+        RolloutStage("canary-1pct", 1, 5, 0.02),
+        RolloutStage("canary-5pct", 5, 5, 0.015),
+        RolloutStage("progressive-25pct", 25, 5, 0.01),
+        RolloutStage("progressive-50pct", 50, 5, 0.01),
+        RolloutStage("full-100pct", 100, 3, 0.005),
+    ]
 
 
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+# --- Demo ---------------------------------------------------------------
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
+def run_demo() -> dict[str, Any]:
+    stages = default_stages()
+    rollout = CanaryRollout(stages, latency_threshold_ms=50)
+    result = rollout.execute(
+        baseline_error_rate=0.01,
+        baseline_latency_ms=100,
+        rng=random.Random(42),
     )
+    return result.to_dict()
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Canary rollout simulator")
+    parser.add_argument("--seed", type=int, default=42)
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> None:
+    parse_args(argv)
+    print(json.dumps(run_demo(), indent=2))
 
 
 if __name__ == "__main__":

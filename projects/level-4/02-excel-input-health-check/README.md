@@ -13,41 +13,46 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/02-excel-input-health-check
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.csv --output data/health_report.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "file": "data/sample_input.csv",
+  "status": "WARN",
+  "headers": { ... },
+  "completeness": { "short_rows": [6], ... }
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/health_report.json` — structured quality report
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a check for rows that contain only numeric data (possible header/data swap).
+2. Add a `--format` flag that supports both CSV and TSV input auto-detection.
+3. Re-run script and tests — add a test for TSV delimiter detection.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a CSV where every row has a different number of columns — observe how completeness reports it.
+2. Feed it a file with mixed encodings (e.g., Latin-1 characters) and watch the encoding check fail.
+3. Create a CSV with 100+ duplicate header names and check the report.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a max-issues limit so the report does not grow unbounded on very messy files.
+2. Handle the mixed-encoding case by falling back to `latin-1` when UTF-8 fails.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `detect_delimiter` use the *minimum* count across rows instead of the *average*?
+2. What is the difference between `check_headers` and `check_row_completeness` — could they be merged?
+3. Why does the health check return early when encoding fails instead of continuing?
+4. How would you extend this to support Excel `.xlsx` files?
 
 ## Mastery check
 You can move on when you can:

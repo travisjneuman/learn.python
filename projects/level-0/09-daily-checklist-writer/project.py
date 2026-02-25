@@ -1,107 +1,104 @@
 """Level 0 project: Daily Checklist Writer.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a list of tasks from a file (or accept them as arguments),
+format them as a numbered checklist, and write the result to a file.
+
+Concepts: writing files, string formatting, lists, loops, Path.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Daily Checklist Writer"
-PROJECT_FOCUS = "write text output files"
 
+def load_tasks(path: Path) -> list[str]:
+    """Load task descriptions from a file (one per line).
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY strip and filter? -- The file might have blank lines or
+    trailing whitespace.  We only want actual task descriptions.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+        raise FileNotFoundError(f"Tasks file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return [line.strip() for line in lines if line.strip()]
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def format_checklist(title: str, tasks: list[str]) -> str:
+    """Format tasks into a printable checklist with checkboxes.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY number the tasks? -- Numbering makes it easy to refer to
+    a specific task ('have you done item 3?') and gives the learner
+    a sense of progress as they work through the list.
+    """
+    if not tasks:
+        return f"{title}\n(no tasks)"
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    lines = [title, "=" * len(title), ""]
 
+    for i, task in enumerate(tasks, start=1):
+        # [ ] is an unchecked checkbox -- a common plain-text convention.
+        lines.append(f"  {i}. [ ] {task}")
+
+    lines.append("")
+    lines.append(f"Total tasks: {len(tasks)}")
+    return "\n".join(lines)
+
+
+def write_checklist(path: Path, content: str) -> None:
+    """Write the checklist string to a file.
+
+    WHY a separate function? -- Isolating file-writing makes it
+    easy to test the formatting logic without touching the filesystem.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def checklist_summary(tasks: list[str]) -> dict:
+    """Build a JSON-friendly summary of the checklist."""
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "total_tasks": len(tasks),
+        "tasks": tasks,
+        "completed": 0,
+        "remaining": len(tasks),
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Daily Checklist Writer")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="File with task descriptions (one per line)")
+    parser.add_argument("--output", default="data/checklist.txt",
+                        help="Output file for the formatted checklist")
+    parser.add_argument("--title", default="Daily Checklist",
+                        help="Title for the checklist")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    tasks = load_tasks(Path(args.input))
+    checklist = format_checklist(args.title, tasks)
+
+    # Print the checklist to the terminal.
+    print(checklist)
+
+    # Write the checklist to a text file.
     output_path = Path(args.output)
+    write_checklist(output_path, checklist)
+    print(f"\nChecklist written to {output_path}")
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    # Also write a JSON summary for programmatic use.
+    summary = checklist_summary(tasks)
+    json_path = output_path.with_suffix(".json")
+    json_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

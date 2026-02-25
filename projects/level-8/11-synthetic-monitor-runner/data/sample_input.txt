@@ -1,5 +1,5 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+check: api-health type=http url=/api/health expected_status=200 critical=true
+check: db-connection type=threshold metric=db_latency_ms max_value=100 critical=true
+check: cache-hit-rate type=threshold metric=cache_hit_pct min_value=80 critical=false
+check: disk-space type=threshold metric=disk_free_pct min_value=20 critical=true
+check: search-response type=pattern url=/api/search expected_pattern="results" critical=false

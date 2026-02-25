@@ -1,52 +1,110 @@
-"""Advanced test module with heavy comments.
+"""Tests for Capacity Planning Model.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers: growth models, forecast generation, exhaustion detection, and what-if scenarios.
 """
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+from __future__ import annotations
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
+import pytest
 
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    CapacityPlanner,
+    GrowthModel,
+    ResourceProfile,
+    ResourceType,
+    exponential_growth,
+    linear_growth,
+    step_growth,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
+# --- Growth functions ---------------------------------------------------
 
-    # Act: transform into structured records.
-    records = build_records(source_items)
+class TestGrowthFunctions:
+    @pytest.mark.parametrize("current,rate,months,expected", [
+        (100, 10, 1, 110),
+        (100, 10, 6, 160),
+        (0, 5, 3, 15),
+    ])
+    def test_linear_growth(self, current, rate, months, expected) -> None:
+        assert linear_growth(current, rate, months) == expected
 
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+    def test_exponential_growth(self) -> None:
+        result = exponential_growth(100, 10, 1)  # 10% monthly
+        assert result == pytest.approx(110.0)
+
+    @pytest.mark.parametrize("months,expected_steps", [
+        (1, 0),
+        (3, 1),
+        (6, 2),
+        (12, 4),
+    ])
+    def test_step_growth(self, months, expected_steps) -> None:
+        result = step_growth(100, 50, months)
+        assert result == 100 + (50 * expected_steps)
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+# --- ResourceProfile ---------------------------------------------------
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
+class TestResourceProfile:
+    def test_utilization_pct(self) -> None:
+        p = ResourceProfile(ResourceType.COMPUTE, current_usage=75, max_capacity=100)
+        assert p.utilization_pct == 75.0
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+    def test_headroom(self) -> None:
+        p = ResourceProfile(ResourceType.STORAGE, current_usage=300, max_capacity=1000)
+        assert p.headroom == 700
+
+
+# --- CapacityPlanner ----------------------------------------------------
+
+class TestCapacityPlanner:
+    def test_forecast_generates_entries(self) -> None:
+        planner = CapacityPlanner()
+        planner.add_resource(ResourceProfile(
+            ResourceType.COMPUTE, current_usage=50, max_capacity=100,
+            growth_model=GrowthModel.LINEAR, growth_rate=5,
+        ))
+        plan = planner.forecast(months_ahead=6)
+        compute_forecasts = [f for f in plan.forecasts if f.resource_type == ResourceType.COMPUTE]
+        assert len(compute_forecasts) == 6
+
+    def test_risk_detection(self) -> None:
+        planner = CapacityPlanner(risk_threshold_pct=80.0)
+        planner.add_resource(ResourceProfile(
+            ResourceType.COMPUTE, current_usage=70, max_capacity=100,
+            growth_model=GrowthModel.LINEAR, growth_rate=5,
+        ))
+        plan = planner.forecast(months_ahead=6)
+        risky = [f for f in plan.forecasts if f.exhaustion_risk]
+        assert len(risky) > 0
+
+    def test_months_until_exhaustion(self) -> None:
+        planner = CapacityPlanner()
+        profile = ResourceProfile(
+            ResourceType.COMPUTE, current_usage=80, max_capacity=100,
+            growth_model=GrowthModel.LINEAR, growth_rate=5,
+        )
+        months = planner.months_until_exhaustion(profile)
+        assert months is not None
+        assert months == 4  # 80 + 5*4 = 100
+
+    def test_what_if_increased_capacity(self) -> None:
+        planner = CapacityPlanner(risk_threshold_pct=80.0)
+        profile = ResourceProfile(
+            ResourceType.COMPUTE, current_usage=70, max_capacity=100,
+            growth_model=GrowthModel.LINEAR, growth_rate=5,
+        )
+        forecasts = planner.what_if(profile, new_capacity=200)
+        # With doubled capacity, should be much less risky
+        risky = [f for f in forecasts if f.exhaustion_risk]
+        assert len(risky) == 0
+
+    def test_recommendations_generated(self) -> None:
+        planner = CapacityPlanner(risk_threshold_pct=50.0)
+        planner.add_resource(ResourceProfile(
+            ResourceType.STORAGE, current_usage=40, max_capacity=100,
+            growth_model=GrowthModel.LINEAR, growth_rate=10,
+        ))
+        plan = planner.forecast(months_ahead=6)
+        assert len(plan.recommendations) > 0

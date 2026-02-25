@@ -13,41 +13,45 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/10-run-manifest-generator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --dir data --output data/manifest.json --run-id my-batch-001
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "run_id": "my-batch-001",
+  "file_count": 2,
+  "total_size_bytes": 123
+}
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/manifest.json` — file inventory with checksums and metadata
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--algorithm` flag supporting `sha256` in addition to `md5`.
+2. Add a `--exclude` glob pattern to skip certain files (e.g., `*.json`).
+3. Re-run script and tests — add a test for SHA-256 checksums.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Point `--dir` at a non-existent directory and observe the error.
+2. Create a very large file (10 MB+) and verify the chunked checksum still works.
+3. Create a directory with symlinks and see if they are followed or skipped.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a `--no-follow-symlinks` option to skip symbolic links.
+2. Handle permission errors gracefully (log a warning, skip the file).
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `compute_checksum` read in 8192-byte chunks instead of the whole file at once?
+2. What is the difference between `iterdir()` and `rglob("*")` in `scan_files`?
+3. Why does the manifest include timestamps and how would you use them for change detection?
+4. What are the security considerations of using MD5 vs. SHA-256 for checksums?
 
 ## Mastery check
 You can move on when you can:

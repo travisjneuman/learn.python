@@ -1,105 +1,233 @@
-"""Level 6 project: SQL Connection Simulator.
+"""Level 6 / Project 01 — SQL Connection Simulator.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Teaches SQLite connection management with context managers,
+connection pooling simulation, retry logic, and health checks.
+
+Key concepts:
+- sqlite3 connect / close lifecycle
+- Context managers (with statement) for safe resource cleanup
+- Connection pool pattern (reuse instead of recreate)
+- Retry with exponential backoff on transient failures
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import random
+import sqlite3
+import time
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 6
-PROJECT_TITLE = "SQL Connection Simulator"
-PROJECT_FOCUS = "connection config and retry patterns"
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+MAX_POOL_SIZE = 5
+MAX_RETRIES = 3
+BASE_BACKOFF_SEC = 0.01  # kept small for fast demo runs
 
 
-def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+@dataclass
+class ConnectionConfig:
+    """Immutable connection configuration."""
+
+    db_path: str = ":memory:"
+    timeout: float = 5.0
+    max_retries: int = MAX_RETRIES
+    pool_size: int = MAX_POOL_SIZE
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------------------------------------------------------------------------
+# Connection pool
+# ---------------------------------------------------------------------------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+class ConnectionPool:
+    """Simple SQLite connection pool.
 
-    We keep this separate from I/O so business logic stays testable.
+    Real pools (e.g. SQLAlchemy's QueuePool) are far more capable, but
+    this version teaches the core idea: *reuse connections instead of
+    creating a new one for every query*.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+
+    def __init__(self, config: ConnectionConfig) -> None:
+        self.config = config
+        self._pool: list[sqlite3.Connection] = []
+        self._created = 0  # total connections ever opened
+        self._reused = 0
+
+    # -- public API --------------------------------------------------------
+
+    def acquire(self) -> sqlite3.Connection:
+        """Return an existing connection or create a new one."""
+        if self._pool:
+            self._reused += 1
+            logging.info("pool_reuse  total=%d reused=%d", self._created, self._reused)
+            return self._pool.pop()
+
+        conn = self._connect_with_retry()
+        self._created += 1
+        logging.info("pool_create total=%d reused=%d", self._created, self._reused)
+        return conn
+
+    def release(self, conn: sqlite3.Connection) -> None:
+        """Return a connection to the pool (or close if pool is full)."""
+        if len(self._pool) < self.config.pool_size:
+            self._pool.append(conn)
+        else:
+            conn.close()
+
+    def close_all(self) -> None:
+        """Drain the pool and close every connection."""
+        while self._pool:
+            self._pool.pop().close()
+
+    def stats(self) -> dict:
+        """Return pool health metrics."""
+        return {
+            "created": self._created,
+            "reused": self._reused,
+            "idle": len(self._pool),
+            "pool_size": self.config.pool_size,
+        }
+
+    # -- internals ---------------------------------------------------------
+
+    def _connect_with_retry(self) -> sqlite3.Connection:
+        """Open a connection, retrying on transient errors."""
+        last_err: Exception | None = None
+        for attempt in range(1, self.config.max_retries + 1):
+            try:
+                conn = sqlite3.connect(
+                    self.config.db_path, timeout=self.config.timeout
+                )
+                conn.execute("SELECT 1")  # health-check ping
+                return conn
+            except sqlite3.OperationalError as exc:
+                last_err = exc
+                wait = BASE_BACKOFF_SEC * (2 ** (attempt - 1))
+                logging.warning(
+                    "connect_retry attempt=%d wait=%.3fs err=%s",
+                    attempt, wait, exc,
+                )
+                time.sleep(wait)
+        raise ConnectionError(
+            f"Failed after {self.config.max_retries} retries: {last_err}"
         )
-    return records
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+# ---------------------------------------------------------------------------
+# Health check
+# ---------------------------------------------------------------------------
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+
+def health_check(conn: sqlite3.Connection) -> dict:
+    """Run a lightweight ping and return status info."""
+    try:
+        cur = conn.execute("SELECT sqlite_version()")
+        version = cur.fetchone()[0]
+        return {"status": "healthy", "sqlite_version": version}
+    except sqlite3.Error as exc:
+        return {"status": "unhealthy", "error": str(exc)}
+
+
+# ---------------------------------------------------------------------------
+# Demo workload
+# ---------------------------------------------------------------------------
+
+
+def run_demo_queries(pool: ConnectionPool, labels: list[str]) -> list[dict]:
+    """Simulate a workload: create a table, insert rows, query them back.
+
+    Each label is inserted; then we query all rows to prove the
+    connection works end-to-end.
+    """
+    conn = pool.acquire()
+    try:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS events "
+            "(id INTEGER PRIMARY KEY, label TEXT NOT NULL)"
+        )
+        for label in labels:
+            conn.execute("INSERT INTO events (label) VALUES (?)", (label,))
+        conn.commit()
+
+        rows = conn.execute("SELECT id, label FROM events ORDER BY id").fetchall()
+        return [{"id": r[0], "label": r[1]} for r in rows]
+    finally:
+        pool.release(conn)
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run(input_path: Path, output_path: Path, config: ConnectionConfig | None = None) -> dict:
+    """Full demo: read labels → pool → queries → stats → JSON output."""
+    config = config or ConnectionConfig()
+    pool = ConnectionPool(config)
+
+    # Load labels from input file
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
+    labels = [
+        ln.strip()
+        for ln in input_path.read_text(encoding="utf-8").splitlines()
+        if ln.strip()
+    ]
+
+    rows = run_demo_queries(pool, labels)
+
+    # Second acquire to demonstrate pool reuse
+    conn2 = pool.acquire()
+    hc = health_check(conn2)
+    pool.release(conn2)
+
+    pool.close_all()
+
+    summary = {
+        "rows_inserted": len(rows),
+        "rows": rows,
+        "health": hc,
+        "pool_stats": pool.stats(),
     }
-
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
+    logging.info("output=%s rows=%d", output_path, len(rows))
     return summary
 
 
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
+    parser = argparse.ArgumentParser(
+        description="SQL Connection Simulator — connection pooling & retry demo"
+    )
     parser.add_argument("--input", default="data/sample_input.txt")
     parser.add_argument("--output", default="data/output_summary.json")
+    parser.add_argument("--db", default=":memory:", help="SQLite database path")
+    parser.add_argument(
+        "--pool-size", type=int, default=MAX_POOL_SIZE, help="Max idle connections"
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
-    configure_logging()
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(message)s",
+    )
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    config = ConnectionConfig(db_path=args.db, pool_size=args.pool_size)
+    summary = run(Path(args.input), Path(args.output), config)
     print(json.dumps(summary, indent=2))
 
 

@@ -1,5 +1,21 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+# Server response times (milliseconds)
+45
+52
+48
+51
+47
+50
+49
+53
+46
+48
+250
+51
+47
+49
+52
+48
+50
+3
+47
+51

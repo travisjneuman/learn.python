@@ -1,52 +1,110 @@
-"""Advanced test module with heavy comments.
+"""Tests for Production Readiness Director.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers individual checks, director decisions, threshold logic,
+and report generation.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import pytest
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    Category,
+    CheckVerdict,
+    HealthCheckCheck,
+    LaunchDecision,
+    LoggingCheck,
+    OnCallCheck,
+    ReadinessDirector,
+    ReadinessReport,
+    SecurityReviewCheck,
+    ServiceManifest,
+    build_default_director,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
-
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+@pytest.fixture
+def ready_manifest() -> ServiceManifest:
+    return ServiceManifest(
+        name="ready-svc", has_logging=True, has_metrics=True, has_alerts=True,
+        has_healthcheck=True, has_runbook=True, has_rollback_plan=True,
+        has_load_test=True, has_security_review=True,
+        has_on_call=True, test_coverage_pct=90.0,
+    )
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+@pytest.fixture
+def unready_manifest() -> ServiceManifest:
+    return ServiceManifest(name="unready-svc")
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+# ---------------------------------------------------------------------------
+# Individual checks
+# ---------------------------------------------------------------------------
+
+class TestIndividualChecks:
+    def test_logging_pass(self) -> None:
+        m = ServiceManifest(name="svc", has_logging=True)
+        assert LoggingCheck().evaluate(m).verdict == CheckVerdict.PASS
+
+    def test_logging_fail(self) -> None:
+        m = ServiceManifest(name="svc", has_logging=False)
+        assert LoggingCheck().evaluate(m).verdict == CheckVerdict.FAIL
+
+    def test_security_review_required(self) -> None:
+        m = ServiceManifest(name="svc", has_security_review=False)
+        assert SecurityReviewCheck().evaluate(m).verdict == CheckVerdict.FAIL
+
+    def test_healthcheck_required(self) -> None:
+        m = ServiceManifest(name="svc", has_healthcheck=False)
+        assert HealthCheckCheck().evaluate(m).verdict == CheckVerdict.FAIL
+
+    def test_oncall_required(self) -> None:
+        m = ServiceManifest(name="svc", has_on_call=False)
+        assert OnCallCheck().evaluate(m).verdict == CheckVerdict.FAIL
+
+
+# ---------------------------------------------------------------------------
+# Director decisions
+# ---------------------------------------------------------------------------
+
+class TestReadinessDirector:
+    def test_ready_service_gets_go(self, ready_manifest: ServiceManifest) -> None:
+        report = build_default_director().evaluate(ready_manifest)
+        assert report.decision == LaunchDecision.GO
+        assert report.fail_count == 0
+
+    def test_unready_service_gets_no_go(self, unready_manifest: ServiceManifest) -> None:
+        report = build_default_director().evaluate(unready_manifest)
+        assert report.decision == LaunchDecision.NO_GO
+        assert report.fail_count > 0
+
+    def test_partial_readiness_conditional(self) -> None:
+        m = ServiceManifest(
+            name="partial", has_logging=True, has_metrics=True,
+            has_healthcheck=True, has_security_review=True, has_on_call=True,
+            has_alerts=False, has_load_test=False, has_runbook=False,
+        )
+        report = build_default_director().evaluate(m)
+        assert report.decision == LaunchDecision.CONDITIONAL_GO
+
+    def test_custom_thresholds(self, ready_manifest: ServiceManifest) -> None:
+        strict_director = ReadinessDirector(fail_threshold=0, warn_threshold=0)
+        strict_director.register(LoggingCheck())
+        report = strict_director.evaluate(ready_manifest)
+        assert report.decision == LaunchDecision.GO
+
+
+class TestReadinessReport:
+    def test_pass_rate_calculation(self, ready_manifest: ServiceManifest) -> None:
+        report = build_default_director().evaluate(ready_manifest)
+        assert report.pass_rate == 100.0
+
+    def test_summary_structure(self, ready_manifest: ServiceManifest) -> None:
+        summary = build_default_director().evaluate(ready_manifest).summary()
+        assert "decision" in summary
+        assert "categories" in summary
+        assert "pass_rate" in summary
+
+    def test_empty_report_zero_pass_rate(self) -> None:
+        report = ReadinessReport(service_name="empty")
+        assert report.pass_rate == 0.0

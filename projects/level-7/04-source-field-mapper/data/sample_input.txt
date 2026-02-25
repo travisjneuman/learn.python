@@ -1,5 +1,14 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "rules": [
+    {"source": "item_id", "target": "id", "cast": "str"},
+    {"source": "item_name", "target": "name", "cast": "str"},
+    {"source": "price", "target": "amount", "cast": "float"},
+    {"source": "qty", "target": "quantity", "cast": "int", "default": "0"}
+  ],
+  "required_fields": ["id", "name", "amount"],
+  "records": [
+    {"item_id": "SKU-001", "item_name": "Widget", "price": "9.99", "qty": "10"},
+    {"item_id": "SKU-002", "item_name": "Gadget", "price": "24.99"},
+    {"item_name": "Orphan Item", "price": "1.50", "qty": "5"}
+  ]
+}

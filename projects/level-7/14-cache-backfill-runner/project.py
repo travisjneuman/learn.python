@@ -1,140 +1,166 @@
-"""Level 7 project: Cache Backfill Runner.
+"""Level 7 / Project 14 — Cache Backfill Runner.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+When cache miss rates exceed a threshold, triggers a backfill from
+the authoritative data source.  Tracks hit/miss counters and decides
+when to backfill automatically.
+
+Key concepts:
+- Cache hit/miss ratio tracking
+- Threshold-triggered backfill
+- Batch loading from source into cache
+- Backfill audit and statistics
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
 import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
+from dataclasses import dataclass, field
 from pathlib import Path
 
-PROJECT_LEVEL = 7
-PROJECT_TITLE = "Cache Backfill Runner"
-PROJECT_FOCUS = "historical backfill workflow"
 
+# -- Data model ----------------------------------------------------------
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class CacheStats:
+    hits: int = 0
+    misses: int = 0
+    backfills: int = 0
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def total(self) -> int:
+        return self.hits + self.misses
 
+    @property
+    def miss_rate(self) -> float:
+        return round(self.misses / self.total, 4) if self.total else 0.0
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
-
-
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    @property
+    def hit_rate(self) -> float:
+        return round(self.hits / self.total, 4) if self.total else 0.0
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+# -- Core logic ----------------------------------------------------------
+
+class CacheWithBackfill:
+    """Simple cache that auto-backfills from a source when miss rate is high."""
+
+    def __init__(
+        self,
+        source: dict[str, str],
+        miss_threshold: float = 0.5,
+        backfill_batch: int = 10,
+    ) -> None:
+        self._cache: dict[str, str] = {}
+        self._source = source
+        self.miss_threshold = miss_threshold
+        self.backfill_batch = backfill_batch
+        self.stats = CacheStats()
+        self._audit: list[dict] = []
+
+    def get(self, key: str) -> str | None:
+        """Look up a key.  Records hit/miss and may trigger backfill."""
+        if key in self._cache:
+            self.stats.hits += 1
+            return self._cache[key]
+
+        self.stats.misses += 1
+        logging.info("cache miss key=%s miss_rate=%.2f", key, self.stats.miss_rate)
+
+        # Check if backfill needed
+        if self.stats.total >= 3 and self.stats.miss_rate >= self.miss_threshold:
+            self._backfill()
+
+        # Try source directly for the requested key
+        if key in self._source:
+            val = self._source[key]
+            self._cache[key] = val
+            return val
+        return None
+
+    def put(self, key: str, value: str) -> None:
+        self._cache[key] = value
+
+    def _backfill(self) -> None:
+        """Load a batch of keys from source into cache."""
+        loaded = 0
+        for k, v in self._source.items():
+            if k not in self._cache:
+                self._cache[k] = v
+                loaded += 1
+                if loaded >= self.backfill_batch:
+                    break
+        self.stats.backfills += 1
+        self._audit.append({"action": "backfill", "loaded": loaded})
+        logging.info("backfill completed: loaded %d keys", loaded)
+
+    def force_backfill(self) -> int:
+        """Manually trigger a full backfill."""
+        loaded = 0
+        for k, v in self._source.items():
+            if k not in self._cache:
+                self._cache[k] = v
+                loaded += 1
+        self.stats.backfills += 1
+        self._audit.append({"action": "force_backfill", "loaded": loaded})
+        return loaded
+
+    @property
+    def cache_size(self) -> int:
+        return len(self._cache)
+
+    @property
+    def audit_log(self) -> list[dict]:
+        return list(self._audit)
+
+    def summary(self) -> dict:
+        return {
+            "cache_size": self.cache_size,
+            "hits": self.stats.hits,
+            "misses": self.stats.misses,
+            "hit_rate": self.stats.hit_rate,
+            "miss_rate": self.stats.miss_rate,
+            "backfills": self.stats.backfills,
+        }
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# -- Entry points --------------------------------------------------------
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+def run(input_path: Path, output_path: Path) -> dict:
+    config = json.loads(input_path.read_text(encoding="utf-8")) if input_path.exists() else {}
 
+    source = config.get("source", {})
+    lookups = config.get("lookups", [])
+    threshold = config.get("miss_threshold", 0.5)
+    batch = config.get("backfill_batch", 10)
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+    cache = CacheWithBackfill(source, miss_threshold=threshold, backfill_batch=batch)
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
+    results: list[dict] = []
+    for key in lookups:
+        val = cache.get(key)
+        results.append({"key": key, "value": val, "found": val is not None})
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+    summary = cache.summary()
+    summary["lookup_results"] = results
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
 def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
+    parser = argparse.ArgumentParser(description="Cache Backfill Runner")
+    parser.add_argument("--input", default="data/sample_input.json")
     parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
+    summary = run(Path(args.input), Path(args.output))
     print(json.dumps(summary, indent=2))
 
 

@@ -1,141 +1,212 @@
-"""Level 9 project: Observability SLO Pack.
+"""Observability SLO Pack — define SLOs, measure SLIs, calculate error budgets.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    SLOs (Service Level Objectives) with SLIs (Service Level Indicators)
+    and error budgets form the foundation of Site Reliability Engineering.
+    This project builds an SLO management system that tracks indicators,
+    computes compliance, and manages error budget consumption.
+
+Concepts practised:
+    - SRE concepts: SLO, SLI, error budget
+    - time-window compliance calculation
+    - burn-rate alerting
+    - dataclasses for typed SRE primitives
+    - strategy pattern for different SLI types
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any
 
-PROJECT_LEVEL = 9
-PROJECT_TITLE = "Observability SLO Pack"
-PROJECT_FOCUS = "sli/slo calculations and reports"
+
+# --- Domain types -------------------------------------------------------
+
+class SLIType(Enum):
+    AVAILABILITY = "availability"     # % of successful requests
+    LATENCY = "latency"              # % of requests under threshold
+    THROUGHPUT = "throughput"         # requests/second minimum
+    ERROR_RATE = "error_rate"        # inverse: % of errors below threshold
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class SLI:
+    """Service Level Indicator — a measurable metric."""
+    name: str
+    sli_type: SLIType
+    good_count: int = 0
+    total_count: int = 0
 
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
-
-
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    @property
+    def value(self) -> float:
+        """Current SLI value as a percentage (0-100)."""
+        if self.total_count == 0:
+            return 100.0
+        return (self.good_count / self.total_count) * 100
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+@dataclass
+class SLO:
+    """Service Level Objective — a target for an SLI."""
+    name: str
+    sli: SLI
+    target_pct: float  # e.g., 99.9
+    window_days: int = 30
+
+    @property
+    def error_budget_pct(self) -> float:
+        """Total allowed error as percentage of window."""
+        return 100.0 - self.target_pct
+
+    @property
+    def error_budget_remaining_pct(self) -> float:
+        """How much error budget is left."""
+        current = self.sli.value
+        budget = self.error_budget_pct
+        consumed = max(0, self.target_pct - current)
+        return max(0, budget - consumed)
+
+    @property
+    def in_compliance(self) -> bool:
+        return self.sli.value >= self.target_pct
+
+    @property
+    def burn_rate(self) -> float:
+        """Rate of error budget consumption (1.0 = normal, >1 = burning fast)."""
+        budget = self.error_budget_pct
+        if budget <= 0:
+            return 0.0
+        consumed = max(0, self.error_budget_pct - self.error_budget_remaining_pct)
+        return consumed / budget
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+@dataclass
+class BurnRateAlert:
+    """Alert triggered when error budget burns too quickly."""
+    slo_name: str
+    burn_rate: float
+    severity: str
+    message: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "slo": self.slo_name,
+            "burn_rate": round(self.burn_rate, 2),
+            "severity": self.severity,
+            "message": self.message,
+        }
+
+
+# --- SLO Pack (management layer) ---------------------------------------
+
+class SLOPack:
+    """Manages a collection of SLOs with monitoring and alerting."""
+
+    def __init__(self) -> None:
+        self._slos: dict[str, SLO] = {}
+
+    def add_slo(self, slo: SLO) -> None:
+        self._slos[slo.name] = slo
+
+    def get_slo(self, name: str) -> SLO | None:
+        return self._slos.get(name)
+
+    def record_event(self, slo_name: str, good: bool) -> None:
+        """Record a good or bad event for an SLO's SLI."""
+        slo = self._slos.get(slo_name)
+        if not slo:
+            raise KeyError(f"Unknown SLO: {slo_name}")
+        slo.sli.total_count += 1
+        if good:
+            slo.sli.good_count += 1
+
+    def check_burn_rates(self, warn_threshold: float = 2.0,
+                         critical_threshold: float = 10.0) -> list[BurnRateAlert]:
+        """Check all SLOs for excessive burn rates."""
+        alerts: list[BurnRateAlert] = []
+        for slo in self._slos.values():
+            rate = slo.burn_rate
+            if rate >= critical_threshold:
+                alerts.append(BurnRateAlert(
+                    slo_name=slo.name, burn_rate=rate, severity="critical",
+                    message=f"{slo.name}: burn rate {rate:.1f}x, budget nearly exhausted",
+                ))
+            elif rate >= warn_threshold:
+                alerts.append(BurnRateAlert(
+                    slo_name=slo.name, burn_rate=rate, severity="warning",
+                    message=f"{slo.name}: burn rate {rate:.1f}x, above normal",
+                ))
+        return alerts
+
+    def compliance_report(self) -> dict[str, Any]:
+        """Generate a compliance report for all SLOs."""
+        slos_data: list[dict[str, Any]] = []
+        for slo in self._slos.values():
+            slos_data.append({
+                "name": slo.name,
+                "sli_type": slo.sli.sli_type.value,
+                "current_sli_pct": round(slo.sli.value, 4),
+                "target_pct": slo.target_pct,
+                "in_compliance": slo.in_compliance,
+                "error_budget_total_pct": round(slo.error_budget_pct, 4),
+                "error_budget_remaining_pct": round(slo.error_budget_remaining_pct, 4),
+                "burn_rate": round(slo.burn_rate, 2),
+            })
+
+        in_compliance = sum(1 for s in self._slos.values() if s.in_compliance)
+        return {
+            "total_slos": len(self._slos),
+            "in_compliance": in_compliance,
+            "out_of_compliance": len(self._slos) - in_compliance,
+            "slos": slos_data,
+        }
+
+
+# --- Demo ---------------------------------------------------------------
+
+def run_demo() -> dict[str, Any]:
+    pack = SLOPack()
+
+    # Define SLOs
+    pack.add_slo(SLO(
+        name="api-availability",
+        sli=SLI("api-success-rate", SLIType.AVAILABILITY),
+        target_pct=99.9,
+    ))
+    pack.add_slo(SLO(
+        name="api-latency",
+        sli=SLI("api-fast-requests", SLIType.LATENCY),
+        target_pct=95.0,
+    ))
+
+    # Simulate traffic
+    import random
+    rng = random.Random(42)
+    for _ in range(10000):
+        pack.record_event("api-availability", rng.random() > 0.002)
+        pack.record_event("api-latency", rng.random() > 0.06)
+
+    alerts = pack.check_burn_rates()
+    report = pack.compliance_report()
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "report": report,
+        "alerts": [a.to_dict() for a in alerts],
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="SLO/SLI management pack")
+    parser.add_argument("--demo", action="store_true", default=True)
+    return parser.parse_args(argv)
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    parse_args(argv)
+    print(json.dumps(run_demo(), indent=2))
 
 
 if __name__ == "__main__":

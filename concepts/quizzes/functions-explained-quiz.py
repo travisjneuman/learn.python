@@ -3,6 +3,8 @@ Quiz: Functions Explained
 Review: concepts/functions-explained.md
 """
 
+from _quiz_helpers import normalize_answer
+
 
 def run_quiz():
     print("=" * 60)
@@ -22,7 +24,7 @@ def run_quiz():
     print("  c) def")
     print("  d) define")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "c":
         score += 1
         print("Correct! The 'def' keyword is used to define functions.")
@@ -45,7 +47,7 @@ def run_quiz():
     print("  c) Error")
     print("  d) 0")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! The function calculates the result but never")
@@ -67,7 +69,7 @@ def run_quiz():
     print("  c) A variable")
     print("  d) A string")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Parameters are the names in the function definition.")
@@ -91,7 +93,7 @@ def run_quiz():
     print('  c) None, Alice!')
     print('  d) Alice')
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! greeting has a default value of 'Hello', so you")
@@ -114,7 +116,7 @@ def run_quiz():
     print("  c) SyntaxError — wrong order")
     print("  d) TypeError — wrong argument type")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Functions must be defined before they are called.")
@@ -135,7 +137,7 @@ def run_quiz():
     print("  c) greet prints the function; greet('Alice') runs it")
     print("  d) Both call the function")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Without parentheses, you are referencing the")
@@ -154,7 +156,7 @@ def run_quiz():
     print("  c) Python requires them")
     print("  d) They use less memory")
     print()
-    answer = input("Your answer: ").strip().lower()
+    answer = normalize_answer(input("Your answer: "))
     if answer == "b":
         score += 1
         print("Correct! Functions enable reuse, organization, testability,")

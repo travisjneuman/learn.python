@@ -1,52 +1,132 @@
-"""Advanced test module with heavy comments.
+"""Tests for SME Mentorship Toolkit.
 
-Coverage goals:
-- input loading integrity,
-- transformation correctness,
-- summary metrics and diagnostics fields.
+Covers matching algorithm, compatibility scoring, progress tracking,
+and milestone management.
 """
+from __future__ import annotations
 
-# Path gives portable temporary-file path handling.
-from pathlib import Path
+import pytest
 
-# Import advanced helper functions under test.
-from project import build_records, build_summary, load_items
-
-
-def test_load_items_removes_blank_lines(tmp_path: Path) -> None:
-    """Loader should normalize whitespace and drop empty rows."""
-    # Arrange: mixed raw text including blank and padded lines.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: call loader.
-    items = load_items(sample)
-
-    # Assert: only normalized non-empty values remain.
-    assert items == ["alpha", "beta"]
+from project import (
+    MentorMatcher,
+    Mentee,
+    Mentor,
+    Milestone,
+    MilestoneStatus,
+    ProgressTracker,
+    Skill,
+    SkillLevel,
+    compute_compatibility,
+)
 
 
-def test_build_records_contains_normalized_field() -> None:
-    """Transform should expose normalized values for downstream joins."""
-    # Arrange: values with spaces/casing differences.
-    source_items = ["High Latency", "Disk Full"]
-
-    # Act: transform into structured records.
-    records = build_records(source_items)
-
-    # Assert: normalized field uses lowercase underscore style.
-    assert records[0]["normalized"] == "high_latency"
-    assert records[1]["normalized"] == "disk_full"
+@pytest.fixture
+def python_mentor() -> Mentor:
+    return Mentor("M1", "Alice", [Skill("python", SkillLevel.EXPERT), Skill("sql", SkillLevel.ADVANCED)],
+                  years_experience=10, max_mentees=2)
 
 
-def test_build_summary_reports_elapsed_ms_field() -> None:
-    """Summary must include elapsed_ms for run diagnostics."""
-    # Arrange: deterministic input set.
-    records = build_records(["one", "two", "three"])
+@pytest.fixture
+def python_mentee() -> Mentee:
+    return Mentee("E1", "Carol", [Skill("python", SkillLevel.BEGINNER)], goals=["python", "sql"])
 
-    # Act: include explicit elapsed metric.
-    summary = build_summary(records, elapsed_ms=17)
 
-    # Assert: both record count and elapsed metric are preserved.
-    assert summary["record_count"] == 3
-    assert summary["elapsed_ms"] == 17
+@pytest.fixture
+def js_mentor() -> Mentor:
+    return Mentor("M2", "Bob", [Skill("javascript", SkillLevel.EXPERT)], years_experience=8)
+
+
+# ---------------------------------------------------------------------------
+# Compatibility scoring
+# ---------------------------------------------------------------------------
+
+class TestCompatibility:
+    def test_matching_skills_increase_score(self, python_mentor: Mentor, python_mentee: Mentee) -> None:
+        result = compute_compatibility(python_mentor, python_mentee)
+        assert result.compatibility_score > 50
+        assert "python" in result.matched_skills
+
+    def test_no_overlap_low_score(self, js_mentor: Mentor, python_mentee: Mentee) -> None:
+        result = compute_compatibility(js_mentor, python_mentee)
+        assert result.compatibility_score < compute_compatibility(
+            Mentor("M3", "X", [Skill("python", SkillLevel.EXPERT)], years_experience=10),
+            python_mentee,
+        ).compatibility_score
+
+    def test_experience_gap_recorded(self, python_mentor: Mentor, python_mentee: Mentee) -> None:
+        result = compute_compatibility(python_mentor, python_mentee)
+        assert result.experience_gap == 10
+
+
+# ---------------------------------------------------------------------------
+# Matching
+# ---------------------------------------------------------------------------
+
+class TestMentorMatcher:
+    def test_match_all_assigns_mentees(self, python_mentor: Mentor, js_mentor: Mentor) -> None:
+        mentees = [
+            Mentee("E1", "Carol", goals=["python"]),
+            Mentee("E2", "Dave", goals=["javascript"]),
+        ]
+        matcher = MentorMatcher([python_mentor, js_mentor], mentees)
+        matches = matcher.match_all()
+        assert len(matches) == 2
+
+    def test_respects_max_mentees(self) -> None:
+        mentor = Mentor("M1", "Alice", [Skill("python", SkillLevel.EXPERT)],
+                        years_experience=5, max_mentees=1)
+        mentees = [
+            Mentee("E1", "Carol", goals=["python"]),
+            Mentee("E2", "Dave", goals=["python"]),
+        ]
+        matcher = MentorMatcher([mentor], mentees)
+        matches = matcher.match_all()
+        assert len(matches) == 1
+
+    def test_match_single(self, python_mentor: Mentor, python_mentee: Mentee) -> None:
+        matcher = MentorMatcher([python_mentor], [])
+        result = matcher.match_single(python_mentee)
+        assert result is not None
+        assert result.mentor_id == "M1"
+
+    def test_match_single_no_mentors(self, python_mentee: Mentee) -> None:
+        matcher = MentorMatcher([], [])
+        assert matcher.match_single(python_mentee) is None
+
+
+# ---------------------------------------------------------------------------
+# Progress tracking
+# ---------------------------------------------------------------------------
+
+class TestProgressTracker:
+    def test_initial_completion_zero(self) -> None:
+        tracker = ProgressTracker()
+        assert tracker.completion_rate == 0.0
+
+    def test_complete_milestone(self) -> None:
+        tracker = ProgressTracker()
+        tracker.add_milestone(Milestone("MS-1", "Task 1", "E1", "M1"))
+        tracker.complete_milestone("MS-1")
+        assert tracker.completion_rate == 100.0
+
+    def test_partial_completion(self) -> None:
+        tracker = ProgressTracker()
+        tracker.add_milestone(Milestone("MS-1", "Task 1", "E1", "M1"))
+        tracker.add_milestone(Milestone("MS-2", "Task 2", "E1", "M1"))
+        tracker.complete_milestone("MS-1")
+        assert tracker.completion_rate == 50.0
+
+    def test_milestones_for_pair(self) -> None:
+        tracker = ProgressTracker()
+        tracker.add_milestone(Milestone("MS-1", "T1", "E1", "M1"))
+        tracker.add_milestone(Milestone("MS-2", "T2", "E2", "M2"))
+        pair = tracker.milestones_for_pair("M1", "E1")
+        assert len(pair) == 1
+
+    def test_report_structure(self) -> None:
+        tracker = ProgressTracker()
+        tracker.add_milestone(Milestone("MS-1", "T1", "E1", "M1"))
+        report = tracker.report()
+        assert "total_milestones" in report
+        assert "completion_rate" in report
+        assert "by_status" in report

@@ -5,49 +5,54 @@ Home: [README](../../../README.md)
 - validate required fields and safe defaults
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Validate common input formats -- emails, phone numbers, and zip codes -- using string methods and basic regex. You will learn how to dispatch different validators based on input type and return structured pass/fail results.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/01-input-validator-lab
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Validation Results ===
+
+  PASS  [email] user@example.com
+  FAIL  [email] bad-email-no-at -- must contain exactly one @
+  FAIL  [email] missing@domain -- domain must contain a dot
+
+  1/3 passed validation
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a new validation type: "url" that checks for `http://` or `https://` prefix and a dot in the domain.
+2. Add a `--strict` flag that rejects emails without a TLD of at least 2 characters.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a line with an unknown type like `ssn: 123-45-6789` -- does `validate_input()` handle it or crash?
+2. Add a line with no colon separator like `just some text` -- does parsing fail gracefully?
+3. Add an email like `user@` -- does `validate_email()` accept it when it should not?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `validate_input()` returns an "unknown type" result for unrecognised types instead of crashing.
+2. Handle lines without the `type: value` format by skipping them with a warning.
+3. Add a test for the unknown-type case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `validate_email()` use basic string checks (`"@" in value`) rather than a full regex?
+2. What does `re.fullmatch()` do differently from `re.search()`?
+3. Why return a dict with `{"valid": True/False, "reason": "..."}` instead of just True/False?
+4. Where would input validation appear in real software (form handlers, API endpoints, data import)?
 
 ## Mastery check
 You can move on when you can:

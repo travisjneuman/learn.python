@@ -13,41 +13,43 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/06-metrics-summary-engine
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/metrics.json --output data/metrics_summary.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Aggregated 3 metrics: response_time, cpu_usage, error_rate
+6 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/metrics_summary.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--window` flag that computes moving averages over a configurable window size.
+2. Add standard deviation to the summary statistics for each metric.
+3. Add a `--format` flag that outputs either JSON or a human-readable table.
+4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Add a metric with only one data point and check if percentile calculation breaks.
+2. Add a metric with an empty values list.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle single-value metrics gracefully (p50 = p99 = the single value).
+2. Return zeros or nulls for empty metrics with a clear warning.
+3. Add tests for single-value and empty-metric edge cases.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does `percentile` compute p50 vs p99 from a sorted list?
+2. Why is moving average useful for smoothing noisy time-series data?
+3. What happens if you pass `window=0` to `moving_average`?
+4. Where do you see metrics aggregation in production (Prometheus, Datadog, Grafana)?
 
 ## Mastery check
 You can move on when you can:

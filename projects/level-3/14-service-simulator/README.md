@@ -13,48 +13,55 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/14-service-simulator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py request --seed 42
+python project.py load --count 100 --json
+python project.py retry --max-retries 5 --seed 42
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{"status_code": 200, "body": {"message": "OK"}, ...}
+Load test: 100 requests
+  200: 82
+  429: 5
+  500: 8
+  504: 5
+10 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Simulated responses on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--failure-rate` flag to override the default error rate.
+2. Add exponential backoff to the `retry_request` function (wait 2^attempt ms).
+3. Add a `health` subcommand that checks if the service is "healthy" (3 consecutive 200s).
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Set `success_rate` to 0.0 — does `retry_request` exhaust all retries?
+2. Run `load` with `--count 0` — what happens with zero requests?
+3. Create a service with `--seed` and verify results are identical each run.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation for rate parameters (must sum to <= 1.0).
+2. Handle the zero-requests edge case in `run_load_test`.
+3. Add a `--timeout` flag that limits total retry duration.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What HTTP status codes mean 200, 429, 500, 504?
+2. How does `random.Random(seed)` make tests deterministic?
+3. What is retry logic and when should you retry vs. fail fast?
+4. Why use a class (`SimulatedService`) instead of standalone functions?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- simulate service responses with configurable probabilities,
+- implement retry logic with max attempts,
+- use seed-based randomness for reproducible tests,
+- understand HTTP status code categories.
 
 ---
 

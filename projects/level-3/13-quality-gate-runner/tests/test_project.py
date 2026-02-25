@@ -1,54 +1,132 @@
-"""Intermediate test module with heavy comments.
+"""Tests for Quality Gate Runner."""
 
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
 from pathlib import Path
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+import pytest
+
+from project import (
+    GateResult,
+    PipelineResult,
+    check_file_exists,
+    check_file_size,
+    check_no_print_statements,
+    check_no_syntax_errors,
+    format_pipeline_text,
+    run_default_gates,
+    run_pipeline,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act: run loader.
-    items = load_items(sample)
-
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
+@pytest.fixture
+def valid_py(tmp_path: Path) -> Path:
+    """Create a valid Python file."""
+    f = tmp_path / "good.py"
+    f.write_text("def hello():\n    return 42\n", encoding="utf-8")
+    return f
 
 
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
+@pytest.fixture
+def bad_syntax_py(tmp_path: Path) -> Path:
+    """Create a Python file with syntax errors."""
+    f = tmp_path / "bad.py"
+    f.write_text("def broken(\n", encoding="utf-8")
+    return f
 
 
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
+@pytest.fixture
+def print_py(tmp_path: Path) -> Path:
+    """Create a Python file with print statements."""
+    f = tmp_path / "chatty.py"
+    f.write_text("x = 1\nprint(x)\nprint('hello')\n", encoding="utf-8")
+    return f
 
-    # Act: build summary from records.
-    summary = build_summary(records)
 
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_check_file_exists(valid_py: Path) -> None:
+    """Existing file should pass."""
+    result = check_file_exists(valid_py)
+    assert result.passed is True
+
+
+def test_check_file_exists_missing(tmp_path: Path) -> None:
+    """Missing file should fail."""
+    result = check_file_exists(tmp_path / "nope.py")
+    assert result.passed is False
+
+
+def test_check_no_syntax_errors_valid(valid_py: Path) -> None:
+    """Valid Python should pass syntax check."""
+    result = check_no_syntax_errors(valid_py)
+    assert result.passed is True
+
+
+def test_check_no_syntax_errors_bad(bad_syntax_py: Path) -> None:
+    """Broken Python should fail syntax check."""
+    result = check_no_syntax_errors(bad_syntax_py)
+    assert result.passed is False
+    assert "Syntax error" in result.message
+
+
+def test_check_no_print_clean(valid_py: Path) -> None:
+    """File without prints should pass."""
+    result = check_no_print_statements(valid_py)
+    assert result.passed is True
+
+
+def test_check_no_print_violations(print_py: Path) -> None:
+    """File with prints should fail with details."""
+    result = check_no_print_statements(print_py)
+    assert result.passed is False
+    assert len(result.details) == 2
+
+
+def test_check_file_size(valid_py: Path) -> None:
+    """Small file should pass size check."""
+    result = check_file_size(valid_py, max_lines=100)
+    assert result.passed is True
+
+
+def test_check_file_size_over_limit(tmp_path: Path) -> None:
+    """Large file should fail size check."""
+    f = tmp_path / "big.py"
+    f.write_text("\n".join(f"x_{i} = {i}" for i in range(500)), encoding="utf-8")
+    result = check_file_size(f, max_lines=100)
+    assert result.passed is False
+
+
+def test_run_pipeline() -> None:
+    """Pipeline should aggregate gate results."""
+    gates = [
+        GateResult("a", True, 1.0),
+        GateResult("b", False, 2.0, message="failed"),
+        GateResult("c", True, 1.0),
+    ]
+    result = run_pipeline(gates)
+    assert result.status == "FAIL"
+    assert result.passed == 2
+    assert result.failed == 1
+
+
+def test_run_pipeline_all_pass() -> None:
+    """All passing gates should produce PASS status."""
+    gates = [GateResult("a", True, 1.0), GateResult("b", True, 1.0)]
+    result = run_pipeline(gates)
+    assert result.status == "PASS"
+
+
+def test_run_default_gates(valid_py: Path) -> None:
+    """Default gates on valid file should all pass."""
+    result = run_default_gates(valid_py)
+    assert result.status == "PASS"
+    assert result.total_gates == 4
+
+
+def test_format_pipeline_text() -> None:
+    """Text output should contain status and gate names."""
+    result = PipelineResult(
+        total_gates=1, passed=1, failed=0,
+        duration_ms=5.0, status="PASS",
+        gates=[GateResult("test_gate", True, 5.0, "OK")],
+    )
+    text = format_pipeline_text(result)
+    assert "PASS" in text
+    assert "test_gate" in text

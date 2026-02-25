@@ -1,5 +1,4 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "config": {"min_interval": 1.0, "max_interval": 60.0, "backoff_factor": 1.5, "speedup_factor": 0.5},
+  "snapshots": ["data_v1", "data_v1", "data_v1", "data_v2", "data_v2", "data_v3", "data_v3", "data_v3", "data_v3"]
+}

@@ -1,106 +1,210 @@
-"""Level 5 project: Template Report Renderer.
+"""Level 5 / Project 09 — Template Report Renderer.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Renders reports from simple templates with data binding.
+Uses a custom mini-template engine with {{variable}} placeholders,
+{{#each items}} loops, and {{#if condition}} blocks.
+
+Concepts practiced:
+- Regular expression matching and substitution
+- Recursive template rendering for nested structures
+- Truthiness evaluation for conditional blocks
+- Structured report generation from templates
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
+import re
 from pathlib import Path
 
-PROJECT_LEVEL = 5
-PROJECT_TITLE = "Template Report Renderer"
-PROJECT_FOCUS = "report generation by template blocks"
 
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
+    """Set up logging so rendering progress is traceable."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# ---------- template rendering helpers ----------
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# The rendering pipeline processes blocks in order:
+#   1. {{#if key}} conditional blocks (removed if falsy)
+#   2. {{#each items}} loop blocks (expanded for each item)
+#   3. {{variable}} simple substitution (leftover placeholders)
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def render_variables(template: str, data: dict) -> str:
+    """Replace ``{{key}}`` placeholders with values from *data*.
 
-    We keep this separate from I/O so business logic stays testable.
+    Missing keys are replaced with ``{{MISSING:key}}`` so the output
+    clearly shows which data was expected but not provided.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    def replacer(match: re.Match) -> str:
+        key = match.group(1).strip()
+        # Support dotted paths like {{config.max_retries}}
+        value = resolve_dotted_key(key, data)
+        if value is None:
+            logging.warning("Missing template variable: '%s'", key)
+            return f"{{{{MISSING:{key}}}}}"
+        return str(value)
+
+    return re.sub(r"\{\{(\w+(?:\.\w+)*)\}\}", replacer, template)
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def resolve_dotted_key(key: str, data: dict) -> object | None:
+    """Resolve a dotted key path like 'config.timeout' against nested dicts.
+
+    Returns None if any segment of the path is missing.
+    """
+    parts = key.split(".")
+    current: object = data
+    for part in parts:
+        if not isinstance(current, dict) or part not in current:
+            return None
+        current = current[part]
+    return current
+
+
+def render_each_blocks(template: str, data: dict) -> str:
+    """Process ``{{#each items}}...{{/each}}`` blocks.
+
+    Each loop iteration substitutes item fields into the block body.
+    For non-dict items (strings, numbers) use ``{{this}}`` inside the
+    block to reference the item value.
+    """
+    pattern = r"\{\{#each\s+(\w+)\}\}(.*?)\{\{/each\}\}"
+
+    def replacer(match: re.Match) -> str:
+        key = match.group(1)
+        block = match.group(2)
+        items = data.get(key, [])
+
+        if not isinstance(items, list):
+            logging.warning("{{#each %s}} data is not a list — skipping block", key)
+            return ""
+
+        rendered_parts: list[str] = []
+        for item in items:
+            if isinstance(item, dict):
+                rendered_parts.append(render_variables(block, item))
+            else:
+                # Scalar items: replace {{this}} with the string value.
+                rendered_parts.append(block.replace("{{this}}", str(item)))
+
+        return "".join(rendered_parts)
+
+    return re.sub(pattern, replacer, template, flags=re.DOTALL)
+
+
+def is_truthy(value: object) -> bool:
+    """Determine whether a template value is truthy.
+
+    Falsy values: None, False, 0, empty string, empty list, "false".
+    Everything else is truthy.
+    """
+    if value is None:
+        return False
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value != 0
+    if isinstance(value, str):
+        return value.lower() not in ("", "false", "0", "no")
+    if isinstance(value, list):
+        return len(value) > 0
+    return True
+
+
+def render_if_blocks(template: str, data: dict) -> str:
+    """Process ``{{#if key}}...{{/if}}`` conditional blocks.
+
+    If the key's value is truthy the block content is rendered;
+    otherwise the entire block (including delimiters) is removed.
+    """
+    pattern = r"\{\{#if\s+(\w+)\}\}(.*?)\{\{/if\}\}"
+
+    def replacer(match: re.Match) -> str:
+        key = match.group(1)
+        block = match.group(2)
+        value = data.get(key)
+        if is_truthy(value):
+            return render_variables(block, data)
+        return ""
+
+    return re.sub(pattern, replacer, template, flags=re.DOTALL)
+
+
+# ---------- full render pipeline ----------
+
+
+def render_template(template: str, data: dict) -> str:
+    """Full render pipeline: if-blocks -> each-blocks -> variables.
+
+    Processing order matters:
+    - IF blocks are resolved first so that falsy sections are removed
+      before EACH expansion.
+    - EACH blocks are expanded next, generating repeated sections.
+    - Finally, remaining {{variable}} placeholders are substituted.
+    """
+    result = render_if_blocks(template, data)
+    result = render_each_blocks(result, data)
+    result = render_variables(result, data)
+    return result
+
+
+# ---------- pipeline ----------
+
+
+def run(template_path: Path, data_path: Path, output_path: Path) -> dict:
+    """Load template and data, render, and write the report."""
+    if not template_path.exists():
+        raise FileNotFoundError(f"Template not found: {template_path}")
+    if not data_path.exists():
+        raise FileNotFoundError(f"Data not found: {data_path}")
+
+    template = template_path.read_text(encoding="utf-8")
+    data = json.loads(data_path.read_text(encoding="utf-8"))
+
+    rendered = render_template(template, data)
+    line_count = len(rendered.splitlines())
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(rendered, encoding="utf-8")
+    logging.info("Report rendered: %d lines written", line_count)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "lines_written": line_count,
+        "output_length": len(rendered),
+        "template": str(template_path),
+        "data_keys": list(data.keys()),
     }
 
 
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
-    return summary
+# ---------- CLI ----------
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    """Parse command-line arguments for the report renderer."""
+    parser = argparse.ArgumentParser(
+        description="Render reports from templates with data",
+    )
+    parser.add_argument("--template", default="data/report_template.txt", help="Template file")
+    parser.add_argument("--data", default="data/report_data.json", help="Data JSON file")
+    parser.add_argument("--output", default="data/rendered_report.txt", help="Output path")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
+    """Entry point: configure logging, parse args, render the report."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
-    print(json.dumps(summary, indent=2))
+    report = run(Path(args.template), Path(args.data), Path(args.output))
+    print(f"Report rendered: {report['lines_written']} lines written")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,28 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "tenants": [
+    {"id": "acme", "name": "Acme Corp", "plan": "enterprise"},
+    {"id": "globex", "name": "Globex Inc", "plan": "standard"}
+  ],
+  "policies": [
+    {"type": "required_field", "field": "owner"},
+    {"type": "required_field", "field": "cost_center"},
+    {"type": "plan_level", "min_plan": "standard"}
+  ],
+  "service": {
+    "name": "payment-service",
+    "has_monitoring": true,
+    "has_alerting": true,
+    "has_runbook": true,
+    "has_healthcheck": true
+  },
+  "change": {
+    "change_id": "CHG-001",
+    "title": "Add new payment method",
+    "risk_score": 35.0,
+    "author": "alice"
+  },
+  "architecture": {
+    "service_count": 8,
+    "avg_dependencies": 2.5
+  }
+}

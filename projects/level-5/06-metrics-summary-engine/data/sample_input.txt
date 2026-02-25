@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample data for Metrics Summary Engine
+-----------------------------------------
+This file explains the companion metrics.json.
+
+metrics.json contains time-series metric entries:
+  {"name": "response_time", "value": 120, "ts": "2024-03-01T10:00:00"}
+  {"name": "response_time", "value": 145, "ts": "2024-03-01T10:05:00"}
+  {"name": "response_time", "value": 98,  "ts": "2024-03-01T10:10:00"}
+  {"name": "response_time", "value": 200, "ts": "2024-03-01T10:15:00"}
+  {"name": "response_time", "value": 110, "ts": "2024-03-01T10:20:00"}
+  {"name": "cpu_usage",     "value": 45,  "ts": "2024-03-01T10:00:00"}
+  {"name": "cpu_usage",     "value": 72,  "ts": "2024-03-01T10:05:00"}
+  {"name": "cpu_usage",     "value": 68,  "ts": "2024-03-01T10:10:00"}
+  {"name": "error_rate",    "value": 0.02,"ts": "2024-03-01T10:00:00"}
+  {"name": "error_rate",    "value": 0.05,"ts": "2024-03-01T10:05:00"}
+
+For each metric the engine computes:
+  - min, max, mean
+  - p50, p90, p99 percentiles
+  - 3-point moving average
+
+Expected: 3 metrics summarized with full statistics

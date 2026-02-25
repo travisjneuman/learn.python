@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+module: api layer=presentation depends=[service,auth]
+module: service layer=business depends=[repository,events]
+module: repository layer=data depends=[models]
+module: auth layer=business depends=[repository]
+module: events layer=infrastructure depends=[]
+module: models layer=data depends=[]
+rule: deny data->presentation "Data layer must not depend on presentation"
+rule: deny infrastructure->business "Infrastructure must not depend on business"

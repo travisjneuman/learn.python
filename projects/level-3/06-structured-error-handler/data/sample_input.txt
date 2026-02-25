@@ -1,5 +1,18 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Save the following as records.json:
+[
+    {"name": "Alice Chen", "email": "alice@example.com", "age": "30"},
+    {"name": "", "email": "bad", "age": "x"},
+    {"name": "Bob", "email": "bob@test.com", "age": "25"},
+    {"name": "C", "email": "", "age": "150"}
+]
+
+Save the following as schema.json:
+{
+    "name": {"required": true, "min_length": 2, "max_length": 50},
+    "email": {"required": true, "pattern": "^.+@.+\\..+$"},
+    "age": {"required": true, "pattern": "^\\d{1,3}$"}
+}
+
+Run:
+    python project.py records.json --schema schema.json
+    python project.py records.json --schema schema.json --json

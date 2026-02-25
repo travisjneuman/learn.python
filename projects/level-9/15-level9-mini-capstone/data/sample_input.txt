@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+service: auth-api team=platform slo_compliance=99.95% reliability_grade=A monthly_cost=2800 governance=PASS
+service: user-api team=user slo_compliance=99.8% reliability_grade=B monthly_cost=3200 governance=PASS
+service: checkout-api team=commerce slo_compliance=98.5% reliability_grade=C monthly_cost=4500 governance=WARNING
+service: search-api team=search slo_compliance=99.2% reliability_grade=B monthly_cost=3700 governance=PASS
+budget_monthly: 15000
+health_thresholds: healthy=95% warning=90% critical=85%

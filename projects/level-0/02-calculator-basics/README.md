@@ -5,50 +5,52 @@ Home: [README](../../../README.md)
 - numeric input, arithmetic, and safe casting
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Build a four-operation calculator that reads expressions from a file. You will practise arithmetic operators, float/int conversion, and dispatching operations with a dictionary.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/02-calculator-basics
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+  10 + 5  =>  15.0
+  20 - 8  =>  12.0
+  6 * 7  =>  42.0
+
+4 results written to data/output.json
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add support for a new operation (modulo `%` or exponentiation `**`).
-2. Handle the case where the user provides non-numeric input -- print a clear error instead of crashing.
-3. Add a `--precision` flag that controls how many decimal places appear in the output.
-4. Re-run script and tests.
+1. Add support for modulo (`%`) and exponentiation (`**`) operations.
+2. Add a `--precision` flag that controls how many decimal places appear in results.
+3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a line `divide 10 0` to the input file -- does it raise `ValueError` or crash with `ZeroDivisionError`?
+2. Add a line with only one number like `add 5` -- what happens when there is no second operand?
+3. Add a line with text instead of numbers like `add hello world` -- does `float()` fail gracefully?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `divide()` raises `ValueError` with a clear message for zero divisors.
+2. Add validation in `calculate()` that checks for exactly two numeric operands.
+3. Add a test for the malformed-expression case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the `operations` dict map strings to functions, instead of using if/elif chains?
+2. What does `float()` do and when does it raise `ValueError`?
+3. Why is division by zero handled in `divide()` rather than in `calculate()`?
+4. Where would expression parsers be used in real software (spreadsheets, query engines)?
 
 ## Mastery check
 You can move on when you can:

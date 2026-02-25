@@ -1,5 +1,14 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "key_field": "order_id",
+  "compare_fields": ["status", "total"],
+  "left": [
+    {"order_id": "1001", "status": "shipped", "total": 49.99},
+    {"order_id": "1002", "status": "pending", "total": 25.00},
+    {"order_id": "1003", "status": "delivered", "total": 75.50}
+  ],
+  "right": [
+    {"order_id": "1001", "status": "shipped", "total": 49.99},
+    {"order_id": "1002", "status": "shipped", "total": 25.00},
+    {"order_id": "1004", "status": "returned", "total": 12.00}
+  ]
+}

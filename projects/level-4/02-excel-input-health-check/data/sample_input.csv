@@ -1,0 +1,7 @@
+name,age,email,department
+Alice,30,alice@example.com,Engineering
+Bob,25,bob@example.com,Design
+Charlie,,charlie@example.com,Marketing
+Diana,28,,Engineering
+Eve,35,eve@example.com
+Frank,not_a_number,frank@example.com,Sales

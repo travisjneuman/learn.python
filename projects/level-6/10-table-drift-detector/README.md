@@ -19,35 +19,39 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "tables_checked": 2,
+  "drift_detected": false,
+  "reports": [{"table": "users", "columns": ["id", "name", "email"], ...}, ...]
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — drift reports per table
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a severity level: "warning" for added columns, "critical" for removed columns or type changes.
+2. Store multiple snapshots and add a `--compare` flag to diff any two specific snapshots by ID.
+3. Add a NOT NULL constraint change detector (a column changing from nullable to NOT NULL).
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Run twice with the same schema — confirm drift is not falsely detected.
+2. Add a column via `ALTER TABLE` between runs and confirm drift IS detected.
+3. Pass a table name that does not exist and observe the error.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle non-existent tables gracefully with a clear error message.
+2. Add a "no change" status to the report when schemas match.
+3. Add a test for the ALTER TABLE drift scenario.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is schema drift, and why is it dangerous in data pipelines?
+2. How does `PRAGMA table_info()` work in SQLite?
+3. Why do we store snapshots as JSON instead of comparing live schemas?
+4. In production, what tools detect schema drift automatically?
 
 ## Mastery check
 You can move on when you can:

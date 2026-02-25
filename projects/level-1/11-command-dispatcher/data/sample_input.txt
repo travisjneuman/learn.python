@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+upper hello world
+lower THIS SHOULD BE LOWERCASE
+reverse Python is fun
+count The quick brown fox jumps over the lazy dog
+title this is a title case test
+upper Python Programming
+reverse racecar
+unknown this should fail

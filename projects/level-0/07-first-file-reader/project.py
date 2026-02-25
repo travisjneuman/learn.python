@@ -1,107 +1,106 @@
 """Level 0 project: First File Reader.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a text file and display its contents with line numbers,
+plus a summary of line count, word count, and file size.
+
+Concepts: file I/O, Path objects, encoding, error handling.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "First File Reader"
-PROJECT_FOCUS = "opening and reading plain text safely"
 
+def read_file_lines(path: Path) -> list[str]:
+    """Read a file and return all lines (preserving blank lines).
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY not strip blank lines? -- In a file reader we want to show
+    the file exactly as it is, including empty lines.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+        raise FileNotFoundError(f"File not found: {path}")
+    return path.read_text(encoding="utf-8").splitlines()
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def format_with_line_numbers(lines: list[str]) -> str:
+    """Add line numbers to each line for display.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY right-justify the number? -- When files have more than 9 lines,
+    lining up the numbers makes the output much easier to read.
+    The width is calculated from the total number of lines.
+    """
+    if not lines:
+        return "(empty file)"
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    # Figure out how wide the line numbers need to be.
+    width = len(str(len(lines)))
+
+    numbered = []
+    for i, line in enumerate(lines, start=1):
+        # f-string with >{width} right-justifies the number.
+        numbered.append(f"  {i:>{width}} | {line}")
+
+    return "\n".join(numbered)
+
+
+def file_summary(path: Path, lines: list[str]) -> dict:
+    """Build a summary dict with stats about the file.
+
+    Includes the file name, line count, word count, character count,
+    and file size in bytes.
+    """
+    text = "\n".join(lines)
+    word_count = len(text.split())
+
+    # .stat().st_size gives the file size in bytes on disk.
+    size_bytes = path.stat().st_size
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "file_name": path.name,
+        "lines": len(lines),
+        "words": word_count,
+        "characters": len(text),
+        "size_bytes": size_bytes,
+        "non_empty_lines": sum(1 for line in lines if line.strip()),
     }
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="First File Reader")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="Path to the file to read")
+    parser.add_argument("--output", default="data/output.json",
+                        help="Path for the JSON summary")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
     input_path = Path(args.input)
+    lines = read_file_lines(input_path)
+
+    # Display file contents with line numbers.
+    print(f"=== Contents of {input_path.name} ===\n")
+    print(format_with_line_numbers(lines))
+
+    # Display and save the summary.
+    summary = file_summary(input_path, lines)
+    print(f"\n=== Summary ===")
+    print(f"  Lines:      {summary['lines']} ({summary['non_empty_lines']} non-empty)")
+    print(f"  Words:      {summary['words']}")
+    print(f"  Characters: {summary['characters']}")
+    print(f"  File size:  {summary['size_bytes']} bytes")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    print(f"\n  Summary written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

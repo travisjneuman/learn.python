@@ -5,49 +5,53 @@ Home: [README](../../../README.md)
 - math accuracy and formatting
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Compare products by computing price-per-unit from CSV data, rank them from best to worst deal, and find the best value. You will learn CSV parsing with `csv.DictReader`, float arithmetic, and sorting with key functions.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/03-unit-price-calculator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Unit Price Comparison ===
+
+  Rice 10lb Bag     $15.49 / 10 lb  =>  $1.55/lb
+  Rice 5lb Bag      $8.99  / 5 lb   =>  $1.80/lb
+
+  Best deal: Rice 10lb Bag at $1.55/lb
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
+1. Add a `--category` filter flag that shows only products matching a category column.
+2. Add a "savings" column showing how much you save vs the most expensive option.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a CSV row with quantity `0` -- does `calculate_unit_price()` crash with division by zero?
+2. Add a row with a negative price -- does the calculator accept it or reject it?
+3. Add a row with missing columns -- does `parse_product_row()` handle it gracefully?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `calculate_unit_price()` raises `ValueError` for zero or negative quantities.
+2. Validate that prices are non-negative in `parse_product_row()`.
+3. Add a test for the zero-quantity edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `csv.DictReader` map columns by header name instead of by index?
+2. What does `round(price / quantity, 2)` do and why round to 2 decimal places?
+3. Why does `find_best_deal()` use `min()` with a `key` function instead of a manual loop?
+4. Where would unit price calculations appear in real software (grocery apps, procurement systems)?
 
 ## Mastery check
 You can move on when you can:

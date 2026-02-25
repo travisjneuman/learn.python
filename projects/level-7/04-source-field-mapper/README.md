@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `"datetime"` cast type that parses ISO-format strings into Unix timestamps.
+2. Add a `drop_unmapped` option that removes source fields not in the mapping rules.
+3. Re-run script and tests — verify new cast and drop behavior work correctly.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Map a field with `cast: "int"` but provide a non-numeric string (e.g. `"abc"`).
+2. Reference a source field that does not exist in the record and has no default.
+3. Observe the ValueError or KeyError in the output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Wrap cast operations in try/except and log a warning instead of crashing.
+2. Skip missing source fields when no default is configured, adding them to a `skipped_fields` report.
+3. Add a test for bad cast values and missing source fields.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why are explicit mapping rules better than renaming fields in-place?
+2. What happened when a string could not be cast to int?
+3. How did the try/except prevent a pipeline crash on bad data?
+4. Where would you use field mapping in a real ETL pipeline?
 
 ## Mastery check
 You can move on when you can:

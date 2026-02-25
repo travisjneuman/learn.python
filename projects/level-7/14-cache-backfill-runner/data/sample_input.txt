@@ -1,5 +1,12 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "source": {
+    "product_001": "Widget A",
+    "product_002": "Widget B",
+    "product_003": "Gadget X",
+    "product_004": "Gadget Y",
+    "product_005": "Doohickey"
+  },
+  "lookups": ["product_001", "product_099", "product_003", "product_002", "product_001", "product_088", "product_004"],
+  "miss_threshold": 0.4,
+  "backfill_batch": 3
+}

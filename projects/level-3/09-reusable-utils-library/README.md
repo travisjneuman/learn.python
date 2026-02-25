@@ -13,48 +13,52 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-3/09-reusable-utils-library
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py slugify "Hello World!"
+python project.py convert my_variable_name --to camel
+python project.py validate user@example.com --type email
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+hello-world
+myVariableName
+{"valid": true, ...}
+18 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Utility outputs on stdout
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `deep_flatten` function that flattens arbitrarily nested lists.
+2. Add a `validate_phone` function similar to `validate_email`.
+3. Add a `pluralize` string utility (simple English rules: "cat" -> "cats").
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Call `chunk` with size 0 — what happens?
+2. Call `slugify` with only special characters — what is returned?
+3. Call `camel_to_snake` on an already-snake string — is the result correct?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `chunk` raises a clear error for non-positive sizes.
+2. Handle edge case where `slugify` produces an empty string.
+3. Add idempotency: `camel_to_snake(snake_to_camel(x))` should round-trip.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What makes a function "reusable" vs. tightly coupled to one project?
+2. Why write docstrings with input/output examples?
+3. How does `re.sub` work for text transformation?
+4. Why use `set()` in `unique_ordered` for O(1) membership checking?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- design small, composable utility functions,
+- write clear docstrings with examples,
+- test edge cases and boundary conditions,
+- use regex for text transformation.
 
 ---
 

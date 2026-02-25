@@ -1,5 +1,15 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample CSV for Excel Input Health Check
+----------------------------------------
+This file explains the companion sample_input.csv.
+
+sample_input.csv contains employee records with deliberate issues:
+  Row 1: header row — name,dept,salary,start_date
+  Row 2: Alice,Engineering,95000,2021-03-15  (valid)
+  Row 3: Bob,Marketing,72000,2020-08-01      (valid)
+  Row 4: ,Sales,,2019-01-10                   (blank name and salary)
+  Row 5: Carol,HR,68000,2022-06-30           (valid)
+  Row 6: Dave,Engineering,88000              (short row — missing column)
+  Row 7: Eve,Marketing,71000,2023-02-14,extra (long row — extra column)
+
+Expected health report status: WARN
+Issues detected: 1 short row, 1 long row, blank fields in row 4

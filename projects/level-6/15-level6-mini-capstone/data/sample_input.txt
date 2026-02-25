@@ -1,5 +1,9 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+[
+  {"key": "evt-001", "name": "user_signup", "value": 1, "ts": "2025-01-15T08:00:00"},
+  {"key": "evt-002", "name": "page_view", "value": 0.5, "ts": "2025-01-15T08:05:00"},
+  {"key": "evt-003", "name": "purchase", "value": 49.99, "ts": "2025-01-15T09:30:00"},
+  {"key": "", "name": "orphan_event", "value": 10, "ts": "2025-01-15T10:00:00"},
+  {"key": "evt-005", "name": "api_call", "value": "not_a_number", "ts": "2025-01-15T10:30:00"},
+  {"key": "evt-006", "name": "logout", "value": 1, "ts": "2025-01-15T11:00:00"},
+  {"key": "evt-003", "name": "purchase_updated", "value": 59.99, "ts": "2025-01-15T12:00:00"}
+]

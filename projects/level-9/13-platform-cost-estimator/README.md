@@ -2,59 +2,70 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- cost driver summary and trends
+- Strategy pattern for cloud pricing models (on-demand, reserved, spot)
+- Tiered pricing calculation with volume discounts
+- Resource usage modeling: compute, storage, network, database
+- What-if scenario analysis for cost optimization
+- Cost optimization recommendations based on usage patterns
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Cloud infrastructure costs can spiral without visibility — a team discovers their monthly
+AWS bill doubled because someone left GPU instances running over a holiday weekend. This
+project models resource consumption across compute, storage, network, and database tiers,
+projects monthly costs using different pricing models, and runs what-if scenarios to find
+optimization opportunities. It teaches the same FinOps (financial operations) approach
+used by cloud cost management platforms like CloudHealth and Kubecost.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-9/13-platform-cost-estimator
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_monthly": 12450.00,
+  "by_resource": {...},
+  "what_if_savings": {...},
+  "recommendations": [...]
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with cost estimates and optimization recommendations
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `SAVINGS_PLAN` pricing tier with even lower rates than reserved.
+2. Add a `by_tag` breakdown that groups costs by resource tags (e.g. team, environment).
+3. Add a `--budget` flag that compares estimated costs against a monthly budget limit.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a `ResourceUsage` with `quantity=-100` — does the cost calculation handle negatives?
+2. Use a `PricingTier.SPOT` for a resource type with no spot pricing rule — what fallback occurs?
+3. Set volume tier thresholds in non-ascending order — does `PricingRule.calculate` break?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that `quantity >= 0` in resource usage.
+2. Sort volume tiers by threshold in `PricingRule.calculate` to handle unsorted input.
+3. Add a test for the fallback-to-on-demand pricing behavior.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How do cloud pricing tiers (on-demand, reserved, spot) differ in cost and commitment?
+2. What are volume discount tiers and how does tiered pricing work in practice?
+3. Why is what-if analysis important for infrastructure cost optimization?
+4. How do real FinOps teams use cost estimators to manage cloud spend?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain on-demand vs reserved vs spot pricing with real-world examples,
+- run a what-if scenario that shows savings from switching pricing tiers,
+- describe how volume tiers apply different rates to different usage ranges,
+- add a new resource type with custom pricing rules.
 
 ---
 

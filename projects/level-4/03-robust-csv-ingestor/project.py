@@ -1,105 +1,137 @@
-"""Level 4 project: Robust CSV Ingestor.
+"""Level 4 / Project 03 — Robust CSV Ingestor.
 
-Heavily commented intermediate template:
-- structured logging,
-- record transforms,
-- summary metrics,
-- deterministic output.
+Ingests CSV files with error recovery: bad rows are quarantined to a
+separate file instead of crashing the pipeline. Good rows are written
+to a clean output CSV. A summary report tracks what happened.
 """
 
 from __future__ import annotations
 
-# argparse handles command-line interfaces for script runs.
 import argparse
-# json serializes summary payloads.
+import csv
 import json
-# logging records run events for debugging and audit trails.
 import logging
-# Path provides robust filesystem operations.
 from pathlib import Path
 
-PROJECT_LEVEL = 4
-PROJECT_TITLE = "Robust CSV Ingestor"
-PROJECT_FOCUS = "malformed row handling and recovery"
-
+# ---------- logging ----------
 
 def configure_logging() -> None:
-    """Initialize logging format for consistent diagnostics."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
     )
 
-
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from text input file."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+# ---------- ingestion logic ----------
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform plain items into structured row dictionaries.
+def validate_row(row: list[str], expected_columns: int, row_num: int) -> str | None:
+    """Validate a single CSV row. Returns an error message or None if valid.
 
-    We keep this separate from I/O so business logic stays testable.
+    Checks:
+    1. Correct number of columns.
+    2. No completely empty rows.
+    3. No rows where every field is blank.
     """
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
+    if len(row) != expected_columns:
+        return f"row {row_num}: expected {expected_columns} columns, got {len(row)}"
+
+    if all(cell.strip() == "" for cell in row):
+        return f"row {row_num}: all fields are empty"
+
+    return None
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Compute aggregate metrics for transformed records."""
-    lengths = [r["length"] for r in records]
+def ingest_csv(
+    input_path: Path,
+    good_path: Path,
+    quarantine_path: Path,
+) -> dict:
+    """Read a CSV, separate good rows from bad, write both to separate files.
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+    Returns a summary dict with counts and error details.
+    """
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+
+    text = input_path.read_text(encoding="utf-8")
+    reader = csv.reader(text.splitlines())
+    rows = list(reader)
+
+    if not rows:
+        return {"total_rows": 0, "good": 0, "quarantined": 0, "errors": []}
+
+    headers = rows[0]
+    expected_columns = len(headers)
+
+    good_rows: list[list[str]] = []
+    bad_rows: list[list[str]] = []
+    errors: list[str] = []
+
+    for idx, row in enumerate(rows[1:], start=2):
+        error = validate_row(row, expected_columns, idx)
+        if error:
+            errors.append(error)
+            bad_rows.append([str(idx)] + row)  # prepend row number for traceability
+            logging.warning("Quarantined: %s", error)
+        else:
+            good_rows.append(row)
+
+    # Write clean output
+    good_path.parent.mkdir(parents=True, exist_ok=True)
+    with good_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        writer.writerows(good_rows)
+
+    # Write quarantine file
+    quarantine_path.parent.mkdir(parents=True, exist_ok=True)
+    with quarantine_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["original_row_num"] + headers)
+        writer.writerows(bad_rows)
+
+    summary = {
+        "total_rows": len(rows) - 1,  # exclude header
+        "good": len(good_rows),
+        "quarantined": len(bad_rows),
+        "errors": errors,
     }
-
-
-def run(input_path: Path, output_path: Path) -> dict:
-    """Execute end-to-end run and write summary payload."""
-    items = load_items(input_path)
-    records = build_records(items)
-    summary = build_summary(records)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    logging.info("project=%s output=%s", PROJECT_TITLE, output_path)
     return summary
 
 
+def run(
+    input_path: Path,
+    output_dir: Path,
+) -> dict:
+    """Full ingestion run: ingest, quarantine bad rows, write report."""
+    good_path = output_dir / "clean_data.csv"
+    quarantine_path = output_dir / "quarantined_rows.csv"
+    report_path = output_dir / "ingestion_report.json"
+
+    summary = ingest_csv(input_path, good_path, quarantine_path)
+
+    report_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    logging.info(
+        "Ingestion complete — %d good, %d quarantined",
+        summary["good"],
+        summary["quarantined"],
+    )
+    return summary
+
+# ---------- CLI ----------
+
+
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for input/output paths."""
-    parser = argparse.ArgumentParser(description="Intermediate learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
+    parser = argparse.ArgumentParser(description="Ingest CSV with error recovery")
+    parser.add_argument("--input", default="data/sample_input.csv")
+    parser.add_argument("--output-dir", default="data/output")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Entrypoint wiring logging, args, run, and console output."""
     configure_logging()
     args = parse_args()
-
-    summary = run(Path(args.input), Path(args.output))
+    summary = run(Path(args.input), Path(args.output_dir))
     print(json.dumps(summary, indent=2))
 
 

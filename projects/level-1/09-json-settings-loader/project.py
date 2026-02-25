@@ -1,107 +1,132 @@
 """Level 1 project: JSON Settings Loader.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Load application settings from a JSON file, merge with defaults,
+and validate that required keys are present.
+
+Concepts: json module, dictionary merging, default values, validation.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "JSON Settings Loader"
-PROJECT_FOCUS = "load config and fallback behavior"
+
+# Default settings that the application uses when no config is provided.
+DEFAULTS = {
+    "app_name": "MyApp",
+    "debug": False,
+    "log_level": "INFO",
+    "max_retries": 3,
+    "timeout_seconds": 30,
+    "port": 8080,
+}
+
+# Keys that must be present in the final config.
+REQUIRED_KEYS = ["app_name", "port"]
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def load_json(path: Path) -> dict:
+    """Load and parse a JSON file.
 
-    This function is isolated so it can be tested independently.
+    WHY handle JSONDecodeError? -- If the file contains invalid JSON
+    (missing commas, unquoted keys), we want a clear error message
+    instead of a confusing traceback.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+        raise FileNotFoundError(f"Settings file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    text = path.read_text(encoding="utf-8")
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as err:
+        raise ValueError(f"Invalid JSON in {path}: {err}")
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+
+def merge_settings(defaults: dict, overrides: dict) -> dict:
+    """Merge overrides into defaults.
+
+    WHY copy first? -- We do not want to modify the original defaults
+    dictionary.  Copying it first keeps the original intact.
+    """
+    merged = dict(defaults)
+    for key, value in overrides.items():
+        merged[key] = value
+    return merged
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def validate_settings(settings: dict, required: list[str]) -> list[str]:
+    """Check that all required keys are present.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Returns a list of missing key names (empty if all present).
+    """
+    missing = []
+    for key in required:
+        if key not in settings:
+            missing.append(key)
+    return missing
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
 
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+def settings_diff(defaults: dict, settings: dict) -> list[str]:
+    """Show which settings differ from defaults.
+
+    WHY a diff? -- It helps the user see what they have customised
+    versus what is still at the default value.
+    """
+    changes = []
+    for key in settings:
+        if key in defaults and settings[key] != defaults[key]:
+            changes.append(f"  {key}: {defaults[key]} -> {settings[key]}")
+    # Also show keys not in defaults (new settings).
+    for key in settings:
+        if key not in defaults:
+            changes.append(f"  {key}: (new) {settings[key]}")
+    return changes
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser = argparse.ArgumentParser(description="JSON Settings Loader")
+    parser.add_argument("--input", default="data/sample_input.txt",
+                        help="Path to JSON settings file")
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    try:
+        user_settings = load_json(Path(args.input))
+    except ValueError as err:
+        print(f"ERROR: {err}")
+        print("Falling back to defaults.")
+        user_settings = {}
+
+    merged = merge_settings(DEFAULTS, user_settings)
+    missing = validate_settings(merged, REQUIRED_KEYS)
+
+    print("=== Settings Loader ===\n")
+    print("  Final settings:")
+    for key, value in sorted(merged.items()):
+        print(f"    {key}: {value}")
+
+    if missing:
+        print(f"\n  WARNING: Missing required keys: {missing}")
+
+    changes = settings_diff(DEFAULTS, merged)
+    if changes:
+        print(f"\n  Changes from defaults:")
+        for change in changes:
+            print(change)
+    else:
+        print(f"\n  All settings are at defaults.")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps(merged, indent=2), encoding="utf-8")
+    print(f"\n  Merged settings written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

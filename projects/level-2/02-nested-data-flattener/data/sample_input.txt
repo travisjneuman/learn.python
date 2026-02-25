@@ -1,5 +1,23 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "server": {
+    "host": "localhost",
+    "port": 8080,
+    "ssl": false
+  },
+  "database": {
+    "primary": {
+      "host": "db.example.com",
+      "port": 5432,
+      "name": "app_production"
+    },
+    "replicas": ["replica1.example.com", "replica2.example.com"]
+  },
+  "logging": {
+    "level": "INFO",
+    "handlers": ["console", "file"],
+    "file": {
+      "path": "/var/log/app.log",
+      "max_size_mb": 100
+    }
+  }
+}

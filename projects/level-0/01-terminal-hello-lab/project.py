@@ -1,107 +1,111 @@
 """Level 0 project: Terminal Hello Lab.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Practice printing to the terminal, using variables, and
+understanding how Python sends text to your screen.
+
+Concepts: print(), variables, string concatenation, f-strings, escape characters.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
+# argparse lets us accept command-line flags like --name.
 import argparse
-# json writes structured output you can inspect and diff.
+# json for writing structured output.
 import json
-# Path is safer than plain strings for file paths.
+# Path is a safer way to work with file paths than raw strings.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 0
-PROJECT_TITLE = "Terminal Hello Lab"
-PROJECT_FOCUS = "print output, variables, and command execution basics"
 
+def greet(name: str) -> str:
+    """Build a personalised greeting string.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY a function? -- Putting logic in a function makes it testable.
+    We can call greet("Ada") in a test without running the whole script.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return f"Hello, {name}! Welcome to Python."
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def build_banner(title: str, width: int = 40) -> str:
+    """Create a decorative banner around a title.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    WHY width defaults to 40? -- Default arguments let callers skip
+    the parameter when the common case is fine.
+    """
+    # The * character repeated `width` times makes a horizontal line.
+    border = "*" * width
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    # .center() pads the title with spaces so it sits in the middle.
+    centered_title = title.center(width)
 
+    # We join three lines with newline characters.
+    return f"{border}\n{centered_title}\n{border}"
+
+
+def build_info_card(name: str, language: str, day: int) -> dict:
+    """Collect key facts into a dictionary.
+
+    WHY a dict? -- Dictionaries let you label each piece of data
+    with a key, making the output self-documenting.
+    """
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "name": name,
+        "language": language,
+        "learning_day": day,
+        "greeting": greet(name),
     }
 
 
+def run_hello_lab(name: str, day: int) -> dict:
+    """Execute the full hello-lab workflow and return results.
+
+    Steps:
+    1. Print a banner to the terminal.
+    2. Print a personalised greeting.
+    3. Print learning-day info.
+    4. Return a summary dict for file output.
+    """
+    # --- Terminal output (side effects) ---
+    banner = build_banner("TERMINAL HELLO LAB")
+    print(banner)
+    print()  # blank line for readability
+
+    greeting = greet(name)
+    print(greeting)
+
+    # \t is a tab character -- it indents the text.
+    print(f"\tDay {day} of your Python journey.")
+    print()
+
+    # Escape characters demo: \n inside a string creates a new line.
+    print("Fun fact: Python is named after Monty Python,\nnot the snake!")
+
+    # --- Build summary for file output ---
+    summary = build_info_card(name, "Python", day)
+    return summary
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Define command-line options."""
+    parser = argparse.ArgumentParser(description="Terminal Hello Lab")
+    parser.add_argument("--name", default="Learner", help="Your name")
+    parser.add_argument("--day", type=int, default=1, help="Learning day number")
+    parser.add_argument("--output", default="data/output.json", help="Output file path")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Program entry point."""
     args = parse_args()
+    summary = run_hello_lab(args.name, args.day)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    # Write the summary to a JSON file so we can inspect it later.
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
     output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    print(f"\nSummary written to {output_path}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
     main()

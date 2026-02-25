@@ -2,6 +2,11 @@
 
 Errors are not failures. They are Python telling you exactly what went wrong and where. Learning to read error messages is one of the most valuable skills in programming.
 
+## Visualize It
+
+See what happens when Python hits an error — watch the execution stop:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=x%20%3D%2010%0Ay%20%3D%200%0Aprint%28%22before%22%29%0Aresult%20%3D%20x%20%2F%20y%0Aprint%28%22after%22%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Anatomy of an error message
 
 ```
@@ -81,15 +86,10 @@ if True:
     print("hello") # Fixed — 4 spaces of indentation
 ```
 
-## Related exercises
-- [Level 00, Exercise 08 — Making Decisions](../projects/level-00-absolute-beginner/08-making-decisions/) (introduces error patterns)
-- [Level 00, Exercise 14 — Reading Files](../projects/level-00-absolute-beginner/14-reading-files/) (FileNotFoundError)
-
----
-
-## Practice This
+## Practice
 
 - [Level 00 / 08 Making Decisions](../projects/level-00-absolute-beginner/08-making-decisions/)
+- [Level 00 / 14 Reading Files](../projects/level-00-absolute-beginner/14-reading-files/)
 - [Level 00 / 15 Putting It Together](../projects/level-00-absolute-beginner/15-putting-it-together/)
 - [Level 0 / 07 First File Reader](../projects/level-0/07-first-file-reader/README.md)
 - [Level 1 / 01 Input Validator Lab](../projects/level-1/01-input-validator-lab/README.md)

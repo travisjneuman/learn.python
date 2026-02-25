@@ -5,50 +5,54 @@ Home: [README](../../../README.md)
 - split and parse structured text
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Parse structured log lines into timestamp, level, and message fields, then count entries by level and optionally filter. You will learn string splitting on delimiters, datetime parsing, and building analysis summaries.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-1/04-log-line-parser
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Log Analysis ===
+
+  2024-01-15 09:30:00 [INFO]    Server started on port 8080
+  2024-01-15 09:30:05 [INFO]    Database connection established
+  2024-01-15 09:31:12 [WARNING] Slow query detected (2.3s)
+
+  Level counts: INFO=2, WARNING=1
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a `--level` filter flag that only outputs lines matching a specific log level (e.g., `ERROR`, `WARNING`).
-2. Handle lines that do not match the expected log format -- skip them and report how many were skipped.
-3. Add a summary at the end: count of lines per log level (INFO: 42, WARNING: 7, ERROR: 3).
-4. Re-run script and tests.
+1. Add a `--after` flag that only shows log entries after a given timestamp.
+2. Add a "most active hour" metric that shows which hour had the most log entries.
+3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a malformed line like `not a log entry at all` -- does `parse_log_line()` return `None` or crash?
+2. Add a line with an invalid timestamp like `9999-99-99 00:00:00` -- does `datetime.strptime()` fail?
+3. Use `--level CRITICAL` when no CRITICAL entries exist -- does `filter_by_level()` return an empty list?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `parse_log_line()` returns `None` for unparseable lines instead of crashing.
+2. Wrap `datetime.strptime()` in a try/except to handle invalid timestamps.
+3. Add a test for the malformed-line case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `parse_log_line()` use string splitting instead of regex for this log format?
+2. What does `datetime.strptime()` do and what happens when the format does not match?
+3. Why does `count_by_level()` use a dict instead of separate counters for each level?
+4. Where would log parsing appear in real software (monitoring dashboards, incident response, audit trails)?
 
 ## Mastery check
 You can move on when you can:

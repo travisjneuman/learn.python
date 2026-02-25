@@ -29,25 +29,25 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a third source adapter (e.g. `gamma`) that maps `{"ref": ..., "info": ...}` to the unified schema.
+2. Add a `sort_by` parameter to `filter_records` that sorts results by a chosen field.
+3. Re-run script and tests — verify the new adapter appears in output.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Pass a source name that has no registered adapter (e.g. `"unknown_api"`).
+2. Feed a record where the expected field is missing (e.g. `{"uid": "1"}` with no `"data"` key).
+3. Observe the KeyError or None values in the unified output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Return a clear error or skip unknown sources instead of crashing.
+2. Add `.get()` with defaults in each adapter so missing fields produce `None` instead of KeyError.
+3. Add a test that confirms unknown sources are handled gracefully.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does the adapter pattern make adding new sources easy?
+2. What happened when a source had no adapter registered?
+3. How did `.get()` with a default prevent the crash?
+4. Where would you use this pattern in a real multi-vendor integration?
 
 ## Mastery check
 You can move on when you can:

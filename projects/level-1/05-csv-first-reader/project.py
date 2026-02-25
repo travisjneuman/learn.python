@@ -1,107 +1,145 @@
 """Level 1 project: CSV First Reader.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Read a CSV file, display it as a formatted table, and compute
+basic column statistics for numeric columns.
+
+Concepts: csv.DictReader, string formatting, type detection, aggregation.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
+import csv
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "CSV First Reader"
-PROJECT_FOCUS = "read csv rows into dictionaries"
 
+def load_csv(path: Path) -> list[dict]:
+    """Read a CSV file and return rows as a list of dicts.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    WHY DictReader? -- It uses the header row as keys, so each
+    row becomes a dictionary like {'name': 'Ada', 'age': '35'}.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
     if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+        raise FileNotFoundError(f"CSV file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    rows = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rows.append(row)
+    return rows
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+
+def detect_numeric_columns(rows: list[dict]) -> list[str]:
+    """Find columns where all non-empty values are numeric.
+
+    WHY detect? -- We need to know which columns can be averaged
+    and summed.  Trying to average a 'name' column would fail.
+    """
+    if not rows:
+        return []
+
+    columns = list(rows[0].keys())
+    numeric = []
+
+    for col in columns:
+        is_numeric = True
+        for row in rows:
+            value = row[col].strip()
+            if not value:
+                continue
+            try:
+                float(value)
+            except ValueError:
+                is_numeric = False
+                break
+        if is_numeric:
+            numeric.append(col)
+
+    return numeric
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def column_stats(rows: list[dict], column: str) -> dict:
+    """Compute min, max, sum, and average for a numeric column."""
+    values = []
+    for row in rows:
+        val = row[column].strip()
+        if val:
+            values.append(float(val))
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    if not values:
+        return {"column": column, "count": 0}
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "column": column,
+        "count": len(values),
+        "min": min(values),
+        "max": max(values),
+        "sum": round(sum(values), 2),
+        "average": round(sum(values) / len(values), 2),
     }
 
 
+def format_table(rows: list[dict], max_width: int = 15) -> str:
+    """Format rows as a simple text table.
+
+    WHY truncate? -- Long values would break the table alignment.
+    We cap each cell to max_width characters.
+    """
+    if not rows:
+        return "(empty table)"
+
+    headers = list(rows[0].keys())
+
+    def truncate(val: str) -> str:
+        if len(val) > max_width:
+            return val[: max_width - 3] + "..."
+        return val
+
+    # Build header row.
+    header_line = "  ".join(truncate(h).ljust(max_width) for h in headers)
+    separator = "  ".join("-" * max_width for _ in headers)
+
+    lines = [header_line, separator]
+    for row in rows:
+        cells = [truncate(row.get(h, "")).ljust(max_width) for h in headers]
+        lines.append("  ".join(cells))
+
+    return "\n".join(lines)
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="CSV First Reader")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    rows = load_csv(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    print("=== CSV Table ===\n")
+    print(format_table(rows))
+
+    numeric_cols = detect_numeric_columns(rows)
+    if numeric_cols:
+        print(f"\n=== Column Statistics ===\n")
+        stats_list = []
+        for col in numeric_cols:
+            stats = column_stats(rows, col)
+            stats_list.append(stats)
+            print(f"  {col}: min={stats['min']}, max={stats['max']}, avg={stats['average']}")
+    else:
+        stats_list = []
+
+    print(f"\n  {len(rows)} rows, {len(rows[0]) if rows else 0} columns")
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps({"rows": rows, "stats": stats_list}, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

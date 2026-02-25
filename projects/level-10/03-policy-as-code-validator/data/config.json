@@ -1,0 +1,9 @@
+{
+  "rules": [
+    {"id": "POL-001", "type": "required_field", "field": "name", "severity": "ERROR"},
+    {"id": "POL-002", "type": "required_field", "field": "owner", "severity": "ERROR"},
+    {"id": "POL-003", "type": "value_in_set", "field": "environment", "allowed": ["production", "staging", "development"], "severity": "ERROR"},
+    {"id": "POL-004", "type": "numeric_range", "field": "replicas", "min": 1, "max": 10, "severity": "WARNING"},
+    {"id": "POL-005", "type": "required_field", "field": "cost_center", "severity": "WARNING"}
+  ]
+}

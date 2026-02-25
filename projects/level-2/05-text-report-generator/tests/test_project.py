@@ -1,48 +1,105 @@
-"""Beginner test module with heavy comments.
+"""Tests for Text Report Generator.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Covers:
+- CSV parsing with zip
+- Grouping records
+- Numeric extraction with error handling
+- Statistics computation
+- Report generation
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import (
+    compute_stats,
+    extract_numeric,
+    generate_report,
+    group_by,
+    parse_records,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+@pytest.fixture
+def sample_csv(tmp_path: Path) -> Path:
+    """Create a sample CSV file for testing."""
+    content = (
+        "name, department, salary\n"
+        "Alice, Engineering, 95000\n"
+        "Bob, Marketing, 72000\n"
+        "Charlie, Engineering, 88000\n"
+        "Diana, Sales, 68000\n"
+        "Eve, Marketing, 75000\n"
+    )
+    p = tmp_path / "employees.csv"
+    p.write_text(content, encoding="utf-8")
+    return p
 
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
 
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_parse_records(sample_csv: Path) -> None:
+    """CSV parsing should produce dicts with correct keys."""
+    records = parse_records(sample_csv)
+    assert len(records) == 5
+    assert records[0]["name"] == "Alice"
+    assert records[0]["department"] == "Engineering"
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_parse_records_empty_file(tmp_path: Path) -> None:
+    """An empty or header-only file should return no records."""
+    p = tmp_path / "empty.csv"
+    p.write_text("name, value\n", encoding="utf-8")
+    assert parse_records(p) == []
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_group_by(sample_csv: Path) -> None:
+    """Records should be grouped by the specified field."""
+    records = parse_records(sample_csv)
+    groups = group_by(records, "department")
+    assert len(groups["Engineering"]) == 2
+    assert len(groups["Marketing"]) == 2
+    assert len(groups["Sales"]) == 1
+
+
+def test_extract_numeric(sample_csv: Path) -> None:
+    """Numeric fields should be extracted as floats."""
+    records = parse_records(sample_csv)
+    values = extract_numeric(records, "salary")
+    assert len(values) == 5
+    assert 95000.0 in values
+
+
+def test_extract_numeric_skips_bad_values() -> None:
+    """Non-numeric values in a numeric field should be skipped."""
+    records = [{"val": "100"}, {"val": "bad"}, {"val": "200"}]
+    values = extract_numeric(records, "val")
+    assert values == [100.0, 200.0]
+
+
+@pytest.mark.parametrize(
+    "values,expected_mean",
+    [
+        ([10, 20, 30], 20.0),
+        ([100], 100.0),
+        ([], 0.0),
+    ],
+)
+def test_compute_stats(values: list[float], expected_mean: float) -> None:
+    """Stats should compute correct mean values."""
+    stats = compute_stats(values)
+    assert stats["mean"] == expected_mean
+
+
+def test_generate_report_contains_title(sample_csv: Path) -> None:
+    """Generated report should include the title and group breakdowns."""
+    records = parse_records(sample_csv)
+    report = generate_report(records, "department", "salary", "Employee Report")
+    assert "Employee Report" in report
+    assert "Engineering" in report
+    assert "Marketing" in report
+
+
+def test_parse_records_missing_file(tmp_path: Path) -> None:
+    """Missing file should raise FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        parse_records(tmp_path / "nope.csv")

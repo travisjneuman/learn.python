@@ -1,5 +1,20 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+{
+  "tenants": [
+    {"id": "acme", "name": "Acme Corp", "plan": "enterprise"},
+    {"id": "globex", "name": "Globex Inc", "plan": "standard"},
+    {"id": "initech", "name": "Initech LLC", "plan": "basic"}
+  ],
+  "users": [
+    {"id": "alice", "tenant_id": "acme", "role": "ADMIN"},
+    {"id": "bob", "tenant_id": "acme", "role": "VIEWER"},
+    {"id": "carol", "tenant_id": "globex", "role": "EDITOR"},
+    {"id": "dave", "tenant_id": "initech", "role": "EDITOR"},
+    {"id": "eve", "tenant_id": "system", "role": "SUPER_ADMIN"}
+  ],
+  "sample_records": [
+    {"id": "inv-001", "tenant_id": "acme", "data": {"amount": 1500, "status": "paid"}},
+    {"id": "inv-002", "tenant_id": "acme", "data": {"amount": 3200, "status": "pending"}},
+    {"id": "inv-003", "tenant_id": "globex", "data": {"amount": 800, "status": "paid"}},
+    {"id": "inv-004", "tenant_id": "initech", "data": {"amount": 450, "status": "overdue"}}
+  ]
+}

@@ -1,141 +1,245 @@
-"""Level 9 project: Event Driven Pipeline Lab.
+"""Event-Driven Pipeline Lab — event sourcing with event store and projections.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Design rationale:
+    Event sourcing stores state as a sequence of immutable events rather than
+    mutable records. This project builds an event store with projections that
+    materialize views from events — the foundational pattern for CQRS, audit
+    trails, and temporal queries.
+
+Concepts practised:
+    - event sourcing: append-only event store
+    - projections: materializing views from event streams
+    - observer pattern for event subscribers
+    - dataclasses for typed events
+    - temporal queries (state at a point in time)
 """
 
 from __future__ import annotations
 
-# argparse parses command-line flags.
 import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Callable
 
-PROJECT_LEVEL = 9
-PROJECT_TITLE = "Event Driven Pipeline Lab"
-PROJECT_FOCUS = "event payload and handler simulation"
+
+# --- Domain types -------------------------------------------------------
+
+class EventCategory(Enum):
+    USER = "user"
+    ORDER = "order"
+    INVENTORY = "inventory"
+    PAYMENT = "payment"
+
+
+@dataclass(frozen=True)
+class Event:
+    """An immutable domain event."""
+    event_id: int
+    category: EventCategory
+    event_type: str
+    aggregate_id: str
+    data: dict[str, Any]
+    timestamp: float
+    version: int = 1
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class Projection:
+    """A materialized view built from events."""
+    name: str
+    state: dict[str, Any] = field(default_factory=dict)
+    events_processed: int = 0
 
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "events_processed": self.events_processed,
+            "state": self.state,
+        }
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# --- Event store --------------------------------------------------------
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+EventHandler = Callable[[Event], None]
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+class EventStore:
+    """Append-only event store with subscriber support.
+
+    Events are immutable once stored. Subscribers receive events
+    in real-time as they are appended. Projections can replay
+    the full event history to rebuild state.
+    """
+
+    def __init__(self) -> None:
+        self._events: list[Event] = []
+        self._next_id = 1
+        self._subscribers: list[EventHandler] = []
+
+    @property
+    def count(self) -> int:
+        return len(self._events)
+
+    def append(self, category: EventCategory, event_type: str,
+               aggregate_id: str, data: dict[str, Any],
+               timestamp: float = 0.0) -> Event:
+        """Append an event to the store and notify subscribers."""
+        event = Event(
+            event_id=self._next_id,
+            category=category,
+            event_type=event_type,
+            aggregate_id=aggregate_id,
+            data=data,
+            timestamp=timestamp or float(self._next_id),
         )
-    return records
+        self._events.append(event)
+        self._next_id += 1
+
+        for subscriber in self._subscribers:
+            subscriber(event)
+
+        return event
+
+    def subscribe(self, handler: EventHandler) -> None:
+        """Register a subscriber for new events."""
+        self._subscribers.append(handler)
+
+    def get_events(self, aggregate_id: str | None = None,
+                   category: EventCategory | None = None,
+                   after_id: int = 0) -> list[Event]:
+        """Query events with optional filters."""
+        result = self._events
+        if aggregate_id:
+            result = [e for e in result if e.aggregate_id == aggregate_id]
+        if category:
+            result = [e for e in result if e.category == category]
+        if after_id > 0:
+            result = [e for e in result if e.event_id > after_id]
+        return result
+
+    def get_state_at(self, aggregate_id: str, timestamp: float,
+                     reducer: Callable[[dict[str, Any], Event], dict[str, Any]]) -> dict[str, Any]:
+        """Replay events up to a timestamp to reconstruct state."""
+        state: dict[str, Any] = {}
+        for event in self._events:
+            if event.aggregate_id == aggregate_id and event.timestamp <= timestamp:
+                state = reducer(state, event)
+        return state
+
+    def all_events(self) -> list[Event]:
+        return list(self._events)
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
+# --- Projection builders -----------------------------------------------
+
+class OrderCountProjection:
+    """Projects a count of orders by status."""
+
+    def __init__(self) -> None:
+        self.projection = Projection(name="order_counts")
+
+    def handle(self, event: Event) -> None:
+        if event.category != EventCategory.ORDER:
+            return
+        self.projection.events_processed += 1
+        status = event.data.get("status", "unknown")
+        counts = self.projection.state.setdefault("by_status", {})
+        counts[status] = counts.get(status, 0) + 1
+
+
+class UserActivityProjection:
+    """Projects user activity summaries."""
+
+    def __init__(self) -> None:
+        self.projection = Projection(name="user_activity")
+
+    def handle(self, event: Event) -> None:
+        if event.category != EventCategory.USER:
+            return
+        self.projection.events_processed += 1
+        user_id = event.aggregate_id
+        users = self.projection.state.setdefault("users", {})
+        user = users.setdefault(user_id, {"event_count": 0, "last_event": ""})
+        user["event_count"] += 1
+        user["last_event"] = event.event_type
+
+
+class InventoryProjection:
+    """Projects inventory levels from stock events."""
+
+    def __init__(self) -> None:
+        self.projection = Projection(name="inventory_levels")
+
+    def handle(self, event: Event) -> None:
+        if event.category != EventCategory.INVENTORY:
+            return
+        self.projection.events_processed += 1
+        product = event.aggregate_id
+        levels = self.projection.state.setdefault("products", {})
+        current = levels.get(product, 0)
+        quantity = event.data.get("quantity", 0)
+
+        if event.event_type == "stock_added":
+            levels[product] = current + quantity
+        elif event.event_type == "stock_removed":
+            levels[product] = max(0, current - quantity)
+
+
+# --- Demo ---------------------------------------------------------------
+
+def run_demo() -> dict[str, Any]:
+    store = EventStore()
+
+    orders = OrderCountProjection()
+    users = UserActivityProjection()
+    inventory = InventoryProjection()
+
+    store.subscribe(orders.handle)
+    store.subscribe(users.handle)
+    store.subscribe(inventory.handle)
+
+    # Simulate event stream
+    store.append(EventCategory.USER, "registered", "user-001", {"name": "Alice"}, 1.0)
+    store.append(EventCategory.USER, "logged_in", "user-001", {}, 2.0)
+    store.append(EventCategory.INVENTORY, "stock_added", "widget-A", {"quantity": 100}, 3.0)
+    store.append(EventCategory.ORDER, "created", "order-001", {"user": "user-001", "status": "pending"}, 4.0)
+    store.append(EventCategory.ORDER, "confirmed", "order-001", {"status": "confirmed"}, 5.0)
+    store.append(EventCategory.INVENTORY, "stock_removed", "widget-A", {"quantity": 3}, 6.0)
+    store.append(EventCategory.ORDER, "created", "order-002", {"user": "user-001", "status": "pending"}, 7.0)
+    store.append(EventCategory.PAYMENT, "processed", "pay-001", {"amount": 49.99, "order": "order-001"}, 8.0)
+
+    # Temporal query: what was inventory at timestamp 5?
+    def inventory_reducer(state: dict, event: Event) -> dict:
+        qty = state.get("quantity", 0)
+        if event.event_type == "stock_added":
+            qty += event.data.get("quantity", 0)
+        elif event.event_type == "stock_removed":
+            qty -= event.data.get("quantity", 0)
+        return {"quantity": qty}
+
+    inventory_at_5 = store.get_state_at("widget-A", 5.0, inventory_reducer)
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
+        "total_events": store.count,
+        "projections": {
+            "orders": orders.projection.to_dict(),
+            "users": users.projection.to_dict(),
+            "inventory": inventory.projection.to_dict(),
+        },
+        "temporal_query": {"widget-A_at_t5": inventory_at_5},
     }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Event-driven pipeline lab")
+    parser.add_argument("--demo", action="store_true", default=True)
+    return parser.parse_args(argv)
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    parse_args(argv)
+    print(json.dumps(run_demo(), indent=2))
 
 
 if __name__ == "__main__":

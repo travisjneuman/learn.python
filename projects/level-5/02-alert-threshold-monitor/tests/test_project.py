@@ -1,54 +1,51 @@
-"""Intermediate test module with heavy comments.
-
-These tests validate:
-- loader cleanup behavior,
-- record transformation structure,
-- summary metric correctness.
-"""
-
-# Path helps build reliable temporary files in test environments.
+"""Tests for Alert Threshold Monitor."""
+import pytest
 from pathlib import Path
+import json
+from project import check_threshold, evaluate_metrics, apply_cooldown, run
 
-# Import functions under test from the local project module.
-from project import build_records, build_summary, load_items
+@pytest.mark.parametrize("value,warning,critical,expected", [
+    (50, 70, 90, "ok"),
+    (75, 70, 90, "warning"),
+    (95, 70, 90, "critical"),
+    (70, 70, 90, "warning"),
+    (90, 70, 90, "critical"),
+])
+def test_check_threshold(value, warning, critical, expected):
+    assert check_threshold(value, warning, critical) == expected
 
+def test_evaluate_metrics_finds_alerts():
+    metrics = [
+        {"name": "cpu", "value": 85, "timestamp": "2025-01-15T10:00:00+00:00"},
+        {"name": "cpu", "value": 50, "timestamp": "2025-01-15T10:01:00+00:00"},
+        {"name": "memory", "value": 95, "timestamp": "2025-01-15T10:00:00+00:00"},
+    ]
+    thresholds = {"cpu": {"warning": 70, "critical": 90}, "memory": {"warning": 80, "critical": 95}}
+    alerts = evaluate_metrics(metrics, thresholds)
+    assert len(alerts) == 2  # cpu warning + memory critical
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Ensure loader trims whitespace and skips empty lines."""
-    # Arrange: create mixed-quality text input.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+def test_evaluate_metrics_ignores_unknown():
+    metrics = [{"name": "unknown_metric", "value": 100}]
+    assert evaluate_metrics(metrics, {}) == []
 
-    # Act: run loader.
-    items = load_items(sample)
+def test_apply_cooldown_filters_rapid_alerts():
+    alerts = [
+        {"metric": "cpu", "value": 85, "timestamp": "2025-01-15T10:00:00+00:00", "level": "warning", "threshold": 70},
+        {"metric": "cpu", "value": 87, "timestamp": "2025-01-15T10:01:00+00:00", "level": "warning", "threshold": 70},
+        {"metric": "cpu", "value": 86, "timestamp": "2025-01-15T10:10:00+00:00", "level": "warning", "threshold": 70},
+    ]
+    filtered = apply_cooldown(alerts, cooldown_seconds=300)
+    assert len(filtered) == 2  # first + third (10 min apart)
 
-    # Assert: expect cleaned output.
-    assert items == ["alpha", "beta"]
-
-
-def test_build_records_assigns_row_numbers() -> None:
-    """Ensure transform assigns stable row numbering for traceability."""
-    # Arrange: define minimal input list.
-    raw_items = ["one", "two"]
-
-    # Act: build structured records.
-    records = build_records(raw_items)
-
-    # Assert: check row-number assignment and record count.
-    assert len(records) == 2
-    assert records[0]["row_num"] == 1
-    assert records[1]["row_num"] == 2
-
-
-def test_build_summary_counts_records() -> None:
-    """Ensure summary reports core metrics correctly."""
-    # Arrange: create records from known-length strings.
-    records = build_records(["abc", "xy"])
-
-    # Act: build summary from records.
-    summary = build_summary(records)
-
-    # Assert: verify counts and min/max lengths.
-    assert summary["record_count"] == 2
-    assert summary["max_length"] == 3
-    assert summary["min_length"] == 2
+def test_run_integration(tmp_path: Path):
+    metrics_file = tmp_path / "metrics.json"
+    metrics_file.write_text(json.dumps([
+        {"name": "cpu", "value": 85, "timestamp": "2025-01-15T10:00:00+00:00"},
+        {"name": "disk", "value": 40, "timestamp": "2025-01-15T10:00:00+00:00"},
+    ]), encoding="utf-8")
+    thresholds_file = tmp_path / "thresholds.json"
+    thresholds_file.write_text(json.dumps({"cpu": {"warning": 70, "critical": 90}}), encoding="utf-8")
+    output = tmp_path / "report.json"
+    report = run(metrics_file, thresholds_file, output)
+    assert report["raw_alerts"] == 1
+    assert output.exists()

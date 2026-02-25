@@ -1,107 +1,106 @@
 """Level 1 project: Ticket Priority Router.
 
-Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+Route support tickets to priority queues based on keywords.
+Tickets containing urgent words go to high priority, etc.
+
+Concepts: keyword matching, dictionaries, string search, business rules.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 1
-PROJECT_TITLE = "Ticket Priority Router"
-PROJECT_FOCUS = "business rules to route work"
+
+# Keywords that indicate each priority level.
+PRIORITY_KEYWORDS = {
+    "critical": ["down", "outage", "crash", "data loss", "security breach"],
+    "high": ["error", "broken", "failing", "urgent", "blocked"],
+    "medium": ["slow", "degraded", "intermittent", "bug", "issue"],
+    "low": ["question", "request", "enhancement", "feature", "how to"],
+}
 
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+def classify_ticket(text: str) -> str:
+    """Determine the priority of a ticket based on keywords.
 
-    This function is isolated so it can be tested independently.
+    WHY check critical first? -- Priority keywords overlap.  By checking
+    the highest priority first, a ticket mentioning 'crash' gets
+    classified as critical even if it also mentions 'slow'.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    lower_text = text.lower()
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    for priority in ["critical", "high", "medium", "low"]:
+        for keyword in PRIORITY_KEYWORDS[priority]:
+            if keyword in lower_text:
+                return priority
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    return "low"  # Default priority if no keywords match.
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
-
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
+def route_ticket(ticket_id: int, text: str) -> dict:
+    """Build a routed ticket record."""
+    priority = classify_ticket(text)
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "id": ticket_id,
+        "text": text.strip(),
+        "priority": priority,
     }
 
 
+def process_tickets(lines: list[str]) -> list[dict]:
+    """Process a list of ticket descriptions."""
+    tickets = []
+    for i, line in enumerate(lines, start=1):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        tickets.append(route_ticket(i, stripped))
+    return tickets
+
+
+def group_by_priority(tickets: list[dict]) -> dict[str, list[dict]]:
+    """Group tickets into priority queues.
+
+    WHY group? -- Operations teams work through tickets by priority.
+    Grouping makes it easy to see the most urgent items first.
+    """
+    groups = {"critical": [], "high": [], "medium": [], "low": []}
+    for ticket in tickets:
+        groups[ticket["priority"]].append(ticket)
+    return groups
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
+    parser = argparse.ArgumentParser(description="Ticket Priority Router")
     parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    parser.add_argument("--output", default="data/output.json")
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
     args = parse_args()
+    path = Path(args.input)
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
+    lines = path.read_text(encoding="utf-8").splitlines()
+    tickets = process_tickets(lines)
+    groups = group_by_priority(tickets)
+
+    print("=== Ticket Priority Router ===\n")
+    for priority in ["critical", "high", "medium", "low"]:
+        queue = groups[priority]
+        print(f"  [{priority.upper()}] ({len(queue)} tickets)")
+        for t in queue:
+            print(f"    #{t['id']}: {t['text'][:60]}")
+        print()
+
     output_path = Path(args.output)
-
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
-
-    # Ensure output directory exists for first run.
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    output_path.write_text(json.dumps({"tickets": tickets, "queues": {k: len(v) for k, v in groups.items()}}, indent=2), encoding="utf-8")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

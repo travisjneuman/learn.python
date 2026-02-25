@@ -1,0 +1,4 @@
+id,name,email,region
+1,Alice Johnson,alice@example.com,north
+2,Bob Smith,bob@example.com,south
+3,Carol White,carol@example.com,east

@@ -1,48 +1,88 @@
-"""Beginner test module with heavy comments.
+"""Tests for Nested Data Flattener.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Covers:
+- Flattening simple and nested dicts
+- Flattening lists with indices
+- Unflattening back to nested structure
+- Depth calculation
+- File loading with error handling
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import depth, flatten, flatten_from_file, unflatten
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_flatten_simple_dict() -> None:
+    """A flat dict should remain unchanged."""
+    data = {"name": "Ada", "age": 36}
+    result = flatten(data)
+    assert result == {"name": "Ada", "age": 36}
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_flatten_nested_dict() -> None:
+    """Nested keys should become dot-separated paths."""
+    data = {"user": {"name": "Ada", "address": {"city": "London"}}}
+    result = flatten(data)
+    assert result == {
+        "user.name": "Ada",
+        "user.address.city": "London",
+    }
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_flatten_with_list() -> None:
+    """List items should get numeric index keys."""
+    data = {"tags": ["python", "code"]}
+    result = flatten(data)
+    assert result == {"tags.0": "python", "tags.1": "code"}
+
+
+@pytest.mark.parametrize(
+    "separator,expected_key",
+    [(".", "a.b"), ("/", "a/b"), ("_", "a_b")],
+)
+def test_flatten_custom_separator(separator: str, expected_key: str) -> None:
+    """Different separators should produce different key formats."""
+    data = {"a": {"b": 1}}
+    result = flatten(data, separator=separator)
+    assert expected_key in result
+
+
+def test_unflatten_roundtrip() -> None:
+    """Flattening then unflattening should recover the original structure."""
+    original = {"user": {"name": "Ada", "role": "programmer"}}
+    flat = flatten(original)
+    restored = unflatten(flat)
+    assert restored == original
+
+
+def test_depth_calculation() -> None:
+    """Depth should count nesting levels correctly."""
+    assert depth({}) == 0
+    assert depth({"a": 1}) == 1
+    assert depth({"a": {"b": 1}}) == 2
+    assert depth({"a": {"b": {"c": 1}}}) == 3
+
+
+def test_flatten_from_file(tmp_path: Path) -> None:
+    """Loading from a JSON file should produce flattened output."""
+    p = tmp_path / "nested.json"
+    p.write_text('{"server": {"host": "localhost", "port": 8080}}', encoding="utf-8")
+    result = flatten_from_file(p)
+    assert result == {"server.host": "localhost", "server.port": 8080}
+
+
+def test_flatten_from_file_invalid_json(tmp_path: Path) -> None:
+    """Non-JSON files should raise ValueError."""
+    p = tmp_path / "bad.json"
+    p.write_text("not json at all", encoding="utf-8")
+    with pytest.raises(ValueError, match="Invalid JSON"):
+        flatten_from_file(p)
+
+
+def test_flatten_from_file_missing(tmp_path: Path) -> None:
+    """Missing files should raise FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        flatten_from_file(tmp_path / "missing.json")

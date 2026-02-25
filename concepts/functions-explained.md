@@ -2,6 +2,11 @@
 
 A function is a reusable block of code with a name. You define it once, then call it whenever you need it.
 
+## Visualize It
+
+See how Python enters a function, uses parameters, and returns a value:
+[Open in Python Tutor](https://pythontutor.com/render.html#code=def%20greet%28name%29%3A%0A%20%20%20%20return%20%22Hello%2C%20%22%20%2B%20name%20%2B%20%22!%22%0A%0Amsg%20%3D%20greet%28%22Alice%22%29%0Aprint%28msg%29%0Amsg2%20%3D%20greet%28%22Bob%22%29%0Aprint%28msg2%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
+
 ## Defining a function
 
 ```python
@@ -91,13 +96,9 @@ def greet(name):
     return f"Hello, {name}!"
 ```
 
-## Related exercises
-- [Level 00, Exercise 13 — Functions](../projects/level-00-absolute-beginner/13-functions/)
+## Practice
 
----
-
-## Practice This
-
+- [Level 00 / 13 Functions](../projects/level-00-absolute-beginner/13-functions/)
 - [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
 - [Level 0 / 03 Temperature Converter](../projects/level-0/03-temperature-converter/README.md)
 - [Level 0 / 12 Contact Card Builder](../projects/level-0/12-contact-card-builder/README.md)

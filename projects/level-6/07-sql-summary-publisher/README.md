@@ -19,35 +19,42 @@ pytest -q
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_sales": 7,
+  "total_revenue": 1374.10,
+  "by_region": [...],
+  "by_product": [...],
+  "top_sale": {"product": "Widget", "region": "West", "revenue": 299.70}
+}
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
+- `data/output_summary.json` — aggregate metrics as JSON
+- `data/output_summary.txt` — human-readable formatted report
+- Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a "bottom performer" section showing the product with the lowest total revenue.
+2. Add a `--min-revenue` filter that excludes sales below a threshold from the summary.
+3. Add a date-range filter: `--from` and `--to` flags to limit which sales are included.
+4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Feed an empty sales array `[]` and observe how the aggregates handle zero rows.
+2. Include a sale with a negative revenue value and observe the summary.
+3. Feed sales with a region name containing special characters.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a guard for empty datasets that returns zeroed-out metrics instead of errors.
+2. Validate that revenue is non-negative before including in aggregates.
+3. Add tests for edge cases.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is the difference between `SUM`, `COUNT`, `AVG`, `MIN`, and `MAX` in SQL?
+2. Why do we use `COALESCE` with aggregate functions?
+3. What happens if GROUP BY produces zero groups?
+4. When would you use a subquery vs a simple GROUP BY?
 
 ## Mastery check
 You can move on when you can:

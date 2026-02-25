@@ -1,48 +1,115 @@
-"""Beginner test module with heavy comments.
+"""Tests for Config Driven Calculator.
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
+Covers:
+- Basic arithmetic operations
+- Error handling (division by zero, unknown ops)
+- Config loading (valid, missing, invalid)
+- Batch calculations
+- Operation chaining
 """
 
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import (
+    batch_calculate,
+    calculate,
+    calculate_chain,
+    list_operations,
+    load_config,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
+@pytest.mark.parametrize(
+    "op,a,b,expected",
+    [
+        ("add", 10, 5, 15),
+        ("subtract", 10, 3, 7),
+        ("multiply", 4, 5, 20),
+        ("divide", 15, 3, 5),
+        ("power", 2, 8, 256),
+        ("modulo", 17, 5, 2),
+    ],
+)
+def test_calculate_operations(op: str, a: float, b: float, expected: float) -> None:
+    """All basic operations should produce correct results."""
+    result = calculate(op, a, b)
+    assert result["success"] is True
+    assert result["result"] == expected
 
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
 
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_calculate_divide_by_zero() -> None:
+    """Division by zero should return an error, not crash."""
+    result = calculate("divide", 10, 0)
+    assert result["success"] is False
+    assert "zero" in result["error"].lower()
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_calculate_unknown_operation() -> None:
+    """Unknown operations should return a descriptive error."""
+    result = calculate("unknown_op", 1, 2)
+    assert result["success"] is False
+    assert "Unknown operation" in result["error"]
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_load_config_valid(tmp_path: Path) -> None:
+    """A valid JSON config should load operations."""
+    config_data = {
+        "operations": {
+            "add": {"symbol": "+", "description": "Addition"},
+        },
+        "settings": {"precision": 4},
+    }
+    p = tmp_path / "config.json"
+    p.write_text(json.dumps(config_data), encoding="utf-8")
+    config = load_config(p)
+    assert "add" in config["operations"]
+
+
+def test_load_config_missing_file(tmp_path: Path) -> None:
+    """Missing config should fall back to defaults."""
+    config = load_config(tmp_path / "nope.json")
+    assert "add" in config["operations"]
+
+
+def test_load_config_invalid_json(tmp_path: Path) -> None:
+    """Invalid JSON should fall back to defaults with error info."""
+    p = tmp_path / "bad.json"
+    p.write_text("not json", encoding="utf-8")
+    config = load_config(p)
+    assert "config_error" in config
+
+
+def test_batch_calculate() -> None:
+    """Batch should process multiple operations and preserve order."""
+    ops = [
+        {"operation": "add", "a": 1, "b": 2},
+        {"operation": "divide", "a": 10, "b": 0},
+        {"operation": "multiply", "a": 3, "b": 4},
+    ]
+    results = batch_calculate(ops)
+    assert len(results) == 3
+    assert results[0]["success"] is True
+    assert results[1]["success"] is False
+    assert results[2]["result"] == 12
+
+
+def test_calculate_chain() -> None:
+    """Chained operations should feed results forward."""
+    chain = [("add", 5), ("multiply", 2)]
+    result = calculate_chain(chain, start=10)
+    assert result["success"] is True
+    assert result["final"] == 30  # (10+5)*2
+
+
+def test_list_operations() -> None:
+    """List should return sorted operation info."""
+    config = {"operations": {"z_op": {}, "a_op": {}}}
+    ops = list_operations(config)
+    assert ops[0]["name"] == "a_op"
+    assert ops[1]["name"] == "z_op"
+
+
+# Need json import for test_load_config_valid
+import json

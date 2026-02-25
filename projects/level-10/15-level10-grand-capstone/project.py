@@ -1,141 +1,323 @@
-"""Level 10 project: Level 10 Grand Capstone.
+"""Level 10 Grand Capstone — Full enterprise platform combining all Level 10 patterns.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: This capstone integrates patterns from all 14 prior projects into a
+unified platform simulation. It models a multi-tenant SaaS platform with:
+- Policy engine for governance (project 03)
+- Tenant isolation for data security (project 04)
+- Risk-scored change gates (project 07)
+- Production readiness checks (project 11)
+- Architecture fitness functions (project 09)
+- Executive reporting (project 10)
+
+Uses the Facade pattern to provide a clean API over the composed subsystems.
+Each subsystem is independently testable; the platform wires them together.
+
+Design rationale: Real enterprise platforms are compositions of specialized systems.
+This capstone demonstrates how to build a coherent whole from well-designed parts,
+using dependency injection and protocol-based interfaces to keep subsystems
+decoupled while achieving end-to-end functionality.
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any, Protocol
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "Level 10 Grand Capstone"
-PROJECT_FOCUS = "sme-level integrated platform simulation"
 
+# ---------------------------------------------------------------------------
+# Core domain types (shared across subsystems)
+# ---------------------------------------------------------------------------
+
+class Severity(Enum):
+    INFO = auto()
+    WARNING = auto()
+    ERROR = auto()
+    CRITICAL = auto()
+
+
+class Status(Enum):
+    PASS = "pass"
+    FAIL = "fail"
+    WARN = "warn"
+
+
+@dataclass(frozen=True)
+class CheckResult:
+    """Universal check result used by all subsystems."""
+    subsystem: str
+    check_id: str
+    status: Status
+    severity: Severity
+    message: str
+
+
+# ---------------------------------------------------------------------------
+# Subsystem 1: Tenant Manager (from project 04)
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Tenant:
+    tenant_id: str
+    name: str
+    plan: str  # basic, standard, enterprise
+
+
+class TenantManager:
+    """Simplified multi-tenant registry."""
+
+    def __init__(self) -> None:
+        self._tenants: dict[str, Tenant] = {}
+
+    def register(self, tenant: Tenant) -> None:
+        self._tenants[tenant.tenant_id] = tenant
+
+    def get(self, tenant_id: str) -> Tenant | None:
+        return self._tenants.get(tenant_id)
+
+    @property
+    def count(self) -> int:
+        return len(self._tenants)
+
+    def list_tenants(self) -> list[Tenant]:
+        return list(self._tenants.values())
+
+
+# ---------------------------------------------------------------------------
+# Subsystem 2: Policy Engine (from project 03)
+# ---------------------------------------------------------------------------
+
+class PolicyCheck(Protocol):
+    def check_id(self) -> str: ...
+    def evaluate(self, context: dict[str, Any]) -> CheckResult: ...
+
+
+class RequiredFieldPolicy:
+    def __init__(self, field_name: str) -> None:
+        self._field = field_name
+
+    def check_id(self) -> str:
+        return f"POL-REQ-{self._field}"
+
+    def evaluate(self, context: dict[str, Any]) -> CheckResult:
+        if context.get(self._field):
+            return CheckResult("policy", self.check_id(), Status.PASS, Severity.INFO, f"'{self._field}' present")
+        return CheckResult("policy", self.check_id(), Status.FAIL, Severity.ERROR, f"'{self._field}' missing")
+
+
+class PlanLevelPolicy:
+    """Checks that tenant plan meets minimum requirement."""
+    def __init__(self, min_plan: str) -> None:
+        self._min = min_plan
+        self._levels = {"basic": 1, "standard": 2, "enterprise": 3}
+
+    def check_id(self) -> str:
+        return f"POL-PLAN-{self._min}"
+
+    def evaluate(self, context: dict[str, Any]) -> CheckResult:
+        plan = context.get("plan", "basic")
+        if self._levels.get(plan, 0) >= self._levels.get(self._min, 0):
+            return CheckResult("policy", self.check_id(), Status.PASS, Severity.INFO, f"Plan '{plan}' meets minimum")
+        return CheckResult("policy", self.check_id(), Status.FAIL, Severity.WARNING, f"Plan '{plan}' below '{self._min}'")
+
+
+# ---------------------------------------------------------------------------
+# Subsystem 3: Change Gate (from project 07)
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class ChangeRequest:
+    change_id: str
+    title: str
+    risk_score: float
+    author: str
+
+
+class ChangeGate:
+    def __init__(self, auto_approve_threshold: float = 25.0, block_threshold: float = 75.0) -> None:
+        self._auto_threshold = auto_approve_threshold
+        self._block_threshold = block_threshold
+
+    def evaluate(self, change: ChangeRequest) -> CheckResult:
+        if change.risk_score < self._auto_threshold:
+            return CheckResult("change_gate", change.change_id, Status.PASS, Severity.INFO, "Auto-approved")
+        if change.risk_score >= self._block_threshold:
+            return CheckResult("change_gate", change.change_id, Status.FAIL, Severity.CRITICAL, "Blocked — too risky")
+        return CheckResult("change_gate", change.change_id, Status.WARN, Severity.WARNING, "Needs review")
+
+
+# ---------------------------------------------------------------------------
+# Subsystem 4: Readiness Checker (from project 11)
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class ServiceConfig:
+    name: str
+    has_monitoring: bool = False
+    has_alerting: bool = False
+    has_runbook: bool = False
+    has_healthcheck: bool = False
+
+
+class ReadinessChecker:
+    def evaluate(self, svc: ServiceConfig) -> list[CheckResult]:
+        results: list[CheckResult] = []
+        checks = [
+            ("monitoring", svc.has_monitoring),
+            ("alerting", svc.has_alerting),
+            ("runbook", svc.has_runbook),
+            ("healthcheck", svc.has_healthcheck),
+        ]
+        for name, present in checks:
+            status = Status.PASS if present else Status.FAIL
+            severity = Severity.INFO if present else Severity.ERROR
+            results.append(CheckResult("readiness", f"RDY-{name}", status, severity,
+                                       f"{name}: {'present' if present else 'missing'}"))
+        return results
+
+
+# ---------------------------------------------------------------------------
+# Subsystem 5: Architecture Fitness (from project 09)
+# ---------------------------------------------------------------------------
+
+class ArchitectureFitness:
+    def __init__(self, max_services: int = 20, max_avg_deps: float = 3.0) -> None:
+        self._max_svc = max_services
+        self._max_deps = max_avg_deps
+
+    def evaluate(self, service_count: int, avg_deps: float) -> list[CheckResult]:
+        results: list[CheckResult] = []
+        svc_ok = service_count <= self._max_svc
+        results.append(CheckResult("architecture", "ARCH-svc-count",
+                                   Status.PASS if svc_ok else Status.WARN, Severity.WARNING,
+                                   f"{service_count} services (max {self._max_svc})"))
+        dep_ok = avg_deps <= self._max_deps
+        results.append(CheckResult("architecture", "ARCH-avg-deps",
+                                   Status.PASS if dep_ok else Status.WARN, Severity.WARNING,
+                                   f"Avg deps {avg_deps:.1f} (max {self._max_deps})"))
+        return results
+
+
+# ---------------------------------------------------------------------------
+# Platform Facade — composes all subsystems
+# ---------------------------------------------------------------------------
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
+class PlatformReport:
+    """Aggregate report from all subsystems."""
+    results: list[CheckResult] = field(default_factory=list)
 
-    input_path: Path
-    output_path: Path
-    run_id: str
+    @property
+    def passed(self) -> int:
+        return sum(1 for r in self.results if r.status == Status.PASS)
 
+    @property
+    def failed(self) -> int:
+        return sum(1 for r in self.results if r.status == Status.FAIL)
 
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+    @property
+    def warnings(self) -> int:
+        return sum(1 for r in self.results if r.status == Status.WARN)
 
+    @property
+    def health_score(self) -> float:
+        if not self.results:
+            return 0.0
+        return (self.passed / len(self.results)) * 100
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+    @property
+    def overall_status(self) -> str:
+        if self.failed > 0:
+            return "UNHEALTHY"
+        if self.warnings > 0:
+            return "AT_RISK"
+        return "HEALTHY"
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
-
-
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
-        )
-    return records
-
-
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
+    def summary(self) -> dict[str, Any]:
+        by_subsystem: dict[str, list[dict[str, str]]] = {}
+        for r in self.results:
+            by_subsystem.setdefault(r.subsystem, []).append({
+                "check": r.check_id, "status": r.status.value, "message": r.message,
+            })
+        return {
+            "overall": self.overall_status,
+            "health_score": round(self.health_score, 1),
+            "total_checks": len(self.results),
+            "passed": self.passed,
+            "failed": self.failed,
+            "warnings": self.warnings,
+            "subsystems": by_subsystem,
+        }
 
 
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
+class EnterprisePlatform:
+    """Facade that orchestrates all enterprise subsystems."""
 
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
+    def __init__(self) -> None:
+        self.tenant_manager = TenantManager()
+        self.policies: list[PolicyCheck] = []
+        self.change_gate = ChangeGate()
+        self.readiness = ReadinessChecker()
+        self.fitness = ArchitectureFitness()
 
-    items = load_items(ctx.input_path)
-    records = build_records(items)
+    def add_policy(self, policy: PolicyCheck) -> None:
+        self.policies.append(policy)
 
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
+    def full_assessment(
+        self,
+        tenant_context: dict[str, Any],
+        service: ServiceConfig,
+        change: ChangeRequest | None = None,
+        service_count: int = 5,
+        avg_deps: float = 2.0,
+    ) -> PlatformReport:
+        """Run all subsystem checks and produce a unified report."""
+        report = PlatformReport()
 
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
+        # Policy checks
+        for policy in self.policies:
+            report.results.append(policy.evaluate(tenant_context))
 
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        # Readiness checks
+        report.results.extend(self.readiness.evaluate(service))
 
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
+        # Architecture fitness
+        report.results.extend(self.fitness.evaluate(service_count, avg_deps))
+
+        # Change gate (optional)
+        if change:
+            report.results.append(self.change_gate.evaluate(change))
+
+        return report
 
 
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
-
+# ---------------------------------------------------------------------------
+# CLI demo
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
+    platform = EnterprisePlatform()
 
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
+    # Register tenants
+    platform.tenant_manager.register(Tenant("acme", "Acme Corp", "enterprise"))
+    platform.tenant_manager.register(Tenant("globex", "Globex Inc", "standard"))
+
+    # Add policies
+    platform.add_policy(RequiredFieldPolicy("owner"))
+    platform.add_policy(RequiredFieldPolicy("cost_center"))
+    platform.add_policy(PlanLevelPolicy("standard"))
+
+    # Run assessment
+    report = platform.full_assessment(
+        tenant_context={"owner": "platform-team", "cost_center": "CC-100", "plan": "enterprise"},
+        service=ServiceConfig("payment-svc", has_monitoring=True, has_alerting=True,
+                              has_runbook=True, has_healthcheck=True),
+        change=ChangeRequest("CHG-001", "Add payment method", 35.0, "alice"),
+        service_count=8,
+        avg_deps=2.5,
     )
 
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    print(json.dumps(report.summary(), indent=2))
 
 
 if __name__ == "__main__":

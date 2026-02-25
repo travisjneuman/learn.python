@@ -1,5 +1,6 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+event: OrderCreated order_id=ORD-001 user=alice total=149.99 currency=USD timestamp=2025-01-15T10:00:00Z
+event: PaymentReceived order_id=ORD-001 amount=149.99 method=credit_card timestamp=2025-01-15T10:01:00Z
+event: OrderCreated order_id=ORD-002 user=bob total=89.50 currency=USD timestamp=2025-01-15T10:05:00Z
+event: OrderCancelled order_id=ORD-002 reason="customer request" timestamp=2025-01-15T10:08:00Z
+event: OrderCreated order_id=ORD-003 user=alice total=230.00 currency=EUR timestamp=2025-01-15T11:00:00Z
+event: OrderShipped order_id=ORD-001 carrier=fedex tracking=FX123456 timestamp=2025-01-15T14:00:00Z

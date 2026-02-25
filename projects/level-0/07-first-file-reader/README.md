@@ -5,50 +5,56 @@ Home: [README](../../../README.md)
 - opening and reading plain text safely
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Read a text file, display its contents with line numbers, and build a summary of line counts, word counts, and file metadata. This is your first hands-on practice with file I/O and Path objects.
 
 ## Run (copy/paste)
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/07-first-file-reader
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.txt
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+=== Contents of sample_input.txt ===
+
+  1 | Welcome to your first file reader!
+  2 |
+  3 | This file has several lines of text.
+
+=== Summary ===
+  Lines:      3 (2 non-empty)
+  Words:      14
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Handle the case where the input file does not exist -- print a helpful message instead of a traceback.
-2. Add a line count and word count to the output summary.
-3. Add a `--encoding` flag that lets the user specify the file encoding (default to `utf-8`).
-4. Re-run script and tests.
+1. Add a `--start` and `--end` flag to display only a range of line numbers.
+2. Add a `--encoding` flag that lets the user specify the file encoding (default to `utf-8`).
+3. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Point `--input` to a file that does not exist -- does it raise `FileNotFoundError` with a clear message?
+2. Use an empty file as input -- does `file_summary()` crash or return zero counts?
+3. Use a file with very long lines (1000+ characters) -- does line numbering still align correctly?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Ensure `read_file_lines()` raises `FileNotFoundError` with the path in the message.
+2. Handle the empty-file case by returning a special "(empty file)" message.
+3. Add a test for the empty-file edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. Why does `format_with_line_numbers()` right-justify the line numbers?
+2. What does `path.read_text(encoding="utf-8")` do differently from `open(path).read()`?
+3. Why track non-empty lines separately in `file_summary()`?
+4. Where would file reading with metadata appear in real software (log viewers, code editors, diff tools)?
 
 ## Mastery check
 You can move on when you can:

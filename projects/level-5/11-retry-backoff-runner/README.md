@@ -13,18 +13,18 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-5/11-retry-backoff-runner
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --max-retries 5 --base-delay 0.1 --output data/retry_report.json
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Success after 3 retries (total delay: 0.7s)
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/retry_report.json`
 - Passing tests
 - Updated `notes.md`
 
@@ -35,20 +35,21 @@ pytest -q
 4. Re-run script and tests.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
+1. Set `--max-retries 0` so no retries are allowed and the flaky function always fails.
+2. Set `--base-delay` to a negative number.
 3. Capture the first failing test or visible bad output.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Validate that max_retries >= 1 and base_delay > 0.
+2. Return a clear error report when all retries are exhausted.
+3. Add tests for zero retries and negative delay.
+4. Re-run until output and tests are deterministic.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does exponential backoff calculate the delay for each retry attempt?
+2. Why does `create_flaky_function` use a counter to simulate intermittent failures?
+3. What is jitter and why does it prevent thundering-herd problems?
+4. Where do you see retry with backoff in production (AWS SDK, HTTP clients, message queues)?
 
 ## Mastery check
 You can move on when you can:

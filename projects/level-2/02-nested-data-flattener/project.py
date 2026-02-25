@@ -1,107 +1,161 @@
 """Level 2 project: Nested Data Flattener.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- take a deeply nested dict/JSON structure,
+- flatten it to dot-notation keys like "user.address.city",
+- unflatten it back to the original structure.
+
+Skills practiced: recursion, nested data structures, dict comprehensions,
+try/except for JSON parsing, enumerate, type checking with isinstance.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Nested Data Flattener"
-PROJECT_FOCUS = "flatten lists/dicts to row structures"
 
+def flatten(data: dict, prefix: str = "", separator: str = ".") -> dict[str, object]:
+    """Flatten a nested dictionary into dot-notation keys.
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
+    Example:
+        {"user": {"name": "Ada"}} -> {"user.name": "Ada"}
 
-    This function is isolated so it can be tested independently.
+    Lists are flattened with numeric indices:
+        {"tags": ["a", "b"]} -> {"tags.0": "a", "tags.1": "b"}
+
+    Args:
+        data: The nested dictionary to flatten.
+        prefix: Current key prefix (used in recursion — leave empty).
+        separator: Character joining key segments (default ".").
+
+    Returns:
+        A flat dict where every key is a dotted path to a leaf value.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
+    items: dict[str, object] = {}
+
+    for key, value in data.items():
+        # Build the new key by joining prefix and current key.
+        new_key = f"{prefix}{separator}{key}" if prefix else key
+
+        if isinstance(value, dict):
+            # Recurse into nested dicts — this is where the magic happens.
+            items.update(flatten(value, prefix=new_key, separator=separator))
+        elif isinstance(value, list):
+            # Flatten lists by treating each index as a key segment.
+            for idx, item in enumerate(value):
+                list_key = f"{new_key}{separator}{idx}"
+                if isinstance(item, dict):
+                    items.update(flatten(item, prefix=list_key, separator=separator))
+                else:
+                    items[list_key] = item
+        else:
+            # Base case: leaf value (str, int, float, bool, None).
+            items[new_key] = value
+
+    return items
+
+
+def unflatten(data: dict[str, object], separator: str = ".") -> dict:
+    """Reconstruct a nested dictionary from dot-notation keys.
+
+    This is the inverse of flatten().
+
+    Args:
+        data: A flat dict with dotted keys.
+        separator: The separator used during flattening.
+
+    Returns:
+        A nested dict matching the original structure.
+    """
+    result: dict = {}
+
+    for compound_key, value in data.items():
+        parts = compound_key.split(separator)
+        target = result
+
+        # Walk through all parts except the last, creating nested dicts.
+        for part in parts[:-1]:
+            target = target.setdefault(part, {})
+
+        # Set the leaf value.
+        target[parts[-1]] = value
+
+    return result
+
+
+def flatten_from_file(path: Path, separator: str = ".") -> dict[str, object]:
+    """Read a JSON file and return the flattened version.
+
+    Raises:
+        FileNotFoundError: If the path does not exist.
+        ValueError: If the file is not valid JSON.
+        TypeError: If the JSON root is not a dict.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    raw = path.read_text(encoding="utf-8")
 
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in {path}: {exc}") from exc
+
+    if not isinstance(data, dict):
+        raise TypeError(f"Expected a JSON object (dict), got {type(data).__name__}")
+
+    return flatten(data, separator=separator)
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def depth(data: dict) -> int:
+    """Calculate the maximum nesting depth of a dictionary.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
-
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
-    }
+    An empty dict or non-dict value has depth 0.
+    {"a": {"b": 1}} has depth 2.
+    """
+    if not isinstance(data, dict) or not data:
+        return 0
+    return 1 + max(
+        depth(v) if isinstance(v, dict) else 0 for v in data.values()
+    )
 
 
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Flatten or unflatten nested JSON data"
+    )
+    parser.add_argument("input", help="Path to JSON input file")
+    parser.add_argument(
+        "--separator", default=".", help="Key separator (default '.')"
+    )
+    parser.add_argument(
+        "--unflatten",
+        action="store_true",
+        help="Unflatten a previously flattened file",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: flatten or unflatten a JSON file."""
     args = parse_args()
+    path = Path(args.input)
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    data = json.loads(path.read_text(encoding="utf-8"))
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if args.unflatten:
+        result = unflatten(data, separator=args.separator)
+    else:
+        result = flatten(data, separator=args.separator)
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    print(json.dumps(result, indent=2))
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

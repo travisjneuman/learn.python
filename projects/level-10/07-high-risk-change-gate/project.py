@@ -1,141 +1,254 @@
-"""Level 10 project: High Risk Change Gate.
+"""High-Risk Change Gate — Approval gates for high-risk changes with risk scoring.
 
-Heavily commented advanced template:
-- run context object,
-- timing metrics,
-- structured output payload,
-- operational logging with run identifiers.
+Architecture: Uses a scoring pipeline where each RiskFactor contributes a weighted
+score. A ChangeRequest is evaluated against all registered factors, producing an
+aggregate risk level. The gate then applies approval rules: low-risk changes auto-
+approve, medium-risk require one reviewer, high-risk require multiple reviewers
+and a cooldown window.
+
+Design rationale: Production incidents often stem from changes that were deployed
+without proportionate review. By quantifying risk and enforcing gates, teams
+shift from "all changes treated equally" to "review effort scales with blast radius."
 """
-
 from __future__ import annotations
 
-# argparse parses command-line flags.
-import argparse
-# json serializes output artifacts.
 import json
-# logging captures operational events.
-import logging
-# time is used to compute runtime duration.
-import time
-# dataclass simplifies context container definitions.
-from dataclasses import dataclass
-# Path enables robust path management.
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any, Protocol
 
-PROJECT_LEVEL = 10
-PROJECT_TITLE = "High Risk Change Gate"
-PROJECT_FOCUS = "risk scoring before high-impact rollout"
+
+# ---------------------------------------------------------------------------
+# Domain types
+# ---------------------------------------------------------------------------
+
+class RiskLevel(Enum):
+    LOW = auto()
+    MEDIUM = auto()
+    HIGH = auto()
+    CRITICAL = auto()
+
+    @classmethod
+    def from_score(cls, score: float) -> RiskLevel:
+        if score < 25:
+            return cls.LOW
+        if score < 50:
+            return cls.MEDIUM
+        if score < 75:
+            return cls.HIGH
+        return cls.CRITICAL
+
+
+class GateDecision(Enum):
+    APPROVED = "approved"
+    NEEDS_REVIEW = "needs_review"
+    BLOCKED = "blocked"
+
+
+@dataclass(frozen=True)
+class ChangeRequest:
+    """Immutable description of a proposed change."""
+    change_id: str
+    title: str
+    author: str
+    affected_services: list[str] = field(default_factory=list)
+    changes_schema: bool = False
+    changes_auth: bool = False
+    lines_changed: int = 0
+    is_rollback: bool = False
+    deploy_window: str = "business_hours"
 
 
 @dataclass
-class RunContext:
-    """Container for run-time configuration and identifiers."""
-
-    input_path: Path
-    output_path: Path
-    run_id: str
-
-
-def configure_logging() -> None:
-    """Set logging format suitable for operational troubleshooting."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-    )
+class RiskAssessment:
+    """Result of evaluating a single risk factor."""
+    factor_name: str
+    score: float
+    max_score: float
+    reason: str
 
 
-def load_items(path: Path) -> list[str]:
-    """Load and normalize non-empty text lines from input."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+@dataclass
+class GateResult:
+    """Final decision from the change gate."""
+    change_id: str
+    total_score: float
+    risk_level: RiskLevel
+    decision: GateDecision
+    assessments: list[RiskAssessment] = field(default_factory=list)
+    required_approvers: int = 0
+    cooldown_hours: int = 0
 
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw_lines if line.strip()]
+    def summary(self) -> dict[str, Any]:
+        return {
+            "change_id": self.change_id,
+            "total_score": round(self.total_score, 1),
+            "risk_level": self.risk_level.name,
+            "decision": self.decision.value,
+            "required_approvers": self.required_approvers,
+            "cooldown_hours": self.cooldown_hours,
+            "factors": [
+                {"name": a.factor_name, "score": round(a.score, 1), "reason": a.reason}
+                for a in self.assessments
+            ],
+        }
 
 
-def build_records(items: list[str]) -> list[dict]:
-    """Transform input items into richer structured records."""
-    records: list[dict] = []
-    for idx, item in enumerate(items, start=1):
-        records.append(
-            {
-                "row_num": idx,
-                "raw_value": item,
-                "normalized": item.lower().replace(" ", "_"),
-                "length": len(item),
-            }
+# ---------------------------------------------------------------------------
+# Risk factors (Strategy pattern)
+# ---------------------------------------------------------------------------
+
+class RiskFactor(Protocol):
+    """Strategy interface for computing a risk score contribution."""
+    def name(self) -> str: ...
+    def assess(self, change: ChangeRequest) -> RiskAssessment: ...
+
+
+class BlastRadiusFactor:
+    """Scores based on number of affected services."""
+    def name(self) -> str:
+        return "blast_radius"
+
+    def assess(self, change: ChangeRequest) -> RiskAssessment:
+        count = len(change.affected_services)
+        score = min(count * 10.0, 30.0)
+        return RiskAssessment(self.name(), score, 30.0, f"{count} service(s) affected")
+
+
+class SchemaChangeFactor:
+    """High score if the change modifies database schema."""
+    def name(self) -> str:
+        return "schema_change"
+
+    def assess(self, change: ChangeRequest) -> RiskAssessment:
+        score = 25.0 if change.changes_schema else 0.0
+        reason = "Schema migration included" if change.changes_schema else "No schema changes"
+        return RiskAssessment(self.name(), score, 25.0, reason)
+
+
+class AuthChangeFactor:
+    """Elevated score for authentication/authorization changes."""
+    def name(self) -> str:
+        return "auth_change"
+
+    def assess(self, change: ChangeRequest) -> RiskAssessment:
+        score = 20.0 if change.changes_auth else 0.0
+        reason = "Auth system modified" if change.changes_auth else "No auth changes"
+        return RiskAssessment(self.name(), score, 20.0, reason)
+
+
+class ChangeSizeFactor:
+    """Larger diffs carry more risk of hidden issues."""
+    def name(self) -> str:
+        return "change_size"
+
+    def assess(self, change: ChangeRequest) -> RiskAssessment:
+        if change.lines_changed < 50:
+            return RiskAssessment(self.name(), 5.0, 20.0, "Small change")
+        if change.lines_changed < 200:
+            return RiskAssessment(self.name(), 10.0, 20.0, "Medium change")
+        if change.lines_changed < 500:
+            return RiskAssessment(self.name(), 15.0, 20.0, "Large change")
+        return RiskAssessment(self.name(), 20.0, 20.0, "Very large change")
+
+
+class DeployWindowFactor:
+    """Off-peak deployments are lower risk due to reduced traffic."""
+    def name(self) -> str:
+        return "deploy_window"
+
+    def assess(self, change: ChangeRequest) -> RiskAssessment:
+        scores = {"off_peak": 0.0, "weekend": 2.0, "business_hours": 10.0}
+        score = scores.get(change.deploy_window, 10.0)
+        return RiskAssessment(self.name(), score, 10.0, f"Deploy during {change.deploy_window}")
+
+
+class RollbackFactor:
+    """Rollbacks reduce risk — they undo a known-bad state."""
+    def name(self) -> str:
+        return "rollback"
+
+    def assess(self, change: ChangeRequest) -> RiskAssessment:
+        score = -15.0 if change.is_rollback else 0.0
+        reason = "Rollback reduces risk" if change.is_rollback else "Not a rollback"
+        return RiskAssessment(self.name(), score, 0.0, reason)
+
+
+# ---------------------------------------------------------------------------
+# Change gate engine
+# ---------------------------------------------------------------------------
+
+class ChangeGate:
+    """Evaluates change requests and produces gate decisions."""
+
+    def __init__(self) -> None:
+        self._factors: list[RiskFactor] = []
+
+    def register_factor(self, factor: RiskFactor) -> None:
+        self._factors.append(factor)
+
+    @property
+    def factor_count(self) -> int:
+        return len(self._factors)
+
+    def evaluate(self, change: ChangeRequest) -> GateResult:
+        assessments: list[RiskAssessment] = []
+        total_score = 0.0
+        for factor in self._factors:
+            assessment = factor.assess(change)
+            assessments.append(assessment)
+            total_score += assessment.score
+
+        total_score = max(0.0, total_score)
+        risk_level = RiskLevel.from_score(total_score)
+        decision, approvers, cooldown = self._apply_policy(risk_level)
+
+        return GateResult(
+            change_id=change.change_id,
+            total_score=total_score,
+            risk_level=risk_level,
+            decision=decision,
+            assessments=assessments,
+            required_approvers=approvers,
+            cooldown_hours=cooldown,
         )
-    return records
+
+    @staticmethod
+    def _apply_policy(risk: RiskLevel) -> tuple[GateDecision, int, int]:
+        if risk == RiskLevel.LOW:
+            return GateDecision.APPROVED, 0, 0
+        if risk == RiskLevel.MEDIUM:
+            return GateDecision.NEEDS_REVIEW, 1, 0
+        if risk == RiskLevel.HIGH:
+            return GateDecision.NEEDS_REVIEW, 2, 4
+        return GateDecision.BLOCKED, 3, 24
 
 
-def build_summary(records: list[dict], elapsed_ms: int = 0) -> dict:
-    """Build high-level metrics for run output and diagnostics."""
-    lengths = [r["length"] for r in records]
-
-    return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "record_count": len(records),
-        "max_length": max(lengths) if lengths else 0,
-        "min_length": min(lengths) if lengths else 0,
-        "elapsed_ms": elapsed_ms,
-    }
-
-
-def run(ctx: RunContext) -> dict:
-    """Execute full workflow using provided run context.
-
-    Steps:
-    1) load items,
-    2) build records,
-    3) compute metrics,
-    4) persist structured payload.
-    """
-    start_time = time.time()
-
-    items = load_items(ctx.input_path)
-    records = build_records(items)
-
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    summary = build_summary(records, elapsed_ms=elapsed_ms)
-
-    payload = {
-        "run_id": ctx.run_id,
-        "project": PROJECT_TITLE,
-        "summary": summary,
-        "records_preview": records[:5],
-    }
-
-    ctx.output_path.parent.mkdir(parents=True, exist_ok=True)
-    ctx.output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-    logging.info("run_id=%s project=%s output=%s", ctx.run_id, PROJECT_TITLE, ctx.output_path)
-    return summary
-
-
-def parse_args() -> argparse.Namespace:
-    """Define CLI interface for advanced project execution."""
-    parser = argparse.ArgumentParser(description="Advanced learning project runner")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output_summary.json")
-    parser.add_argument("--run-id", default="manual-run")
-    return parser.parse_args()
+def build_default_gate() -> ChangeGate:
+    gate = ChangeGate()
+    gate.register_factor(BlastRadiusFactor())
+    gate.register_factor(SchemaChangeFactor())
+    gate.register_factor(AuthChangeFactor())
+    gate.register_factor(ChangeSizeFactor())
+    gate.register_factor(DeployWindowFactor())
+    gate.register_factor(RollbackFactor())
+    return gate
 
 
 def main() -> None:
-    """Entrypoint that wires configuration, context, run, and output."""
-    configure_logging()
-    args = parse_args()
-
-    ctx = RunContext(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        run_id=args.run_id,
-    )
-
-    summary = run(ctx)
-    print(json.dumps(summary, indent=2))
+    gate = build_default_gate()
+    changes = [
+        ChangeRequest("CHG-001", "Fix typo in docs", "alice", ["docs-site"], lines_changed=5),
+        ChangeRequest("CHG-002", "Add user roles", "bob", ["auth-svc", "api-gw"],
+                       changes_auth=True, lines_changed=350),
+        ChangeRequest("CHG-003", "Migrate billing schema", "carol",
+                       ["billing", "payment", "reporting"],
+                       changes_schema=True, lines_changed=200),
+    ]
+    for change in changes:
+        result = gate.evaluate(change)
+        print(json.dumps(result.summary(), indent=2))
+        print()
 
 
 if __name__ == "__main__":

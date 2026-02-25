@@ -7,7 +7,7 @@ with consistent navigation links (prev/home/next) in table format.
 import re
 from pathlib import Path
 
-ROOT = Path(r"E:\Web Development\learn.python")
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def rel(from_file: str, to_file: str) -> str:

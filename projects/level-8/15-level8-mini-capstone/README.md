@@ -2,59 +2,71 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- resilient dashboard data service
+- Integration of multiple observability subsystems into one platform
+- Service registration with health tracking and metric collection
+- Threshold-based alerting with severity levels
+- Facade pattern for unified access to metrics, alerts, and health
+- Comprehensive reporting with drill-down per service
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+This capstone integrates concepts from the entire level: KPI dashboards, response
+profiling, SLA monitoring, fault injection, and graceful degradation. Real observability
+platforms (Datadog, Grafana, New Relic) unify metrics, health checks, and alerting into
+a single pane of glass. This project builds a mini observability platform that monitors
+simulated services, detects degradation, generates alerts, and produces a unified health
+report — proving you can design systems that compose multiple subsystems into a coherent
+whole.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-8/15-level8-mini-capstone
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --demo
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "platform_health": "warning",
+  "services": [...],
+  "alerts": [...],
+  "metrics_summary": {...}
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- Console JSON output with full observability platform report
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a dashboard endpoint that returns all services' health, alerts, and metrics in one JSON response.
+2. Add alert severity levels (warning, critical) with different threshold multipliers.
+3. Add a `--simulate` flag that generates random metrics and demonstrates real-time alerting.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Record metrics for a service that was never registered — does `record_metric` handle it?
+2. Set `alert_threshold` to 0 — does every metric trigger an alert?
+3. Call `generate_report()` with no services registered — does it produce a valid report?
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add validation that services must be registered before recording metrics.
+2. Guard against `alert_threshold <= 0` with a minimum value.
+3. Add a test for the empty-platform edge case.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does this capstone integrate metrics, alerting, and health into a unified platform?
+2. What is the facade pattern and how does `ObservabilityPlatform` use it?
+3. Why are mean and p95 both tracked — when does each matter?
+4. How would you extend this to support distributed tracing across services?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- explain how the capstone combines patterns from projects 01-14,
+- add a new subsystem (e.g. log aggregation) to the platform without modifying existing code,
+- describe the three pillars of observability: metrics, logs, and traces,
+- design an alerting strategy that avoids alert fatigue while catching real incidents.
 
 ---
 

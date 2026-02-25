@@ -1,5 +1,8 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project scans directory structures — no input file needed.
+
+Usage:
+    python project.py scan .
+    python project.py validate .
+    python project.py init .
+
+Point it at any directory containing .py files to analyse its structure.

@@ -1,5 +1,7 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+window_size=20
+error_rate_reduced=0.10
+error_rate_minimal=0.30
+error_rate_offline=0.50
+phase1: 30 requests at 5% error rate (normal)
+phase2: 30 requests at 40% error rate (spike)
+phase3: 20 requests at 2% error rate (recovery)

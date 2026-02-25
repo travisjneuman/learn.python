@@ -13,41 +13,45 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-4/11-audit-log-enhancer
-python project.py --input data/sample_input.txt --output data/output_summary.json
+python project.py --input data/sample_input.jsonl --output data/enriched_logs.jsonl
 pytest -q
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+{
+  "total_entries": 6,
+  "enriched": 6,
+  "severity_counts": {"LOW": 3, "HIGH": 1, "MEDIUM": 1, ...}
+}
+7 passed
 ```
 
 ## Expected artifacts
-- `data/output_summary.json`
+- `data/enriched_logs.jsonl` — enriched log entries (JSON lines)
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--severity-filter` flag to only output entries at or above a given severity.
+2. Add a `duration_category` field: "fast" (<100ms), "normal" (<1000ms), "slow" (>=1000ms).
+3. Re-run script and tests — add a parametrized test for duration categories.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Add a log entry with malformed JSON and confirm it is skipped gracefully.
+2. Add entries with no `session_id` and observe how correlation IDs are assigned.
+3. Use timestamps in different timezone formats and see if duration calculation handles them.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Handle timezone-naive timestamps by assuming UTC.
+2. Add a count of skipped malformed lines to the summary.
+3. Re-run until all tests pass.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. What is a correlation ID and why is it useful for debugging?
+2. Why does `enrich_entry` make a shallow copy instead of modifying the original dict?
+3. What is the JSON Lines format and why is it preferred over a JSON array for logs?
+4. How would you handle enrichment of millions of log entries efficiently?
 
 ## Mastery check
 You can move on when you can:

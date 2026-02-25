@@ -1,48 +1,46 @@
-"""Beginner test module with heavy comments.
+"""Tests for Number Classifier."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
+import pytest
 
-# pathlib.Path is used to create temporary files and paths in tests.
-from pathlib import Path
-
-# Import the function under test directly from the project module.
-from project import load_items
+from project import classify_number, is_even, is_prime
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_is_even() -> None:
+    """Even numbers should return True, odd numbers False."""
+    assert is_even(4) is True
+    assert is_even(7) is False
+    assert is_even(0) is True
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_is_prime_small_values() -> None:
+    """Check primality for well-known small numbers."""
+    assert is_prime(2) is True
+    assert is_prime(3) is True
+    assert is_prime(4) is False
+    assert is_prime(17) is True
+    assert is_prime(1) is False
+    assert is_prime(0) is False
+    assert is_prime(-5) is False
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_classify_positive_odd_prime() -> None:
+    """7 is positive, odd, and prime."""
+    result = classify_number(7)
+    assert result["sign"] == "positive"
+    assert result["parity"] == "odd"
+    assert result["prime"] is True
+
+
+def test_classify_zero() -> None:
+    """Zero is zero, even, and not prime."""
+    result = classify_number(0)
+    assert result["sign"] == "zero"
+    assert result["parity"] == "even"
+    assert result["prime"] is False
+
+
+def test_classify_negative() -> None:
+    """Negative numbers should be classified as negative and not prime."""
+    result = classify_number(-10)
+    assert result["sign"] == "negative"
+    assert result["prime"] is False

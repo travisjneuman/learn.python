@@ -1,107 +1,245 @@
 """Level 2 project: Anomaly Flagger.
 
 Heavily commented beginner-friendly script:
-- read input lines,
-- build a small summary,
-- write output JSON.
+- detect statistical anomalies in numeric datasets,
+- use z-score and IQR (interquartile range) methods,
+- flag outliers and generate anomaly reports.
+
+Skills practiced: list comprehensions, sorting with key, try/except,
+nested data structures, enumerate, sets, math operations.
 """
 
 from __future__ import annotations
 
-# argparse lets the user pass --input and --output paths from terminal.
 import argparse
-# json writes structured output you can inspect and diff.
 import json
-# Path is safer than plain strings for file paths.
+import math
 from pathlib import Path
 
-# Metadata constants for traceability in output files.
-PROJECT_LEVEL = 2
-PROJECT_TITLE = "Anomaly Flagger"
-PROJECT_FOCUS = "threshold and outlier tagging"
 
+def mean(values: list[float]) -> float:
+    """Calculate the arithmetic mean (average).
 
-def load_items(path: Path) -> list[str]:
-    """Load non-empty lines from input file.
-
-    This function is isolated so it can be tested independently.
+    Sum of all values divided by count.
+    Returns 0.0 for empty lists to avoid ZeroDivisionError.
     """
-    # Explicit missing-file check gives clearer beginner feedback.
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    # Read text and split into individual lines.
-    raw_lines = path.read_text(encoding="utf-8").splitlines()
-
-    # Keep only lines with content after trimming spaces.
-    cleaned = [line.strip() for line in raw_lines if line.strip()]
-    return cleaned
+    if not values:
+        return 0.0
+    return sum(values) / len(values)
 
 
-def build_summary(items: list[str]) -> dict:
-    """Build a simple dictionary summary from the input items."""
-    # Count total rows after cleanup.
-    total_items = len(items)
+def std_dev(values: list[float]) -> float:
+    """Calculate the population standard deviation.
 
-    # Count unique values to quickly spot duplicates.
-    unique_items = len(set(items))
+    Standard deviation measures how spread out values are.
+    A small std_dev means values cluster near the mean.
+    A large std_dev means values are spread far apart.
+    """
+    if len(values) < 2:
+        return 0.0
 
-    # Provide a short preview so learners can see sample values.
-    preview = items[:5]
+    avg = mean(values)
+    # Variance is the average of squared differences from the mean.
+    variance = sum((x - avg) ** 2 for x in values) / len(values)
+    return math.sqrt(variance)
+
+
+def z_score(value: float, values: list[float]) -> float:
+    """Calculate the z-score of a value relative to a dataset.
+
+    Z-score tells you how many standard deviations a value is
+    from the mean.  |z| > 2 is unusual, |z| > 3 is very unusual.
+
+    Returns 0.0 if std_dev is 0 (all values are identical).
+    """
+    avg = mean(values)
+    sd = std_dev(values)
+    if sd == 0:
+        return 0.0
+    return (value - avg) / sd
+
+
+def percentile(values: list[float], p: float) -> float:
+    """Calculate the p-th percentile using linear interpolation.
+
+    p should be between 0 and 100.
+    """
+    if not values:
+        return 0.0
+
+    sorted_vals = sorted(values)
+    n = len(sorted_vals)
+
+    # Index position for the desired percentile.
+    idx = (p / 100) * (n - 1)
+    lower = int(idx)
+    upper = min(lower + 1, n - 1)
+    fraction = idx - lower
+
+    return sorted_vals[lower] + fraction * (sorted_vals[upper] - sorted_vals[lower])
+
+
+def iqr_bounds(values: list[float], factor: float = 1.5) -> tuple[float, float]:
+    """Calculate the IQR-based anomaly boundaries.
+
+    IQR (Interquartile Range) = Q3 - Q1.
+    Lower bound = Q1 - factor * IQR
+    Upper bound = Q3 + factor * IQR
+
+    Values outside these bounds are considered anomalies.
+    factor=1.5 catches mild outliers, factor=3.0 catches extreme ones.
+    """
+    q1 = percentile(values, 25)
+    q3 = percentile(values, 75)
+    iqr = q3 - q1
+
+    return (q1 - factor * iqr, q3 + factor * iqr)
+
+
+def detect_anomalies_zscore(
+    values: list[float], threshold: float = 2.0
+) -> list[dict]:
+    """Detect anomalies using z-score method.
+
+    Any value with |z-score| > threshold is flagged.
+    Returns a list of anomaly dicts with index, value, and z-score.
+    """
+    anomalies: list[dict] = []
+
+    for idx, value in enumerate(values):
+        z = z_score(value, values)
+        if abs(z) > threshold:
+            anomalies.append({
+                "index": idx,
+                "value": value,
+                "z_score": round(z, 3),
+                "method": "z-score",
+            })
+
+    return anomalies
+
+
+def detect_anomalies_iqr(
+    values: list[float], factor: float = 1.5
+) -> list[dict]:
+    """Detect anomalies using IQR method.
+
+    Values below (Q1 - factor*IQR) or above (Q3 + factor*IQR) are flagged.
+    """
+    if len(values) < 4:
+        return []
+
+    lower, upper = iqr_bounds(values, factor)
+    anomalies: list[dict] = []
+
+    for idx, value in enumerate(values):
+        if value < lower or value > upper:
+            direction = "below" if value < lower else "above"
+            anomalies.append({
+                "index": idx,
+                "value": value,
+                "direction": direction,
+                "bounds": {"lower": round(lower, 2), "upper": round(upper, 2)},
+                "method": "iqr",
+            })
+
+    return anomalies
+
+
+def analyse_dataset(
+    values: list[float],
+    z_threshold: float = 2.0,
+    iqr_factor: float = 1.5,
+) -> dict:
+    """Run both anomaly detection methods and return a full report.
+
+    Combines z-score and IQR results with dataset statistics.
+    """
+    z_anomalies = detect_anomalies_zscore(values, threshold=z_threshold)
+    iqr_anomalies = detect_anomalies_iqr(values, factor=iqr_factor)
+
+    # Use sets to find values flagged by both methods.
+    z_indices = {a["index"] for a in z_anomalies}
+    iqr_indices = {a["index"] for a in iqr_anomalies}
+    both_indices = z_indices & iqr_indices  # Set intersection.
 
     return {
-        "project_title": PROJECT_TITLE,
-        "project_level": PROJECT_LEVEL,
-        "project_focus": PROJECT_FOCUS,
-        "total_items": total_items,
-        "unique_items": unique_items,
-        "preview": preview,
+        "statistics": {
+            "count": len(values),
+            "mean": round(mean(values), 2),
+            "std_dev": round(std_dev(values), 2),
+            "min": min(values) if values else 0,
+            "max": max(values) if values else 0,
+            "q1": round(percentile(values, 25), 2),
+            "median": round(percentile(values, 50), 2),
+            "q3": round(percentile(values, 75), 2),
+        },
+        "z_score_anomalies": z_anomalies,
+        "iqr_anomalies": iqr_anomalies,
+        "flagged_by_both": sorted(both_indices),
+        "total_anomalies": len(z_indices | iqr_indices),
     }
 
 
+def load_values(path: Path) -> list[float]:
+    """Load numeric values from a file (one number per line)."""
+    if not path.exists():
+        raise FileNotFoundError(f"Data file not found: {path}")
+
+    values: list[float] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        try:
+            values.append(float(stripped))
+        except ValueError:
+            continue  # Skip non-numeric lines.
+
+    return values
+
+
 def parse_args() -> argparse.Namespace:
-    """Define and parse command-line options."""
-    parser = argparse.ArgumentParser(description="Beginner learning project runner")
-
-    # Input path defaults to bundled sample input file.
-    parser.add_argument("--input", default="data/sample_input.txt")
-
-    # Output path defaults to bundled output location.
-    parser.add_argument("--output", default="data/output_summary.json")
-
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Anomaly flagger")
+    parser.add_argument("input", help="Path to data file (one number per line)")
+    parser.add_argument(
+        "--z-threshold", type=float, default=2.0, help="Z-score threshold"
+    )
+    parser.add_argument(
+        "--iqr-factor", type=float, default=1.5, help="IQR factor"
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    """Program entrypoint.
-
-    Execution flow:
-    1) parse args,
-    2) load items,
-    3) summarize,
-    4) write JSON,
-    5) print JSON.
-    """
+    """Entry point: load data, detect anomalies, print report."""
     args = parse_args()
+    values = load_values(Path(args.input))
 
-    # Convert raw argument strings into Path objects.
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    report = analyse_dataset(
+        values, z_threshold=args.z_threshold, iqr_factor=args.iqr_factor
+    )
 
-    # Run data loading and summary logic.
-    items = load_items(input_path)
-    summary = build_summary(items)
+    print(f"Dataset: {report['statistics']['count']} values, "
+          f"mean={report['statistics']['mean']}, "
+          f"std_dev={report['statistics']['std_dev']}")
 
-    # Ensure output directory exists for first run.
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    print(f"\nAnomalies found: {report['total_anomalies']}")
 
-    # Write pretty JSON for easier reading and troubleshooting.
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    if report["z_score_anomalies"]:
+        print(f"\nZ-score anomalies (|z| > {args.z_threshold}):")
+        for a in report["z_score_anomalies"]:
+            print(f"  index={a['index']}, value={a['value']}, z={a['z_score']}")
 
-    # Print the same summary to terminal for immediate feedback.
-    print(json.dumps(summary, indent=2))
+    if report["iqr_anomalies"]:
+        print(f"\nIQR anomalies (factor={args.iqr_factor}):")
+        for a in report["iqr_anomalies"]:
+            print(f"  index={a['index']}, value={a['value']}, {a['direction']}")
+
+    if report["flagged_by_both"]:
+        print(f"\nFlagged by BOTH methods: indices {report['flagged_by_both']}")
 
 
-# Standard entrypoint guard so imports do not auto-run the script.
 if __name__ == "__main__":
     main()

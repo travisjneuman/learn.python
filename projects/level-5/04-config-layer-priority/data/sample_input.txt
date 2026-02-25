@@ -1,5 +1,26 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample configuration for Config Layer Priority
+-------------------------------------------------
+This file explains the companion config.json.
+
+The project merges configuration from multiple layers with priority:
+  Layer 1 (lowest):  defaults hardcoded in the application
+  Layer 2:           config.json file (project-level settings)
+  Layer 3:           environment variables (deployment overrides)
+  Layer 4 (highest): command-line arguments (runtime overrides)
+
+config.json example:
+  {
+    "database": {"host": "localhost", "port": 5432, "name": "myapp"},
+    "logging": {"level": "INFO", "format": "json"},
+    "features": {"cache_enabled": true, "max_retries": 3}
+  }
+
+Environment variable mapping:
+  APP_DB_HOST=prod-db.example.com  -> database.host
+  APP_LOG_LEVEL=DEBUG              -> logging.level
+
+CLI override:
+  --set database.port=5433
+
+Expected resolved config merges all layers, higher priority wins.
+The output shows which layer each setting came from.

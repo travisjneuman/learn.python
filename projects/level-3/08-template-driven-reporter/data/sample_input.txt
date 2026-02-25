@@ -1,5 +1,28 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Save the following as report_template.txt:
+
+    ===== Monthly Report =====
+    Company: $company
+    Period: $month $year
+
+    Total Revenue: $$$revenue
+    Total Expenses: $$$expenses
+    Net Income: $$$net_income
+
+    Prepared by: $author
+    ===========================
+
+Save the following as report_data.json:
+
+    {
+        "company": "Acme Corp",
+        "month": "January",
+        "year": "2024",
+        "revenue": "125000",
+        "expenses": "98000",
+        "net_income": "27000",
+        "author": "Finance Team"
+    }
+
+Run:
+    python project.py render report_template.txt report_data.json
+    python project.py discover report_template.txt

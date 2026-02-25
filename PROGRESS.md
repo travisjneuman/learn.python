@@ -293,3 +293,18 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] Level 1 diagnostic completed
 - [ ] Level 2 diagnostic completed
 - [ ] Level 3 diagnostic completed
+
+---
+
+## Level Badges
+
+As you complete each level, add the badge to your GitHub profile or project README:
+
+```markdown
+![Level 0 Complete](badges/level-0.svg)
+![Level 1 Complete](badges/level-1.svg)
+```
+
+Generate fresh badges with: `python tools/generate_badges.py`
+
+Available badges: Level 00 through Level 10, Elite Track, Expansion Modules, and Python Mastery Complete.

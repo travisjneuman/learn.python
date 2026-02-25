@@ -1,5 +1,16 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+This project simulates HTTP services — no input file needed.
+
+Usage:
+    python project.py request --method GET --path /api/users
+    python project.py request --seed 42
+    python project.py load --count 100 --json
+    python project.py load --count 1000 --seed 42
+    python project.py retry --max-retries 5
+
+The simulator generates responses based on configurable probabilities:
+- 80% success (200)
+- 10% server error (500)
+- 5% timeout (504)
+- 5% rate limit (429)
+
+Use --seed for reproducible results.

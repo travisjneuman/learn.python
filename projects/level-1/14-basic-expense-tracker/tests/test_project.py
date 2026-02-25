@@ -1,48 +1,83 @@
-"""Beginner test module with heavy comments.
+"""Tests for Basic Expense Tracker."""
 
-Why these tests exist:
-- They prove file-reading behavior for normal input.
-- They prove failure behavior for missing files.
-- They show how tiny tests protect core assumptions.
-"""
-
-# pathlib.Path is used to create temporary files and paths in tests.
 from pathlib import Path
 
-# Import the function under test directly from the project module.
-from project import load_items
+import pytest
+
+from project import (
+    load_expenses,
+    overall_stats,
+    parse_expense,
+    top_expenses,
+    total_by_category,
+)
 
 
-def test_load_items_strips_blank_lines(tmp_path: Path) -> None:
-    """Happy-path test for input cleanup behavior."""
-    # Arrange:
-    # Create a temporary file with blank lines and padded whitespace.
-    sample = tmp_path / "sample.txt"
-    sample.write_text("alpha\n\n beta \n", encoding="utf-8")
-
-    # Act:
-    # Run the loader function that should clean and filter lines.
-    items = load_items(sample)
-
-    # Assert:
-    # Verify that blank lines are removed and spaces are trimmed.
-    assert items == ["alpha", "beta"]
+def test_parse_expense_valid() -> None:
+    row = {"date": "2024-01-15", "category": "Food", "amount": "12.50", "description": "Lunch"}
+    exp = parse_expense(row)
+    assert exp["category"] == "food"
+    assert exp["amount"] == 12.50
 
 
-def test_load_items_missing_file_raises(tmp_path: Path) -> None:
-    """Failure-path test for missing-file safety."""
-    # Arrange:
-    # Point to a file that does not exist.
-    missing = tmp_path / "missing.txt"
+def test_parse_expense_missing_field() -> None:
+    row = {"date": "2024-01-15", "category": "", "amount": "10", "description": "X"}
+    with pytest.raises(ValueError, match="Missing required field"):
+        parse_expense(row)
 
-    # Act + Assert:
-    # We expect FileNotFoundError. If not raised, the test must fail.
-    try:
-        load_items(missing)
-    except FileNotFoundError:
-        # Expected path: behavior is correct.
-        assert True
-        return
 
-    # Unexpected path: function failed to enforce missing-file guardrail.
-    assert False, "Expected FileNotFoundError"
+def test_parse_expense_negative_amount() -> None:
+    row = {"date": "2024-01-15", "category": "Food", "amount": "-5", "description": "Refund"}
+    with pytest.raises(ValueError, match="Negative amount"):
+        parse_expense(row)
+
+
+def test_total_by_category() -> None:
+    expenses = [
+        {"category": "food", "amount": 10.0},
+        {"category": "transport", "amount": 5.0},
+        {"category": "food", "amount": 8.0},
+    ]
+    totals = total_by_category(expenses)
+    assert totals["food"] == 18.0
+    assert totals["transport"] == 5.0
+
+
+def test_overall_stats() -> None:
+    expenses = [{"amount": 10.0}, {"amount": 20.0}, {"amount": 30.0}]
+    stats = overall_stats(expenses)
+    assert stats["total"] == 60.0
+    assert stats["average"] == 20.0
+    assert stats["min"] == 10.0
+    assert stats["max"] == 30.0
+
+
+def test_overall_stats_empty() -> None:
+    stats = overall_stats([])
+    assert stats["total"] == 0.0
+    assert stats["count"] == 0
+
+
+def test_top_expenses() -> None:
+    expenses = [
+        {"amount": 5.0, "description": "small"},
+        {"amount": 50.0, "description": "big"},
+        {"amount": 25.0, "description": "medium"},
+    ]
+    top = top_expenses(expenses, n=2)
+    assert len(top) == 2
+    assert top[0]["amount"] == 50.0
+
+
+def test_load_expenses_from_csv(tmp_path: Path) -> None:
+    csv_file = tmp_path / "expenses.csv"
+    csv_file.write_text(
+        "date,category,amount,description\n"
+        "2024-01-01,Food,15.00,Groceries\n"
+        "2024-01-02,Transport,8.50,Bus fare\n",
+        encoding="utf-8",
+    )
+    expenses = load_expenses(csv_file)
+    assert len(expenses) == 2
+    assert expenses[0]["category"] == "food"
+    assert expenses[1]["amount"] == 8.50

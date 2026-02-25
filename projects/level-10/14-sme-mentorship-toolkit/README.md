@@ -2,59 +2,56 @@
 Home: [README](../../../README.md)
 
 ## Focus
-- mentorship playbook generation
+- Weighted matching algorithm based on skill overlap and experience gaps
+- Greedy mentor assignment respecting capacity constraints
+- Milestone tracking with completion rate metrics
+- Skill-level modeling with proficiency-based matching
 
 ## Why this project exists
-This project gives you level-appropriate practice in a realistic operations context.
-Goal: run the baseline, alter behavior, break one assumption, recover safely, and explain the fix.
+Ad-hoc mentorship often fails because pairings are suboptimal or progress is invisible. This project formalizes skill matching and milestone tracking so organizations can measure mentorship ROI and ensure knowledge transfer happens systematically.
 
 ## Run (copy/paste)
-Use `<repo-root>` as the folder containing this repository's `README.md`.
-
 ```bash
 cd <repo-root>/projects/level-10/14-sme-mentorship-toolkit
-python project.py --input data/sample_input.txt --output data/output_summary.json
-pytest -q
+python project.py
+pytest -v
 ```
 
 ## Expected terminal output
 ```text
-... output_summary.json written ...
-2 passed
+Matches:
+  E1 -> M1 (score: 85.0, skills: ['python', 'sql'])
+  E2 -> M2 (score: 72.0, skills: ['javascript', 'react'])
+  ...
 ```
 
-## Expected artifacts
-- `data/output_summary.json`
-- Passing tests
-- Updated `notes.md`
-
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `timezone` field to Person and penalize matches where mentor/mentee are >6 hours apart.
+2. Add a `feedback_score` to milestones so mentees can rate each milestone completion.
+3. Add a `MentorReport` that shows how many mentees each mentor has and their completion rates.
 
 ## Break it (required)
-1. Use malformed or edge-case input.
-2. Confirm behavior fails or degrades predictably.
-3. Capture the first failing test or visible bad output.
+1. Create a mentee with goals that no mentor can fulfill — observe a low compatibility score.
+2. Set `max_mentees=0` for all mentors and verify no matches are produced.
+3. Try to complete a non-existent milestone ID.
 
 ## Fix it (required)
-1. Add or update defensive checks.
-2. Add or update tests for the broken case.
-3. Re-run until output and tests are deterministic.
+1. Add a minimum compatibility threshold — do not assign a mentor if the score is below 30.
+2. Add a warning when a mentee cannot be matched due to capacity constraints.
+3. Test both fixes.
 
 ## Explain it (teach-back)
-1. What assumptions did this project make?
-2. What broke first and why?
-3. What exact change fixed it?
-4. How would this pattern apply in enterprise automation work?
+1. How does the compatibility score weight skill overlap vs experience gap vs availability?
+2. Why does the greedy matching algorithm assign mentees in order rather than using global optimization?
+3. How does tracking milestone completion rate help measure mentorship effectiveness?
+4. How would you extend this to handle re-matching when a mentor leaves?
 
 ## Mastery check
 You can move on when you can:
-- run baseline without docs,
-- explain one core function line-by-line,
-- break and recover in one session,
-- keep tests passing after your change.
+- compute a compatibility score by hand for a mentor-mentee pair,
+- explain why capacity constraints prevent one mentor from being overloaded,
+- add a milestone and track it through to completion,
+- describe the difference between greedy matching and optimal (Hungarian) assignment.
 
 ---
 

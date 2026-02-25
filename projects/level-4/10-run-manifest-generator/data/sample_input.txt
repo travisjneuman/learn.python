@@ -1,5 +1,22 @@
-critical_alert
-warning_alert
-site_latency_high
-cpu_utilization_spike
-disk_free_space_low
+Sample scenario for Run Manifest Generator
+---------------------------------------------
+This file describes the manifest generation context.
+
+The project scans a directory of data files and generates a JSON manifest:
+  - File name, size, last modified timestamp
+  - SHA-256 checksum for integrity verification
+  - File type classification (csv, json, txt, unknown)
+  - Total file count and combined size
+
+Sample directory structure to scan:
+  data/
+    reports/
+      sales_q1.csv         (1,234 bytes, CSV)
+      sales_q2.csv         (2,456 bytes, CSV)
+      inventory.json       (891 bytes, JSON)
+    logs/
+      app.log              (5,678 bytes, TXT)
+      errors.log           (234 bytes, TXT)
+    README.txt             (456 bytes, TXT)
+
+Expected manifest: 6 files cataloged with checksums
