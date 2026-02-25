@@ -1,0 +1,7 @@
+Python was created by Guido van Rossum and first released in 1991.
+It emphasizes code readability with its use of significant indentation.
+Python is dynamically typed and garbage-collected.
+It supports multiple programming paradigms including structured,
+object-oriented, and functional programming.
+Python is often described as a "batteries included" language
+because of its comprehensive standard library.

@@ -1,0 +1,8 @@
+Virtual environments isolate project dependencies from each other.
+Without them, installing a package for one project might break another.
+The venv module is built into Python 3 and creates lightweight environments.
+Each environment has its own site-packages directory where pip installs packages.
+Activating an environment adjusts your PATH so the right python binary runs.
+You should create a new virtual environment for every project you work on.
+This is one of the first habits every Python developer should build.
+Requirements files list the packages a project needs so anyone can recreate the environment.

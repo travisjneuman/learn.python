@@ -1,0 +1,6 @@
+The command line is one of the oldest interfaces to computers.
+Before graphical user interfaces existed, every interaction
+happened through typed commands and printed text.
+Modern CLI tools bring that efficiency back with better design.
+Libraries like Click and Typer make it easy to build
+professional command-line applications in Python.
