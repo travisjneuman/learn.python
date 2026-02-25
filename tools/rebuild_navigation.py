@@ -353,4 +353,11 @@ def main():
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Rebuild complete navigation chain across the entire curriculum. "
+        "Updates every markdown file with consistent prev/home/next navigation links.",
+    )
+    parser.parse_args()
     main()

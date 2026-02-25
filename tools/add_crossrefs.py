@@ -405,4 +405,12 @@ def main():
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Cross-reference linker. Adds 'Related Concepts' sections to "
+        "project READMEs and 'Practice This' sections to concept docs. "
+        "Idempotent — skips files that already have cross-references.",
+    )
+    parser.parse_args()
     main()

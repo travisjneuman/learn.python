@@ -333,26 +333,36 @@ def show_next():
 
 
 def main():
-    args = sys.argv[1:]
+    import argparse
 
-    if "--help" in args or "-h" in args:
-        print(__doc__)
-        return
+    parser = argparse.ArgumentParser(
+        description="Progress dashboard. Scans the repository to show learning "
+        "progress based on actual work done (files created, tests passing, notes written).",
+    )
+    parser.add_argument(
+        "--detail", type=str, default=None, metavar="LEVEL",
+        help="show detailed progress for a specific level or module (e.g. level-0)",
+    )
+    parser.add_argument(
+        "--streak", action="store_true",
+        help="show your practice streak from git commit history",
+    )
+    parser.add_argument(
+        "--next", action="store_true",
+        help="recommend what to work on next",
+    )
+    args = parser.parse_args()
 
-    if "--streak" in args:
+    if args.streak:
         show_streak()
         return
 
-    if "--next" in args:
+    if args.next:
         show_next()
         return
 
-    if "--detail" in args:
-        idx = args.index("--detail")
-        if idx + 1 < len(args):
-            show_detail(args[idx + 1])
-        else:
-            print("Usage: python tools/progress.py --detail <level-name>")
+    if args.detail is not None:
+        show_detail(args.detail)
         return
 
     show_overview()

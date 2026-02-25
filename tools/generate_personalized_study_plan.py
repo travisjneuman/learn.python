@@ -1,7 +1,18 @@
 """Generate a personalized study plan from learner constraints.
 
-This script intentionally keeps logic explicit and deterministic so learners can
-read, modify, and understand every recommendation rule.
+Produces a markdown study plan based on experience level, available hours,
+learning mode, and goals. The logic is intentionally explicit and deterministic
+so learners can read, modify, and understand every recommendation rule.
+
+Usage:
+    python tools/generate_personalized_study_plan.py \\
+        --hours-per-week 10 --learning-mode hybrid \\
+        --confidence medium --experience beginner --goal full_stack
+
+    python tools/generate_personalized_study_plan.py \\
+        --hours-per-week 5 --learning-mode play \\
+        --confidence low --experience zero --goal automation \\
+        --output my-plan.md
 """
 
 from __future__ import annotations
