@@ -74,6 +74,8 @@ The curriculum is a straight line from zero experience to production-grade engin
 
 **Total: 261 projects across 13 levels and 12 technology modules.**
 
+See the full [Curriculum Map](./CURRICULUM_MAP.md) for a dependency diagram and every project listed at a glance.
+
 ---
 
 ## 📁 Project Levels
