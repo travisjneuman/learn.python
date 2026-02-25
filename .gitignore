@@ -8,3 +8,6 @@ venv/
 
 # Flashcard review state (personal progress)
 practice/flashcards/.review-state.json
+
+# Personal learning workspace
+learning/

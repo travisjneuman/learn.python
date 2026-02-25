@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/Curriculum_Docs-50+-f57c00?style=for-the-badge" alt="50+ Curriculum Docs">
   <img src="https://img.shields.io/badge/Concept_Guides-16-7c4dff?style=for-the-badge" alt="16 Concept Guides">
   <img src="https://img.shields.io/badge/Quizzes-15-e53935?style=for-the-badge" alt="15 Quizzes">
-  <img src="https://img.shields.io/badge/License-Open_Source-555555?style=for-the-badge" alt="Open Source">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License"></a>
 </p>
 
 <p align="center">
