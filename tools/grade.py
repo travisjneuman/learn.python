@@ -210,31 +210,50 @@ def print_summary(results):
 
 
 def main():
-    args = sys.argv[1:]
+    import argparse
 
-    if "--help" in args or "-h" in args:
-        print(__doc__)
-        return
+    parser = argparse.ArgumentParser(
+        description="Auto-grading test runner with pedagogical feedback. "
+        "Runs project tests and provides friendly, educational results.",
+    )
+    parser.add_argument(
+        "path", nargs="?", default=None,
+        help="path to a specific project directory to grade",
+    )
+    parser.add_argument(
+        "--level", type=str, default=None,
+        help="grade all projects in a level (e.g. --level 0)",
+    )
+    parser.add_argument(
+        "--modules", action="store_true",
+        help="grade all expansion module projects",
+    )
+    parser.add_argument(
+        "--all", action="store_true", dest="all_projects",
+        help="grade every project (levels + modules + elite)",
+    )
+    parser.add_argument(
+        "--summary", action="store_true",
+        help="show only the summary, skip individual results",
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true",
+        help="show failure details and concept hints",
+    )
+    args = parser.parse_args()
 
     config = load_config()
-    verbose = "--verbose" in args or "-v" in args
-    summary_only = "--summary" in args
 
     # Determine what to grade
     projects = []
-    if "--all" in args:
+    if args.all_projects:
         projects = find_projects(all_projects=True)
-    elif "--modules" in args:
+    elif args.modules:
         projects = find_projects(modules_only=True)
-    elif "--level" in args:
-        idx = args.index("--level")
-        if idx + 1 < len(args):
-            projects = find_projects(level=args[idx + 1])
-    else:
-        # Check for a direct path argument
-        path_args = [a for a in args if not a.startswith("-")]
-        if path_args:
-            projects = find_projects(path=path_args[0])
+    elif args.level is not None:
+        projects = find_projects(level=args.level)
+    elif args.path:
+        projects = find_projects(path=args.path)
 
     if not projects:
         print("No projects found to grade.")
@@ -250,8 +269,8 @@ def main():
     for proj in projects:
         result = run_tests(proj)
         results[str(proj)] = result
-        if not summary_only:
-            print_project_result(proj, result, config, verbose=verbose)
+        if not args.summary:
+            print_project_result(proj, result, config, verbose=args.verbose)
 
     print_summary(results)
 

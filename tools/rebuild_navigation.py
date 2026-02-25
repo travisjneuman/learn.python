@@ -232,14 +232,14 @@ LEVEL_PROJECTS = {
         "13-operational-run-logger", "14-change-detection-tool", "15-level5-mini-capstone",
     ],
     6: [
-        "01-mssql-connection-simulator", "02-staging-table-loader", "03-idempotency-key-builder",
+        "01-sql-connection-simulator", "02-staging-table-loader", "03-idempotency-key-builder",
         "04-upsert-strategy-lab", "05-transaction-rollback-drill", "06-query-performance-checker",
         "07-sql-summary-publisher", "08-data-lineage-capture", "09-incremental-load-simulator",
         "10-table-drift-detector", "11-dead-letter-row-handler", "12-etl-health-dashboard-feed",
         "13-batch-window-controller", "14-sql-runbook-generator", "15-level6-mini-capstone",
     ],
     7: [
-        "01-orion-query-adapter", "02-dpa-api-adapter", "03-unified-cache-writer",
+        "01-api-query-adapter", "02-monitoring-api-adapter", "03-unified-cache-writer",
         "04-source-field-mapper", "05-polling-cadence-manager", "06-token-rotation-simulator",
         "07-stale-data-detector", "08-ingestion-observability-kit", "09-contract-version-checker",
         "10-multi-source-reconciler", "11-pipeline-feature-flags", "12-incident-mode-switch",

@@ -68,5 +68,5 @@ You can move on when you can:
 
 ---
 
-| [← Prev](../02-dpa-api-adapter/README.md) | [Home](../../../README.md) | [Next →](../04-source-field-mapper/README.md) |
+| [← Prev](../02-monitoring-api-adapter/README.md) | [Home](../../../README.md) | [Next →](../04-source-field-mapper/README.md) |
 |:---|:---:|---:|

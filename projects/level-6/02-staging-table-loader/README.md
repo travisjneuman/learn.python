@@ -67,5 +67,5 @@ You can move on when you can:
 
 ---
 
-| [← Prev](../01-mssql-connection-simulator/README.md) | [Home](../../../README.md) | [Next →](../03-idempotency-key-builder/README.md) |
+| [← Prev](../01-sql-connection-simulator/README.md) | [Home](../../../README.md) | [Next →](../03-idempotency-key-builder/README.md) |
 |:---|:---:|---:|

@@ -12,7 +12,7 @@ Goal: run the baseline, alter behavior, break one assumption, recover safely, an
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
-cd <repo-root>/projects/level-7/01-orion-query-adapter
+cd <repo-root>/projects/level-7/01-api-query-adapter
 python project.py --input data/sample_input.txt --output data/output_summary.json
 pytest -q
 ```
@@ -68,5 +68,5 @@ You can move on when you can:
 
 ---
 
-| [← Prev](../README.md) | [Home](../../../README.md) | [Next →](../02-dpa-api-adapter/README.md) |
+| [← Prev](../README.md) | [Home](../../../README.md) | [Next →](../02-monitoring-api-adapter/README.md) |
 |:---|:---:|---:|

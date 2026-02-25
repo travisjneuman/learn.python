@@ -25,7 +25,7 @@ Master SQL reliability, monitoring API integration behavior, and browser-first d
 
 ## Level-6 run pattern (SQL-focused)
 ```bash
-cd <repo-root>/projects/level-6/01-mssql-connection-simulator
+cd <repo-root>/projects/level-6/01-sql-connection-simulator
 python project.py --input data/sample_input.txt --output data/output_summary.json
 pytest -q
 ```
@@ -38,7 +38,7 @@ Expected output:
 
 ## Level-7 run pattern (API integration focused)
 ```bash
-cd <repo-root>/projects/level-7/01-orion-query-adapter
+cd <repo-root>/projects/level-7/01-api-query-adapter
 python project.py --input data/sample_input.txt --output data/output_summary.json
 pytest -q
 ```

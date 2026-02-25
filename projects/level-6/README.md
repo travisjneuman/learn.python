@@ -5,7 +5,7 @@ Home: [README](../../README.md)
 Design SQL-friendly ETL patterns with idempotency and operational safeguards.
 
 ## Projects
-- [01-mssql-connection-simulator](./01-mssql-connection-simulator/README.md) - SQL Connection Simulator
+- [01-sql-connection-simulator](./01-sql-connection-simulator/README.md) - SQL Connection Simulator
 - [02-staging-table-loader](./02-staging-table-loader/README.md) - Staging Table Loader
 - [03-idempotency-key-builder](./03-idempotency-key-builder/README.md) - Idempotency Key Builder
 - [04-upsert-strategy-lab](./04-upsert-strategy-lab/README.md) - Upsert Strategy Lab

@@ -196,18 +196,24 @@ def run_diagnostic(name):
 
 
 def main():
-    args = sys.argv[1:]
+    import argparse
 
-    if "--help" in args or "-h" in args:
-        print(__doc__)
-        return
+    parser = argparse.ArgumentParser(
+        description="Diagnostic assessment tool. Interactive quizzes that help "
+        "learners find their starting point or identify knowledge gaps.",
+    )
+    parser.add_argument(
+        "name", nargs="?", default=None,
+        help="diagnostic name to run (e.g. gate-a, level-0, level-1). "
+        "Omit to list all available diagnostics.",
+    )
+    args = parser.parse_args()
 
-    if not args:
+    if args.name is None:
         list_diagnostics()
         return
 
-    name = args[0]
-    run_diagnostic(name)
+    run_diagnostic(args.name)
 
 
 if __name__ == "__main__":

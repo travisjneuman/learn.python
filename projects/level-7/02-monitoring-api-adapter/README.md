@@ -1,8 +1,8 @@
-# Level 6 / Project 01 - SQL Connection Simulator
+# Level 7 / Project 02 - Monitoring API Adapter
 Home: [README](../../../README.md)
 
 ## Focus
-- connection config and retry patterns
+- api call abstraction and result normalization
 
 ## Why this project exists
 This project gives you level-appropriate practice in a realistic operations context.
@@ -12,7 +12,7 @@ Goal: run the baseline, alter behavior, break one assumption, recover safely, an
 Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
-cd <repo-root>/projects/level-6/01-mssql-connection-simulator
+cd <repo-root>/projects/level-7/02-monitoring-api-adapter
 python project.py --input data/sample_input.txt --output data/output_summary.json
 pytest -q
 ```
@@ -60,13 +60,13 @@ You can move on when you can:
 
 ## Related Concepts
 
-- [Collections Explained](../../../concepts/collections-explained.md)
-- [Decorators Explained](../../../concepts/decorators-explained.md)
+- [Api Basics](../../../concepts/api-basics.md)
 - [Errors and Debugging](../../../concepts/errors-and-debugging.md)
 - [Files and Paths](../../../concepts/files-and-paths.md)
-- [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+- [How Imports Work](../../../concepts/how-imports-work.md)
+- [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
 ---
 
-| [← Prev](../README.md) | [Home](../../../README.md) | [Next →](../02-staging-table-loader/README.md) |
+| [← Prev](../01-api-query-adapter/README.md) | [Home](../../../README.md) | [Next →](../03-unified-cache-writer/README.md) |
 |:---|:---:|---:|
