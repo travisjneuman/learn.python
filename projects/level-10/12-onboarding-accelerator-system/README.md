@@ -66,5 +66,7 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 10 index](../README.md).
+---
+
+| [← Prev](../11-production-readiness-director/README.md) | [Home](../../../README.md) | [Next →](../13-legacy-modernization-planner/README.md) |
+|:---|:---:|---:|

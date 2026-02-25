@@ -157,5 +157,7 @@ Scoring rubric (0-2 each):
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Real Python Excel articles](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [06_SQL.md](./06_SQL.md).
+---
+
+| [← Prev](concepts/virtual-environments.md) | [Home](README.md) | [Next →](projects/level-3/README.md) |
+|:---|:---:|---:|

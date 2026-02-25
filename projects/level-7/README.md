@@ -26,6 +26,7 @@ Integrate multi-source telemetry with contracts, caching, and policy guardrails.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
-## Next
-- Continue to [level-8](../level-8/README.md).
-- Return to [projects index](../README.md).
+---
+
+| [← Prev](../level-6/README.md) | [Home](../../README.md) | [Next →](../../08_DASHBOARDS.md) |
+|:---|:---:|---:|

@@ -137,3 +137,8 @@ requests.get(f"{BASE_URL}/users")
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](http-explained.md) | [Home](../README.md) | [Next →](async-explained.md) |
+|:---|:---:|---:|

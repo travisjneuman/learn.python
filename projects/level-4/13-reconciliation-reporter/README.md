@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 4 index](../README.md).
+---
+
+| [← Prev](../12-checkpoint-recovery-tool/README.md) | [Home](../../../README.md) | [Next →](../14-configurable-batch-runner/README.md) |
+|:---|:---:|---:|

@@ -26,3 +26,8 @@
    print(is_even(4))   # True
    print(is_even(7))   # False
    ```
+
+---
+
+| [← Prev](../12-dictionaries/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../14-reading-files/TRY_THIS.md) |
+|:---|:---:|---:|

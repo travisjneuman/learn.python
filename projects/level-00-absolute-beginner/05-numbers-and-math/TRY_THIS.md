@@ -17,3 +17,8 @@
    ```
 
 3. Try dividing by zero: `print(10 / 0)`. Read the error message carefully. Python refuses to do it and tells you why.
+
+---
+
+| [← Prev](../04-variables/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../06-strings-and-text/TRY_THIS.md) |
+|:---|:---:|---:|

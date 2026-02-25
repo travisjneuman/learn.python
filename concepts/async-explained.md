@@ -150,3 +150,8 @@ async def good():
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](api-basics.md) | [Home](../README.md) | [Next →](../projects/level-6/README.md) |
+|:---|:---:|---:|

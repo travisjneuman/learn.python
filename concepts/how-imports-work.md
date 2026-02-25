@@ -152,3 +152,8 @@ from my_package import calculator    # May fail in some Python versions
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](../projects/level-2/README.md) | [Home](../README.md) | [Next →](classes-and-objects.md) |
+|:---|:---:|---:|

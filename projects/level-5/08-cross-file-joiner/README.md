@@ -65,5 +65,7 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 5 index](../README.md).
+---
+
+| [← Prev](../07-resilient-json-loader/README.md) | [Home](../../../README.md) | [Next →](../09-template-report-renderer/README.md) |
+|:---|:---:|---:|

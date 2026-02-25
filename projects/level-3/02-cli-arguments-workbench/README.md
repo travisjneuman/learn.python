@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../01-package-layout-starter/README.md) | [Home](../../../README.md) | [Next →](../03-logging-baseline-tool/README.md) |
+|:---|:---:|---:|

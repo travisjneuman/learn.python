@@ -66,5 +66,7 @@ You can move on when you can:
 - [Http Explained](../../../concepts/http-explained.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../03-unified-cache-writer/README.md) | [Home](../../../README.md) | [Next →](../05-polling-cadence-manager/README.md) |
+|:---|:---:|---:|

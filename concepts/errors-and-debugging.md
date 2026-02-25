@@ -104,3 +104,8 @@ if True:
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](../09_QUALITY_TOOLING.md) | [Home](../README.md) | [Next →](the-terminal-deeper.md) |
+|:---|:---:|---:|

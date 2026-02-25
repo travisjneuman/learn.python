@@ -168,3 +168,8 @@ python3 -m venv .venv    # Use python3 explicitly if needed
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](decorators-explained.md) | [Home](../README.md) | [Next →](../05_AUTOMATION_FILES_EXCEL.md) |
+|:---|:---:|---:|

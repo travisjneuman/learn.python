@@ -65,5 +65,7 @@ You can move on when you can:
 - [Virtual Environments](../../../concepts/virtual-environments.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../14-sql-runbook-generator/README.md) | [Home](../../../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

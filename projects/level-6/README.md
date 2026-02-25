@@ -26,6 +26,7 @@ Design SQL-friendly ETL patterns with idempotency and operational safeguards.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
-## Next
-- Continue to [level-7](../level-7/README.md).
-- Return to [projects index](../README.md).
+---
+
+| [← Prev](../../concepts/async-explained.md) | [Home](../../README.md) | [Next →](../level-7/README.md) |
+|:---|:---:|---:|

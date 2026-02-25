@@ -16,3 +16,8 @@
    ```python
    print("I have", 3 + 4, "apples")
    ```
+
+---
+
+| [← Prev](../01-first-steps/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../03-your-first-script/TRY_THIS.md) |
+|:---|:---:|---:|

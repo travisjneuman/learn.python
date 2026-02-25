@@ -65,5 +65,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../06-structured-error-handler/README.md) | [Home](../../../README.md) | [Next →](../08-template-driven-reporter/README.md) |
+|:---|:---:|---:|

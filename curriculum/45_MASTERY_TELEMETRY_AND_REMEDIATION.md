@@ -40,5 +40,7 @@ No category can remain red for two consecutive quarters.
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md](./46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md).
+---
+
+| [← Prev](44_SME_INTERVIEW_AND_DEBATE_BANK.md) | [Home](../README.md) | [Next →](46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md) |
+|:---|:---:|---:|

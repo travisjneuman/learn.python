@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Functions Explained](../../../concepts/quizzes/functions-explained-quiz.py)
 
-## Next
-Go back to [Level 1 index](../README.md).
+---
+
+| [← Prev](../01-input-validator-lab/README.md) | [Home](../../../README.md) | [Next →](../03-unit-price-calculator/README.md) |
+|:---|:---:|---:|

@@ -76,5 +76,7 @@ Total: 100 points.
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [18_REMEDIATION_PLAYBOOK.md](./18_REMEDIATION_PLAYBOOK.md).
+---
+
+| [← Prev](16_LEARNER_PROFILE_AND_PLACEMENT.md) | [Home](../README.md) | [Next →](18_REMEDIATION_PLAYBOOK.md) |
+|:---|:---:|---:|

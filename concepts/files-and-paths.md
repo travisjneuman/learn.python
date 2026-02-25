@@ -120,3 +120,8 @@ path = Path("C:/Users/Travis/new_file.txt")  # Forward slashes work too
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](collections-explained.md) | [Home](../README.md) | [Next →](../projects/level-1/README.md) |
+|:---|:---:|---:|

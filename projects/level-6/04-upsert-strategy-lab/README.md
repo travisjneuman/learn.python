@@ -65,5 +65,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../03-idempotency-key-builder/README.md) | [Home](../../../README.md) | [Next →](../05-transaction-rollback-drill/README.md) |
+|:---|:---:|---:|

@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 8 index](../README.md).
+---
+
+| [← Prev](../README.md) | [Home](../../../README.md) | [Next →](../02-query-cache-layer/README.md) |
+|:---|:---:|---:|

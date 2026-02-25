@@ -29,5 +29,7 @@ Every artifact includes:
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [44_SME_INTERVIEW_AND_DEBATE_BANK.md](./44_SME_INTERVIEW_AND_DEBATE_BANK.md).
+---
+
+| [← Prev](42_OPEN_SOURCE_CONTRIBUTION_LANE.md) | [Home](../README.md) | [Next →](44_SME_INTERVIEW_AND_DEBATE_BANK.md) |
+|:---|:---:|---:|

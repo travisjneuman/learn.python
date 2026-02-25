@@ -65,5 +65,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../07-batch-file-auditor/README.md) | [Home](../../../README.md) | [Next →](../09-reusable-utils-library/README.md) |
+|:---|:---:|---:|

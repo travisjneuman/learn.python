@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 0 index](../README.md).
+---
+
+| [← Prev](../09-daily-checklist-writer/README.md) | [Home](../../../README.md) | [Next →](../11-simple-menu-loop/README.md) |
+|:---|:---:|---:|

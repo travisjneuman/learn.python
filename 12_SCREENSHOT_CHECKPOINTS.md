@@ -123,5 +123,7 @@ Reflection prompts:
 - [Python Tutor](https://pythontutor.com/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md).
+---
+
+| [← Prev](11_CHECKLISTS.md) | [Home](README.md) | [Next →](13_SAMPLE_DATABASE_SCHEMAS.md) |
+|:---|:---:|---:|

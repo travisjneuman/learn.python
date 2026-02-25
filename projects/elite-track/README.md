@@ -28,5 +28,7 @@ This track extends the level-0 to level-10 ladder with advanced, systems-focused
 - `./run_elite_smoke_checks.sh`
 - `./run_elite_smoke_checks.sh --full`
 
-## Next
-Return to [projects index](../README.md).
+---
+
+| [← Prev](../level-10/README.md) | [Home](../../README.md) | [Next →](../modules/README.md) |
+|:---|:---:|---:|

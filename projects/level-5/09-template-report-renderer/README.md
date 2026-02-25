@@ -64,5 +64,7 @@ You can move on when you can:
 - [Errors and Debugging](../../../concepts/errors-and-debugging.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 5 index](../README.md).
+---
+
+| [← Prev](../08-cross-file-joiner/README.md) | [Home](../../../README.md) | [Next →](../10-api-polling-simulator/README.md) |
+|:---|:---:|---:|

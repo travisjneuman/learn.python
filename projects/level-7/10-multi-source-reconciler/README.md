@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../09-contract-version-checker/README.md) | [Home](../../../README.md) | [Next →](../11-pipeline-feature-flags/README.md) |
+|:---|:---:|---:|

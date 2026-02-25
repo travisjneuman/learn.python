@@ -50,5 +50,7 @@ By the end of this track you can:
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
-## Next
-Go to [37_QUARTERLY_EXAMS_AND_DEFENSES.md](./37_QUARTERLY_EXAMS_AND_DEFENSES.md).
+---
+
+| [← Prev](35_CAPSTONE_BLUEPRINTS.md) | [Home](../README.md) | [Next →](37_QUARTERLY_EXAMS_AND_DEFENSES.md) |
+|:---|:---:|---:|

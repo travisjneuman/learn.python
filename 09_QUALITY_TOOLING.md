@@ -117,5 +117,7 @@ Move forward when you can:
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 - [GitHub Git basics](https://docs.github.com/en/get-started/getting-started-with-git)
 
-## Next
-Go to [05_AUTOMATION_FILES_EXCEL.md](./05_AUTOMATION_FILES_EXCEL.md).
+---
+
+| [← Prev](practice/challenges/README.md) | [Home](README.md) | [Next →](concepts/errors-and-debugging.md) |
+|:---|:---:|---:|

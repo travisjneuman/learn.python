@@ -65,5 +65,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Functions Explained](../../../concepts/quizzes/functions-explained-quiz.py)
 
-## Next
-Go back to [Level 1 index](../README.md).
+---
+
+| [← Prev](../13-batch-rename-simulator/README.md) | [Home](../../../README.md) | [Next →](../15-level1-mini-automation/README.md) |
+|:---|:---:|---:|

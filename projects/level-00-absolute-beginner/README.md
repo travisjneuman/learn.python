@@ -54,5 +54,7 @@ You are ready for [Level 0](../level-0/README.md) when you can:
 - Read a simple error message and fix the problem
 - Explain what your code does in plain English
 
-## Next
-Continue to [Level 0](../level-0/README.md).
+---
+
+| [← Prev](../../concepts/what-is-a-variable.md) | [Home](../../README.md) | [Next →](../../04_FOUNDATIONS.md) |
+|:---|:---:|---:|

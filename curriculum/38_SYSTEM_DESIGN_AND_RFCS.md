@@ -45,5 +45,7 @@ Each drill must include:
 - [GitHub docs](https://docs.github.com/en)
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
-## Next
-Go to [39_PRODUCTION_PLATFORM_LAB.md](./39_PRODUCTION_PLATFORM_LAB.md).
+---
+
+| [← Prev](37_QUARTERLY_EXAMS_AND_DEFENSES.md) | [Home](../README.md) | [Next →](39_PRODUCTION_PLATFORM_LAB.md) |
+|:---|:---:|---:|

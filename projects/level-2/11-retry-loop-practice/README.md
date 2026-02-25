@@ -66,5 +66,7 @@ You can move on when you can:
 - [Errors and Debugging](../../../concepts/errors-and-debugging.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 2 index](../README.md).
+---
+
+| [← Prev](../10-mock-api-response-parser/README.md) | [Home](../../../README.md) | [Next →](../12-csv-to-json-converter/README.md) |
+|:---|:---:|---:|

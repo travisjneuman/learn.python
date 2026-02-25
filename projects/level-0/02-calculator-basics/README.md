@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Files and Paths](../../../concepts/quizzes/files-and-paths-quiz.py)
 
-## Next
-Go back to [Level 0 index](../README.md).
+---
+
+| [← Prev](../01-terminal-hello-lab/README.md) | [Home](../../../README.md) | [Next →](../03-temperature-converter/README.md) |
+|:---|:---:|---:|

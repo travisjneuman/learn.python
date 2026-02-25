@@ -58,5 +58,7 @@ Failure is expected. Unstructured failure is the problem. This playbook provides
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [19_MENTOR_GUIDE.md](./19_MENTOR_GUIDE.md).
+---
+
+| [← Prev](17_ASSESSMENT_AND_RUBRICS.md) | [Home](../README.md) | [Next →](19_MENTOR_GUIDE.md) |
+|:---|:---:|---:|

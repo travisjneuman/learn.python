@@ -26,6 +26,7 @@ Practice small data pipelines with dictionaries, validation, and transformations
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
-## Next
-- Continue to [level-3](../level-3/README.md).
-- Return to [projects index](../README.md).
+---
+
+| [← Prev](../level-1/README.md) | [Home](../../README.md) | [Next →](../../concepts/how-imports-work.md) |
+|:---|:---:|---:|

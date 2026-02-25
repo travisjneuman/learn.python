@@ -57,5 +57,7 @@ This map links the right resources to each mastery phase.
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [24_MASTERY_SCORING_AND_GATES.md](./24_MASTERY_SCORING_AND_GATES.md).
+---
+
+| [← Prev](22_SPECIALIZATION_TRACKS.md) | [Home](../README.md) | [Next →](24_MASTERY_SCORING_AND_GATES.md) |
+|:---|:---:|---:|

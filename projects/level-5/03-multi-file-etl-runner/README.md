@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 5 index](../README.md).
+---
+
+| [← Prev](../02-alert-threshold-monitor/README.md) | [Home](../../../README.md) | [Next →](../04-config-layer-priority/README.md) |
+|:---|:---:|---:|

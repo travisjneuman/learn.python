@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 5 index](../README.md).
+---
+
+| [← Prev](../14-change-detection-tool/README.md) | [Home](../../../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

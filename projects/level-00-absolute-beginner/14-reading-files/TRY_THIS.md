@@ -9,3 +9,8 @@
    ```
 
 3. Write a script that finds the student with the highest score from the sample data. Hint: keep track of the best name and best score as you loop through lines.
+
+---
+
+| [← Prev](../13-functions/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../15-putting-it-together/TRY_THIS.md) |
+|:---|:---:|---:|

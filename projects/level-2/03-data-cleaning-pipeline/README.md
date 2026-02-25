@@ -66,5 +66,7 @@ You can move on when you can:
 - [Virtual Environments](../../../concepts/virtual-environments.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 2 index](../README.md).
+---
+
+| [← Prev](../02-nested-data-flattener/README.md) | [Home](../../../README.md) | [Next →](../04-error-safe-divider/README.md) |
+|:---|:---:|---:|

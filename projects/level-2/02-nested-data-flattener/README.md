@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 2 index](../README.md).
+---
+
+| [← Prev](../01-dictionary-lookup-service/README.md) | [Home](../../../README.md) | [Next →](../03-data-cleaning-pipeline/README.md) |
+|:---|:---:|---:|

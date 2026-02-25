@@ -26,5 +26,7 @@ Operate at SME level with enterprise controls, mentorship, and platform strategy
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
-## Next
-- Return to [projects index](../README.md).
+---
+
+| [← Prev](../level-9/README.md) | [Home](../../README.md) | [Next →](../elite-track/README.md) |
+|:---|:---:|---:|

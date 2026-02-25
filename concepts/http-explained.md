@@ -158,3 +158,8 @@ requests.get(url, timeout=10)
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](../07_MONITORING_API_INTEGRATION.md) | [Home](../README.md) | [Next →](api-basics.md) |
+|:---|:---:|---:|

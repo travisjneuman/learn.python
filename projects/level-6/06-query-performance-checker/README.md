@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../05-transaction-rollback-drill/README.md) | [Home](../../../README.md) | [Next →](../07-sql-summary-publisher/README.md) |
+|:---|:---:|---:|

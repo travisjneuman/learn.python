@@ -5,7 +5,7 @@ Last updated: **February 24, 2026**
 
 This repository is a complete beginner-to-expert Python learning system. It covers two tracks:
 
-**Enterprise Operations Track** — SolarWinds Orion, MSSQL, Excel automation, dashboards (the original core).
+**Operations & Integration Track** — monitoring APIs, SQL databases, Excel automation, dashboards (the original core).
 
 **Full-Stack Expansion Modules** — Web scraping, CLI tools, REST APIs, FastAPI, async Python, databases/ORM, data analysis, advanced testing, Docker, Django, package publishing, and cloud deployment.
 
@@ -97,13 +97,13 @@ Do not optimize for speed. Optimize for repeatable output and understanding.
 4. [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) — core Python concepts
 5. [09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md) — Ruff, Black, pytest, logging
 6. [05_AUTOMATION_FILES_EXCEL.md](./05_AUTOMATION_FILES_EXCEL.md) — file and Excel automation
-7. [06_SQL.md](./06_SQL.md) — MSSQL and SQLAlchemy
-8. [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md) — monitoring data ingestion
+7. [06_SQL.md](./06_SQL.md) — SQL databases and SQLAlchemy
+8. [07_MONITORING_API_INTEGRATION.md](./07_MONITORING_API_INTEGRATION.md) — monitoring data ingestion
 9. [08_DASHBOARDS.md](./08_DASHBOARDS.md) — Streamlit/Dash delivery
 10. [10_CAPSTONE_PROJECTS.md](./10_CAPSTONE_PROJECTS.md) — integration projects
 11. [11_CHECKLISTS.md](./11_CHECKLISTS.md) — gate verification
 12. [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md) — screenshot evidence
-13. [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md) — MSSQL schemas
+13. [13_SAMPLE_DATABASE_SCHEMAS.md](./13_SAMPLE_DATABASE_SCHEMAS.md) — sample database schemas
 14. [14_NAVIGATION_AND_STUDY_WORKFLOW.md](./14_NAVIGATION_AND_STUDY_WORKFLOW.md) — study patterns
 15. [15_NEXT_LEVEL_EXPANSION_PLAN.md](./15_NEXT_LEVEL_EXPANSION_PLAN.md) — what comes next
 
@@ -166,7 +166,7 @@ Exact click path if you follow `Next` in each file:
 - Gate A: setup complete + first script + first passing test.
 - Gate B: Excel automation handles bad input and safe reruns.
 - Gate C: SQL ETL is idempotent.
-- Gate D: Orion + DPA data is ingested into MSSQL cache tables.
+- Gate D: External API data is ingested into local database cache tables.
 - Gate E: Browser dashboard for non-technical users is delivered.
 
 ## Project lab ladder (level-00 -> level 10 + elite extension)
@@ -195,8 +195,8 @@ Plain-language explanations of Python concepts at [`./concepts/README.md`](./con
 ## Second-pass support packs
 - Screenshot checkpoints and study prompts:
   - [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md)
-- Enterprise sample schemas (MSSQL + Orion + DPA):
-  - [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
+- Sample database schemas:
+  - [13_SAMPLE_DATABASE_SCHEMAS.md](./13_SAMPLE_DATABASE_SCHEMAS.md)
 - Navigation and editorial workflow guide:
   - [14_NAVIGATION_AND_STUDY_WORKFLOW.md](./14_NAVIGATION_AND_STUDY_WORKFLOW.md)
 
@@ -208,9 +208,8 @@ Plain-language explanations of Python concepts at [`./concepts/README.md`](./con
 - VS Code: [Python in VS Code](https://code.visualstudio.com/docs/python/python-tutorial), [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python), [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance), [Black extension](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter), [Ruff extension](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
 - Quality tooling: [Ruff docs](https://docs.astral.sh/ruff/), [Black docs](https://black.readthedocs.io/en/stable/), [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
 - Data and Excel: [openpyxl tutorial](https://openpyxl.readthedocs.io/en/stable/tutorial.html), [10 minutes to pandas](https://pandas.pydata.org/docs/user_guide/10min.html), [pandas.read_excel](https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html)
-- SQL Server and Python: [Drivers overview](https://learn.microsoft.com/en-gb/sql/connect/python/python-driver-for-sql-server), [MSSQL Python quickstart](https://learn.microsoft.com/en-us/sql/connect/python/mssql-python/python-sql-driver-mssql-python-quickstart?view=sql-server-ver17), [ODBC connection strings](https://learn.microsoft.com/en-us/sql/connect/odbc/dsn-connection-string-attribute?view=sql-server-ver17), [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html), [pyodbc](https://github.com/mkleehammer/pyodbc)
-- Oracle option: [python-oracledb connection handling](https://python-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html)
-- SolarWinds: [OrionSDK](https://github.com/solarwinds/OrionSDK), [orionsdk-python](https://github.com/solarwinds/orionsdk-python), [DPA docs](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_documentation.htm), [DPA Admin Guide](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_administrator_guide.htm), [DPA Getting Started](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_getting_started_guide.htm), [DPA API](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa-use-the-api.htm)
+- SQL and Python: [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html), [SQLite docs](https://www.sqlite.org/docs.html), [PostgreSQL docs](https://www.postgresql.org/docs/), [pyodbc](https://github.com/mkleehammer/pyodbc)
+- Monitoring APIs: [OpenWeatherMap API](https://openweathermap.org/api), [GitHub REST API](https://docs.github.com/en/rest), [requests library](https://docs.python-requests.org/en/latest/)
 - Dashboard stack: [Streamlit get started](https://docs.streamlit.io/get-started), [Dash tutorial](https://dash.plotly.com/tutorial), [Dash deployment](https://dash.plotly.com/deployment), [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/), [FastAPI security basics](https://fastapi.tiangolo.com/tutorial/security/first-steps/)
 
 ### Free practice and reinforcement
@@ -250,5 +249,7 @@ Run these from repo root to verify curriculum integrity:
 - `./tools/run_all_curriculum_checks.sh`
 - `./tools/run_all_curriculum_checks.sh --full`
 
-## Next
-Go to [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md).
+---
+
+| [← Prev](curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) | [Home](README.md) | [Next →](START_HERE.md) |
+|:---|:---:|---:|

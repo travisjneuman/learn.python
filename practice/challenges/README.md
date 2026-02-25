@@ -40,3 +40,8 @@ challenges/
 
 - Beginner challenges: 10-30 minutes each
 - Intermediate challenges: 30-60 minutes each
+
+---
+
+| [← Prev](../flashcards/README.md) | [Home](../../README.md) | [Next →](../../09_QUALITY_TOOLING.md) |
+|:---|:---:|---:|

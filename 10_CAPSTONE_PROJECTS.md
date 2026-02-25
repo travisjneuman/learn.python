@@ -178,5 +178,7 @@ You are SME-ready when you can:
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [11_CHECKLISTS.md](./11_CHECKLISTS.md).
+---
+
+| [← Prev](projects/modules/README.md) | [Home](README.md) | [Next →](11_CHECKLISTS.md) |
+|:---|:---:|---:|

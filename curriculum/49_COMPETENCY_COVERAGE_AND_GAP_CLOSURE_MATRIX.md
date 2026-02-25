@@ -40,5 +40,7 @@ Each competency needs all three:
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md](./50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md).
+---
+
+| [← Prev](48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md) | [Home](../README.md) | [Next →](50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) |
+|:---|:---:|---:|

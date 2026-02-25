@@ -19,3 +19,8 @@
    print(person.get("salary"))          # None
    print(person.get("salary", "N/A"))   # "N/A" (default value)
    ```
+
+---
+
+| [← Prev](../11-while-loops/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../13-functions/TRY_THIS.md) |
+|:---|:---:|---:|

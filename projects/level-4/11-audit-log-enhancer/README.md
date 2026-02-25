@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 4 index](../README.md).
+---
+
+| [← Prev](../10-run-manifest-generator/README.md) | [Home](../../../README.md) | [Next →](../12-checkpoint-recovery-tool/README.md) |
+|:---|:---:|---:|

@@ -26,6 +26,7 @@ Build confidence running and reading basic Python scripts.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
-## Next
-- Continue to [level-1](../level-1/README.md).
-- Return to [projects index](../README.md).
+---
+
+| [← Prev](../../concepts/the-terminal-deeper.md) | [Home](../../README.md) | [Next →](../../concepts/collections-explained.md) |
+|:---|:---:|---:|

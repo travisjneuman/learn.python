@@ -18,3 +18,8 @@
    Note: `float()` converts to a decimal number (instead of `int()` which is whole numbers only).
 
 3. What happens if you type a word when the program expects a number? Try it and read the error.
+
+---
+
+| [← Prev](../06-strings-and-text/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../08-making-decisions/TRY_THIS.md) |
+|:---|:---:|---:|

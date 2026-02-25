@@ -61,3 +61,8 @@ pip install -r requirements.txt
 ```
 
 See [concepts/virtual-environments.md](../../concepts/virtual-environments.md) for a full explanation.
+
+---
+
+| [← Prev](../elite-track/README.md) | [Home](../../README.md) | [Next →](../../10_CAPSTONE_PROJECTS.md) |
+|:---|:---:|---:|

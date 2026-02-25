@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 4 index](../README.md).
+---
+
+| [← Prev](../03-robust-csv-ingestor/README.md) | [Home](../../../README.md) | [Next →](../05-path-safe-file-mover/README.md) |
+|:---|:---:|---:|

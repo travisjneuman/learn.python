@@ -173,3 +173,8 @@ class Good:
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](how-imports-work.md) | [Home](../README.md) | [Next →](decorators-explained.md) |
+|:---|:---:|---:|

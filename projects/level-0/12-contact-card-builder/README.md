@@ -66,5 +66,7 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 0 index](../README.md).
+---
+
+| [← Prev](../11-simple-menu-loop/README.md) | [Home](../../../README.md) | [Next →](../13-alarm-message-generator/README.md) |
+|:---|:---:|---:|

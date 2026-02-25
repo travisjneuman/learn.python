@@ -155,5 +155,7 @@ You may move up only when all are true:
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [27_DAY_0_TO_DAY_30_BOOTSTRAP.md](./27_DAY_0_TO_DAY_30_BOOTSTRAP.md).
+---
+
+| [← Prev](25_INFINITY_MASTERY_LOOP.md) | [Home](../README.md) | [Next →](27_DAY_0_TO_DAY_30_BOOTSTRAP.md) |
+|:---|:---:|---:|

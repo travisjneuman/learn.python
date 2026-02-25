@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Functions Explained](../../../concepts/quizzes/functions-explained-quiz.py)
 
-## Next
-Go back to [Level 1 index](../README.md).
+---
+
+| [← Prev](../02-password-strength-checker/README.md) | [Home](../../../README.md) | [Next →](../04-log-line-parser/README.md) |
+|:---|:---:|---:|

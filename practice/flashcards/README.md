@@ -62,3 +62,8 @@ Your review progress is saved to `practice/flashcards/.review-state.json` (git-i
 - Don't peek at the back — test yourself honestly
 - If a card is too easy, you'll naturally see it less often
 - If you keep getting one wrong, go back to the concept doc
+
+---
+
+| [← Prev](../../concepts/functions-explained.md) | [Home](../../README.md) | [Next →](../challenges/README.md) |
+|:---|:---:|---:|

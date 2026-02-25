@@ -18,3 +18,8 @@
    3 ** 3
    ```
    `2 ** 10` means "2 to the power of 10" which is 1024.
+
+---
+
+| [← Prev](../README.md) | [Home](../../../README.md) | [Next →](../02-hello-world/TRY_THIS.md) |
+|:---|:---:|---:|

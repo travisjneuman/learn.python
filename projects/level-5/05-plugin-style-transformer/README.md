@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 5 index](../README.md).
+---
+
+| [← Prev](../04-config-layer-priority/README.md) | [Home](../../../README.md) | [Next →](../06-metrics-summary-engine/README.md) |
+|:---|:---:|---:|

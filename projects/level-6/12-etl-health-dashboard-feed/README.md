@@ -65,5 +65,7 @@ You can move on when you can:
 - [Http Explained](../../../concepts/http-explained.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../11-dead-letter-row-handler/README.md) | [Home](../../../README.md) | [Next →](../13-batch-window-controller/README.md) |
+|:---|:---:|---:|

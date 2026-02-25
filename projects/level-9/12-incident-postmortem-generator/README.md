@@ -66,5 +66,7 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
-## Next
-Go back to [Level 9 index](../README.md).
+---
+
+| [← Prev](../11-recovery-time-estimator/README.md) | [Home](../../../README.md) | [Next →](../13-platform-cost-estimator/README.md) |
+|:---|:---:|---:|

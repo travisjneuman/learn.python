@@ -21,3 +21,8 @@
    print("Liftoff!")
    ```
    The third number in `range()` is the step. `-1` means count down.
+
+---
+
+| [← Prev](../09-lists/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../11-while-loops/TRY_THIS.md) |
+|:---|:---:|---:|

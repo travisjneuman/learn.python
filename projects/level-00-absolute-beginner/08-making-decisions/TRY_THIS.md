@@ -22,3 +22,8 @@
    ```
 
 3. Change the `temperature` and `score` values in the exercise file. Run it again. Predict what the output will be BEFORE running it. Were you right?
+
+---
+
+| [← Prev](../07-user-input/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../09-lists/TRY_THIS.md) |
+|:---|:---:|---:|

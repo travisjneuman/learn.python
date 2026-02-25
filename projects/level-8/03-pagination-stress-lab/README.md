@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 8 index](../README.md).
+---
+
+| [← Prev](../02-query-cache-layer/README.md) | [Home](../../../README.md) | [Next →](../04-filter-state-manager/README.md) |
+|:---|:---:|---:|

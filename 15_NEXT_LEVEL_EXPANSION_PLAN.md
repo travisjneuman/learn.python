@@ -163,5 +163,7 @@ A learner is "SME-ready" when they can reliably:
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
-## Next
-Go to [16_LEARNER_PROFILE_AND_PLACEMENT.md](./curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md).
+---
+
+| [← Prev](14_NAVIGATION_AND_STUDY_WORKFLOW.md) | [Home](README.md) | [Next →](curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md) |
+|:---|:---:|---:|

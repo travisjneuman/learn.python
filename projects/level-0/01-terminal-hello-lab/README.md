@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Files and Paths](../../../concepts/quizzes/files-and-paths-quiz.py)
 
-## Next
-Go back to [Level 0 index](../README.md).
+---
+
+| [← Prev](../README.md) | [Home](../../../README.md) | [Next →](../02-calculator-basics/README.md) |
+|:---|:---:|---:|

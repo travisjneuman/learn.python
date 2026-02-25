@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Decorators Explained](../../../concepts/quizzes/decorators-explained-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../02-dpa-api-adapter/README.md) | [Home](../../../README.md) | [Next →](../04-source-field-mapper/README.md) |
+|:---|:---:|---:|

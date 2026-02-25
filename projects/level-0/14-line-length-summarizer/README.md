@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 0 index](../README.md).
+---
+
+| [← Prev](../13-alarm-message-generator/README.md) | [Home](../../../README.md) | [Next →](../15-level0-mini-toolkit/README.md) |
+|:---|:---:|---:|

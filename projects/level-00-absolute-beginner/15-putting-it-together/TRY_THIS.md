@@ -21,3 +21,8 @@
            grade = get_letter_grade(student["score"])
            f.write(f"{student['name']}, {student['score']}, {grade}\n")
    ```
+
+---
+
+| [← Prev](../14-reading-files/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

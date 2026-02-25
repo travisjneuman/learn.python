@@ -26,6 +26,7 @@ Strengthen input handling, branching logic, and simple file workflows.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
-## Next
-- Continue to [level-2](../level-2/README.md).
-- Return to [projects index](../README.md).
+---
+
+| [← Prev](../../concepts/files-and-paths.md) | [Home](../../README.md) | [Next →](../level-2/README.md) |
+|:---|:---:|---:|

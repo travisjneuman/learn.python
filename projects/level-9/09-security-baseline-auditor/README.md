@@ -65,5 +65,7 @@ You can move on when you can:
 - [Decorators Explained](../../../concepts/decorators-explained.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
-## Next
-Go back to [Level 9 index](../README.md).
+---
+
+| [← Prev](../08-change-impact-analyzer/README.md) | [Home](../../../README.md) | [Next →](../10-data-governance-enforcer/README.md) |
+|:---|:---:|---:|

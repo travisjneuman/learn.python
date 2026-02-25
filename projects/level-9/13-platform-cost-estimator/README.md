@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
-## Next
-Go back to [Level 9 index](../README.md).
+---
+
+| [← Prev](../12-incident-postmortem-generator/README.md) | [Home](../../../README.md) | [Next →](../14-cross-team-handoff-kit/README.md) |
+|:---|:---:|---:|

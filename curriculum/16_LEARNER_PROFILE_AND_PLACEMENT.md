@@ -83,5 +83,7 @@ Use these sections at onboarding:
 ## Optional Resources
 - [Python Tutor](https://pythontutor.com/)
 
-## Next
-Go to [17_ASSESSMENT_AND_RUBRICS.md](./17_ASSESSMENT_AND_RUBRICS.md).
+---
+
+| [← Prev](../15_NEXT_LEVEL_EXPANSION_PLAN.md) | [Home](../README.md) | [Next →](17_ASSESSMENT_AND_RUBRICS.md) |
+|:---|:---:|---:|

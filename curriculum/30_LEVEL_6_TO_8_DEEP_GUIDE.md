@@ -96,5 +96,7 @@ dry-run complete (no writes)
 - [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
 - [python-oracledb docs](https://python-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html)
 
-## Next
-Go to [31_LEVEL_9_TO_10_AND_BEYOND.md](./31_LEVEL_9_TO_10_AND_BEYOND.md).
+---
+
+| [← Prev](29_LEVEL_3_TO_5_DEEP_GUIDE.md) | [Home](../README.md) | [Next →](31_LEVEL_9_TO_10_AND_BEYOND.md) |
+|:---|:---:|---:|

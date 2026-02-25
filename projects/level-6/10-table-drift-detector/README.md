@@ -64,5 +64,7 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../09-incremental-load-simulator/README.md) | [Home](../../../README.md) | [Next →](../11-dead-letter-row-handler/README.md) |
+|:---|:---:|---:|

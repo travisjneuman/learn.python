@@ -64,5 +64,7 @@ You can move on when you can:
 - [Errors and Debugging](../../../concepts/errors-and-debugging.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 5 index](../README.md).
+---
+
+| [← Prev](../13-operational-run-logger/README.md) | [Home](../../../README.md) | [Next →](../15-level5-mini-capstone/README.md) |
+|:---|:---:|---:|

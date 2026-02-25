@@ -105,3 +105,8 @@ good_items = [item for item in my_list if item != "bad"]
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](../04_FOUNDATIONS.md) | [Home](../README.md) | [Next →](types-and-conversions.md) |
+|:---|:---:|---:|

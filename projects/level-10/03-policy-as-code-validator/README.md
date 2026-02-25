@@ -66,5 +66,7 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 10 index](../README.md).
+---
+
+| [← Prev](../02-autonomous-run-orchestrator/README.md) | [Home](../../../README.md) | [Next →](../04-multi-tenant-data-guard/README.md) |
+|:---|:---:|---:|

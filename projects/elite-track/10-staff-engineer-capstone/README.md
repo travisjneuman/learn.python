@@ -62,5 +62,7 @@ You can move on when you can:
 - [Decorators Explained](../../../concepts/decorators-explained.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
-## Next
-Go back to [Elite track index](../README.md).
+---
+
+| [← Prev](../09-open-source-maintainer-simulator/README.md) | [Home](../../../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

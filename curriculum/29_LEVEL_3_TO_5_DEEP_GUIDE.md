@@ -73,5 +73,7 @@ Per week, complete at least:
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [30_LEVEL_6_TO_8_DEEP_GUIDE.md](./30_LEVEL_6_TO_8_DEEP_GUIDE.md).
+---
+
+| [← Prev](28_LEVEL_0_TO_2_DEEP_GUIDE.md) | [Home](../README.md) | [Next →](30_LEVEL_6_TO_8_DEEP_GUIDE.md) |
+|:---|:---:|---:|

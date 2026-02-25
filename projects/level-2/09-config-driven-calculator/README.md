@@ -66,5 +66,7 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 2 index](../README.md).
+---
+
+| [← Prev](../08-mini-inventory-engine/README.md) | [Home](../../../README.md) | [Next →](../10-mock-api-response-parser/README.md) |
+|:---|:---:|---:|

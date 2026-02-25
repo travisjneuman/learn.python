@@ -151,3 +151,8 @@ echo "Starting..." ; python script.py ; echo "Done."
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](errors-and-debugging.md) | [Home](../README.md) | [Next →](../projects/level-0/README.md) |
+|:---|:---:|---:|

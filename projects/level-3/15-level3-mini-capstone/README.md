@@ -64,5 +64,7 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../14-service-simulator/README.md) | [Home](../../../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

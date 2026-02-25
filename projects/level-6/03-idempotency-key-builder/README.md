@@ -66,5 +66,7 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../02-staging-table-loader/README.md) | [Home](../../../README.md) | [Next →](../04-upsert-strategy-lab/README.md) |
+|:---|:---:|---:|

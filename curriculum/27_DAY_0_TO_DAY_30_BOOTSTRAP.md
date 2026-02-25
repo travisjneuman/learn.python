@@ -143,5 +143,7 @@ You pass month one only when you can do this without docs:
 - [Python Tutor](https://pythontutor.com/)
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 
-## Next
-Go to [28_LEVEL_0_TO_2_DEEP_GUIDE.md](./28_LEVEL_0_TO_2_DEEP_GUIDE.md).
+---
+
+| [← Prev](26_ZERO_TO_MASTER_PLAYBOOK.md) | [Home](../README.md) | [Next →](28_LEVEL_0_TO_2_DEEP_GUIDE.md) |
+|:---|:---:|---:|

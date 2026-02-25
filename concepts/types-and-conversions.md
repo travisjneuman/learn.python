@@ -101,3 +101,8 @@ float("3.14")  # 3.14 — use float() for decimal strings
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](how-loops-work.md) | [Home](../README.md) | [Next →](functions-explained.md) |
+|:---|:---:|---:|

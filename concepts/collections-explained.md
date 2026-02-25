@@ -101,3 +101,8 @@ items = [item for item in items if item != "remove_me"]
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](../projects/level-0/README.md) | [Home](../README.md) | [Next →](files-and-paths.md) |
+|:---|:---:|---:|

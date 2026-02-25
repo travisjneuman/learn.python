@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 8 index](../README.md).
+---
+
+| [← Prev](../13-sla-breach-detector/README.md) | [Home](../../../README.md) | [Next →](../15-level8-mini-capstone/README.md) |
+|:---|:---:|---:|

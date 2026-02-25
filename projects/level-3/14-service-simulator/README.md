@@ -65,5 +65,7 @@ You can move on when you can:
 - [Http Explained](../../../concepts/http-explained.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../13-quality-gate-runner/README.md) | [Home](../../../README.md) | [Next →](../15-level3-mini-capstone/README.md) |
+|:---|:---:|---:|

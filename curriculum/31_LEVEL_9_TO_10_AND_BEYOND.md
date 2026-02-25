@@ -69,5 +69,7 @@ Use this template for every major design choice:
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [32_DAILY_SESSION_SCRIPT.md](./32_DAILY_SESSION_SCRIPT.md).
+---
+
+| [← Prev](30_LEVEL_6_TO_8_DEEP_GUIDE.md) | [Home](../README.md) | [Next →](32_DAILY_SESSION_SCRIPT.md) |
+|:---|:---:|---:|

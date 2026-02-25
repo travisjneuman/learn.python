@@ -113,3 +113,8 @@ def greet(name):
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](types-and-conversions.md) | [Home](../README.md) | [Next →](../practice/flashcards/README.md) |
+|:---|:---:|---:|

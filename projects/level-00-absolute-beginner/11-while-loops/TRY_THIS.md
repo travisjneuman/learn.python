@@ -22,3 +22,8 @@
    while True:
        print("This will never stop on its own!")
    ```
+
+---
+
+| [← Prev](../10-for-loops/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../12-dictionaries/TRY_THIS.md) |
+|:---|:---:|---:|

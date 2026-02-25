@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 2 index](../README.md).
+---
+
+| [← Prev](../04-error-safe-divider/README.md) | [Home](../../../README.md) | [Next →](../06-records-deduplicator/README.md) |
+|:---|:---:|---:|

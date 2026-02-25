@@ -17,3 +17,8 @@
    print("ha" * 3)
    print("-" * 40)
    ```
+
+---
+
+| [← Prev](../05-numbers-and-math/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../07-user-input/TRY_THIS.md) |
+|:---|:---:|---:|

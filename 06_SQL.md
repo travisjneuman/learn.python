@@ -116,5 +116,7 @@ You are ready for SolarWinds ingestion when you can:
 - Full schema pack for staging/reporting/cache/marts:
   - [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
 
-## Next
-Go to [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md).
+---
+
+| [← Prev](projects/level-3/README.md) | [Home](README.md) | [Next →](projects/level-4/README.md) |
+|:---|:---:|---:|

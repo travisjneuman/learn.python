@@ -66,5 +66,7 @@ You can move on when you can:
 - [Virtual Environments](../../../concepts/virtual-environments.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
-## Next
-Go back to [Level 9 index](../README.md).
+---
+
+| [← Prev](../07-canary-rollout-simulator/README.md) | [Home](../../../README.md) | [Next →](../09-security-baseline-auditor/README.md) |
+|:---|:---:|---:|

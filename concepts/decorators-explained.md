@@ -169,3 +169,8 @@ Whether you need `()` depends on how the decorator was written. Some take argume
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](classes-and-objects.md) | [Home](../README.md) | [Next →](virtual-environments.md) |
+|:---|:---:|---:|

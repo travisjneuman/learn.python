@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 4 index](../README.md).
+---
+
+| [← Prev](../06-backup-rotation-tool/README.md) | [Home](../../../README.md) | [Next →](../08-malformed-row-quarantine/README.md) |
+|:---|:---:|---:|

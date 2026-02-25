@@ -66,5 +66,7 @@ You can move on when you can:
 - [Virtual Environments](../../../concepts/virtual-environments.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../07-stale-data-detector/README.md) | [Home](../../../README.md) | [Next →](../09-contract-version-checker/README.md) |
+|:---|:---:|---:|

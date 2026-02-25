@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../04-test-driven-normalizer/README.md) | [Home](../../../README.md) | [Next →](../06-structured-error-handler/README.md) |
+|:---|:---:|---:|

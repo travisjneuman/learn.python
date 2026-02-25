@@ -70,3 +70,8 @@ print(score)     # Now it works
 
 **Review:** [Flashcard decks](../practice/flashcards/README.md)
 **Practice reps:** [Coding challenges](../practice/challenges/README.md)
+
+---
+
+| [← Prev](../03_SETUP_ALL_PLATFORMS.md) | [Home](../README.md) | [Next →](../projects/level-00-absolute-beginner/README.md) |
+|:---|:---:|---:|

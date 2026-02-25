@@ -66,5 +66,7 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Files and Paths](../../../concepts/quizzes/files-and-paths-quiz.py)
 
-## Next
-Go back to [Level 1 index](../README.md).
+---
+
+| [← Prev](../03-unit-price-calculator/README.md) | [Home](../../../README.md) | [Next →](../05-csv-first-reader/README.md) |
+|:---|:---:|---:|

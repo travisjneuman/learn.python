@@ -66,5 +66,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../04-source-field-mapper/README.md) | [Home](../../../README.md) | [Next →](../06-token-rotation-simulator/README.md) |
+|:---|:---:|---:|

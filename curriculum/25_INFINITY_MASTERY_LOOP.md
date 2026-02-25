@@ -54,5 +54,7 @@ After reaching expert-level competency, use this loop continuously.
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [26_ZERO_TO_MASTER_PLAYBOOK.md](./26_ZERO_TO_MASTER_PLAYBOOK.md).
+---
+
+| [← Prev](24_MASTERY_SCORING_AND_GATES.md) | [Home](../README.md) | [Next →](26_ZERO_TO_MASTER_PLAYBOOK.md) |
+|:---|:---:|---:|

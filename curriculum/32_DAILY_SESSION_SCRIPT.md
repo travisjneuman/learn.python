@@ -65,5 +65,7 @@ A session is complete only if all are true:
 ## Optional Resources
 - [Python Tutor](https://pythontutor.com/)
 
-## Next
-Go to [33_WEEKLY_REVIEW_TEMPLATE.md](./33_WEEKLY_REVIEW_TEMPLATE.md).
+---
+
+| [← Prev](31_LEVEL_9_TO_10_AND_BEYOND.md) | [Home](../README.md) | [Next →](33_WEEKLY_REVIEW_TEMPLATE.md) |
+|:---|:---:|---:|

@@ -65,5 +65,7 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../12-parser-with-fixtures/README.md) | [Home](../../../README.md) | [Next →](../14-service-simulator/README.md) |
+|:---|:---:|---:|

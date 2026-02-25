@@ -47,5 +47,7 @@ Fail when any are true:
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
-## Next
-Return to [README.md](../README.md) and run your next mastery cycle.
+---
+
+| [← Prev](49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md) | [Home](../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

@@ -10,3 +10,8 @@
    ```
 
 3. Try accessing an index that does not exist (like `colors[99]`). Read the error message — it is called an IndexError and tells you the list is not that long.
+
+---
+
+| [← Prev](../08-making-decisions/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../10-for-loops/TRY_THIS.md) |
+|:---|:---:|---:|

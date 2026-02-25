@@ -31,5 +31,7 @@ Maintain question sets in these domains:
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [45_MASTERY_TELEMETRY_AND_REMEDIATION.md](./45_MASTERY_TELEMETRY_AND_REMEDIATION.md).
+---
+
+| [← Prev](43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md) | [Home](../README.md) | [Next →](45_MASTERY_TELEMETRY_AND_REMEDIATION.md) |
+|:---|:---:|---:|

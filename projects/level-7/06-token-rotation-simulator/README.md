@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../05-polling-cadence-manager/README.md) | [Home](../../../README.md) | [Next →](../07-stale-data-detector/README.md) |
+|:---|:---:|---:|

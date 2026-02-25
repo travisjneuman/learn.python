@@ -121,5 +121,7 @@ For each system include:
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
-## Next
-Go to [22_SPECIALIZATION_TRACKS.md](./22_SPECIALIZATION_TRACKS.md).
+---
+
+| [← Prev](20_CURRICULUM_CHANGELOG.md) | [Home](../README.md) | [Next →](22_SPECIALIZATION_TRACKS.md) |
+|:---|:---:|---:|

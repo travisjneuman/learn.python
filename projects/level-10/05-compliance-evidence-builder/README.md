@@ -66,5 +66,7 @@ You can move on when you can:
 - [Errors and Debugging](../../../concepts/errors-and-debugging.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 10 index](../README.md).
+---
+
+| [← Prev](../04-multi-tenant-data-guard/README.md) | [Home](../../../README.md) | [Next →](../06-resilience-chaos-workbench/README.md) |
+|:---|:---:|---:|

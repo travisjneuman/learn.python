@@ -65,5 +65,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 7 index](../README.md).
+---
+
+| [← Prev](../14-cache-backfill-runner/README.md) | [Home](../../../README.md) | [Next →](../README.md) |
+|:---|:---:|---:|

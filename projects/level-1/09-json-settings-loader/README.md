@@ -66,5 +66,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 1 index](../README.md).
+---
+
+| [← Prev](../08-path-exists-checker/README.md) | [Home](../../../README.md) | [Next →](../10-ticket-priority-router/README.md) |
+|:---|:---:|---:|

@@ -21,3 +21,8 @@ Every document has a "Next" link at the bottom. Follow it.
 
 ## Never done this before?
 Read [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md) first. It explains what a terminal, file, and program are.
+
+---
+
+| [← Prev](README.md) | [Home](README.md) | [Next →](00_COMPUTER_LITERACY_PRIMER.md) |
+|:---|:---:|---:|

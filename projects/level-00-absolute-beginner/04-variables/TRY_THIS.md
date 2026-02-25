@@ -11,3 +11,8 @@
    ```
 
 3. Try creating a variable name that starts with a number (like `1name = "test"`). What error do you get? Read the error message — Python is telling you exactly what went wrong.
+
+---
+
+| [← Prev](../03-your-first-script/TRY_THIS.md) | [Home](../../../README.md) | [Next →](../05-numbers-and-math/TRY_THIS.md) |
+|:---|:---:|---:|

@@ -43,5 +43,7 @@ This atlas maps common misunderstandings to exact correction drills.
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Real Python](https://realpython.com/tutorials/python/)
 
-## Next
-Go to [49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md](./49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md).
+---
+
+| [← Prev](47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md) | [Home](../README.md) | [Next →](49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md) |
+|:---|:---:|---:|

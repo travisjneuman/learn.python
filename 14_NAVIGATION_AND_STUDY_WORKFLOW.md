@@ -72,5 +72,7 @@ Use this file to keep study flow clean and avoid navigation friction.
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Pro Git book](https://git-scm.com/book/en/v2.html)
 
-## Next
-Go to [15_NEXT_LEVEL_EXPANSION_PLAN.md](./15_NEXT_LEVEL_EXPANSION_PLAN.md).
+---
+
+| [← Prev](13_SAMPLE_DATABASE_SCHEMAS.md) | [Home](README.md) | [Next →](15_NEXT_LEVEL_EXPANSION_PLAN.md) |
+|:---|:---:|---:|

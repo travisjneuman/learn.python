@@ -66,5 +66,7 @@ You can move on when you can:
 - [Http Explained](../../../concepts/http-explained.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Level 8 index](../README.md).
+---
+
+| [← Prev](../05-export-governance-check/README.md) | [Home](../../../README.md) | [Next →](../07-concurrency-queue-simulator/README.md) |
+|:---|:---:|---:|

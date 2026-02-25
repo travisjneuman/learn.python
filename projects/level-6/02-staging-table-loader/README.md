@@ -65,5 +65,7 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
 
-## Next
-Go back to [Level 6 index](../README.md).
+---
+
+| [← Prev](../01-mssql-connection-simulator/README.md) | [Home](../../../README.md) | [Next →](../03-idempotency-key-builder/README.md) |
+|:---|:---:|---:|

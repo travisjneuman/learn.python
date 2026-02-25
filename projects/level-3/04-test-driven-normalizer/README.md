@@ -65,5 +65,7 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
 
-## Next
-Go back to [Level 3 index](../README.md).
+---
+
+| [← Prev](../03-logging-baseline-tool/README.md) | [Home](../../../README.md) | [Next →](../05-refactor-monolith-drill/README.md) |
+|:---|:---:|---:|

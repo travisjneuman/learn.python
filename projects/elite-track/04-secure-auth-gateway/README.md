@@ -63,5 +63,7 @@ You can move on when you can:
 - [Decorators Explained](../../../concepts/decorators-explained.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
 
-## Next
-Go back to [Elite track index](../README.md).
+---
+
+| [← Prev](../03-distributed-cache-simulator/README.md) | [Home](../../../README.md) | [Next →](../05-performance-profiler-workbench/README.md) |
+|:---|:---:|---:|
