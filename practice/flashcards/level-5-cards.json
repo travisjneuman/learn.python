@@ -1,0 +1,206 @@
+{
+  "deck": "Level 5 — Exception Handling",
+  "description": "try/except, custom exceptions, logging, context managers, defensive programming",
+  "cards": [
+    {
+      "id": "5-01",
+      "front": "What is the full try/except/else/finally syntax?",
+      "back": "try:\n    result = risky_operation()\nexcept ValueError as e:\n    handle_error(e)\nelse:\n    # runs only if NO exception\n    use_result(result)\nfinally:\n    # ALWAYS runs, exception or not\n    cleanup()\n\nelse is for success-only code. finally is for cleanup.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["exceptions", "syntax"]
+    },
+    {
+      "id": "5-02",
+      "front": "Why should you never use a bare except: clause?",
+      "back": "except: catches EVERYTHING — including SystemExit, KeyboardInterrupt.\n\n# BAD\ntry: ...\nexcept: pass  # hides ALL errors!\n\n# GOOD\ntry: ...\nexcept Exception as e:\n    logger.error(e)\n\nAlways catch specific exceptions or at minimum Exception.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["exceptions", "anti-patterns"]
+    },
+    {
+      "id": "5-03",
+      "front": "How do you create a custom exception?",
+      "back": "class ValidationError(Exception):\n    \"\"\"Raised when data validation fails.\"\"\"\n    def __init__(self, field, message):\n        self.field = field\n        super().__init__(f\"{field}: {message}\")\n\nraise ValidationError(\"email\", \"invalid format\")\n\nAlways inherit from Exception (or a subclass).",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["exceptions", "custom"]
+    },
+    {
+      "id": "5-04",
+      "front": "What is exception chaining with 'raise ... from ...'?",
+      "back": "Preserves the original error when raising a new one.\n\ntry:\n    data = json.loads(text)\nexcept json.JSONDecodeError as e:\n    raise ConfigError(\"Invalid config file\") from e\n\nThe traceback shows both exceptions.\nHelps debugging by keeping the full error chain.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["exceptions", "chaining"]
+    },
+    {
+      "id": "5-05",
+      "front": "What are the most common built-in exceptions?",
+      "back": "ValueError: wrong value type/format\nTypeError: wrong type\nKeyError: dict key not found\nIndexError: list index out of range\nFileNotFoundError: file doesn't exist\nAttributeError: object has no attribute\nImportError: module not found\nZeroDivisionError: division by zero",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["exceptions", "builtins"]
+    },
+    {
+      "id": "5-06",
+      "front": "What is the EAFP vs LBYL principle?",
+      "back": "EAFP: Easier to Ask Forgiveness than Permission\ntry:\n    value = d[key]\nexcept KeyError:\n    value = default\n\nLBYL: Look Before You Leap\nif key in d:\n    value = d[key]\nelse:\n    value = default\n\nPython prefers EAFP. Use try/except for expected failures.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["patterns", "EAFP", "LBYL"]
+    },
+    {
+      "id": "5-07",
+      "front": "How do you configure Python logging?",
+      "back": "import logging\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s %(levelname)s %(message)s\",\n    filename=\"app.log\"\n)\nlogger = logging.getLogger(__name__)\n\nlogger.debug(\"detail\")    # lowest\nlogger.info(\"normal\")\nlogger.warning(\"caution\")\nlogger.error(\"problem\")\nlogger.critical(\"fatal\")  # highest",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["logging", "configuration"]
+    },
+    {
+      "id": "5-08",
+      "front": "What is a context manager and how do you write one?",
+      "back": "Two ways:\n\n# Class-based\nclass Timer:\n    def __enter__(self):\n        self.start = time.time()\n        return self\n    def __exit__(self, *args):\n        print(f\"Took {time.time()-self.start:.2f}s\")\n\n# Generator-based\nfrom contextlib import contextmanager\n@contextmanager\ndef timer():\n    start = time.time()\n    yield\n    print(f\"Took {time.time()-start:.2f}s\")",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 3,
+      "tags": ["context-manager", "patterns"]
+    },
+    {
+      "id": "5-09",
+      "front": "What does warnings.warn() do vs raising an exception?",
+      "back": "import warnings\n\nwarnings.warn(\"This function is deprecated\", DeprecationWarning)\n\nDifference:\n- warn(): continues execution, just notifies\n- raise: stops execution until caught\n\nUse warnings for: deprecations, non-fatal issues\nUse exceptions for: errors that need handling",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["warnings", "deprecation"]
+    },
+    {
+      "id": "5-10",
+      "front": "How do you suppress specific exceptions?",
+      "back": "from contextlib import suppress\n\nwith suppress(FileNotFoundError):\n    os.remove(\"temp.txt\")\n# continues even if file doesn't exist\n\nEquivalent to:\ntry:\n    os.remove(\"temp.txt\")\nexcept FileNotFoundError:\n    pass",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["contextlib", "suppress"]
+    },
+    {
+      "id": "5-11",
+      "front": "What is the exception hierarchy in Python?",
+      "back": "BaseException\n├── SystemExit\n├── KeyboardInterrupt\n├── GeneratorExit\n└── Exception  ← catch this, not BaseException\n    ├── ValueError\n    ├── TypeError\n    ├── OSError\n    │   └── FileNotFoundError\n    └── ...\n\nexcept Exception: catches all \"normal\" errors.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["exceptions", "hierarchy"]
+    },
+    {
+      "id": "5-12",
+      "front": "How do you log exceptions with tracebacks?",
+      "back": "try:\n    risky()\nexcept Exception:\n    logger.exception(\"Something went wrong\")\n    # or\n    logger.error(\"Failed\", exc_info=True)\n\n.exception() automatically includes the traceback.\nMuch better than logger.error(str(e)) which loses context.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["logging", "tracebacks"]
+    },
+    {
+      "id": "5-13",
+      "front": "What is a retry pattern for handling transient errors?",
+      "back": "import time\n\ndef retry(fn, max_attempts=3, delay=1):\n    for attempt in range(max_attempts):\n        try:\n            return fn()\n        except Exception as e:\n            if attempt == max_attempts - 1:\n                raise\n            time.sleep(delay * (2 ** attempt))  # exponential backoff",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["patterns", "retry"]
+    },
+    {
+      "id": "5-14",
+      "front": "What does traceback.format_exc() do?",
+      "back": "Returns the current exception traceback as a string.\n\nimport traceback\ntry:\n    risky()\nexcept Exception:\n    tb_str = traceback.format_exc()\n    save_to_file(tb_str)\n\nUseful for: saving tracebacks to files, sending to monitoring.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["traceback", "debugging"]
+    },
+    {
+      "id": "5-15",
+      "front": "When should you let an exception propagate vs catch it?",
+      "back": "Catch when:\n- You can meaningfully recover\n- You need to add context (raise from)\n- You're at a boundary (API, CLI, file processing)\n\nLet propagate when:\n- You can't handle it properly\n- The caller should decide what to do\n- It's a programming bug (let it crash loudly)",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["exceptions", "design"]
+    },
+    {
+      "id": "5-16",
+      "front": "What is defensive programming?",
+      "back": "Writing code that anticipates and handles failures gracefully.\n\nPatterns:\n- Validate inputs at boundaries\n- Use sensible defaults\n- Fail fast on programmer errors (assert)\n- Log extensively\n- Make operations idempotent\n- Use type hints to prevent misuse",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["patterns", "defensive"]
+    },
+    {
+      "id": "5-17",
+      "front": "What is the difference between errors and exceptions?",
+      "back": "In Python, they're technically the same — all are Exception subclasses.\n\nConceptually:\n- Error: something wrong (bug, bad input)\n- Exception: an exceptional condition (file missing, network down)\n\nSome languages distinguish; Python uses exceptions for everything.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["exceptions", "terminology"]
+    },
+    {
+      "id": "5-18",
+      "front": "How do you catch multiple exception types?",
+      "back": "# Same handler for multiple types\ntry: ...\nexcept (ValueError, TypeError) as e:\n    handle(e)\n\n# Different handlers\ntry: ...\nexcept ValueError:\n    handle_value()\nexcept TypeError:\n    handle_type()\n\nOrder matters — put specific exceptions first!",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["exceptions", "syntax"]
+    },
+    {
+      "id": "5-19",
+      "front": "What is ExceptionGroup (Python 3.11+)?",
+      "back": "Groups multiple exceptions together.\n\ntry:\n    async with asyncio.TaskGroup() as tg:\n        tg.create_task(task1())\n        tg.create_task(task2())\nexcept* ValueError as eg:\n    # handles ValueError subgroup\nexcept* TypeError as eg:\n    # handles TypeError subgroup\n\nexcept* is the new syntax for exception groups.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["exceptions", "python311"]
+    },
+    {
+      "id": "5-20",
+      "front": "How do you use logging handlers to send logs to different destinations?",
+      "back": "import logging\n\nlogger = logging.getLogger(\"myapp\")\n\n# Console handler\nch = logging.StreamHandler()\nch.setLevel(logging.WARNING)\n\n# File handler\nfh = logging.FileHandler(\"app.log\")\nfh.setLevel(logging.DEBUG)\n\nlogger.addHandler(ch)\nlogger.addHandler(fh)\n\nNow warnings+ go to console, everything goes to file.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["logging", "handlers"]
+    },
+    {
+      "id": "5-21",
+      "front": "What is the atexit module?",
+      "back": "Registers functions to run when the program exits.\n\nimport atexit\n\ndef cleanup():\n    print(\"Cleaning up...\")\n    temp_file.unlink()\n\natexit.register(cleanup)\n\nRuns on normal exit, NOT on kill -9 or os._exit().",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["cleanup", "atexit"]
+    },
+    {
+      "id": "5-22",
+      "front": "What is the difference between assert and raise?",
+      "back": "assert: debugging tool, removed with -O flag\nassert x > 0, \"x must be positive\"  # development check\n\nraise: explicit error handling, always active\nif x <= 0:\n    raise ValueError(\"x must be positive\")\n\nNever use assert for input validation in production!",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["assert", "raise"]
+    },
+    {
+      "id": "5-23",
+      "front": "How do you create an exception hierarchy for your application?",
+      "back": "class AppError(Exception):\n    \"\"\"Base for all app errors.\"\"\"\n\nclass ConfigError(AppError):\n    \"\"\"Configuration problems.\"\"\"\n\nclass DatabaseError(AppError):\n    \"\"\"Database operations.\"\"\"\n\nclass NotFoundError(DatabaseError):\n    \"\"\"Record not found.\"\"\"\n\n# Caller can catch broad (AppError) or specific (NotFoundError)",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["exceptions", "hierarchy", "design"]
+    },
+    {
+      "id": "5-24",
+      "front": "What is sys.excepthook?",
+      "back": "A function called when an unhandled exception reaches the top level.\n\nimport sys\ndef my_handler(exc_type, exc_value, exc_tb):\n    logger.critical(\"Unhandled exception\", exc_info=(exc_type, exc_value, exc_tb))\n\nsys.excepthook = my_handler\n\nUseful for: global error logging, crash reporting.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 3,
+      "tags": ["exceptions", "global-handler"]
+    },
+    {
+      "id": "5-25",
+      "front": "What is the principle of least surprise in error handling?",
+      "back": "Errors should behave the way the caller expects.\n\n- Raise standard exceptions when possible (ValueError, not CustomBadInputError)\n- Error messages should say what went wrong AND what was expected\n- Don't catch-and-silence errors the caller needs to know about\n- Return types should be consistent (don't return None on error if normally returning a list)",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["design", "principles"]
+    }
+  ]
+}

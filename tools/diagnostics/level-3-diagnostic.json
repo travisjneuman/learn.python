@@ -1,0 +1,166 @@
+{
+  "title": "Level 3 — File Automation Readiness",
+  "description": "Tests your understanding of file I/O, pathlib, CSV, and file processing patterns.",
+  "thresholds": {"skip": 85, "ready": 60},
+  "recommendations": {
+    "skip": "You can skip Level 3 and start with Level 4 (JSON & Structured Data)!",
+    "ready": "You're ready for Level 3 projects. Start with 01-file-reader.",
+    "review": "Review the files-and-paths concept doc and practice reading/writing files."
+  },
+  "concept_map": {
+    "files": "concepts/files-and-paths.md",
+    "pathlib": "concepts/files-and-paths.md",
+    "csv": "concepts/files-and-paths.md",
+    "encoding": "concepts/files-and-paths.md",
+    "context-manager": "concepts/files-and-paths.md"
+  },
+  "questions": [
+    {
+      "question": "What is the recommended way to open a file in Python?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "f = open(\"file.txt\")",
+        "b": "with open(\"file.txt\") as f:",
+        "c": "f = File(\"file.txt\")",
+        "d": "f = read(\"file.txt\")"
+      },
+      "answer": "b",
+      "explanation": "The with statement ensures the file is properly closed, even if an error occurs.",
+      "tags": ["files", "context-manager"]
+    },
+    {
+      "question": "What does the \"w\" mode do when opening a file?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Reads the file",
+        "b": "Writes to the file (overwrites existing content)",
+        "c": "Appends to the file",
+        "d": "Opens for both reading and writing"
+      },
+      "answer": "b",
+      "explanation": "\"w\" = write mode. Overwrites the file! Use \"a\" to append, \"r\" to read.",
+      "tags": ["files"]
+    },
+    {
+      "question": "How do you create a Path object for data/output/report.csv?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Path(\"data/output/report.csv\")",
+        "b": "Path(\"data\") / \"output\" / \"report.csv\"",
+        "c": "Both A and B work",
+        "d": "Neither works"
+      },
+      "answer": "c",
+      "explanation": "Both work. The / operator on Path objects joins path components cross-platform.",
+      "tags": ["pathlib"]
+    },
+    {
+      "question": "What does Path(\"data.txt\").read_text() do?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Opens and reads the entire file as a string, then closes it",
+        "b": "Reads only the first line",
+        "c": "Returns a list of lines",
+        "d": "Returns bytes"
+      },
+      "answer": "a",
+      "explanation": ".read_text() is a shortcut for open/read/close. Returns the full file content as a string.",
+      "tags": ["pathlib"]
+    },
+    {
+      "question": "How do you find all .csv files in a directory and its subdirectories?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Path(\"data\").glob(\"*.csv\")",
+        "b": "Path(\"data\").rglob(\"*.csv\")",
+        "c": "Path(\"data\").find(\"*.csv\")",
+        "d": "Path(\"data\").search(\"*.csv\")"
+      },
+      "answer": "b",
+      "explanation": ".rglob() searches recursively (all subdirectories). .glob() only searches the immediate directory.",
+      "tags": ["pathlib"]
+    },
+    {
+      "question": "What module do you use to read CSV files with column headers?",
+      "code": "import csv\nwith open(\"data.csv\") as f:\n    reader = csv._______(f)",
+      "type": "short_answer",
+      "answer": "DictReader",
+      "accept": ["DictReader", "dictreader"],
+      "explanation": "csv.DictReader reads each row as a dict with column headers as keys.",
+      "tags": ["csv"]
+    },
+    {
+      "question": "Why do you pass newline=\"\" when writing CSV files on Windows?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "To prevent double-spaced rows",
+        "b": "To use Unix line endings",
+        "c": "To prevent the file from being too large",
+        "d": "It's not necessary"
+      },
+      "answer": "a",
+      "explanation": "Without newline=\"\", Windows adds extra blank lines because both csv and the file mode add line endings.",
+      "tags": ["csv"]
+    },
+    {
+      "question": "What does shutil.copy2() do that shutil.copy() doesn't?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Copies directories recursively",
+        "b": "Preserves file metadata (timestamps, permissions)",
+        "c": "Copies faster",
+        "d": "Creates a symlink instead"
+      },
+      "answer": "b",
+      "explanation": "copy2() preserves metadata like modification times. copy() only copies content and permissions.",
+      "tags": ["files"]
+    },
+    {
+      "question": "What does Path(\"file.txt\").suffix return?",
+      "type": "short_answer",
+      "answer": ".txt",
+      "accept": [".txt"],
+      "explanation": ".suffix returns the file extension including the dot.",
+      "tags": ["pathlib"]
+    },
+    {
+      "question": "How do you process a very large file efficiently (line by line)?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "content = f.read(); for line in content.split(\"\\n\"):",
+        "b": "lines = f.readlines(); for line in lines:",
+        "c": "for line in f:",
+        "d": "All are equally efficient"
+      },
+      "answer": "c",
+      "explanation": "for line in f: reads one line at a time — memory efficient. read() and readlines() load everything into memory.",
+      "tags": ["files"]
+    },
+    {
+      "question": "What does mkdir(parents=True, exist_ok=True) do?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Creates only the final directory",
+        "b": "Creates all parent directories and doesn't error if they exist",
+        "c": "Deletes and recreates the directory",
+        "d": "Creates a temporary directory"
+      },
+      "answer": "b",
+      "explanation": "parents=True creates missing parent dirs. exist_ok=True doesn't raise an error if the directory already exists.",
+      "tags": ["pathlib"]
+    },
+    {
+      "question": "What is the difference between text mode and binary mode?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Text mode handles encoding, binary mode gives raw bytes",
+        "b": "Binary mode is faster",
+        "c": "Text mode only works with .txt files",
+        "d": "There is no difference"
+      },
+      "answer": "a",
+      "explanation": "Text mode (\"r\"/\"w\") returns strings. Binary mode (\"rb\"/\"wb\") returns bytes. Use binary for images, PDFs, etc.",
+      "tags": ["files", "encoding"]
+    }
+  ]
+}

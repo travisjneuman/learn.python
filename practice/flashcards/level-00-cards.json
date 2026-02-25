@@ -1,0 +1,206 @@
+{
+  "deck": "Level 00 — Absolute Beginner",
+  "description": "Core Python basics: variables, print, input, types, basic operations",
+  "cards": [
+    {
+      "id": "00-01",
+      "front": "What function do you use to display text on the screen in Python?",
+      "back": "print()\n\nExample: print(\"Hello, world!\")",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["print", "output", "basics"]
+    },
+    {
+      "id": "00-02",
+      "front": "What function do you use to get text input from the user?",
+      "back": "input()\n\nExample: name = input(\"What is your name? \")\nNote: input() always returns a string.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["input", "basics"]
+    },
+    {
+      "id": "00-03",
+      "front": "What is a variable in Python?",
+      "back": "A name that refers to a value stored in memory.\n\nExample: age = 25\n\"age\" is the variable name, 25 is the value.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["variables", "basics"]
+    },
+    {
+      "id": "00-04",
+      "front": "What are the 3 basic data types you use most in Python?",
+      "back": "int (whole numbers): 42\nfloat (decimals): 3.14\nstr (text): \"hello\"",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["types", "basics"]
+    },
+    {
+      "id": "00-05",
+      "front": "How do you convert a string to an integer?",
+      "back": "int()\n\nExample: int(\"42\") → 42\nThis is called type casting or type conversion.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["types", "conversion"]
+    },
+    {
+      "id": "00-06",
+      "front": "What does the = sign do in Python?",
+      "back": "Assignment — it stores a value in a variable.\n\nx = 5 means \"x now holds the value 5\"\nIt does NOT mean \"x equals 5\" (that's ==).",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["assignment", "operators"]
+    },
+    {
+      "id": "00-07",
+      "front": "What is the difference between = and ==?",
+      "back": "= is assignment (store a value)\n== is comparison (check if equal)\n\nx = 5    # assign 5 to x\nx == 5   # True — x is equal to 5",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["operators", "comparison"]
+    },
+    {
+      "id": "00-08",
+      "front": "What does this print?\n\nprint(type(\"hello\"))",
+      "back": "<class 'str'>\n\ntype() tells you what kind of data a value is.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["types", "introspection"]
+    },
+    {
+      "id": "00-09",
+      "front": "What happens if you run: print(5 + \"3\")?",
+      "back": "TypeError! You can't add an int and a str.\n\nFix: print(5 + int(\"3\"))  → 8\nOr:  print(str(5) + \"3\")  → \"53\"",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["types", "errors"]
+    },
+    {
+      "id": "00-10",
+      "front": "How do you write a comment in Python?",
+      "back": "Use the # symbol. Everything after # on that line is ignored.\n\n# This is a comment\nx = 5  # This is also a comment",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["comments", "basics"]
+    },
+    {
+      "id": "00-11",
+      "front": "What is an f-string and how do you write one?",
+      "back": "A formatted string that lets you embed variables.\nPrefix the string with f and use {curly braces}.\n\nname = \"Alice\"\nprint(f\"Hello, {name}!\")  → Hello, Alice!",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["strings", "formatting"]
+    },
+    {
+      "id": "00-12",
+      "front": "What does len() do?",
+      "back": "Returns the number of items in a sequence.\n\nlen(\"hello\")  → 5 (characters)\nlen([1, 2, 3]) → 3 (list items)",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["functions", "basics"]
+    },
+    {
+      "id": "00-13",
+      "front": "What are the 4 arithmetic operators in Python?",
+      "back": "+  addition\n-  subtraction\n*  multiplication\n/  division (always returns float)\n\nBonus: // integer division, % modulo, ** power",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["operators", "math"]
+    },
+    {
+      "id": "00-14",
+      "front": "What does this print?\n\nprint(10 / 3)\nprint(10 // 3)",
+      "back": "3.3333333333333335\n3\n\n/ gives a float (true division)\n// gives an int (floor division — rounds down)",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["operators", "division"]
+    },
+    {
+      "id": "00-15",
+      "front": "What does the % (modulo) operator do?",
+      "back": "Returns the remainder after division.\n\n10 % 3  → 1  (10 ÷ 3 = 3 remainder 1)\n15 % 5  → 0  (divides evenly)\n\nUseful for: checking even/odd (n % 2 == 0)",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["operators", "modulo"]
+    },
+    {
+      "id": "00-16",
+      "front": "How do you write an if/else statement?",
+      "back": "if condition:\n    # runs if True\nelse:\n    # runs if False\n\nNote the colon : and indentation (4 spaces).",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["conditionals", "control-flow"]
+    },
+    {
+      "id": "00-17",
+      "front": "What is indentation and why does it matter in Python?",
+      "back": "Indentation (spaces at the start of a line) defines code blocks.\nPython uses 4 spaces (not tabs) by convention.\n\nWrong indentation = IndentationError.\nUnlike most languages, Python doesn't use { } for blocks.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["syntax", "indentation"]
+    },
+    {
+      "id": "00-18",
+      "front": "What is a list in Python?",
+      "back": "An ordered collection of items in square brackets.\n\nnumbers = [1, 2, 3, 4]\nnames = [\"Alice\", \"Bob\"]\nmixed = [1, \"hello\", True]  # can mix types",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["lists", "collections"]
+    },
+    {
+      "id": "00-19",
+      "front": "How do you add an item to the end of a list?",
+      "back": "Use .append()\n\nfruits = [\"apple\", \"banana\"]\nfruits.append(\"cherry\")\n# fruits is now [\"apple\", \"banana\", \"cherry\"]",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["lists", "methods"]
+    },
+    {
+      "id": "00-20",
+      "front": "What is a for loop and when do you use it?",
+      "back": "A for loop repeats code for each item in a sequence.\n\nfor name in [\"Alice\", \"Bob\"]:\n    print(f\"Hello, {name}!\")\n\nUse when you know what you're iterating over.",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 1,
+      "tags": ["loops", "for"]
+    },
+    {
+      "id": "00-21",
+      "front": "What is the difference between a for loop and a while loop?",
+      "back": "for loop: iterates over a sequence (known items)\nwhile loop: repeats while a condition is True (unknown count)\n\nfor i in range(5):   # exactly 5 times\nwhile x > 0:         # until x reaches 0",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["loops", "control-flow"]
+    },
+    {
+      "id": "00-22",
+      "front": "What does range(5) produce?",
+      "back": "The numbers 0, 1, 2, 3, 4\n\nrange(5) = 5 numbers starting from 0\nrange(1, 5) = 1, 2, 3, 4\nrange(0, 10, 2) = 0, 2, 4, 6, 8",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["range", "loops"]
+    },
+    {
+      "id": "00-23",
+      "front": "What is a dictionary in Python?",
+      "back": "A collection of key-value pairs in curly braces.\n\nperson = {\"name\": \"Alice\", \"age\": 30}\nperson[\"name\"]  → \"Alice\"\n\nKeys must be unique. Values can be anything.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["dictionaries", "collections"]
+    },
+    {
+      "id": "00-24",
+      "front": "What is a function and how do you define one?",
+      "back": "A reusable block of code with a name.\n\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nresult = greet(\"Alice\")  → \"Hello, Alice!\"\n\nUse def, give it a name, parameters, and a return value.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "def"]
+    },
+    {
+      "id": "00-25",
+      "front": "What does return do in a function?",
+      "back": "Sends a value back to the caller and exits the function.\n\ndef add(a, b):\n    return a + b\n\nresult = add(3, 4)  # result is 7\n\nWithout return, a function returns None.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "return"]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "deck": "Level 2 — Collections",
+  "description": "Lists, dicts, sets, tuples, comprehensions, sorting, itertools",
+  "cards": [
+    {
+      "id": "2-01",
+      "front": "What is the difference between a list, tuple, set, and dict?",
+      "back": "list []:  ordered, mutable, duplicates OK\ntuple (): ordered, immutable, duplicates OK\nset {}:   unordered, mutable, NO duplicates\ndict {}:  key-value pairs, ordered (3.7+), keys unique",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["collections", "comparison"]
+    },
+    {
+      "id": "2-02",
+      "front": "How do you remove duplicates from a list while preserving order?",
+      "back": "seen = set()\nresult = []\nfor item in my_list:\n    if item not in seen:\n        seen.add(item)\n        result.append(item)\n\nOr in Python 3.7+: list(dict.fromkeys(my_list))",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["lists", "sets", "dedup"]
+    },
+    {
+      "id": "2-03",
+      "front": "What is a dict comprehension?",
+      "back": "Like list comprehension but creates a dict.\n\n{k: v for k, v in pairs}\n\nsquares = {x: x**2 for x in range(5)}\n→ {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["dicts", "comprehension"]
+    },
+    {
+      "id": "2-04",
+      "front": "What does .get() do on a dict and why use it?",
+      "back": "Returns a value for a key, or a default if the key doesn't exist.\n\nd = {\"name\": \"Alice\"}\nd[\"age\"]        → KeyError!\nd.get(\"age\")    → None\nd.get(\"age\", 0) → 0\n\nSafer than direct access.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["dicts", "methods"]
+    },
+    {
+      "id": "2-05",
+      "front": "What are the set operations?",
+      "back": "a | b  → union (all items from both)\na & b  → intersection (items in both)\na - b  → difference (in a but not b)\na ^ b  → symmetric difference (in one but not both)\n\na = {1, 2, 3}\nb = {2, 3, 4}\na & b → {2, 3}",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["sets", "operations"]
+    },
+    {
+      "id": "2-06",
+      "front": "How do you sort a list of dicts by a specific key?",
+      "back": "sorted(people, key=lambda p: p[\"age\"])\n\nOr with operator.itemgetter:\nfrom operator import itemgetter\nsorted(people, key=itemgetter(\"age\"))\n\nAdd reverse=True for descending.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["sorting", "dicts"]
+    },
+    {
+      "id": "2-07",
+      "front": "What is tuple unpacking?",
+      "back": "Assigning tuple items to separate variables.\n\npoint = (3, 4)\nx, y = point  # x=3, y=4\n\nAlso works with lists and in for loops:\nfor name, age in [(\"Alice\", 30), (\"Bob\", 25)]:",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["tuples", "unpacking"]
+    },
+    {
+      "id": "2-08",
+      "front": "What is collections.defaultdict?",
+      "back": "A dict that auto-creates missing keys with a default value.\n\nfrom collections import defaultdict\ncounts = defaultdict(int)  # default 0\ncounts[\"apple\"] += 1  # no KeyError!\n\ngroups = defaultdict(list)\ngroups[\"fruit\"].append(\"apple\")",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["collections", "defaultdict"]
+    },
+    {
+      "id": "2-09",
+      "front": "What is collections.Counter?",
+      "back": "Counts occurrences of items.\n\nfrom collections import Counter\nCounter(\"hello\") → {'l': 2, 'h': 1, 'e': 1, 'o': 1}\nCounter([1,1,2,3,3,3]) → {3: 3, 1: 2, 2: 1}\n\n.most_common(n) → top n items",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["collections", "Counter"]
+    },
+    {
+      "id": "2-10",
+      "front": "What does zip() do?",
+      "back": "Pairs up items from multiple iterables.\n\nnames = [\"Alice\", \"Bob\"]\nages = [30, 25]\nlist(zip(names, ages))\n→ [(\"Alice\", 30), (\"Bob\", 25)]\n\nStops at the shortest iterable.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["itertools", "zip"]
+    },
+    {
+      "id": "2-11",
+      "front": "What is a namedtuple?",
+      "back": "A tuple with named fields (like a lightweight class).\n\nfrom collections import namedtuple\nPoint = namedtuple(\"Point\", [\"x\", \"y\"])\np = Point(3, 4)\np.x → 3, p.y → 4\n\nImmutable, memory efficient, good for records.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["collections", "namedtuple"]
+    },
+    {
+      "id": "2-12",
+      "front": "How do you merge two dictionaries?",
+      "back": "Python 3.9+:\nmerged = d1 | d2\n\nPython 3.5+:\nmerged = {**d1, **d2}\n\nIn-place:\nd1.update(d2)\n\nLater values overwrite earlier ones for duplicate keys.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["dicts", "merging"]
+    },
+    {
+      "id": "2-13",
+      "front": "What is the difference between shallow copy and deep copy?",
+      "back": "Shallow: copies the container but not nested objects\nDeep: copies everything recursively\n\nimport copy\na = [[1, 2], [3, 4]]\nb = copy.copy(a)      # shallow\nc = copy.deepcopy(a)  # deep\n\na[0].append(5)\nb[0] → [1, 2, 5]  # affected!\nc[0] → [1, 2]     # independent",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["collections", "copy"]
+    },
+    {
+      "id": "2-14",
+      "front": "What does any() and all() do?",
+      "back": "any(): True if at least one item is truthy\nall(): True if every item is truthy\n\nnumbers = [0, 1, 2, 3]\nany(numbers)  → True (1, 2, 3 are truthy)\nall(numbers)  → False (0 is falsy)\n\nany(x > 5 for x in numbers) → False",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["builtins", "boolean"]
+    },
+    {
+      "id": "2-15",
+      "front": "What is a deque and when would you use it?",
+      "back": "A double-ended queue from collections.\n\nfrom collections import deque\nd = deque([1, 2, 3])\nd.appendleft(0)  # O(1) — list would be O(n)\nd.popleft()      # O(1)\n\nUse when you need fast append/pop from both ends.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["collections", "deque"]
+    },
+    {
+      "id": "2-16",
+      "front": "How do you iterate over dict keys, values, and items?",
+      "back": "for key in d:           # keys (default)\nfor key in d.keys():    # keys (explicit)\nfor val in d.values():  # values\nfor k, v in d.items():  # key-value pairs\n\n.items() is most common — gives you both.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["dicts", "iteration"]
+    },
+    {
+      "id": "2-17",
+      "front": "What does reversed() do?",
+      "back": "Returns an iterator that yields items in reverse order.\n\nfor x in reversed([1, 2, 3]):\n    print(x)  # 3, 2, 1\n\nWorks on sequences (list, tuple, range, str).\nDoesn't modify the original.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["builtins", "iteration"]
+    },
+    {
+      "id": "2-18",
+      "front": "What is a frozen set?",
+      "back": "An immutable set. Can be used as a dict key or in other sets.\n\nfs = frozenset([1, 2, 3])\nfs.add(4)  → AttributeError!\n\nRegular sets are mutable and unhashable.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["sets", "frozenset"]
+    },
+    {
+      "id": "2-19",
+      "front": "What does this list comprehension produce?\n[x for x in range(20) if x % 3 == 0 and x % 5 == 0]",
+      "back": "[0, 15]\n\nNumbers 0-19 divisible by both 3 and 5.\n0 % 3 == 0 and 0 % 5 == 0 → True\n15 % 3 == 0 and 15 % 5 == 0 → True",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["comprehension", "filtering"]
+    },
+    {
+      "id": "2-20",
+      "front": "What is collections.OrderedDict? Do you still need it?",
+      "back": "A dict that remembers insertion order.\n\nSince Python 3.7, regular dicts maintain order too.\n\nStill useful for:\n- move_to_end() method\n- Equality depends on order (unlike regular dict)\n- Being explicit about order mattering",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["collections", "OrderedDict"]
+    },
+    {
+      "id": "2-21",
+      "front": "How do you flatten a list of lists?",
+      "back": "nested = [[1, 2], [3, 4], [5]]\n\n# List comprehension\nflat = [x for sub in nested for x in sub]\n→ [1, 2, 3, 4, 5]\n\n# Or: itertools.chain.from_iterable(nested)",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["lists", "flattening"]
+    },
+    {
+      "id": "2-22",
+      "front": "What does the * operator do with lists?",
+      "back": "Unpacking/splatting:\nfirst, *rest = [1, 2, 3, 4]\n# first=1, rest=[2, 3, 4]\n\nRepetition:\n[0] * 5 → [0, 0, 0, 0, 0]\n\nWarning: [[]] * 3 creates 3 refs to SAME list!",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["lists", "unpacking"]
+    },
+    {
+      "id": "2-23",
+      "front": "What is the time complexity of common list operations?",
+      "back": "append(): O(1)\ninsert(0, x): O(n)\npop(): O(1) — from end\npop(0): O(n) — from start\nx in list: O(n)\nlist[i]: O(1)\n\nFor O(1) ends, use collections.deque.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["performance", "big-o"]
+    },
+    {
+      "id": "2-24",
+      "front": "What is the time complexity of common dict operations?",
+      "back": "d[key]: O(1) average\nd[key] = val: O(1) average\nkey in d: O(1) average\ndel d[key]: O(1) average\n\nDicts use hash tables — almost everything is O(1)!\nThis is why dicts are preferred for lookups.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["performance", "big-o"]
+    },
+    {
+      "id": "2-25",
+      "front": "What does itertools.groupby() do?",
+      "back": "Groups consecutive items by a key function.\n\nfrom itertools import groupby\ndata = sorted(items, key=lambda x: x[\"dept\"])\nfor dept, group in groupby(data, key=lambda x: x[\"dept\"]):\n    print(dept, list(group))\n\nIMPORTANT: data must be sorted by the key first!",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["itertools", "groupby"]
+    }
+  ]
+}

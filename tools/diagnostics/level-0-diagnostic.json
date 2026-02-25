@@ -1,0 +1,151 @@
+{
+  "title": "Level 0 — Terminal and Basic I/O Readiness",
+  "description": "Tests your understanding of variables, print, input, basic types, conditionals, and loops.",
+  "thresholds": {"skip": 85, "ready": 60},
+  "recommendations": {
+    "skip": "You can skip Level 0 and start with Level 1 (Functions)!",
+    "ready": "You're ready for Level 0 projects. Start with 01-terminal-hello.",
+    "review": "Review Level 00 exercises first, especially variables, loops, and conditionals."
+  },
+  "concept_map": {
+    "variables": "concepts/what-is-a-variable.md",
+    "types": "concepts/types-and-conversions.md",
+    "loops": "concepts/how-loops-work.md",
+    "conditionals": "concepts/what-is-a-variable.md",
+    "strings": "concepts/what-is-a-variable.md",
+    "files": "concepts/files-and-paths.md"
+  },
+  "questions": [
+    {
+      "question": "What will this code print?",
+      "code": "x = 5\ny = 3\nprint(x + y)",
+      "type": "short_answer",
+      "answer": "8",
+      "accept": ["8"],
+      "explanation": "x holds 5, y holds 3. The + operator adds them: 5 + 3 = 8.",
+      "tags": ["variables"]
+    },
+    {
+      "question": "What type does input() always return?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "int",
+        "b": "float",
+        "c": "str",
+        "d": "It depends on what the user types"
+      },
+      "answer": "c",
+      "explanation": "input() always returns a string (str). To get a number, you must convert: int(input()).",
+      "tags": ["types"]
+    },
+    {
+      "question": "What will this code print?",
+      "code": "for i in range(3):\n    print(i)",
+      "type": "multiple_choice",
+      "options": {
+        "a": "1 2 3",
+        "b": "0 1 2",
+        "c": "0 1 2 3",
+        "d": "1 2"
+      },
+      "answer": "b",
+      "explanation": "range(3) produces 0, 1, 2 — three numbers starting from 0.",
+      "tags": ["loops"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "name = \"Alice\"\nprint(f\"Hello, {name}!\")",
+      "type": "short_answer",
+      "answer": "Hello, Alice!",
+      "accept": ["Hello, Alice!"],
+      "explanation": "f-strings embed variables inside curly braces. {name} is replaced with \"Alice\".",
+      "tags": ["strings"]
+    },
+    {
+      "question": "What happens when you run: int(\"hello\")?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Returns 0",
+        "b": "Returns None",
+        "c": "Raises a ValueError",
+        "d": "Returns \"hello\""
+      },
+      "answer": "c",
+      "explanation": "\"hello\" can't be converted to an integer, so Python raises a ValueError.",
+      "tags": ["types"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "x = 10\nif x > 5:\n    print(\"big\")\nelse:\n    print(\"small\")",
+      "type": "short_answer",
+      "answer": "big",
+      "accept": ["big"],
+      "explanation": "10 > 5 is True, so the if branch runs and prints \"big\".",
+      "tags": ["conditionals"]
+    },
+    {
+      "question": "Which method adds an item to the END of a list?",
+      "type": "multiple_choice",
+      "options": {
+        "a": ".add()",
+        "b": ".append()",
+        "c": ".insert()",
+        "d": ".push()"
+      },
+      "answer": "b",
+      "explanation": ".append() adds to the end. .insert(0, x) adds at a specific position. .add() is for sets, not lists.",
+      "tags": ["variables"]
+    },
+    {
+      "question": "What does len([1, 2, 3, 4]) return?",
+      "type": "short_answer",
+      "answer": "4",
+      "accept": ["4"],
+      "explanation": "len() returns the number of items in a sequence. This list has 4 items.",
+      "tags": ["variables"]
+    },
+    {
+      "question": "How do you open a file for reading in Python?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "file = read(\"data.txt\")",
+        "b": "file = open(\"data.txt\")",
+        "c": "file = File(\"data.txt\")",
+        "d": "file = load(\"data.txt\")"
+      },
+      "answer": "b",
+      "explanation": "open() is the built-in function. Best used with: with open(\"data.txt\") as f:",
+      "tags": ["files"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "words = \"hello world\".split()\nprint(len(words))",
+      "type": "short_answer",
+      "answer": "2",
+      "accept": ["2"],
+      "explanation": ".split() breaks a string into a list by whitespace. \"hello world\" → [\"hello\", \"world\"] → 2 items.",
+      "tags": ["strings"]
+    },
+    {
+      "question": "What does 10 % 3 evaluate to?",
+      "type": "short_answer",
+      "answer": "1",
+      "accept": ["1"],
+      "explanation": "% is the modulo operator (remainder). 10 ÷ 3 = 3 remainder 1.",
+      "tags": ["types"]
+    },
+    {
+      "question": "What is the difference between = and ==?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "They mean the same thing",
+        "b": "= assigns a value, == checks equality",
+        "c": "= checks equality, == assigns a value",
+        "d": "== is for strings, = is for numbers"
+      },
+      "answer": "b",
+      "explanation": "x = 5 stores 5 in x. x == 5 checks if x equals 5 (returns True/False).",
+      "tags": ["variables"]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "deck": "Level 4 — JSON and Structured Data",
+  "description": "JSON parsing, nested data, schemas, validation, data transformation",
+  "cards": [
+    {
+      "id": "4-01",
+      "front": "What is JSON and what Python types map to it?",
+      "back": "JSON (JavaScript Object Notation) — text format for structured data.\n\nJSON → Python:\nobject {} → dict\narray [] → list\nstring → str\nnumber → int/float\ntrue/false → True/False\nnull → None",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["json", "types"]
+    },
+    {
+      "id": "4-02",
+      "front": "What is the difference between json.load() and json.loads()?",
+      "back": "json.load(file) — reads from a file object\njson.loads(string) — parses a string\n\njson.dump(obj, file) — writes to a file\njson.dumps(obj) — returns a string\n\nThe 's' stands for 'string'.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["json", "parsing"]
+    },
+    {
+      "id": "4-03",
+      "front": "How do you access deeply nested JSON data safely?",
+      "back": "Use .get() chains with defaults:\n\ndata.get(\"user\", {}).get(\"address\", {}).get(\"city\", \"unknown\")\n\nOr try/except:\ntry:\n    city = data[\"user\"][\"address\"][\"city\"]\nexcept (KeyError, TypeError):\n    city = \"unknown\"",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["json", "nested", "safety"]
+    },
+    {
+      "id": "4-04",
+      "front": "How do you pretty-print JSON?",
+      "back": "print(json.dumps(data, indent=2, sort_keys=True))\n\nindent=2: 2-space indentation\nsort_keys=True: alphabetical keys\nensure_ascii=False: allow unicode characters",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["json", "formatting"]
+    },
+    {
+      "id": "4-05",
+      "front": "What types are NOT JSON-serializable by default?",
+      "back": "datetime objects\nsets\nbytes\ncustom classes\nPath objects\nDecimal\n\nFix: use default= parameter:\njson.dumps(data, default=str)  # converts anything to str",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["json", "serialization"]
+    },
+    {
+      "id": "4-06",
+      "front": "What is a JSON schema and why use one?",
+      "back": "A schema defines the expected structure of JSON data.\n\nschema = {\n    \"type\": \"object\",\n    \"required\": [\"name\", \"age\"],\n    \"properties\": {\n        \"name\": {\"type\": \"string\"},\n        \"age\": {\"type\": \"integer\", \"minimum\": 0}\n    }\n}\n\nValidate with: jsonschema.validate(data, schema)",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["json", "schema", "validation"]
+    },
+    {
+      "id": "4-07",
+      "front": "How do you flatten nested JSON into a flat dict?",
+      "back": "def flatten(d, prefix=\"\"):\n    result = {}\n    for k, v in d.items():\n        key = f\"{prefix}.{k}\" if prefix else k\n        if isinstance(v, dict):\n            result.update(flatten(v, key))\n        else:\n            result[key] = v\n    return result\n\n{\"a\": {\"b\": 1}} → {\"a.b\": 1}",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["json", "flattening"]
+    },
+    {
+      "id": "4-08",
+      "front": "What is YAML and how does it differ from JSON?",
+      "back": "YAML: human-friendly data format (superset of JSON).\n\n# YAML\nname: Alice\nage: 30\nhobbies:\n  - reading\n  - coding\n\nYAML: comments, multiline strings, no quotes needed\nJSON: stricter, wider tool support, faster parsing\n\nimport yaml; data = yaml.safe_load(text)",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["yaml", "data-formats"]
+    },
+    {
+      "id": "4-09",
+      "front": "What is TOML and when is it used?",
+      "back": "TOML: config file format (used in pyproject.toml).\n\n[project]\nname = \"myapp\"\nversion = \"1.0\"\n\n[project.dependencies]\nrequests = \">=2.28\"\n\nPython 3.11+: import tomllib\ntomllib.loads(text)",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["toml", "config"]
+    },
+    {
+      "id": "4-10",
+      "front": "How do you validate data structure with isinstance()?",
+      "back": "def validate_record(record):\n    assert isinstance(record, dict)\n    assert isinstance(record.get(\"name\"), str)\n    assert isinstance(record.get(\"age\"), int)\n    assert record[\"age\"] >= 0\n\nFor complex validation, use Pydantic:\nclass Record(BaseModel):\n    name: str\n    age: int = Field(ge=0)",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["validation", "types"]
+    },
+    {
+      "id": "4-11",
+      "front": "What is Pydantic and when do you use it?",
+      "back": "A data validation library using Python type hints.\n\nfrom pydantic import BaseModel\n\nclass User(BaseModel):\n    name: str\n    age: int\n    email: str\n\nuser = User(name=\"Alice\", age=30, email=\"a@b.com\")\nUser(name=\"Alice\", age=\"not a number\")  # ValidationError",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["pydantic", "validation"]
+    },
+    {
+      "id": "4-12",
+      "front": "How do you transform a list of dicts into a different structure?",
+      "back": "# Group by a key\nfrom collections import defaultdict\ngrouped = defaultdict(list)\nfor item in items:\n    grouped[item[\"category\"]].append(item)\n\n# Extract specific fields\nnames = [item[\"name\"] for item in items]\n\n# Restructure\nby_id = {item[\"id\"]: item for item in items}",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["data-transform", "dicts"]
+    },
+    {
+      "id": "4-13",
+      "front": "What is jq-style filtering for JSON?",
+      "back": "jq is a command-line JSON processor.\n\nIn Python, similar with comprehensions:\n# Get names where age > 30\n[u[\"name\"] for u in users if u[\"age\"] > 30]\n\n# Nested extraction\n[order[\"item\"][\"name\"] for order in orders]\n\nLibrary: jmespath for complex queries.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 3,
+      "tags": ["json", "filtering"]
+    },
+    {
+      "id": "4-14",
+      "front": "How do you handle JSON with datetime values?",
+      "back": "JSON has no date type. Common formats:\n- ISO 8601: \"2024-01-15T10:30:00Z\"\n- Unix timestamp: 1705312200\n\nfrom datetime import datetime\ndt = datetime.fromisoformat(\"2024-01-15T10:30:00\")\n\nCustom serializer:\njson.dumps(data, default=lambda o: o.isoformat())",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["json", "datetime"]
+    },
+    {
+      "id": "4-15",
+      "front": "What is the difference between json.JSONDecodeError and json.JSONEncoder?",
+      "back": "JSONDecodeError: raised when parsing invalid JSON\ntry:\n    data = json.loads(text)\nexcept json.JSONDecodeError as e:\n    print(f\"Invalid JSON at line {e.lineno}\")\n\nJSONEncoder: class for customizing serialization\nclass MyEncoder(json.JSONEncoder):\n    def default(self, obj): ...",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["json", "errors"]
+    },
+    {
+      "id": "4-16",
+      "front": "How do you merge multiple JSON files?",
+      "back": "from pathlib import Path\nimport json\n\nmerged = []\nfor path in Path(\"data\").glob(\"*.json\"):\n    with open(path) as f:\n        merged.extend(json.load(f))\n\nFor dicts: use {**d1, **d2} or d1 | d2 (3.9+)\nWatch for key conflicts!",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["json", "files", "merging"]
+    },
+    {
+      "id": "4-17",
+      "front": "What is a dataclass and how does it relate to structured data?",
+      "back": "from dataclasses import dataclass\n\n@dataclass\nclass Point:\n    x: float\n    y: float\n\np = Point(3.0, 4.0)\np.x → 3.0\n\nAuto-generates __init__, __repr__, __eq__.\nLighter than a full class, more structured than a dict.",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "structured-data"]
+    },
+    {
+      "id": "4-18",
+      "front": "How do you convert between JSON and CSV?",
+      "back": "# JSON → CSV\nimport csv, json\ndata = json.load(open(\"data.json\"))\nwith open(\"data.csv\", \"w\", newline=\"\") as f:\n    w = csv.DictWriter(f, fieldnames=data[0].keys())\n    w.writeheader()\n    w.writerows(data)\n\n# CSV → JSON\nwith open(\"data.csv\") as f:\n    data = list(csv.DictReader(f))\njson.dump(data, open(\"data.json\", \"w\"), indent=2)",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["json", "csv", "conversion"]
+    },
+    {
+      "id": "4-19",
+      "front": "What is jsonlines (NDJSON) format?",
+      "back": "One JSON object per line (not a JSON array).\n\n{\"name\": \"Alice\", \"age\": 30}\n{\"name\": \"Bob\", \"age\": 25}\n\nRead:\nwith open(\"data.jsonl\") as f:\n    for line in f:\n        record = json.loads(line)\n\nAdvantages: streamable, appendable, no trailing comma issues.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["json", "jsonlines"]
+    },
+    {
+      "id": "4-20",
+      "front": "How do you handle optional fields in structured data?",
+      "back": "With dicts: use .get() with defaults\nname = data.get(\"nickname\", data[\"name\"])\n\nWith dataclasses:\n@dataclass\nclass User:\n    name: str\n    nickname: str | None = None\n\nWith Pydantic:\nclass User(BaseModel):\n    name: str\n    nickname: str | None = None",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["data-modeling", "optional"]
+    },
+    {
+      "id": "4-21",
+      "front": "What does json.dumps(data, ensure_ascii=False) do?",
+      "back": "Allows non-ASCII characters in the output.\n\nDefault (ensure_ascii=True):\n{\"name\": \"\\u00e9milie\"}  # escaped\n\nWith ensure_ascii=False:\n{\"name\": \"émilie\"}  # readable\n\nUse ensure_ascii=False when writing files with UTF-8 encoding.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["json", "encoding"]
+    },
+    {
+      "id": "4-22",
+      "front": "What is data normalization?",
+      "back": "Transforming data into a consistent format.\n\nExamples:\n- Dates: \"Jan 5\" → \"2024-01-05\"\n- Names: \"  alice SMITH \" → \"Alice Smith\"\n- Phone: \"(555) 123-4567\" → \"+15551234567\"\n- Nulls: \"\", \"N/A\", \"null\" → None\n\nDo this BEFORE processing or storing data.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["data-cleaning", "normalization"]
+    },
+    {
+      "id": "4-23",
+      "front": "How do you use dataclasses.asdict() to convert to JSON?",
+      "back": "from dataclasses import dataclass, asdict\nimport json\n\n@dataclass\nclass User:\n    name: str\n    age: int\n\nuser = User(\"Alice\", 30)\njson_str = json.dumps(asdict(user))\n→ '{\"name\": \"Alice\", \"age\": 30}'",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "json"]
+    },
+    {
+      "id": "4-24",
+      "front": "What is XML and how do you parse it in Python?",
+      "back": "XML: tag-based markup format (older than JSON).\n\nimport xml.etree.ElementTree as ET\ntree = ET.parse(\"data.xml\")\nroot = tree.getroot()\nfor child in root:\n    print(child.tag, child.text)\n\nJSON is preferred for new projects.\nXML still used in legacy systems, SOAP APIs, config files.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["xml", "parsing"]
+    },
+    {
+      "id": "4-25",
+      "front": "What is the difference between serialization and deserialization?",
+      "back": "Serialization: object → storable format (dict → JSON string)\nDeserialization: storable format → object (JSON string → dict)\n\njson.dumps() = serialize\njson.loads() = deserialize\n\nAlso called: marshalling/unmarshalling, encoding/decoding",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["serialization", "terminology"]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "deck": "Level 0 — Terminal and Basic I/O",
+  "description": "File I/O, string methods, terminal interaction, basic data processing",
+  "cards": [
+    {
+      "id": "0-01",
+      "front": "How do you open and read a file in Python?",
+      "back": "with open(\"file.txt\") as f:\n    content = f.read()\n\nThe with statement automatically closes the file.\nUse \"r\" mode (default) for reading.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "reading"]
+    },
+    {
+      "id": "0-02",
+      "front": "What is the difference between read(), readline(), and readlines()?",
+      "back": "read() → entire file as one string\nreadline() → one line at a time\nreadlines() → list of all lines\n\nFor large files, iterate directly:\nfor line in f:",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "reading"]
+    },
+    {
+      "id": "0-03",
+      "front": "How do you write to a file?",
+      "back": "with open(\"file.txt\", \"w\") as f:\n    f.write(\"Hello\\n\")\n\n\"w\" = write (overwrites)\n\"a\" = append (adds to end)\n\"x\" = create (fails if exists)",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "writing"]
+    },
+    {
+      "id": "0-04",
+      "front": "What does .strip() do to a string?",
+      "back": "Removes whitespace (spaces, tabs, newlines) from both ends.\n\n\"  hello  \".strip()  → \"hello\"\n\"hello\\n\".strip()    → \"hello\"\n\n.lstrip() = left only, .rstrip() = right only",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "methods"]
+    },
+    {
+      "id": "0-05",
+      "front": "What does .split() do?",
+      "back": "Splits a string into a list of substrings.\n\n\"hello world\".split()      → [\"hello\", \"world\"]\n\"a,b,c\".split(\",\")        → [\"a\", \"b\", \"c\"]\n\"one  two\".split()         → [\"one\", \"two\"] (default splits on any whitespace)",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "methods"]
+    },
+    {
+      "id": "0-06",
+      "front": "What does .join() do?",
+      "back": "Joins a list of strings with a separator.\n\n\", \".join([\"a\", \"b\", \"c\"])  → \"a, b, c\"\n\"\\n\".join(lines)            → lines joined by newlines\n\nIt's the opposite of .split()",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["strings", "methods"]
+    },
+    {
+      "id": "0-07",
+      "front": "How do you check if a string contains a substring?",
+      "back": "Use the in operator:\n\n\"hello\" in \"hello world\"  → True\n\"xyz\" in \"hello world\"    → False\n\nAlso: \"hello world\".find(\"hello\") → 0 (index), -1 if not found",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "operators"]
+    },
+    {
+      "id": "0-08",
+      "front": "What is the difference between a syntax error and a runtime error?",
+      "back": "Syntax error: code is written wrong, Python can't even start\n  if x == 5  # missing colon\n\nRuntime error: code starts running but fails during execution\n  x = 1 / 0  # ZeroDivisionError",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["errors", "debugging"]
+    },
+    {
+      "id": "0-09",
+      "front": "How do you handle errors with try/except?",
+      "back": "try:\n    result = int(input(\"Number: \"))\nexcept ValueError:\n    print(\"That's not a number!\")\n\nCode in try runs normally.\nIf it raises an error, except catches it.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["errors", "exception-handling"]
+    },
+    {
+      "id": "0-10",
+      "front": "What does enumerate() do in a for loop?",
+      "back": "Gives you both the index and the value.\n\nfor i, name in enumerate([\"Alice\", \"Bob\"]):\n    print(f\"{i}: {name}\")\n# 0: Alice\n# 1: Bob\n\nAvoids manual counter variables.",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["loops", "enumerate"]
+    },
+    {
+      "id": "0-11",
+      "front": "What does break do in a loop?",
+      "back": "Immediately exits the loop.\n\nfor n in range(100):\n    if n > 5:\n        break\n    print(n)\n# prints 0, 1, 2, 3, 4, 5",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 1,
+      "tags": ["loops", "control-flow"]
+    },
+    {
+      "id": "0-12",
+      "front": "What does continue do in a loop?",
+      "back": "Skips the rest of the current iteration and goes to the next.\n\nfor n in range(5):\n    if n == 2:\n        continue\n    print(n)\n# prints 0, 1, 3, 4 (skips 2)",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 1,
+      "tags": ["loops", "control-flow"]
+    },
+    {
+      "id": "0-13",
+      "front": "How do you sort a list?",
+      "back": "Two ways:\n\nsorted(my_list)   → returns a NEW sorted list\nmy_list.sort()    → sorts IN PLACE (modifies original)\n\nBoth accept reverse=True for descending order.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["lists", "sorting"]
+    },
+    {
+      "id": "0-14",
+      "front": "What is a boolean and what values can it have?",
+      "back": "A boolean is a True/False value.\n\nTrue and False (capitalized in Python)\n\nComparisons return booleans:\n5 > 3  → True\n5 == 3 → False",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["types", "booleans"]
+    },
+    {
+      "id": "0-15",
+      "front": "What are truthy and falsy values in Python?",
+      "back": "Falsy: False, 0, 0.0, \"\", [], {}, None\nTruthy: everything else\n\nif my_list:  # True if list is not empty\nif name:     # True if string is not empty",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 3,
+      "tags": ["types", "booleans", "truthy"]
+    },
+    {
+      "id": "0-16",
+      "front": "How do you get just the file name from a full path?",
+      "back": "from pathlib import Path\n\npath = Path(\"/home/user/data.txt\")\npath.name      → \"data.txt\"\npath.stem      → \"data\"\npath.suffix    → \".txt\"\npath.parent    → Path(\"/home/user\")",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "pathlib"]
+    },
+    {
+      "id": "0-17",
+      "front": "What does .replace() do on a string?",
+      "back": "Returns a new string with replacements made.\n\n\"hello world\".replace(\"world\", \"Python\")\n→ \"hello Python\"\n\nStrings are immutable — replace() returns a NEW string.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "methods"]
+    },
+    {
+      "id": "0-18",
+      "front": "What is None in Python?",
+      "back": "None represents \"no value\" or \"nothing\".\n\nFunctions without return give None.\nUsed as a default/placeholder.\n\nCheck with: if x is None (not ==)",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["types", "None"]
+    },
+    {
+      "id": "0-19",
+      "front": "How do you check if a file exists before opening it?",
+      "back": "from pathlib import Path\n\nif Path(\"data.txt\").exists():\n    # safe to open\n\nAlso: .is_file(), .is_dir()",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "pathlib"]
+    },
+    {
+      "id": "0-20",
+      "front": "What does this print?\n\nfor i in range(3):\n    for j in range(2):\n        print(f\"{i},{j}\", end=\" \")",
+      "back": "0,0 0,1 1,0 1,1 2,0 2,1\n\nNested loops: inner loop runs completely for each outer iteration.\n3 × 2 = 6 total prints.",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 3,
+      "tags": ["loops", "nested"]
+    },
+    {
+      "id": "0-21",
+      "front": "What is string slicing?",
+      "back": "Extract parts of a string with [start:stop:step].\n\ns = \"Python\"\ns[0:3]   → \"Pyt\"\ns[2:]    → \"thon\"\ns[::-1]  → \"nohtyP\" (reversed)\n\nstart is inclusive, stop is exclusive.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["strings", "slicing"]
+    },
+    {
+      "id": "0-22",
+      "front": "How do you convert a list to a string?",
+      "back": "\", \".join([\"apple\", \"banana\", \"cherry\"])\n→ \"apple, banana, cherry\"\n\nAll items must be strings. Convert first if needed:\n\", \".join(str(x) for x in [1, 2, 3])",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["strings", "lists", "conversion"]
+    },
+    {
+      "id": "0-23",
+      "front": "What is the with statement used for?",
+      "back": "Automatic resource management (like closing files).\n\nwith open(\"file.txt\") as f:\n    data = f.read()\n# f is automatically closed here\n\nPrevents resource leaks even if errors occur.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "context-manager"]
+    },
+    {
+      "id": "0-24",
+      "front": "How do you run a Python script from the terminal?",
+      "back": "python script.py\n\nOr with arguments:\npython script.py arg1 arg2\n\nAccess args in code:\nimport sys\nprint(sys.argv)  # [\"script.py\", \"arg1\", \"arg2\"]",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 1,
+      "tags": ["terminal", "running"]
+    },
+    {
+      "id": "0-25",
+      "front": "What does .upper(), .lower(), and .title() do?",
+      "back": "\"hello\".upper()  → \"HELLO\"\n\"HELLO\".lower()  → \"hello\"\n\"hello world\".title() → \"Hello World\"\n\nAll return new strings (strings are immutable).",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "methods"]
+    }
+  ]
+}

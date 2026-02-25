@@ -1,0 +1,160 @@
+{
+  "title": "Level 1 — Functions and Modular Code Readiness",
+  "description": "Tests your understanding of functions, parameters, return values, scope, and basic module usage.",
+  "thresholds": {"skip": 85, "ready": 60},
+  "recommendations": {
+    "skip": "You can skip Level 1 and start with Level 2 (Collections)!",
+    "ready": "You're ready for Level 1 projects. Start with 01-hello-function.",
+    "review": "Review the functions-explained concept doc and finish Level 0 projects first."
+  },
+  "concept_map": {
+    "functions": "concepts/functions-explained.md",
+    "scope": "concepts/functions-explained.md",
+    "parameters": "concepts/functions-explained.md",
+    "modules": "concepts/how-imports-work.md",
+    "return": "concepts/functions-explained.md"
+  },
+  "questions": [
+    {
+      "question": "What keyword defines a function in Python?",
+      "type": "short_answer",
+      "answer": "def",
+      "accept": ["def"],
+      "explanation": "def function_name(parameters): starts a function definition.",
+      "tags": ["functions"]
+    },
+    {
+      "question": "What will this function return?",
+      "code": "def add(a, b):\n    return a + b\n\nresult = add(3, 4)",
+      "type": "short_answer",
+      "answer": "7",
+      "accept": ["7"],
+      "explanation": "The function adds a (3) and b (4), returning 7.",
+      "tags": ["functions", "return"]
+    },
+    {
+      "question": "What does a function return if it has no return statement?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "0",
+        "b": "An empty string",
+        "c": "None",
+        "d": "It raises an error"
+      },
+      "answer": "c",
+      "explanation": "A function without a return statement (or with just return) returns None.",
+      "tags": ["return"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "x = 10\ndef change():\n    x = 20\n    print(x)\nchange()\nprint(x)",
+      "type": "multiple_choice",
+      "options": {
+        "a": "20 and then 20",
+        "b": "20 and then 10",
+        "c": "10 and then 10",
+        "d": "Error"
+      },
+      "answer": "b",
+      "explanation": "Inside change(), x = 20 creates a LOCAL variable. The global x (10) is unchanged.",
+      "tags": ["scope"]
+    },
+    {
+      "question": "What is the default value of greeting in this function?",
+      "code": "def hello(name, greeting=\"Hi\"):\n    return f\"{greeting}, {name}!\"",
+      "type": "short_answer",
+      "answer": "Hi",
+      "accept": ["Hi", "\"Hi\"", "'Hi'"],
+      "explanation": "greeting=\"Hi\" sets a default value that's used if no argument is provided.",
+      "tags": ["parameters"]
+    },
+    {
+      "question": "What is the difference between a parameter and an argument?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "They mean the same thing",
+        "b": "Parameter is in the definition, argument is in the call",
+        "c": "Parameter is a number, argument is a string",
+        "d": "Arguments are required, parameters are optional"
+      },
+      "answer": "b",
+      "explanation": "def greet(name): — name is a parameter. greet(\"Alice\") — \"Alice\" is an argument.",
+      "tags": ["parameters"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "def double(x):\n    return x * 2\n\nresult = double(double(3))",
+      "type": "short_answer",
+      "answer": "12",
+      "accept": ["12"],
+      "explanation": "double(3) returns 6. double(6) returns 12.",
+      "tags": ["functions", "return"]
+    },
+    {
+      "question": "How do you import just the sqrt function from the math module?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "import sqrt from math",
+        "b": "from math import sqrt",
+        "c": "import math.sqrt",
+        "d": "use math.sqrt"
+      },
+      "answer": "b",
+      "explanation": "from math import sqrt lets you use sqrt() directly without the math. prefix.",
+      "tags": ["modules"]
+    },
+    {
+      "question": "What does *args do in a function definition?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Makes all arguments required",
+        "b": "Multiplies all arguments",
+        "c": "Collects extra positional arguments into a tuple",
+        "d": "Creates keyword arguments"
+      },
+      "answer": "c",
+      "explanation": "*args collects extra positional arguments. def f(*args): — f(1,2,3) → args is (1,2,3).",
+      "tags": ["parameters"]
+    },
+    {
+      "question": "What does if __name__ == \"__main__\" do?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Checks if the module is installed",
+        "b": "Runs code only when the file is executed directly, not imported",
+        "c": "Defines the main function",
+        "d": "Checks if Python is running"
+      },
+      "answer": "b",
+      "explanation": "When a file is imported, __name__ is set to the module name. When run directly, it's \"__main__\".",
+      "tags": ["modules"]
+    },
+    {
+      "question": "What will this list comprehension produce?",
+      "code": "[x**2 for x in range(4)]",
+      "type": "multiple_choice",
+      "options": {
+        "a": "[0, 1, 4, 9]",
+        "b": "[1, 4, 9, 16]",
+        "c": "[0, 1, 2, 3]",
+        "d": "[0, 2, 4, 6]"
+      },
+      "answer": "a",
+      "explanation": "range(4) gives 0,1,2,3. Squaring each: 0,1,4,9.",
+      "tags": ["functions"]
+    },
+    {
+      "question": "What is a lambda function?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A function that runs automatically",
+        "b": "An anonymous one-line function",
+        "c": "A function that takes no arguments",
+        "d": "A function that always returns True"
+      },
+      "answer": "b",
+      "explanation": "lambda x: x * 2 creates a small anonymous function. Equivalent to def f(x): return x * 2.",
+      "tags": ["functions"]
+    }
+  ]
+}

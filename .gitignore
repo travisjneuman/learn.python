@@ -5,3 +5,6 @@ venv/
 .env
 .ipynb_checkpoints/
 *.ipynb_checkpoints/
+
+# Flashcard review state (personal progress)
+practice/flashcards/.review-state.json

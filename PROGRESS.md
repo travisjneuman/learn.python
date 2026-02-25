@@ -222,3 +222,74 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] 01 Deploy to Railway
 - [ ] 02 Deploy with Database
 - [ ] 03 Production Checklist
+
+---
+
+## Practice — Active Recall & Skill Building
+
+### Concept Quizzes (after reading each concept doc)
+- [ ] What is a Variable quiz
+- [ ] How Loops Work quiz
+- [ ] Functions Explained quiz
+- [ ] Collections Explained quiz
+- [ ] Files and Paths quiz
+- [ ] Errors and Debugging quiz
+- [ ] Types and Conversions quiz
+- [ ] How Imports Work quiz
+- [ ] Classes and Objects quiz
+- [ ] Decorators Explained quiz
+- [ ] Virtual Environments quiz
+- [ ] The Terminal Deeper quiz
+- [ ] HTTP Explained quiz
+- [ ] API Basics quiz
+- [ ] Async Explained quiz
+
+### Flashcard Review
+- [ ] Level 00 deck reviewed (25 cards)
+- [ ] Level 0 deck reviewed (25 cards)
+- [ ] Level 1 deck reviewed (25 cards)
+- [ ] Level 2 deck reviewed (25 cards)
+- [ ] Level 3 deck reviewed (25 cards)
+- [ ] Level 4 deck reviewed (25 cards)
+- [ ] Level 5 deck reviewed (25 cards)
+
+### Coding Challenges — Beginner
+- [ ] 01 Swap Variables
+- [ ] 02 FizzBuzz
+- [ ] 03 Reverse String
+- [ ] 04 Count Vowels
+- [ ] 05 Palindrome Check
+- [ ] 06 Sum of Digits
+- [ ] 07 Find Max
+- [ ] 08 Remove Duplicates
+- [ ] 09 Word Frequency
+- [ ] 10 Caesar Cipher
+- [ ] 11 Flatten List
+- [ ] 12 Matrix Transpose
+- [ ] 13 Binary Search
+- [ ] 14 Merge Sorted
+- [ ] 15 Anagram Check
+
+### Coding Challenges — Intermediate
+- [ ] 01 Decorator Timer
+- [ ] 02 Context Manager
+- [ ] 03 Generator Pipeline
+- [ ] 04 Class Registry
+- [ ] 05 Retry Decorator
+- [ ] 06 LRU Cache
+- [ ] 07 Event Emitter
+- [ ] 08 Validate Schema
+- [ ] 09 Parse Log File
+- [ ] 10 Batch Processor
+- [ ] 11 Rate Limiter
+- [ ] 12 Tree Traversal
+- [ ] 13 Async Fetcher
+- [ ] 14 CLI Parser
+- [ ] 15 Plugin Loader
+
+### Diagnostic Assessments
+- [ ] Gate A diagnostic completed
+- [ ] Level 0 diagnostic completed
+- [ ] Level 1 diagnostic completed
+- [ ] Level 2 diagnostic completed
+- [ ] Level 3 diagnostic completed

@@ -1,0 +1,170 @@
+{
+  "title": "Level 2 — Collections Readiness",
+  "description": "Tests your understanding of lists, dictionaries, sets, tuples, comprehensions, and common operations.",
+  "thresholds": {"skip": 85, "ready": 60},
+  "recommendations": {
+    "skip": "You can skip Level 2 and start with Level 3 (File Automation)!",
+    "ready": "You're ready for Level 2 projects. Start with 01-list-basics.",
+    "review": "Review the collections-explained concept doc and practice with Level 1 projects."
+  },
+  "concept_map": {
+    "lists": "concepts/collections-explained.md",
+    "dicts": "concepts/collections-explained.md",
+    "sets": "concepts/collections-explained.md",
+    "comprehensions": "concepts/collections-explained.md",
+    "sorting": "concepts/collections-explained.md"
+  },
+  "questions": [
+    {
+      "question": "What is the main difference between a list and a tuple?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Lists use [] and tuples use ()",
+        "b": "Lists are mutable, tuples are immutable",
+        "c": "Both A and B",
+        "d": "Tuples can only hold numbers"
+      },
+      "answer": "c",
+      "explanation": "Lists use [] and can be changed. Tuples use () and cannot be modified after creation.",
+      "tags": ["lists"]
+    },
+    {
+      "question": "What will d.get(\"age\", 0) return if \"age\" is not in the dict?",
+      "type": "short_answer",
+      "answer": "0",
+      "accept": ["0"],
+      "explanation": ".get() returns the default value (0) if the key doesn't exist, avoiding a KeyError.",
+      "tags": ["dicts"]
+    },
+    {
+      "question": "What does this produce?",
+      "code": "set([1, 2, 2, 3, 3, 3])",
+      "type": "multiple_choice",
+      "options": {
+        "a": "{1, 2, 2, 3, 3, 3}",
+        "b": "{1, 2, 3}",
+        "c": "[1, 2, 3]",
+        "d": "{1: 1, 2: 2, 3: 3}"
+      },
+      "answer": "b",
+      "explanation": "Sets remove duplicates. The result is {1, 2, 3}.",
+      "tags": ["sets"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "d = {\"a\": 1, \"b\": 2}\nfor k, v in d.items():\n    print(f\"{k}={v}\", end=\" \")",
+      "type": "short_answer",
+      "answer": "a=1 b=2",
+      "accept": ["a=1 b=2", "a=1 b=2 "],
+      "explanation": ".items() gives key-value pairs. Prints each pair formatted as key=value.",
+      "tags": ["dicts"]
+    },
+    {
+      "question": "What does sorted([3, 1, 4, 1, 5], reverse=True) return?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "[1, 1, 3, 4, 5]",
+        "b": "[5, 4, 3, 1, 1]",
+        "c": "[5, 4, 3, 1]",
+        "d": "None (sorts in place)"
+      },
+      "answer": "b",
+      "explanation": "sorted() returns a new list. reverse=True gives descending order. Duplicates are kept.",
+      "tags": ["sorting"]
+    },
+    {
+      "question": "What does this list comprehension produce?",
+      "code": "[x for x in range(10) if x % 2 == 0]",
+      "type": "multiple_choice",
+      "options": {
+        "a": "[0, 2, 4, 6, 8]",
+        "b": "[2, 4, 6, 8, 10]",
+        "c": "[1, 3, 5, 7, 9]",
+        "d": "[0, 2, 4, 6, 8, 10]"
+      },
+      "answer": "a",
+      "explanation": "Filters range(10) to keep only even numbers (x % 2 == 0). range(10) doesn't include 10.",
+      "tags": ["comprehensions"]
+    },
+    {
+      "question": "What does zip([1,2,3], ['a','b','c']) produce?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "[1, 'a', 2, 'b', 3, 'c']",
+        "b": "[(1, 'a'), (2, 'b'), (3, 'c')]",
+        "c": "{1: 'a', 2: 'b', 3: 'c'}",
+        "d": "[[1, 'a'], [2, 'b'], [3, 'c']]"
+      },
+      "answer": "b",
+      "explanation": "zip() pairs up items from each iterable into tuples.",
+      "tags": ["lists"]
+    },
+    {
+      "question": "How do you remove duplicates from a list and get a list back?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "list.unique()",
+        "b": "list(set(my_list))",
+        "c": "my_list.remove_duplicates()",
+        "d": "unique(my_list)"
+      },
+      "answer": "b",
+      "explanation": "Convert to set (removes dupes), then back to list. Note: this doesn't preserve order.",
+      "tags": ["sets", "lists"]
+    },
+    {
+      "question": "What will this print?",
+      "code": "from collections import Counter\nCounter(\"banana\").most_common(1)",
+      "type": "multiple_choice",
+      "options": {
+        "a": "('a', 3)",
+        "b": "[('a', 3)]",
+        "c": "{'a': 3}",
+        "d": "3"
+      },
+      "answer": "b",
+      "explanation": "Counter counts characters: {'a': 3, 'n': 2, 'b': 1}. most_common(1) returns a list of the top 1.",
+      "tags": ["lists"]
+    },
+    {
+      "question": "What is a dict comprehension?",
+      "code": "{k: v**2 for k, v in {\"a\": 2, \"b\": 3}.items()}",
+      "type": "multiple_choice",
+      "options": {
+        "a": "{\"a\": 4, \"b\": 9}",
+        "b": "[4, 9]",
+        "c": "{\"a\": 2, \"b\": 3}",
+        "d": "Error"
+      },
+      "answer": "a",
+      "explanation": "Dict comprehension creates a new dict. Each value is squared: 2**2=4, 3**2=9.",
+      "tags": ["comprehensions", "dicts"]
+    },
+    {
+      "question": "What set operation gives items in set A but NOT in set B?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A | B (union)",
+        "b": "A & B (intersection)",
+        "c": "A - B (difference)",
+        "d": "A ^ B (symmetric difference)"
+      },
+      "answer": "c",
+      "explanation": "A - B returns items in A that are not in B. {1,2,3} - {2,3,4} → {1}.",
+      "tags": ["sets"]
+    },
+    {
+      "question": "What does enumerate() add to a for loop?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A counter that tracks the index",
+        "b": "Automatic sorting",
+        "c": "Type checking",
+        "d": "Duplicate removal"
+      },
+      "answer": "a",
+      "explanation": "for i, item in enumerate(my_list): gives you both the index (i) and the value (item).",
+      "tags": ["lists"]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "deck": "Level 3 — File Automation",
+  "description": "pathlib, os, shutil, glob, CSV, file processing patterns",
+  "cards": [
+    {
+      "id": "3-01",
+      "front": "What is pathlib and why use it over os.path?",
+      "back": "pathlib provides an object-oriented file path API.\n\nfrom pathlib import Path\np = Path(\"data\") / \"output\" / \"report.csv\"\n\nBetter than os.path.join(\"data\", \"output\", \"report.csv\")\nWorks cross-platform. Has methods like .exists(), .read_text().",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["pathlib", "files"]
+    },
+    {
+      "id": "3-02",
+      "front": "How do you list all .csv files in a directory?",
+      "back": "from pathlib import Path\n\ncsv_files = list(Path(\"data\").glob(\"*.csv\"))\n\nRecursive (all subdirectories):\ncsv_files = list(Path(\"data\").rglob(\"*.csv\"))",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["pathlib", "glob"]
+    },
+    {
+      "id": "3-03",
+      "front": "How do you read and write CSV files?",
+      "back": "import csv\n\n# Read\nwith open(\"data.csv\") as f:\n    reader = csv.DictReader(f)\n    for row in reader:\n        print(row[\"name\"])\n\n# Write\nwith open(\"out.csv\", \"w\", newline=\"\") as f:\n    writer = csv.DictWriter(f, fieldnames=[\"name\", \"age\"])\n    writer.writeheader()\n    writer.writerow({\"name\": \"Alice\", \"age\": 30})",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["csv", "files"]
+    },
+    {
+      "id": "3-04",
+      "front": "How do you copy, move, and delete files?",
+      "back": "import shutil\nfrom pathlib import Path\n\nshutil.copy2(\"src.txt\", \"dst.txt\")  # copy with metadata\nshutil.move(\"old.txt\", \"new.txt\")   # move/rename\nPath(\"file.txt\").unlink()            # delete file\nshutil.rmtree(\"directory\")           # delete directory tree",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["shutil", "files"]
+    },
+    {
+      "id": "3-05",
+      "front": "How do you create a directory (including parents)?",
+      "back": "from pathlib import Path\n\nPath(\"output/reports/2024\").mkdir(parents=True, exist_ok=True)\n\nparents=True: creates parent directories if needed\nexist_ok=True: no error if directory already exists",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["pathlib", "directories"]
+    },
+    {
+      "id": "3-06",
+      "front": "What is the newline=\"\" parameter when writing CSV files?",
+      "back": "Prevents double-spaced rows on Windows.\n\nwith open(\"out.csv\", \"w\", newline=\"\") as f:\n    writer = csv.writer(f)\n\nWithout it, Windows adds extra blank lines between rows\nbecause csv.writer adds \\n and Windows file mode adds \\r\\n.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["csv", "windows"]
+    },
+    {
+      "id": "3-07",
+      "front": "How do you read a file's entire content as a string?",
+      "back": "# pathlib (simplest)\ncontent = Path(\"file.txt\").read_text(encoding=\"utf-8\")\n\n# Traditional\nwith open(\"file.txt\", encoding=\"utf-8\") as f:\n    content = f.read()\n\nAlways specify encoding for text files.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "reading"]
+    },
+    {
+      "id": "3-08",
+      "front": "What is os.walk() and when do you use it?",
+      "back": "Recursively walks a directory tree.\n\nimport os\nfor dirpath, dirnames, filenames in os.walk(\".\"):\n    for f in filenames:\n        print(os.path.join(dirpath, f))\n\nUse when you need to process files in all subdirectories.\npathlib.rglob() is often simpler for file matching.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["os", "directories"]
+    },
+    {
+      "id": "3-09",
+      "front": "How do you handle file encoding issues?",
+      "back": "Always specify encoding:\nopen(\"file.txt\", encoding=\"utf-8\")\n\nIf you get UnicodeDecodeError:\n1. Try encoding=\"utf-8-sig\" (BOM files)\n2. Try encoding=\"latin-1\" (never fails but may be wrong)\n3. Use chardet library to detect encoding\n4. Use errors=\"replace\" to skip bad chars",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["files", "encoding"]
+    },
+    {
+      "id": "3-10",
+      "front": "What is a temporary file and how do you create one?",
+      "back": "import tempfile\n\nwith tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".csv\", delete=False) as f:\n    f.write(\"data\")\n    print(f.name)  # path to temp file\n\nOr temp directory:\nwith tempfile.TemporaryDirectory() as tmpdir:\n    # tmpdir is auto-deleted when done",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "tempfile"]
+    },
+    {
+      "id": "3-11",
+      "front": "How do you watch a directory for file changes?",
+      "back": "Use the watchdog library:\n\nfrom watchdog.observers import Observer\nfrom watchdog.events import FileSystemEventHandler\n\nclass Handler(FileSystemEventHandler):\n    def on_created(self, event):\n        print(f\"New file: {event.src_path}\")\n\nSimpler: poll with Path.iterdir() in a loop.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["files", "watchdog"]
+    },
+    {
+      "id": "3-12",
+      "front": "What is the difference between text mode and binary mode?",
+      "back": "Text mode (\"r\", \"w\"): handles encoding, returns str\nBinary mode (\"rb\", \"wb\"): raw bytes, returns bytes\n\nUse text for: .txt, .csv, .json, .html\nUse binary for: images, PDFs, .zip, .xlsx\n\nopen(\"image.png\", \"rb\")  # binary read",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "modes"]
+    },
+    {
+      "id": "3-13",
+      "front": "How do you get the size of a file?",
+      "back": "from pathlib import Path\n\nsize_bytes = Path(\"file.txt\").stat().st_size\nsize_kb = size_bytes / 1024\nsize_mb = size_bytes / (1024 * 1024)\n\nAlso: .stat().st_mtime for modification time.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["pathlib", "stats"]
+    },
+    {
+      "id": "3-14",
+      "front": "What is an idempotent file operation and why does it matter?",
+      "back": "An operation that produces the same result no matter how many times you run it.\n\nIdempotent: mkdir(exist_ok=True), write entire file\nNot idempotent: append to file, increment counter\n\nMatters for automation: safe to re-run if something fails.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["patterns", "idempotent"]
+    },
+    {
+      "id": "3-15",
+      "front": "How do you safely write to a file (atomic write)?",
+      "back": "Write to a temp file, then rename:\n\nimport tempfile, os\nwith tempfile.NamedTemporaryFile(mode=\"w\", dir=\".\", delete=False) as f:\n    f.write(data)\n    temp_path = f.name\nos.replace(temp_path, \"output.txt\")\n\nIf the write fails, the original file is untouched.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["files", "safety"]
+    },
+    {
+      "id": "3-16",
+      "front": "What is shutil.make_archive() for?",
+      "back": "Creates a zip or tar archive from a directory.\n\nimport shutil\nshutil.make_archive(\"backup\", \"zip\", \"data/\")\n# Creates backup.zip containing data/ contents\n\nFormats: \"zip\", \"tar\", \"gztar\", \"bztar\", \"xztar\"",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["shutil", "archives"]
+    },
+    {
+      "id": "3-17",
+      "front": "How do you process a large file line by line without loading it all into memory?",
+      "back": "with open(\"large.txt\") as f:\n    for line in f:  # reads one line at a time\n        process(line.strip())\n\nDO NOT use f.readlines() or f.read() for large files.\nThe for loop is lazy — memory efficient.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["files", "performance"]
+    },
+    {
+      "id": "3-18",
+      "front": "What is the difference between os.rename() and os.replace()?",
+      "back": "os.rename(): fails on Windows if destination exists\nos.replace(): works cross-platform, overwrites destination\n\nAlways use os.replace() for cross-platform compatibility.\nOr: Path(\"old.txt\").replace(\"new.txt\")",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["os", "renaming"]
+    },
+    {
+      "id": "3-19",
+      "front": "How do you use the glob module?",
+      "back": "import glob\n\nglob.glob(\"*.py\")           # all .py files\nglob.glob(\"**/*.py\", recursive=True)  # all .py recursively\n\nPatterns:\n*     → any characters\n?     → one character\n**    → any directories (recursive only)\n[abc] → a, b, or c",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["glob", "patterns"]
+    },
+    {
+      "id": "3-20",
+      "front": "How do you handle file permissions errors?",
+      "back": "try:\n    with open(path) as f:\n        data = f.read()\nexcept PermissionError:\n    print(f\"No permission to read {path}\")\nexcept FileNotFoundError:\n    print(f\"File not found: {path}\")\n\nCheck first: path.is_file() and os.access(path, os.R_OK)",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["files", "errors"]
+    },
+    {
+      "id": "3-21",
+      "front": "What does Path.resolve() do?",
+      "back": "Returns the absolute path with all symlinks and .. resolved.\n\nPath(\"../data/file.txt\").resolve()\n→ Path(\"/home/user/project/data/file.txt\")\n\nUseful for: comparing paths, creating unambiguous references.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["pathlib", "paths"]
+    },
+    {
+      "id": "3-22",
+      "front": "How do you check if two files have the same content?",
+      "back": "import filecmp\nfilecmp.cmp(\"file1.txt\", \"file2.txt\")\n→ True/False\n\nOr with hashing:\nimport hashlib\ndef file_hash(path):\n    return hashlib.md5(Path(path).read_bytes()).hexdigest()\n\nfile_hash(\"a.txt\") == file_hash(\"b.txt\")",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 3,
+      "tags": ["files", "comparison"]
+    },
+    {
+      "id": "3-23",
+      "front": "What is a context manager and how does it relate to file handling?",
+      "back": "A context manager handles setup/cleanup automatically.\n\nwith open(\"f.txt\") as f:  # setup: open file\n    data = f.read()\n# cleanup: file closed automatically, even on error\n\nThe with statement calls __enter__ and __exit__.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["context-manager", "files"]
+    },
+    {
+      "id": "3-24",
+      "front": "How do you read/write JSON files?",
+      "back": "import json\n\n# Read\nwith open(\"data.json\") as f:\n    data = json.load(f)\n\n# Write\nwith open(\"data.json\", \"w\") as f:\n    json.dump(data, f, indent=2)\n\njson.loads(string) / json.dumps(obj) for strings.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["json", "files"]
+    },
+    {
+      "id": "3-25",
+      "front": "What is the logging module and when should you use it instead of print?",
+      "back": "import logging\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nlogger.info(\"Processing file\")\nlogger.error(\"File not found\")\n\nUse logging for: production code, debugging, audit trails\nUse print for: quick debugging, user-facing output",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["logging", "debugging"]
+    }
+  ]
+}

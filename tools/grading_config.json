@@ -1,0 +1,69 @@
+{
+  "_comment": "Maps project paths to concept references for pedagogical feedback. When tests fail, the grader suggests reviewing these concepts.",
+  "projects/level-0/01-terminal-hello": {
+    "concepts": ["concepts/what-is-a-variable.md"]
+  },
+  "projects/level-0/02-calculator-basics": {
+    "concepts": ["concepts/types-and-conversions.md"]
+  },
+  "projects/level-0/03-temperature-converter": {
+    "concepts": ["concepts/types-and-conversions.md"]
+  },
+  "projects/level-0/04-yes-no-questionnaire": {
+    "concepts": ["concepts/what-is-a-variable.md"]
+  },
+  "projects/level-0/05-number-classifier": {
+    "concepts": ["concepts/what-is-a-variable.md", "concepts/how-loops-work.md"]
+  },
+  "projects/level-1/01-hello-function": {
+    "concepts": ["concepts/functions-explained.md"]
+  },
+  "projects/level-2/01-list-basics": {
+    "concepts": ["concepts/collections-explained.md"]
+  },
+  "projects/level-3/01-file-reader": {
+    "concepts": ["concepts/files-and-paths.md"]
+  },
+  "projects/level-4/01-json-loader": {
+    "concepts": ["concepts/files-and-paths.md", "concepts/collections-explained.md"]
+  },
+  "projects/level-5/01-safe-division": {
+    "concepts": ["concepts/errors-and-debugging.md"]
+  },
+  "projects/modules/01-web-scraping": {
+    "concepts": ["concepts/http-explained.md"]
+  },
+  "projects/modules/02-cli-tools": {
+    "concepts": ["concepts/functions-explained.md", "concepts/how-imports-work.md"]
+  },
+  "projects/modules/03-rest-apis": {
+    "concepts": ["concepts/http-explained.md", "concepts/api-basics.md"]
+  },
+  "projects/modules/04-fastapi-web": {
+    "concepts": ["concepts/api-basics.md", "concepts/http-explained.md", "concepts/decorators-explained.md"]
+  },
+  "projects/modules/05-async-python": {
+    "concepts": ["concepts/async-explained.md"]
+  },
+  "projects/modules/06-databases-orm": {
+    "concepts": ["concepts/classes-and-objects.md"]
+  },
+  "projects/modules/07-data-analysis": {
+    "concepts": ["concepts/collections-explained.md", "concepts/files-and-paths.md"]
+  },
+  "projects/modules/08-testing-advanced": {
+    "concepts": ["concepts/functions-explained.md", "concepts/decorators-explained.md"]
+  },
+  "projects/modules/09-docker-deployment": {
+    "concepts": ["concepts/virtual-environments.md", "concepts/the-terminal-deeper.md"]
+  },
+  "projects/modules/10-django-fullstack": {
+    "concepts": ["concepts/http-explained.md", "concepts/classes-and-objects.md"]
+  },
+  "projects/modules/11-package-publishing": {
+    "concepts": ["concepts/how-imports-work.md", "concepts/virtual-environments.md"]
+  },
+  "projects/modules/12-cloud-deploy": {
+    "concepts": ["concepts/api-basics.md", "concepts/virtual-environments.md"]
+  }
+}

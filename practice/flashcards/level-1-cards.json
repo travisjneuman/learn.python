@@ -1,0 +1,206 @@
+{
+  "deck": "Level 1 — Functions and Modular Code",
+  "description": "Function design, parameters, scope, modules, docstrings",
+  "cards": [
+    {
+      "id": "1-01",
+      "front": "What is the difference between a parameter and an argument?",
+      "back": "Parameter: the variable name in the function definition\nArgument: the actual value passed when calling the function\n\ndef greet(name):  # name is a parameter\ngreet(\"Alice\")    # \"Alice\" is an argument",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "terminology"]
+    },
+    {
+      "id": "1-02",
+      "front": "What is a default parameter?",
+      "back": "A parameter with a pre-set value that's used if no argument is given.\n\ndef greet(name=\"World\"):\n    print(f\"Hello, {name}!\")\n\ngreet()        → Hello, World!\ngreet(\"Alice\") → Hello, Alice!",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["functions", "parameters"]
+    },
+    {
+      "id": "1-03",
+      "front": "What is variable scope? What are local vs global variables?",
+      "back": "Local: defined inside a function, only accessible there\nGlobal: defined outside all functions, accessible everywhere\n\nx = 10  # global\ndef foo():\n    y = 5  # local\n    print(x)  # can read global\n# y is not accessible here",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "scope"]
+    },
+    {
+      "id": "1-04",
+      "front": "What are *args and **kwargs?",
+      "back": "*args: collects extra positional args into a tuple\n**kwargs: collects extra keyword args into a dict\n\ndef f(*args, **kwargs):\n    print(args)    # (1, 2, 3)\n    print(kwargs)  # {\"x\": 4}\n\nf(1, 2, 3, x=4)",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "args", "kwargs"]
+    },
+    {
+      "id": "1-05",
+      "front": "What is a docstring and how do you write one?",
+      "back": "A string as the first line of a function that documents it.\n\ndef add(a, b):\n    \"\"\"Return the sum of a and b.\"\"\"\n    return a + b\n\nAccess with: add.__doc__ or help(add)",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["functions", "documentation"]
+    },
+    {
+      "id": "1-06",
+      "front": "What does it mean that functions are \"first-class objects\" in Python?",
+      "back": "Functions can be:\n- Assigned to variables: f = print\n- Passed as arguments: map(str, [1,2,3])\n- Returned from other functions\n- Stored in data structures: [print, len, str]",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "first-class"]
+    },
+    {
+      "id": "1-07",
+      "front": "What is the difference between return and print?",
+      "back": "return: sends a value back to the caller (the function produces a result)\nprint: displays text on screen (side effect, doesn't produce a value)\n\ndef add(a, b):\n    return a + b  # caller gets the value\n\nresult = add(3, 4)  # result is 7",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["functions", "return", "print"]
+    },
+    {
+      "id": "1-08",
+      "front": "What is a lambda function?",
+      "back": "An anonymous one-line function.\n\nsquare = lambda x: x ** 2\nsquare(5)  → 25\n\nUseful for short callbacks:\nsorted(names, key=lambda n: len(n))\n\nFor anything complex, use a regular def.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "lambda"]
+    },
+    {
+      "id": "1-09",
+      "front": "What are map(), filter(), and reduce()?",
+      "back": "map(fn, iterable): apply fn to each item\nfilter(fn, iterable): keep items where fn returns True\nreduce(fn, iterable): combine items into one value\n\nlist(map(str, [1,2,3]))        → [\"1\",\"2\",\"3\"]\nlist(filter(lambda x: x>0, [-1,2,-3,4]))  → [2,4]\n\nList comprehensions are often preferred.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "functional"]
+    },
+    {
+      "id": "1-10",
+      "front": "What is a module in Python?",
+      "back": "A .py file that contains code you can import.\n\n# math_helpers.py\ndef add(a, b): return a + b\n\n# main.py\nfrom math_helpers import add\nadd(3, 4)  → 7",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 1,
+      "tags": ["modules", "imports"]
+    },
+    {
+      "id": "1-11",
+      "front": "What does if __name__ == \"__main__\" do?",
+      "back": "Runs code only when the file is executed directly, not when imported.\n\ndef main():\n    print(\"Running!\")\n\nif __name__ == \"__main__\":\n    main()\n\nWhen imported: __name__ is the module name, not \"__main__\".",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["modules", "main-guard"]
+    },
+    {
+      "id": "1-12",
+      "front": "What is a list comprehension?",
+      "back": "A concise way to create lists.\n\nsquares = [x**2 for x in range(5)]\n→ [0, 1, 4, 9, 16]\n\nWith filter:\nevens = [x for x in range(10) if x % 2 == 0]\n→ [0, 2, 4, 6, 8]",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["lists", "comprehension"]
+    },
+    {
+      "id": "1-13",
+      "front": "What is recursion?",
+      "back": "A function that calls itself to solve smaller subproblems.\n\ndef factorial(n):\n    if n <= 1:       # base case\n        return 1\n    return n * factorial(n - 1)  # recursive case\n\nAlways need a base case to stop!",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "recursion"]
+    },
+    {
+      "id": "1-14",
+      "front": "What is a type hint and how do you write one?",
+      "back": "Optional annotations that document expected types.\n\ndef add(a: int, b: int) -> int:\n    return a + b\n\nPython doesn't enforce them at runtime.\nTools like mypy check them statically.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "type-hints"]
+    },
+    {
+      "id": "1-15",
+      "front": "Why is a mutable default argument dangerous?\n\ndef add_item(item, lst=[]):\n    lst.append(item)\n    return lst",
+      "back": "The default list is shared across all calls!\n\nadd_item(1)  → [1]\nadd_item(2)  → [1, 2]  # unexpected!\n\nFix: use None as default\ndef add_item(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "gotchas"]
+    },
+    {
+      "id": "1-16",
+      "front": "What is the difference between import math and from math import sqrt?",
+      "back": "import math: imports the whole module\n  math.sqrt(16)  → need the prefix\n\nfrom math import sqrt: imports just sqrt\n  sqrt(16)  → no prefix needed\n\nfrom math import *: imports everything (avoid this!)",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 1,
+      "tags": ["modules", "imports"]
+    },
+    {
+      "id": "1-17",
+      "front": "What is a generator function?",
+      "back": "A function that uses yield instead of return.\nProduces values one at a time (lazy evaluation).\n\ndef count_up(n):\n    for i in range(n):\n        yield i\n\nfor x in count_up(3):\n    print(x)  # 0, 1, 2\n\nMemory efficient for large sequences.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "generators"]
+    },
+    {
+      "id": "1-18",
+      "front": "What does the global keyword do?",
+      "back": "Lets you modify a global variable inside a function.\n\ncount = 0\ndef increment():\n    global count\n    count += 1\n\nWithout global, you'd create a local variable instead.\nGenerally avoid — pass values as parameters instead.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "scope", "global"]
+    },
+    {
+      "id": "1-19",
+      "front": "What is a closure?",
+      "back": "An inner function that remembers variables from the outer function.\n\ndef make_multiplier(n):\n    def multiply(x):\n        return x * n  # n is \"closed over\"\n    return multiply\n\ndouble = make_multiplier(2)\ndouble(5)  → 10",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "closures"]
+    },
+    {
+      "id": "1-20",
+      "front": "How do you write a function that accepts keyword-only arguments?",
+      "back": "Put a * before the keyword-only parameters:\n\ndef connect(host, port, *, timeout=30, retries=3):\n    ...\n\nconnect(\"localhost\", 8080, timeout=10)  # OK\nconnect(\"localhost\", 8080, 10)  # Error!",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 3,
+      "tags": ["functions", "parameters"]
+    },
+    {
+      "id": "1-21",
+      "front": "What is a package vs a module?",
+      "back": "Module: a single .py file\nPackage: a directory containing __init__.py + modules\n\nmy_package/\n    __init__.py\n    utils.py\n    models.py\n\nfrom my_package.utils import helper",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["modules", "packages"]
+    },
+    {
+      "id": "1-22",
+      "front": "What does the pass keyword do?",
+      "back": "A placeholder that does nothing.\nUsed when syntax requires a body but you don't have code yet.\n\ndef not_implemented_yet():\n    pass\n\nclass EmptyClass:\n    pass\n\nif condition:\n    pass  # TODO: handle this",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["syntax", "placeholder"]
+    },
+    {
+      "id": "1-23",
+      "front": "What is assert and when do you use it?",
+      "back": "A debugging tool that checks a condition.\n\nassert len(items) > 0, \"List cannot be empty\"\n\nIf the condition is False → AssertionError\nUse for internal checks, NOT user input validation.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["debugging", "assert"]
+    },
+    {
+      "id": "1-24",
+      "front": "What is the DRY principle?",
+      "back": "Don't Repeat Yourself.\n\nIf you write the same code 3+ times, extract it into a function.\n\n# BAD: same logic repeated\nprint(f\"Hello, {name1}!\"); print(f\"Hello, {name2}!\")\n\n# GOOD: function\ndef greet(name): print(f\"Hello, {name}!\")",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["principles", "DRY"]
+    },
+    {
+      "id": "1-25",
+      "front": "What is the difference between positional and keyword arguments?",
+      "back": "Positional: matched by position\nKeyword: matched by name\n\ndef greet(first, last):\n    print(f\"{first} {last}\")\n\ngreet(\"Alice\", \"Smith\")       # positional\ngreet(last=\"Smith\", first=\"Alice\")  # keyword\ngreet(\"Alice\", last=\"Smith\")  # mixed (positional first!)",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "arguments"]
+    }
+  ]
+}

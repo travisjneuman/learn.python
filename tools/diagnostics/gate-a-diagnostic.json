@@ -1,0 +1,148 @@
+{
+  "title": "Gate A — Setup & First Script Readiness",
+  "description": "Checks basic computer literacy and Python setup knowledge.",
+  "thresholds": {"skip": 85, "ready": 60},
+  "recommendations": {
+    "skip": "You're ready to jump into Level 0 projects!",
+    "ready": "Start with Level 00 (absolute beginner exercises) to fill gaps.",
+    "review": "Start with 00_COMPUTER_LITERACY_PRIMER.md and the Level 00 exercises."
+  },
+  "concept_map": {
+    "terminal": "concepts/the-terminal-deeper.md",
+    "python-basics": "concepts/what-is-a-variable.md",
+    "setup": "03_SETUP_ALL_PLATFORMS.md",
+    "files": "concepts/files-and-paths.md"
+  },
+  "questions": [
+    {
+      "question": "What command checks which version of Python is installed?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "python --version",
+        "b": "python -check",
+        "c": "python version",
+        "d": "check python"
+      },
+      "answer": "a",
+      "explanation": "python --version (or python3 --version on some systems) prints the installed version.",
+      "tags": ["setup"]
+    },
+    {
+      "question": "What is a terminal (also called command line or shell)?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A type of web browser",
+        "b": "A text-based interface for running commands on your computer",
+        "c": "A programming language",
+        "d": "A file manager"
+      },
+      "answer": "b",
+      "explanation": "The terminal lets you type commands to interact with your computer without a graphical interface.",
+      "tags": ["terminal"]
+    },
+    {
+      "question": "What does the file extension .py mean?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "It's a PDF file",
+        "b": "It's a Python source code file",
+        "c": "It's a compressed file",
+        "d": "It's a web page"
+      },
+      "answer": "b",
+      "explanation": ".py files contain Python code that can be run with the python command.",
+      "tags": ["python-basics"]
+    },
+    {
+      "question": "Which command runs a Python script called hello.py?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "run hello.py",
+        "b": "start hello.py",
+        "c": "python hello.py",
+        "d": "open hello.py"
+      },
+      "answer": "c",
+      "explanation": "python hello.py tells Python to execute the code in hello.py.",
+      "tags": ["terminal", "python-basics"]
+    },
+    {
+      "question": "What does print(\"Hello\") do in Python?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "Sends the document to a printer",
+        "b": "Saves \"Hello\" to a file",
+        "c": "Displays \"Hello\" on the screen",
+        "d": "Creates a variable called Hello"
+      },
+      "answer": "c",
+      "explanation": "print() displays text in the terminal. It's the most basic way to see output from your program.",
+      "tags": ["python-basics"]
+    },
+    {
+      "question": "What is a directory (also called a folder)?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A type of file",
+        "b": "A container that holds files and other directories",
+        "c": "A Python command",
+        "d": "A web address"
+      },
+      "answer": "b",
+      "explanation": "Directories organize files on your computer, like folders in a filing cabinet.",
+      "tags": ["files"]
+    },
+    {
+      "question": "What command lists files in the current directory?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "show",
+        "b": "list",
+        "c": "ls",
+        "d": "files"
+      },
+      "answer": "c",
+      "explanation": "ls (or dir on Windows CMD) lists the contents of the current directory.",
+      "tags": ["terminal"]
+    },
+    {
+      "question": "What command changes to a different directory?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "move",
+        "b": "goto",
+        "c": "cd",
+        "d": "change"
+      },
+      "answer": "c",
+      "explanation": "cd (change directory) followed by the directory name moves you to that location.",
+      "tags": ["terminal"]
+    },
+    {
+      "question": "What is VS Code?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A programming language",
+        "b": "A code editor for writing programs",
+        "c": "A web browser",
+        "d": "A terminal emulator"
+      },
+      "answer": "b",
+      "explanation": "Visual Studio Code (VS Code) is a popular code editor with Python support, syntax highlighting, and debugging tools.",
+      "tags": ["setup"]
+    },
+    {
+      "question": "What is pip in Python?",
+      "type": "multiple_choice",
+      "options": {
+        "a": "A Python function for printing",
+        "b": "A tool for installing Python packages/libraries",
+        "c": "A type of Python file",
+        "d": "A debugging tool"
+      },
+      "answer": "b",
+      "explanation": "pip is Python's package installer. pip install requests downloads and installs the requests library.",
+      "tags": ["setup"]
+    }
+  ]
+}
