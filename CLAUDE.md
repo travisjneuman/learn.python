@@ -4,7 +4,7 @@
 
 ## What This Repo Is
 
-A comprehensive Python curriculum: zero tech experience to world-class full-stack mastery. Contains 50+ sequenced documents, 175+ hands-on projects across 12 levels, CI validation tooling, and a personalized study plan generator.
+A comprehensive Python curriculum: zero tech experience to world-class full-stack mastery. Contains 50+ sequenced documents, 175+ hands-on projects across 12 levels, 56 expansion module projects across 12 technology domains, CI validation tooling, and a personalized study plan generator.
 
 ## Learner Context
 
@@ -58,6 +58,24 @@ projects/ (hands-on practice):
   level-00-absolute-beginner/  → 15 exercises (no imports, no tests)
   level-0/ through level-10/   → 15 projects each (full structure)
   elite-track/                 → 10 advanced projects
+  modules/                     → 12 technology modules, 56 projects
+    01-web-scraping/           → requests, BeautifulSoup, CSV
+    02-cli-tools/              → click, typer, rich
+    03-rest-apis/              → requests, JSON, API clients
+    04-fastapi-web/            → FastAPI, Pydantic, JWT auth
+    05-async-python/           → asyncio, aiohttp, queues
+    06-databases-orm/          → SQLAlchemy, Alembic, sqlite3
+    07-data-analysis/          → pandas, matplotlib
+    08-testing-advanced/       → parametrize, mocking, hypothesis
+    09-docker-deployment/      → Docker, docker-compose, GitHub Actions
+    10-django-fullstack/       → Django, DRF, templates
+    11-package-publishing/     → pyproject.toml, build, TestPyPI
+    12-cloud-deploy/           → Railway, Postgres, production config
+
+concepts/ (reference docs):
+  Core: variables, loops, functions, collections, files, errors, types
+  Intermediate: imports, classes, decorators, virtual environments, terminal
+  Advanced: HTTP, APIs, async/await
 ```
 
 ## Session Workflow
@@ -73,6 +91,7 @@ When starting a learning session:
 - **level-00:** Single `exercise.py` + `TRY_THIS.md`, no tests, no imports
 - **level-0 through level-10:** Full structure (README, project.py, tests/, data/, notes.md)
 - **Elite track:** Advanced structure with architecture docs
+- **Expansion modules:** README, project.py (or app.py), requirements.txt, notes.md, tests/ where applicable
 
 ## Tech Stack
 
@@ -80,3 +99,4 @@ When starting a learning session:
 - pytest (testing, from Level 0 onward)
 - Ruff (linting, from Level 0 onward)
 - Black (formatting, from Level 0 onward)
+- Expansion module libraries: requests, BeautifulSoup, click, typer, FastAPI, aiohttp, SQLAlchemy, pandas, matplotlib, Django, Docker

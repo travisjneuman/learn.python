@@ -1,0 +1,8 @@
+# Procfile — Tells the cloud platform how to start your app.
+#
+# Format: <process type>: <command>
+# "web" means this is a web server that receives HTTP requests.
+#
+# Railway reads this file automatically during deployment.
+# The $PORT variable is set by Railway.
+web: uvicorn app:app --host 0.0.0.0 --port $PORT

@@ -1,0 +1,68 @@
+# pyproject.toml — The single source of truth for your package.
+#
+# This file tells build tools (pip, build, setuptools) everything they
+# need to know about your package: its name, version, dependencies,
+# where to find the code, and how to build it.
+
+[build-system]
+# This section tells pip which tool to use for building.
+# setuptools is the most common choice. "wheel" creates .whl files.
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# --- Required fields ---
+
+# The package name as it appears on PyPI. Use lowercase and hyphens.
+name = "mymath-demo"
+
+# Semantic versioning: MAJOR.MINOR.PATCH
+# - MAJOR: breaking changes
+# - MINOR: new features (backwards compatible)
+# - PATCH: bug fixes
+version = "0.1.0"
+
+# --- Recommended fields ---
+
+# A one-line description shown on PyPI search results.
+description = "A simple math utilities package for learning Python packaging"
+
+# This reads your README.md and displays it on your PyPI page.
+readme = "README.md"
+
+# What Python versions does your package support?
+requires-python = ">=3.10"
+
+# Your name and email (shown on PyPI).
+authors = [
+    { name = "Your Name", email = "you@example.com" },
+]
+
+# The license. MIT is the most common for open source.
+license = { text = "MIT" }
+
+# PyPI classifiers help people find your package.
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+# Dependencies your package needs to run.
+# Leave empty if your package has no dependencies (like this one).
+dependencies = []
+
+# --- Optional: entry points ---
+
+# Console scripts let users run your package from the command line.
+# After installing, the user can type "mymath-calc" to run the function.
+# [project.scripts]
+# mymath-calc = "mymath.calculator:main"
+
+[tool.setuptools.packages.find]
+# Tell setuptools to look in the "src" directory for packages.
+where = ["src"]

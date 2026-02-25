@@ -138,3 +138,87 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] Docs 36-45: Elite engineering track
 - [ ] Docs 46-50: Adaptive learning layer
 - [ ] Elite Track Projects (10 projects)
+
+---
+
+## Expansion Modules — Full-Stack Python
+
+### Module 01 — Web Scraping (after Level 2)
+- [ ] 01 Fetch a Webpage
+- [ ] 02 Parse HTML
+- [ ] 03 Extract Structured Data
+- [ ] 04 Multi-Page Scraper
+- [ ] 05 Save to CSV
+
+### Module 02 — CLI Tools (after Level 2)
+- [ ] 01 Click Basics
+- [ ] 02 Multi-Command CLI
+- [ ] 03 Interactive Prompts
+- [ ] 04 File Processor CLI
+- [ ] 05 Typer Migration
+
+### Module 03 — REST APIs: Consuming (after Level 2)
+- [ ] 01 First API Call
+- [ ] 02 Query Parameters
+- [ ] 03 POST and Auth
+- [ ] 04 Error Handling
+- [ ] 05 API Client Class
+
+### Module 04 — FastAPI Web Apps (after Level 3 + Module 03)
+- [ ] 01 Hello FastAPI
+- [ ] 02 CRUD API
+- [ ] 03 Database-Backed
+- [ ] 04 Authentication
+- [ ] 05 Full App
+
+### Module 05 — Async Python (after Level 3)
+- [ ] 01 Async Basics
+- [ ] 02 Concurrent Requests
+- [ ] 03 Async File Processing
+- [ ] 04 Producer-Consumer
+- [ ] 05 Async Web Server
+
+### Module 06 — Databases & ORM (after Level 3)
+- [ ] 01 SQLite Basics
+- [ ] 02 SQLAlchemy Models
+- [ ] 03 CRUD Operations
+- [ ] 04 Migrations with Alembic
+- [ ] 05 Query Optimization
+
+### Module 07 — Data Analysis (after Level 2)
+- [ ] 01 Pandas Basics
+- [ ] 02 Filtering and Grouping
+- [ ] 03 Data Cleaning
+- [ ] 04 Visualization
+- [ ] 05 Analysis Report
+
+### Module 08 — Advanced Testing (after Level 3)
+- [ ] 01 Parametrize
+- [ ] 02 Mocking
+- [ ] 03 Fixtures Advanced
+- [ ] 04 Property-Based Testing
+- [ ] 05 Integration Testing
+
+### Module 09 — Docker & Deployment (after Level 5)
+- [ ] 01 First Dockerfile
+- [ ] 02 Multi-Stage Build
+- [ ] 03 Docker Compose
+- [ ] 04 CI with GitHub Actions
+- [ ] 05 Production Config
+
+### Module 10 — Django Full-Stack (after Module 04 + Module 06)
+- [ ] 01 Django Setup
+- [ ] 02 Views and Templates
+- [ ] 03 Forms and Auth
+- [ ] 04 REST Framework
+- [ ] 05 Complete App
+
+### Module 11 — Package Publishing (after Level 3)
+- [ ] 01 Package Structure
+- [ ] 02 Build and Test
+- [ ] 03 Publish to PyPI
+
+### Module 12 — Cloud Deployment (after Module 04 + Module 09)
+- [ ] 01 Deploy to Railway
+- [ ] 02 Deploy with Database
+- [ ] 03 Production Checklist

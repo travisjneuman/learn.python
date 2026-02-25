@@ -1,13 +1,13 @@
-# Python SME Plan (Zero Experience -> Enterprise Python Builder)
+# Python Mastery Plan (Zero Experience -> World-Class Full-Stack Developer)
 Home: [README](./README.md)
 
 Last updated: **February 24, 2026**
 
-This repository is a complete beginner-to-advanced Python learning system designed for a real enterprise environment:
-- SolarWinds Orion
-- SolarWinds DPA
-- Custom MSSQL reporting backend
-- Browser-based dashboard delivery
+This repository is a complete beginner-to-expert Python learning system. It covers two tracks:
+
+**Enterprise Operations Track** — SolarWinds Orion, MSSQL, Excel automation, dashboards (the original core).
+
+**Full-Stack Expansion Modules** — Web scraping, CLI tools, REST APIs, FastAPI, async Python, databases/ORM, data analysis, advanced testing, Docker, Django, package publishing, and cloud deployment.
 
 The plan is hands-on first. You will learn by building, breaking, fixing, and explaining.
 
@@ -176,6 +176,21 @@ Exact click path if you follow `Next` in each file:
 - Each level includes 15 projects designed to be altered, broken, fixed, and extended.
 - Elite extension projects live in [`./projects/elite-track`](./projects/elite-track) for top-tier architecture and systems depth.
 - Project index: [`./projects/README.md`](./projects/README.md)
+
+## Expansion modules (full-stack Python)
+12 technology modules with 56 hands-on projects covering the full Python ecosystem. Each module is self-contained with real libraries, not simulations.
+
+**After Level 2:** Web Scraping, CLI Tools, REST APIs, Data Analysis
+**After Level 3:** FastAPI, Async Python, Databases/ORM, Advanced Testing, Package Publishing
+**After Level 5:** Docker & Deployment, Django Full-Stack, Cloud Deployment
+
+Full module index: [`./projects/modules/README.md`](./projects/modules/README.md)
+
+## Concept reference docs
+Plain-language explanations of Python concepts at [`./concepts/README.md`](./concepts/README.md):
+- Core: variables, loops, functions, collections, files, errors, types
+- Intermediate: imports, classes, decorators, virtual environments, terminal
+- Advanced: HTTP, APIs, async/await
 
 ## Second-pass support packs
 - Screenshot checkpoints and study prompts:
