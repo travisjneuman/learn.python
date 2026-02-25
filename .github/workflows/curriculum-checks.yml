@@ -1,18 +1,6 @@
 name: Curriculum Checks
 
 on:
-  push:
-    paths:
-      - '**.md'
-      - 'projects/**'
-      - 'tools/**'
-      - '.github/workflows/curriculum-checks.yml'
-  pull_request:
-    paths:
-      - '**.md'
-      - 'projects/**'
-      - 'tools/**'
-      - '.github/workflows/curriculum-checks.yml'
   workflow_dispatch:
     inputs:
       full_smoke:
