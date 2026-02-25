@@ -6,11 +6,11 @@ Home: [README](./README.md)
 - Teams that need browser-only access to reporting and health data.
 
 ## What you will build
-- A browser-consumable dashboard backed by MSSQL cache tables.
+- A browser-consumable dashboard backed by database cache tables.
 - Filters, exports, and freshness indicators usable by operations teams.
 
 ## Prerequisites
-- Cache tables and summaries from [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md).
+- Cache tables and summaries from [07_MONITORING_API_INTEGRATION.md](./07_MONITORING_API_INTEGRATION.md).
 - Clean SQL summary outputs from [06_SQL.md](./06_SQL.md).
 
 ## Step-by-step lab pack
@@ -31,7 +31,7 @@ Examples:
   - export button.
 
 ### Step 3 - Add cache and data freshness
-- Query MSSQL cache first, not live APIs per request.
+- Query database cache first, not live APIs per request.
 - Display `last_refresh_utc` on every page.
 - Warn user when data is stale.
 
@@ -50,7 +50,7 @@ Reference: [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/).
 ### Step 6 - Deployment path options
 1. Local-only developer run.
 2. Internal server deployment for team use.
-3. Future option: host with existing MSSQL/ASP.NET server ecosystem if architecture and security review approves.
+3. Future option: host on cloud infrastructure if architecture and security review approves.
 
 ## Expected output
 - A dashboard accessible in browser with reliable and understandable data.

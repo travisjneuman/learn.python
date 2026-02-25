@@ -99,7 +99,7 @@ def recommend_priority_chain(goal: str) -> list[str]:
     if goal == "full_stack":
         return base + [
             "06_SQL.md",
-            "07_SOLARWINDS_ORION.md",
+            "07_MONITORING_API_INTEGRATION.md",
             "08_DASHBOARDS.md",
             "21_FULL_STACK_MASTERY_PATH.md",
         ]

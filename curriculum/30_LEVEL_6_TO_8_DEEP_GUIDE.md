@@ -6,13 +6,13 @@ Path placeholder: `<repo-root>` means the folder containing this repository's `R
 This guide is where you build professional data/integration/dashboard capability.
 
 ## Objective
-Master SQL reliability, Orion/DPA integration behavior, and browser-first dashboard robustness.
+Master SQL reliability, monitoring API integration behavior, and browser-first dashboard robustness.
 
 ## Required docs
 - [06_SQL.md](../06_SQL.md)
-- [07_SOLARWINDS_ORION.md](../07_SOLARWINDS_ORION.md)
+- [07_MONITORING_API_INTEGRATION.md](../07_MONITORING_API_INTEGRATION.md)
 - [08_DASHBOARDS.md](../08_DASHBOARDS.md)
-- [13_ENTERPRISE_SAMPLE_SCHEMAS.md](../13_ENTERPRISE_SAMPLE_SCHEMAS.md)
+- [13_SAMPLE_DATABASE_SCHEMAS.md](../13_SAMPLE_DATABASE_SCHEMAS.md)
 - [projects/level-6/README.md](../projects/level-6/README.md)
 - [projects/level-7/README.md](../projects/level-7/README.md)
 - [projects/level-8/README.md](../projects/level-8/README.md)
@@ -32,11 +32,11 @@ pytest -q
 
 Expected output:
 ```text
-... "project": "MSSQL Connection Simulator" ...
+... "project": "SQL Connection Simulator" ...
 2 passed
 ```
 
-## Level-7 run pattern (Orion + DPA focused)
+## Level-7 run pattern (API integration focused)
 ```bash
 cd <repo-root>/projects/level-7/01-orion-query-adapter
 python project.py --input data/sample_input.txt --output data/output_summary.json
@@ -45,7 +45,7 @@ pytest -q
 
 Expected output:
 ```text
-... "project": "Orion Query Adapter" ...
+... "project": "API Query Adapter" ...
 2 passed
 ```
 
@@ -66,10 +66,9 @@ Expected output:
 Use placeholder values first, then replace safely:
 ```bash
 # examples only: use safe, read-first credentials and endpoints
-export SW_ORION_URL="https://your-orion-server:17778"
-export SW_DPA_URL="https://your-dpa-server"
-export SQL_SERVER="your-sql-server"
-export SQL_DATABASE="your-reporting-db"
+export MONITORING_API_URL="https://your-monitoring-api"
+export MONITORING_API_KEY="your-api-key"
+export DATABASE_URL="sqlite:///data/cache.db"
 python your_ingestion_job.py --mode read-only --dry-run
 ```
 
@@ -86,10 +85,9 @@ dry-run complete (no writes)
 3. You can prove idempotent reruns in your ETL flow.
 
 ## Primary Sources
-- [MSSQL Python quickstart](https://learn.microsoft.com/en-us/sql/connect/python/mssql-python/python-sql-driver-mssql-python-quickstart?view=sql-server-ver17)
-- [ODBC connection strings](https://learn.microsoft.com/en-us/sql/connect/odbc/dsn-connection-string-attribute?view=sql-server-ver17)
-- [OrionSDK](https://github.com/solarwinds/OrionSDK)
-- [DPA API docs](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa-use-the-api.htm)
+- [SQLite documentation](https://www.sqlite.org/docs.html)
+- [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
+- [requests library](https://docs.python-requests.org/en/latest/)
 - [Streamlit get started](https://docs.streamlit.io/get-started)
 
 ## Optional Resources

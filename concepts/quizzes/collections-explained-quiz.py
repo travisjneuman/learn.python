@@ -39,7 +39,7 @@ def run_quiz():
     # Question 2
     print("Question 2/8: How do you access the value 'Denver' from this dict?")
     print()
-    print('  person = {"name": "Travis", "city": "Denver"}')
+    print('  person = {"name": "Alice", "city": "Denver"}')
     print()
     print('  a) person[1]')
     print('  b) person["city"]')
@@ -118,7 +118,7 @@ def run_quiz():
     print("Question 6/8: What does person.get('salary') return if")
     print("'salary' is not a key in the dict?")
     print()
-    print('  person = {"name": "Travis", "age": 30}')
+    print('  person = {"name": "Alice", "age": 30}')
     print()
     print("  a) 0")
     print("  b) Error")

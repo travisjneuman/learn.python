@@ -18,8 +18,8 @@ Use lists when: you have an ordered collection of similar items (scores, names, 
 ## Dictionaries — key-value pairs, unordered, changeable
 
 ```python
-person = {"name": "Travis", "age": 30}
-person["name"]            # "Travis"
+person = {"name": "Alice", "age": 30}
+person["name"]            # "Alice"
 person["city"] = "Denver" # Add new key
 person.get("salary")      # None (safe access, no error)
 ```

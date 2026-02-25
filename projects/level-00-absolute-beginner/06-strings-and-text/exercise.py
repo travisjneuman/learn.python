@@ -8,7 +8,7 @@
 
 # Creating strings
 greeting = "Hello"
-name = "Travis"
+name = "Alice"
 
 # Combining strings (concatenation) — glues them together
 message = greeting + ", " + name + "!"

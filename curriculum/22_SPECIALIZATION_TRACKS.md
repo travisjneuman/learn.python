@@ -28,7 +28,7 @@ Ship:
 ## Track 3 - Automation and integration engineering
 Focus:
 - scheduled automation,
-- integrations (Orion/DPA/SQL/APIs),
+- integrations (monitoring APIs/SQL/external APIs),
 - idempotency,
 - failure recovery.
 

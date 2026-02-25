@@ -38,8 +38,8 @@ my_computer/
 ```
 
 The "path" is the address of a file or folder. It tells the computer exactly where to find something:
-- Windows: `C:\Users\Travis\Projects\learn_python\hello.py`
-- Mac/Linux: `/Users/Travis/Projects/learn_python/hello.py`
+- Windows: `C:\Users\YourName\Projects\learn_python\hello.py`
+- Mac/Linux: `/Users/YourName/Projects/learn_python/hello.py`
 
 ## What is a text editor?
 
@@ -57,7 +57,7 @@ The terminal (also called "command line" or "command prompt") is a text-based wa
 
 It looks like this:
 ```
-C:\Users\Travis> _
+C:\Users\YourName> _
 ```
 
 The blinking cursor means the terminal is waiting for you to type a command.

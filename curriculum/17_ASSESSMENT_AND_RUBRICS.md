@@ -53,7 +53,7 @@ Total: 100 points.
   - awarded per level completion.
 - Internal non-accredited certification:
   - awarded when levels 0-10 and capstone readiness are passed with thresholds.
-  - authority/approver: repository owner (Travis J Neuman).
+  - authority/approver: repository owner.
   - validity: permanent unless curriculum policy changes in a future major version.
 
 ## Assessment cadence

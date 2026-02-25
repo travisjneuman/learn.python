@@ -19,7 +19,7 @@ This file tracks curriculum evolution and release decisions.
 4. Publish release notes.
 
 ## Ownership
-- Final approval owner: Travis J Neuman.
+- Final approval owner: (curriculum maintainer).
 - Proposed changes should include rationale, impact, and rollback plan.
 
 ## Release notes template

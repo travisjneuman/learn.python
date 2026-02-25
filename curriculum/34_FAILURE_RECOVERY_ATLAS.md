@@ -101,8 +101,8 @@ Recovery sequence:
 ## Primary Sources
 - [Using Python on Windows](https://docs.python.org/3/using/windows.html)
 - [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
-- [OrionSDK](https://github.com/solarwinds/OrionSDK)
-- [DPA API docs](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa-use-the-api.htm)
+- [requests library](https://docs.python-requests.org/en/latest/)
+- [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
 
 ## Optional Resources
 - [Python Tutor](https://pythontutor.com/)

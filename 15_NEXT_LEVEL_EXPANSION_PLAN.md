@@ -13,7 +13,7 @@ This document converts your answers into an implementation-ready expansion plan.
 7. Accessibility (recommended): baseline now, full accessibility program phased in quarterly.
 8. Progress tracking: manual, docs-based progress logs and checkpoint notes (no app required).
 9. Update cadence: quarterly.
-10. Governance owner: Travis J Neuman.
+10. Governance owner: (curriculum maintainer).
 11. CI automation (recommended): yes, enabled.
 12. Data policy: both anonymized real examples and mock data.
 13. SME definition: best-in-class practical standard (operational + engineering + teaching).
@@ -74,7 +74,7 @@ Enable CI now with:
 A learner is "SME-ready" when they can reliably:
 1. Design and ship idempotent automations with safe reruns.
 2. Build and maintain SQL reporting pipelines with quality controls.
-3. Integrate Orion and DPA data into stable cache/reporting layers.
+3. Integrate external API data into stable cache/reporting layers.
 4. Deliver browser-usable dashboards for non-technical stakeholders.
 5. Diagnose, recover, and explain failures clearly.
 6. Mentor others using clear reasoning and reproducible examples.
@@ -121,7 +121,7 @@ A learner is "SME-ready" when they can reliably:
 
 ### Quarter 2
 - Add remediation packs and mentor guide workflows.
-- Add enterprise simulation packs (Orion/DPA/SQL failure drills).
+- Add integration simulation packs (API/SQL failure drills).
 - Expand linked external resources by skill level and topic.
 
 ### Quarter 3

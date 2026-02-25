@@ -1,12 +1,12 @@
-# 06 - SQL Integration (MSSQL-First ETL for Reporting and Dashboards)
+# 06 - SQL Integration (SQL & ETL Pipelines for Reporting and Dashboards)
 Home: [README](./README.md)
 
 ## Who this is for
 - Learners moving from file automation to data pipelines.
-- Teams with MSSQL as a reporting backbone.
+- Teams with SQL databases as a reporting backbone.
 
 ## What you will build
-- A Python ETL pipeline that ingests validated records into MSSQL.
+- A Python ETL pipeline that ingests validated records into a SQL database.
 - Staging and reporting tables with idempotent loads.
 - A daily summary query output for dashboard use.
 
@@ -35,8 +35,8 @@ Minimum metadata fields:
 - `idempotency_key`
 
 ### Lab 3 - Python connection strategy
-Preferred start: `pyodbc`.
-Optional scaling path: SQLAlchemy.
+Preferred start: `sqlite3` (built-in, no driver needed).
+Optional scaling path: SQLAlchemy (supports SQLite, PostgreSQL, and more).
 
 Connection requirements:
 - no hardcoded secrets,
@@ -58,15 +58,15 @@ Generate query output by:
 Export summary to `output/daily_summary.csv` for dashboard consumption.
 
 ### Lab 6 - Custom reporting backend integration
-For your contractor-built MSSQL reporting DB:
+For an existing reporting database:
 - identify existing table contracts,
 - map your ETL output to existing schema,
 - avoid direct writes to unmanaged tables until schema ownership is clear.
 
-### Lab 7 - Optional Oracle extension
-If Oracle sources are added later:
+### Lab 7 - Optional PostgreSQL extension
+If you scale beyond SQLite:
 - ingest to staging only first,
-- normalize data types to MSSQL-compatible forms,
+- normalize data types to PostgreSQL-compatible forms,
 - preserve source system metadata.
 
 ## Expected output
@@ -90,7 +90,7 @@ If Oracle sources are added later:
   - add indexes on date, severity, idempotency key.
 
 ## Mastery check
-You are ready for SolarWinds ingestion when you can:
+You are ready for API integration when you can:
 - explain your table contract,
 - rerun ETL safely,
 - recover from transient DB failures,
@@ -103,18 +103,17 @@ You are ready for SolarWinds ingestion when you can:
 - Teach-back: present ETL data flow and failure strategy.
 
 ## Primary Sources
-- [SQL Server Python drivers overview](https://learn.microsoft.com/en-gb/sql/connect/python/python-driver-for-sql-server)
-- [MSSQL Python quickstart](https://learn.microsoft.com/en-us/sql/connect/python/mssql-python/python-sql-driver-mssql-python-quickstart?view=sql-server-ver17)
-- [ODBC connection strings](https://learn.microsoft.com/en-us/sql/connect/odbc/dsn-connection-string-attribute?view=sql-server-ver17)
+- [SQLite documentation](https://www.sqlite.org/docs.html)
+- [PostgreSQL documentation](https://www.postgresql.org/docs/)
 - [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
 
 ## Optional Resources
 - [pyodbc project](https://github.com/mkleehammer/pyodbc)
 - [python-oracledb docs](https://python-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html)
 
-## Enterprise sample schemas
+## Sample database schemas
 - Full schema pack for staging/reporting/cache/marts:
-  - [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
+  - [13_SAMPLE_DATABASE_SCHEMAS.md](./13_SAMPLE_DATABASE_SCHEMAS.md)
 
 ---
 

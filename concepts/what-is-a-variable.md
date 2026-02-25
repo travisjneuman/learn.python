@@ -3,13 +3,13 @@
 A variable is a name that holds a value. You create it by writing a name, then `=`, then the value.
 
 ```python
-name = "Travis"
+name = "Alice"
 age = 30
 is_student = True
 ```
 
 Think of it like a labeled jar. The label is the name. The contents are the value. You can:
-- **Look at** the contents: `print(name)` shows `Travis`
+- **Look at** the contents: `print(name)` shows `Alice`
 - **Replace** the contents: `name = "Alice"` — now it holds `"Alice"`
 - **Use** the contents in calculations: `next_year = age + 1`
 
@@ -43,8 +43,8 @@ x == 5      # This CHECKS if x equals 5 (returns True or False)
 
 **Forgetting quotes for text:**
 ```python
-name = Travis    # Error! Python thinks Travis is a variable name
-name = "Travis"  # Correct — quotes make it text (a string)
+name = Alice    # Error! Python thinks Alice is a variable name
+name = "Alice"  # Correct — quotes make it text (a string)
 ```
 
 **Using a variable before creating it:**

@@ -86,7 +86,7 @@ def run_quiz():
         print("A relative path is relative to where you are now.")
     else:
         print("Incorrect. The answer is b).")
-        print("Absolute: C:/Users/Travis/data.txt")
+        print("Absolute: C:/Users/alice/data.txt")
         print("Relative: data.txt (from current directory)")
     print()
 
@@ -134,7 +134,7 @@ def run_quiz():
     # Question 7
     print("Question 7/7: Why is this Windows path problematic in Python?")
     print()
-    print('  path = "C:\\Users\\Travis\\new_file.txt"')
+    print('  path = "C:\\Users\\alice\\new_file.txt"')
     print()
     print("  a) Windows paths are not supported")
     print("  b) The backslash \\n is interpreted as a newline character")

@@ -5,8 +5,8 @@ Home: [README](../../README.md)
 Integrate multi-source telemetry with contracts, caching, and policy guardrails.
 
 ## Projects
-- [01-orion-query-adapter](./01-orion-query-adapter/README.md) - Orion Query Adapter
-- [02-dpa-api-adapter](./02-dpa-api-adapter/README.md) - DPA API Adapter
+- [01-orion-query-adapter](./01-orion-query-adapter/README.md) - API Query Adapter
+- [02-dpa-api-adapter](./02-dpa-api-adapter/README.md) - Monitoring API Adapter
 - [03-unified-cache-writer](./03-unified-cache-writer/README.md) - Unified Cache Writer
 - [04-source-field-mapper](./04-source-field-mapper/README.md) - Source Field Mapper
 - [05-polling-cadence-manager](./05-polling-cadence-manager/README.md) - Polling Cadence Manager

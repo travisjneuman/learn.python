@@ -54,7 +54,7 @@ Use before architecture reviews with experienced engineers:
 - [ ] Can explain your data flow in under 2 minutes.
 - [ ] Can justify staging vs reporting schema design.
 - [ ] Can explain idempotency strategy.
-- [ ] Can explain Orion/DPA cache strategy.
+- [ ] Can explain API data cache strategy.
 - [ ] Can explain security posture for credentials and access.
 - [ ] Can explain dashboard fallback behavior during outages.
 

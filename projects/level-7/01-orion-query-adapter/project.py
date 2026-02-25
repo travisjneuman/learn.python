@@ -1,4 +1,4 @@
-"""Level 7 project: Orion Query Adapter.
+"""Level 7 project: API Query Adapter.
 
 Heavily commented advanced template:
 - run context object,
@@ -23,8 +23,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 PROJECT_LEVEL = 7
-PROJECT_TITLE = "Orion Query Adapter"
-PROJECT_FOCUS = "swis/swql-like query abstraction"
+PROJECT_TITLE = "API Query Adapter"
+PROJECT_FOCUS = "API query abstraction and response parsing"
 
 
 @dataclass

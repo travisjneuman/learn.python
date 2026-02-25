@@ -31,10 +31,10 @@ This map links the right resources to each mastery phase.
 - [Ruff](https://docs.astral.sh/ruff/)
 - [Black](https://black.readthedocs.io/en/stable/)
 
-### Enterprise integration
-- [OrionSDK](https://github.com/solarwinds/OrionSDK)
-- [orionsdk-python](https://github.com/solarwinds/orionsdk-python)
-- [DPA documentation](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_documentation.htm)
+### Monitoring and API integration
+- [OpenWeatherMap API](https://openweathermap.org/api)
+- [GitHub REST API](https://docs.github.com/en/rest)
+- [requests library](https://docs.python-requests.org/en/latest/)
 
 ## Study block template
 ```markdown

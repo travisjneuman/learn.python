@@ -1,22 +1,22 @@
-# 01 - Roadmap: Zero Experience -> Python SME (Enterprise Automation and Dashboards)
+# 01 - Roadmap: Zero Experience -> Python SME (Automation and Dashboards)
 Home: [README](./README.md)
 
 ## Who this is for
 - You have zero coding, scripting, or programming experience.
-- You need practical outcomes in an enterprise operations environment.
+- You need practical outcomes in a real operations environment.
 - You learn best by doing real work, not passive studying.
 
 ## What you will build
 - Reliable Python automations for files, Excel, SQL, and monitoring data.
-- Repeatable ETL workflows using MSSQL as a reporting backbone.
-- SolarWinds Orion and DPA data ingestion jobs.
+- Repeatable ETL workflows using SQL databases as a reporting backbone.
+- Monitoring API data ingestion jobs.
 - Browser-based dashboards for non-technical stakeholders.
 
 ## Prerequisites
-- One supported platform: Windows, macOS, Linux, Android, or iOS (desktop strongly recommended for full enterprise path).
+- One supported platform: Windows, macOS, Linux, Android, or iOS (desktop strongly recommended for full path).
 - Permission to install Python and VS Code.
-- Access path for MSSQL credentials (non-SSO SQL auth is supported in this plan).
-- Read-only API access to Orion and DPA to start.
+- Database credentials for your SQL database (SQLite for learning, PostgreSQL for production).
+- Read-only API access to your monitoring platform to start.
 
 ## Program overview (8-10 hrs/week default)
 - Phase 0 (Week 1): environment setup and first script.
@@ -24,7 +24,7 @@ Home: [README](./README.md)
 - Phase 2 (Weeks 7-10): quality tooling and team-ready workflow.
 - Phase 3 (Weeks 11-16): file and Excel automation.
 - Phase 4 (Weeks 17-22): SQL-first ETL pipelines.
-- Phase 5 (Weeks 23-28): Orion and DPA integration.
+- Phase 5 (Weeks 23-28): monitoring API integration.
 - Phase 6 (Weeks 29-38): dashboard delivery for browser users.
 - Phase 7 (Weeks 39+): release process, governance, and handoff maturity.
 - Phase 8+ (Advanced): full-stack expert path and infinite mastery loop.
@@ -105,9 +105,9 @@ Done means done:
 Fail/recover guidance:
 - freeze schema changes until test dataset passes end-to-end.
 
-### Phase 5 - Orion and DPA integration (Weeks 23-28)
+### Phase 5 - Monitoring API integration (Weeks 23-28)
 Weekly outcomes:
-- read-only ingestion from Orion and DPA into cache tables.
+- read-only ingestion from monitoring APIs into cache tables.
 
 Minimum deliverables:
 - one daily ingestion job from each source.
@@ -148,7 +148,7 @@ Fail/recover guidance:
 - Gate A: setup + first script + first passing test.
 - Gate B: Capstone A supports safe reruns and rejects.
 - Gate C: SQL ETL is idempotent and logged.
-- Gate D: Orion/DPA ingestion proof into MSSQL cache.
+- Gate D: Monitoring API ingestion proof into database cache.
 - Gate E: browser dashboard available to stakeholders.
 
 ## Project ladder mapping (practice by skill level)
@@ -180,8 +180,8 @@ Fail/recover guidance:
 - Teach-back: explain one concept weekly to another person or a written journal.
 
 ## Expected output
-- A complete progression from beginner to enterprise-capable Python practitioner.
-- A portfolio of capstones tied to your real data systems.
+- A complete progression from beginner to production-capable Python practitioner.
+- A portfolio of capstones tied to real data systems.
 - A clear upgrade path to full-stack expert mastery:
   - [21_FULL_STACK_MASTERY_PATH.md](./curriculum/21_FULL_STACK_MASTERY_PATH.md)
   - [22_SPECIALIZATION_TRACKS.md](./curriculum/22_SPECIALIZATION_TRACKS.md)

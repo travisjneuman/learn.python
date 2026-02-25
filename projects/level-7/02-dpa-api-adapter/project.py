@@ -1,4 +1,4 @@
-"""Level 7 project: DPA API Adapter.
+"""Level 7 project: Monitoring API Adapter.
 
 Heavily commented advanced template:
 - run context object,
@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 PROJECT_LEVEL = 7
-PROJECT_TITLE = "DPA API Adapter"
+PROJECT_TITLE = "Monitoring API Adapter"
 PROJECT_FOCUS = "api call abstraction and result normalization"
 
 

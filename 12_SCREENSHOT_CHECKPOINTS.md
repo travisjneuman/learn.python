@@ -66,10 +66,10 @@ Reflection prompts:
 - How did you verify idempotency?
 - What index or query improvement did you add?
 
-### Phase 5 - Orion and DPA integration
+### Phase 5 - Monitoring API integration
 Capture screenshots of:
-1. Orion ingestion result snapshot.
-2. DPA ingestion result snapshot.
+1. Primary API ingestion result snapshot.
+2. Secondary API ingestion result snapshot.
 3. Cache table freshness timestamps.
 
 Reflection prompts:

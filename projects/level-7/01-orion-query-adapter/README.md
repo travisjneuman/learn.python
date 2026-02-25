@@ -1,8 +1,8 @@
-# Level 7 / Project 01 - Orion Query Adapter
+# Level 7 / Project 01 - API Query Adapter
 Home: [README](../../../README.md)
 
 ## Focus
-- swis/swql-like query abstraction
+- API query abstraction and response parsing
 
 ## Why this project exists
 This project gives you level-appropriate practice in a realistic operations context.

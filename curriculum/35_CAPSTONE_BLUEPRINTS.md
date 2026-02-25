@@ -104,8 +104,8 @@ Fail when any are true:
 - [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
 - [Streamlit get started](https://docs.streamlit.io/get-started)
 - [Dash tutorial](https://dash.plotly.com/tutorial)
-- [OrionSDK](https://github.com/solarwinds/OrionSDK)
-- [DPA API docs](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa-use-the-api.htm)
+- [requests library](https://docs.python-requests.org/en/latest/)
+- [OpenWeatherMap API](https://openweathermap.org/api)
 
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)

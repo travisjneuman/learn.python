@@ -46,7 +46,7 @@ Stretch goals:
 - config-driven schemas,
 - richer Excel formatting.
 
-### Capstone B - ETL to MSSQL
+### Capstone B - ETL to SQL Database
 Business goal:
 - Move validated report data into durable SQL pipelines.
 
@@ -77,12 +77,12 @@ Stretch goals:
 - SQLAlchemy migration path,
 - performance tuning and indexing.
 
-### Capstone C - Orion + DPA Daily Ops Pipeline
+### Capstone C - Monitoring API Daily Ops Pipeline
 Business goal:
 - Ingest monitoring health data into reporting cache.
 
 Inputs/outputs:
-- Orion and DPA API reads.
+- Monitoring API reads.
 - Outputs: cache tables + daily ops reports (xlsx/html).
 
 Implementation milestones:
@@ -113,7 +113,7 @@ Business goal:
 - Deliver usable operational visibility to non-technical users.
 
 Inputs/outputs:
-- MSSQL summary/cache data.
+- Database summary/cache data.
 - Output: browser UI with filters and exports.
 
 Implementation milestones:
@@ -172,8 +172,8 @@ You are SME-ready when you can:
 - [Streamlit docs](https://docs.streamlit.io/get-started)
 - [Dash docs](https://dash.plotly.com/tutorial)
 - [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/)
-- [OrionSDK](https://github.com/solarwinds/OrionSDK)
-- [DPA API docs](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa-use-the-api.htm)
+- [requests library](https://docs.python-requests.org/en/latest/)
+- [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
 
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)

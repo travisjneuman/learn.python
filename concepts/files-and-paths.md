@@ -41,12 +41,12 @@ with open("output.txt", "w") as f:
 ## What is a path?
 
 A path is the address of a file on your computer:
-- **Windows:** `C:\Users\Travis\projects\data.txt`
-- **Mac/Linux:** `/Users/Travis/projects/data.txt`
+- **Windows:** `C:\Users\alice\projects\data.txt`
+- **Mac/Linux:** `/Users/alice/projects/data.txt`
 
 ### Relative vs absolute paths
 
-- **Absolute:** Full address from the root — `C:\Users\Travis\projects\data.txt`
+- **Absolute:** Full address from the root — `C:\Users\alice\projects\data.txt`
 - **Relative:** Address from where you are now — `data.txt` or `../other_folder/file.txt`
 
 `..` means "go up one folder." So `../data.txt` means "go up one folder, then find data.txt."
@@ -90,12 +90,12 @@ for line in open("data.txt"):
 **Using backslashes on Windows:**
 ```python
 # Wrong (backslash is an escape character)
-path = "C:\Users\Travis\new_file.txt"  # \n becomes a newline!
+path = "C:\Users\alice\new_file.txt"  # \n becomes a newline!
 
 # Right
-path = "C:\\Users\\Travis\\new_file.txt"  # Escaped backslashes
-path = r"C:\Users\Travis\new_file.txt"    # Raw string (r prefix)
-path = Path("C:/Users/Travis/new_file.txt")  # Forward slashes work too
+path = "C:\\Users\\alice\\new_file.txt"  # Escaped backslashes
+path = r"C:\Users\alice\new_file.txt"    # Raw string (r prefix)
+path = Path("C:/Users/alice/new_file.txt")  # Forward slashes work too
 ```
 
 ## Related exercises

@@ -44,7 +44,7 @@ print("Total:", sum(scores))
 print("Average:", sum(scores) / len(scores))
 
 # Lists can hold a mix of types (but usually you keep them uniform)
-mixed = ["Travis", 30, True, 3.14]
+mixed = ["Alice", 30, True, 3.14]
 print("Mixed list:", mixed)
 
 # Sort a list

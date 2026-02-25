@@ -8,10 +8,10 @@ A comprehensive Python curriculum: zero tech experience to world-class full-stac
 
 ## Learner Context
 
-- **Current level:** Absolute beginner (update this as you progress)
-- **Current position:** Starting at level-00-absolute-beginner
-- **Hours/week:** 8-10
-- **Learning mode:** Hybrid (structured weekdays, exploration weekends)
+- **Current level:** (update as you progress)
+- **Current position:** (update as you progress)
+- **Hours/week:** (set your own pace)
+- **Learning mode:** Play-first, Structured, or Hybrid (see README for details)
 
 ## AI Tutoring Rules
 
@@ -45,7 +45,7 @@ Root docs (learning path):
   02_GLOSSARY.md                  → Key terms defined
   03_SETUP_ALL_PLATFORMS.md       → Install Python
   04_FOUNDATIONS.md               → Core Python concepts
-  05-10: Domain skills            → Excel, SQL, SolarWinds, Dashboards
+  05-10: Domain skills            → Excel, SQL, Monitoring APIs, Dashboards
   11-15: Support infrastructure   → Checklists, checkpoints, schemas
 
 curriculum/ (advanced path, docs 16-50):

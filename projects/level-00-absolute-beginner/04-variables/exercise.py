@@ -11,8 +11,8 @@
 # It means "put the thing on the right into the name on the left".
 # ============================================================
 
-# Create a variable called "name" and store the text "Travis" in it.
-name = "Travis"
+# Create a variable called "name" and store the text "Alice" in it.
+name = "Alice"
 
 # Now we can use the variable name instead of typing the text again.
 print(name)
@@ -38,7 +38,7 @@ hours_per_week = hours_per_day * days_per_week
 print("I work", hours_per_week, "hours per week")
 
 # You can combine text variables (this is called "concatenation").
-first_name = "Travis"
+first_name = "Alice"
 last_name = "Neuman"
 full_name = first_name + " " + last_name
 print("Full name:", full_name)

@@ -14,7 +14,7 @@
 
 # Create a dictionary
 person = {
-    "name": "Travis",
+    "name": "Alice",
     "age": 30,
     "city": "Denver",
     "job": "Engineer"

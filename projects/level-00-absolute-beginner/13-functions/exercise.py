@@ -22,7 +22,7 @@ say_hello()  # You can call it as many times as you want
 def greet(name):
     print(f"Hello, {name}! Nice to meet you.")
 
-greet("Travis")
+greet("Alice")
 greet("Alice")
 greet("Bob")
 
@@ -41,9 +41,9 @@ print(f"10 + 20 = {add(10, 20)}")
 def make_greeting(name, greeting="Hello"):
     return f"{greeting}, {name}!"
 
-print(make_greeting("Travis"))              # Uses default: "Hello"
-print(make_greeting("Travis", "Hey"))       # Uses provided: "Hey"
-print(make_greeting("Travis", "Welcome"))   # Uses provided: "Welcome"
+print(make_greeting("Alice"))              # Uses default: "Hello"
+print(make_greeting("Alice", "Hey"))       # Uses provided: "Hey"
+print(make_greeting("Alice", "Welcome"))   # Uses provided: "Welcome"
 
 # A more practical function
 def calculate_tip(meal_price, tip_percent=18):

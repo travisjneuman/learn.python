@@ -17,8 +17,8 @@ def greet(name):
 ## Calling a function
 
 ```python
-message = greet("Travis")
-print(message)  # Hello, Travis!
+message = greet("Alice")
+print(message)  # Hello, Alice!
 
 # Or use it directly
 print(greet("Alice"))  # Hello, Alice!
@@ -55,8 +55,8 @@ add(3, 5)          # 3 and 5 are arguments
 def greet(name, greeting="Hello"):
     return f"{greeting}, {name}!"
 
-greet("Travis")           # Hello, Travis!
-greet("Travis", "Hey")    # Hey, Travis!
+greet("Alice")           # Hello, Alice!
+greet("Alice", "Hey")    # Hey, Alice!
 ```
 
 ## Why functions matter
@@ -71,7 +71,7 @@ greet("Travis", "Hey")    # Hey, Travis!
 **Forgetting parentheses when calling:**
 ```python
 greet          # This is the function OBJECT, not a call
-greet("Travis") # This CALLS the function
+greet("Alice") # This CALLS the function
 ```
 
 **Forgetting to return:**
@@ -85,7 +85,7 @@ total = add(3, 5)  # total is None, not 8
 
 **Defining after calling:**
 ```python
-greet("Travis")    # Error! greet is not defined yet
+greet("Alice")    # Error! greet is not defined yet
 
 def greet(name):
     return f"Hello, {name}!"

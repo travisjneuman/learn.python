@@ -1,4 +1,4 @@
-# Level 6 / Project 01 - MSSQL Connection Simulator
+# Level 6 / Project 01 - SQL Connection Simulator
 Home: [README](../../../README.md)
 
 ## Focus

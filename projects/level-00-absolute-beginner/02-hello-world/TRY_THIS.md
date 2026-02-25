@@ -2,7 +2,7 @@
 
 1. Change the message inside `print()` to say your own name:
    ```python
-   print("Hello, my name is Travis!")
+   print("Hello, my name is Alice!")
    ```
 
 2. Print three lines that tell a short story:

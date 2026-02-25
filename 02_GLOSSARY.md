@@ -1,4 +1,4 @@
-# 02 - Glossary (Plain English + Enterprise Context)
+# 02 - Glossary (Plain English + Practical Context)
 Home: [README](./README.md)
 
 Use this file anytime you see unknown terms.
@@ -13,8 +13,8 @@ Use this file anytime you see unknown terms.
 
 ### Script
 - Plain English: A small program designed to automate one task.
-- Why it matters: Most enterprise automation starts as scripts.
-- Example: Daily job that exports critical SolarWinds alerts.
+- Why it matters: Most automation starts as scripts.
+- Example: Daily job that exports critical monitoring alerts.
 - Common beginner mistake: Putting too many unrelated tasks into one script.
 
 ### Function
@@ -86,7 +86,7 @@ Use this file anytime you see unknown terms.
 ### ETL
 - Plain English: Extract, transform, load.
 - Why it matters: Core pattern for reporting pipelines.
-- Example: Excel -> clean rows -> MSSQL table.
+- Example: Excel -> clean rows -> SQL database table.
 - Common beginner mistake: Skipping schema validation before load.
 
 ### Staging table
@@ -102,35 +102,29 @@ Use this file anytime you see unknown terms.
 - Common beginner mistake: Mixing raw and curated records.
 
 ### SQL auth vs SSO
-- Plain English: SQL auth uses DB username/password; SSO uses Windows/M365 identity.
-- Why it matters: Your current MSSQL access may use SQL auth, not SSO.
+- Plain English: SQL auth uses DB username/password; SSO uses identity provider (OAuth, SAML).
+- Why it matters: Your database access may use SQL auth, not SSO.
 - Example: Service account credentials for ETL jobs.
 - Common beginner mistake: Hardcoding credentials in scripts.
 
-## SolarWinds and monitoring terms
+## Monitoring and API terms
 
-### SWIS
-- Plain English: Orion information service API layer.
-- Why it matters: Main way to query Orion entities.
-- Example: Query node or alert metadata.
-- Common beginner mistake: Treating SWIS like raw SQL access.
+### REST API
+- Plain English: Standard way for programs to exchange data over HTTP.
+- Why it matters: Main way to query monitoring platforms and external services.
+- Example: Query node or alert metadata from a monitoring API.
+- Common beginner mistake: Treating API responses like raw SQL access.
 
-### SWQL
-- Plain English: Query language used with SolarWinds Orion objects.
-- Why it matters: Required for many useful Orion queries.
-- Example: Query active alerts by severity.
-- Common beginner mistake: Expecting all T-SQL features in SWQL.
-
-### DPA API token
-- Plain English: Credential used to call DPA REST API endpoints.
-- Why it matters: Enables scripted data pulls from DPA.
+### API token
+- Plain English: Credential used to call REST API endpoints.
+- Why it matters: Enables scripted data pulls from monitoring platforms.
 - Example: Fetch instance health metrics daily.
 - Common beginner mistake: Storing token in source code.
 
 ### Caching layer
 - Plain English: Intermediate database layer to reduce repeated API calls.
 - Why it matters: Improves dashboard speed and source-system stability.
-- Example: Load Orion and DPA snapshots into MSSQL cache tables.
+- Example: Load API snapshots into database cache tables.
 - Common beginner mistake: Querying live APIs directly for every dashboard request.
 
 ### Service account
@@ -142,8 +136,8 @@ Use this file anytime you see unknown terms.
 ## Primary Sources
 - [Python glossary and tutorial](https://docs.python.org/3/tutorial/)
 - [PyPA guide](https://packaging.python.org/en/latest/tutorials/installing-packages/)
-- [SolarWinds OrionSDK](https://github.com/solarwinds/OrionSDK)
-- [SolarWinds DPA docs](https://documentation.solarwinds.com/en/success_center/dpa/content/dpa_documentation.htm)
+- [requests library](https://docs.python-requests.org/en/latest/)
+- [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
 
 ## Optional Resources
 - [Python Tutor](https://pythontutor.com/)

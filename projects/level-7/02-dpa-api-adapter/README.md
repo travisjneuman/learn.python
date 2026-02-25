@@ -1,4 +1,4 @@
-# Level 7 / Project 02 - DPA API Adapter
+# Level 7 / Project 02 - Monitoring API Adapter
 Home: [README](../../../README.md)
 
 ## Focus

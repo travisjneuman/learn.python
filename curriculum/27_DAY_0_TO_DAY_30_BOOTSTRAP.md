@@ -53,7 +53,7 @@ hello from python
 
 Platform rule for this 30-day bootstrap:
 - You can complete Days 0 to 30 on Windows, macOS, Linux, Android, or iOS.
-- For later enterprise phases (SQL drivers, SolarWinds ingestion, deployment), switch to Windows/macOS/Linux.
+- For later phases (SQL drivers, API ingestion, deployment), switch to Windows/macOS/Linux.
 
 ## Days 4-7 (first script + first test)
 ```bash

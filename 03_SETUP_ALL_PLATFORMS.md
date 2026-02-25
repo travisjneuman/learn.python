@@ -16,7 +16,7 @@ Home: [README](./README.md)
 - One device with internet access.
 - Permission to install apps on your device.
 - 45 to 90 minutes for first-time setup.
-- For enterprise labs later in this plan: SQL-auth credentials to MSSQL (separate from Windows/M365 SSO is fine).
+- For database labs later in this plan: database credentials (SQLite works locally with no setup; PostgreSQL for production practice).
 
 ## Step-by-step lab pack
 
@@ -27,7 +27,7 @@ Use one of these paths:
 
 Important:
 - You can learn basics on mobile.
-- For advanced enterprise work (drivers, ETL jobs, dashboards, CI), desktop is required.
+- For advanced work (drivers, ETL jobs, dashboards, CI), desktop is required.
 
 ### Step 1 - Install Python
 

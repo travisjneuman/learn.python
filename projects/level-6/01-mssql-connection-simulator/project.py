@@ -1,4 +1,4 @@
-"""Level 6 project: MSSQL Connection Simulator.
+"""Level 6 project: SQL Connection Simulator.
 
 Heavily commented intermediate template:
 - structured logging,
@@ -19,7 +19,7 @@ import logging
 from pathlib import Path
 
 PROJECT_LEVEL = 6
-PROJECT_TITLE = "MSSQL Connection Simulator"
+PROJECT_TITLE = "SQL Connection Simulator"
 PROJECT_FOCUS = "connection config and retry patterns"
 
 

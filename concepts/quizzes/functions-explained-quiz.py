@@ -75,7 +75,7 @@ def run_quiz():
     else:
         print("Incorrect. The answer is b) parameter.")
         print("In the definition, it is a parameter. When you call")
-        print("greet('Travis'), 'Travis' is the argument.")
+        print("greet('Alice'), 'Alice' is the argument.")
     print()
 
     # Question 4
@@ -104,7 +104,7 @@ def run_quiz():
     # Question 5
     print("Question 5/7: What is wrong with this code?")
     print()
-    print('  greet("Travis")')
+    print('  greet("Alice")')
     print()
     print("  def greet(name):")
     print('      return f"Hello, {name}!"')
