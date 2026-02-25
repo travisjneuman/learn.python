@@ -55,6 +55,8 @@ Open [START_HERE.md](./START_HERE.md) and follow the guide. You'll be writing Py
 
 Never used a terminal before? Start with [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md) — it explains everything from scratch.
 
+Not sure how to use this curriculum? Read the [Getting Started Guide](./GETTING_STARTED.md). Have questions? Check the [FAQ](./FAQ.md).
+
 ---
 
 ## 🗺️ Curriculum Roadmap
@@ -162,8 +164,8 @@ One quiz per concept guide. Run them from the terminal:
 python concepts/quizzes/what-is-a-variable-quiz.py
 ```
 
-### Flashcards (7 decks)
-Spaced repetition cards using a Leitner box system. Cards you get right appear less often. Cards you miss come back immediately.
+### Flashcards (16 decks)
+Spaced repetition cards using a Leitner box system. Cards you get right appear less often. Cards you miss come back immediately. Decks cover all 13 levels plus 4 expansion modules.
 ```bash
 python practice/flashcards/review-runner.py
 ```
@@ -297,7 +299,22 @@ ruff check .
 
 Contributions are welcome. If you find a typo, a broken link, a test that could be better, or want to add a project — open an issue or submit a pull request.
 
-Please keep contributions consistent with the curriculum's style: plain language, hands-on first, no jargon without explanation.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for community standards.
+
+---
+
+## 📋 Additional Resources
+
+| Document | Description |
+|----------|-------------|
+| [Getting Started Guide](./GETTING_STARTED.md) | How to use this curriculum, time estimates, pacing suggestions |
+| [FAQ](./FAQ.md) | Common questions from new learners |
+| [Curriculum Map](./CURRICULUM_MAP.md) | Visual dependency diagram and projects-at-a-glance table |
+| [Validation](./VALIDATION.md) | What the CI checks do and how to run them locally |
+| [Tools Guide](./tools/README.md) | Documentation for all curriculum tools (grader, diagnostics, progress tracker) |
+| [Contributing](./CONTRIBUTING.md) | How to contribute to this project |
+| [Code of Conduct](./CODE_OF_CONDUCT.md) | Community standards |
+| [License](./LICENSE) | MIT License |
 
 ---
 
