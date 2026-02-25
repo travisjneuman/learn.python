@@ -1,0 +1,6 @@
+# Dependencies for the First Dockerfile project.
+# This file is copied into the Docker image and used by pip install.
+# Keeping it separate from the module-level requirements.txt means the
+# Docker image only installs what this specific app needs.
+fastapi>=0.109
+uvicorn[standard]>=0.27

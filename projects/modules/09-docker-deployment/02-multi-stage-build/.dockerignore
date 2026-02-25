@@ -1,0 +1,65 @@
+# ============================================================================
+# .dockerignore — Files to exclude from the Docker build context
+# ============================================================================
+# When you run "docker build", Docker sends your entire project directory
+# (the "build context") to the Docker daemon. The .dockerignore file tells
+# Docker which files to skip. This:
+#
+# 1. Reduces build context size (faster builds).
+# 2. Prevents sensitive or unnecessary files from ending up in the image.
+# 3. Avoids invalidating Docker layer caches with irrelevant file changes.
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Python bytecode — generated at runtime, not needed in the image.
+# __pycache__ directories contain .pyc files that Python creates when it
+# imports a module. They are platform-specific and should be regenerated
+# inside the container.
+# --------------------------------------------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+
+# --------------------------------------------------------------------------
+# Virtual environment — the Docker image builds its own.
+# Including a local .venv would waste hundreds of megabytes and the packages
+# might not be compatible with the container's operating system.
+# --------------------------------------------------------------------------
+.venv/
+venv/
+env/
+
+# --------------------------------------------------------------------------
+# Git history — not needed at runtime and can be very large.
+# --------------------------------------------------------------------------
+.git/
+.gitignore
+
+# --------------------------------------------------------------------------
+# IDE and editor files — configuration specific to your machine.
+# --------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --------------------------------------------------------------------------
+# Data and log files — often large and environment-specific.
+# --------------------------------------------------------------------------
+data/
+*.log
+
+# --------------------------------------------------------------------------
+# Docker-related files — no need to copy Dockerfiles into the image.
+# --------------------------------------------------------------------------
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+.dockerignore
+
+# --------------------------------------------------------------------------
+# Documentation — not needed in the runtime image.
+# --------------------------------------------------------------------------
+README.md
+notes.md
+*.md

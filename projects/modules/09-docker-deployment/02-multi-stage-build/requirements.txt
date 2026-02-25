@@ -1,0 +1,3 @@
+# Dependencies for the multi-stage build project.
+fastapi>=0.109
+uvicorn[standard]>=0.27

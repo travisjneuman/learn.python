@@ -1,0 +1,8 @@
+# Dependencies for the Docker Compose project.
+# psycopg2-binary is the PostgreSQL driver that SQLAlchemy uses to connect
+# to PostgreSQL. The "-binary" version includes pre-compiled C extensions
+# so you do not need to install PostgreSQL development headers.
+fastapi>=0.109
+uvicorn[standard]>=0.27
+sqlalchemy>=2.0
+psycopg2-binary>=2.9

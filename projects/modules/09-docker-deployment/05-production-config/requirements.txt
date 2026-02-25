@@ -1,0 +1,5 @@
+# Dependencies for the production config project.
+fastapi>=0.109
+uvicorn[standard]>=0.27
+sqlalchemy>=2.0
+psycopg2-binary>=2.9

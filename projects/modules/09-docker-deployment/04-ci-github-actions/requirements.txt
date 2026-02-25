@@ -1,0 +1,7 @@
+# Dependencies for the CI pipeline project.
+# Includes ruff for linting, pytest for testing, and httpx for TestClient.
+fastapi>=0.109
+uvicorn[standard]>=0.27
+httpx>=0.27
+pytest>=8.0
+ruff>=0.3

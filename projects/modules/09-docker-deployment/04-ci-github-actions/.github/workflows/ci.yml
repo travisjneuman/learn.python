@@ -1,0 +1,171 @@
+# ============================================================================
+# ci.yml — GitHub Actions CI Pipeline
+# ============================================================================
+# This workflow runs automatically when you push code to GitHub. It performs
+# three steps: lint the code, run the tests, and build a Docker image.
+# If any step fails, the workflow stops and GitHub shows a red X on the commit.
+#
+# GitHub Actions workflows live in .github/workflows/ and are written in YAML.
+# GitHub detects them automatically — you do not need to enable anything.
+#
+# View results: Go to your repository on GitHub and click the "Actions" tab.
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# name: a human-readable name for this workflow.
+# This appears in the GitHub Actions UI.
+# --------------------------------------------------------------------------
+name: CI Pipeline
+
+# --------------------------------------------------------------------------
+# on: defines when this workflow runs.
+#
+# push: runs when you push commits to any branch.
+# pull_request: runs when someone opens or updates a pull request.
+#
+# You can restrict to specific branches:
+#   on:
+#     push:
+#       branches: [main]
+# --------------------------------------------------------------------------
+on:
+  push:
+    # Run on pushes to any branch.
+    branches: ["*"]
+  pull_request:
+    # Run on pull requests targeting main.
+    branches: [main]
+
+# --------------------------------------------------------------------------
+# jobs: defines the tasks that run in this workflow.
+# Each job runs in a fresh virtual machine (runner).
+# Jobs run in parallel by default. Use "needs" to run them sequentially.
+# --------------------------------------------------------------------------
+jobs:
+
+  # ========================================================================
+  # Job 1: lint
+  # ========================================================================
+  # Runs ruff (a fast Python linter) to catch style issues and common bugs.
+  # Linting is fast, so running it first catches simple mistakes quickly.
+  # ========================================================================
+  lint:
+    # --------------------------------------------------------------------
+    # runs-on: which operating system to use.
+    # ubuntu-latest is the most common choice. GitHub provides free runners
+    # for public repositories.
+    # --------------------------------------------------------------------
+    runs-on: ubuntu-latest
+
+    # --------------------------------------------------------------------
+    # steps: the sequence of commands to run in this job.
+    # Each step is either a pre-built action (uses:) or a shell command (run:).
+    # --------------------------------------------------------------------
+    steps:
+      # ------------------------------------------------------------------
+      # Step 1: Check out the repository code.
+      # actions/checkout is a pre-built action maintained by GitHub.
+      # Without this step, the runner has no access to your code.
+      # ------------------------------------------------------------------
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # Step 2: Set up Python.
+      # actions/setup-python installs a specific Python version on the runner.
+      # This ensures your code is tested with the Python version you specify,
+      # not whatever version happens to be pre-installed.
+      # ------------------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ------------------------------------------------------------------
+      # Step 3: Install the linter.
+      # We only need ruff for this job, not the full requirements.txt.
+      # ------------------------------------------------------------------
+      - name: Install ruff
+        run: pip install ruff
+
+      # ------------------------------------------------------------------
+      # Step 4: Run the linter.
+      # "ruff check ." scans all Python files in the current directory.
+      # If ruff finds any issues, this step fails and the job fails.
+      # ------------------------------------------------------------------
+      - name: Run ruff linter
+        run: ruff check .
+
+  # ========================================================================
+  # Job 2: test
+  # ========================================================================
+  # Runs the pytest test suite. This catches bugs and regressions.
+  # The "needs: lint" line means this job waits for linting to pass first.
+  # There is no point running tests if the code has lint errors.
+  # ========================================================================
+  test:
+    runs-on: ubuntu-latest
+
+    # --------------------------------------------------------------------
+    # needs: run this job only after the "lint" job succeeds.
+    # If linting fails, the test job is skipped.
+    # --------------------------------------------------------------------
+    needs: lint
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ------------------------------------------------------------------
+      # Install all project dependencies.
+      # Tests need FastAPI, httpx, and pytest.
+      # ------------------------------------------------------------------
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ------------------------------------------------------------------
+      # Run the test suite.
+      # -v (verbose) shows each test name and its pass/fail status.
+      # ------------------------------------------------------------------
+      - name: Run tests
+        run: pytest tests/ -v
+
+  # ========================================================================
+  # Job 3: build
+  # ========================================================================
+  # Builds a Docker image to verify the Dockerfile is valid and the
+  # application can be packaged. This catches Dockerfile errors before
+  # you try to deploy.
+  #
+  # This job runs after tests pass (needs: test).
+  # ========================================================================
+  build:
+    runs-on: ubuntu-latest
+
+    # --------------------------------------------------------------------
+    # needs: run only after tests pass.
+    # The chain is: lint → test → build.
+    # --------------------------------------------------------------------
+    needs: test
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # Build the Docker image.
+      # -t ci-app:latest tags the image with a name and tag.
+      # The "." at the end is the build context (current directory).
+      #
+      # We do not push the image anywhere — this step just verifies that
+      # the Dockerfile builds successfully. In a real pipeline, you would
+      # push to a container registry (Docker Hub, GitHub Container Registry,
+      # AWS ECR, etc.).
+      # ------------------------------------------------------------------
+      - name: Build Docker image
+        run: docker build -t ci-app:latest .

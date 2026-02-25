@@ -1,0 +1,127 @@
+# ============================================================================
+# docker-compose.yml — Multi-Service Application Stack
+# ============================================================================
+# Docker Compose lets you define and run multi-container applications in a
+# single YAML file. Instead of running separate "docker run" commands for
+# each service, you run "docker compose up" and everything starts together.
+#
+# This file defines two services:
+#   1. web — your FastAPI application (built from the Dockerfile)
+#   2. db  — a PostgreSQL database (pulled from Docker Hub)
+#
+# Commands:
+#   docker compose up --build     Start both services (rebuild the web image)
+#   docker compose up -d          Start in detached mode (background)
+#   docker compose down           Stop and remove containers
+#   docker compose down -v        Stop, remove containers, AND delete volumes
+#   docker compose logs web       View logs for the web service
+#   docker compose logs db        View logs for the database service
+#   docker compose ps             List running services
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# services: defines each container in your application stack.
+# Each service gets its own container, network alias, and configuration.
+# --------------------------------------------------------------------------
+services:
+
+  # ========================================================================
+  # Service 1: web — the FastAPI application
+  # ========================================================================
+  web:
+    # ----------------------------------------------------------------------
+    # build: tells Compose to build the image from the Dockerfile in the
+    # current directory (.) instead of pulling a pre-built image.
+    # Every time you run "docker compose up --build", Compose rebuilds
+    # the image to include your latest code changes.
+    # ----------------------------------------------------------------------
+    build: .
+
+    # ----------------------------------------------------------------------
+    # ports: maps host ports to container ports.
+    # "8000:8000" means port 8000 on your machine forwards to port 8000
+    # in the container. You access the app at http://localhost:8000.
+    # ----------------------------------------------------------------------
+    ports:
+      - "8000:8000"
+
+    # ----------------------------------------------------------------------
+    # environment: sets environment variables inside the container.
+    # DATABASE_URL tells the app how to connect to the database.
+    #
+    # The hostname "db" matches the service name of the database below.
+    # Docker Compose creates a network and registers each service name
+    # as a DNS hostname. So "db" resolves to the database container's
+    # IP address automatically.
+    #
+    # Format: postgresql://username:password@hostname:port/database_name
+    # ----------------------------------------------------------------------
+    environment:
+      - DATABASE_URL=postgresql://appuser:apppassword@db:5432/appdb
+
+    # ----------------------------------------------------------------------
+    # depends_on: controls startup order.
+    # The web service starts AFTER the db service. However, "depends_on"
+    # only waits for the container to start, not for PostgreSQL to be
+    # ready to accept connections. In production you would add a health
+    # check or a wait script.
+    # ----------------------------------------------------------------------
+    depends_on:
+      - db
+
+  # ========================================================================
+  # Service 2: db — PostgreSQL database
+  # ========================================================================
+  db:
+    # ----------------------------------------------------------------------
+    # image: pulls a pre-built image from Docker Hub.
+    # postgres:16 is the official PostgreSQL 16 image.
+    # Unlike the web service, we do not build this image — we use it as-is.
+    # ----------------------------------------------------------------------
+    image: postgres:16
+
+    # ----------------------------------------------------------------------
+    # environment: configures the PostgreSQL container.
+    # These environment variables are specific to the postgres image:
+    #
+    # POSTGRES_USER     — creates a database user with this name.
+    # POSTGRES_PASSWORD — sets the password for that user.
+    # POSTGRES_DB       — creates a database with this name.
+    #
+    # These values must match the DATABASE_URL in the web service above.
+    # ----------------------------------------------------------------------
+    environment:
+      - POSTGRES_USER=appuser
+      - POSTGRES_PASSWORD=apppassword
+      - POSTGRES_DB=appdb
+
+    # ----------------------------------------------------------------------
+    # volumes: persists data outside the container.
+    # Without a volume, all database data is lost when the container stops.
+    # "pgdata:/var/lib/postgresql/data" maps the named volume "pgdata"
+    # to PostgreSQL's data directory inside the container.
+    #
+    # Named volumes survive "docker compose down" but are deleted by
+    # "docker compose down -v" (the -v flag removes volumes).
+    # ----------------------------------------------------------------------
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    # ----------------------------------------------------------------------
+    # ports: expose PostgreSQL on the host for debugging.
+    # "5432:5432" lets you connect to the database from your host machine
+    # using tools like psql or pgAdmin. In production you would NOT expose
+    # the database port — only the web service needs to reach it, and
+    # Docker networking handles that internally.
+    # ----------------------------------------------------------------------
+    ports:
+      - "5432:5432"
+
+# --------------------------------------------------------------------------
+# volumes: declares named volumes.
+# Named volumes are managed by Docker and persist across container restarts.
+# The "pgdata" volume stores PostgreSQL data files. Docker stores the actual
+# data in a directory it manages (usually /var/lib/docker/volumes/ on Linux).
+# --------------------------------------------------------------------------
+volumes:
+  pgdata:

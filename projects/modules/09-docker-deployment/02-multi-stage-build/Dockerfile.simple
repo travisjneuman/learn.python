@@ -1,0 +1,35 @@
+# ============================================================================
+# Dockerfile.simple — Single-Stage Build (for comparison)
+# ============================================================================
+# This is the straightforward approach from Project 01. It works, but it
+# produces a larger image because it includes pip's build tools and cached
+# files. Compare the size of this image to the multi-stage version.
+#
+# Build:
+#   docker build -f Dockerfile.simple -t single-stage-app .
+#
+# Check the image size:
+#   docker images single-stage-app
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Single stage — everything happens in one image.
+# The final image contains pip, setuptools, wheel, and all the build
+# artifacts that were needed during installation but are not needed at
+# runtime.
+# --------------------------------------------------------------------------
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+# Install dependencies. Even with --no-cache-dir, the image still contains
+# pip itself and other build tools that waste space.
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

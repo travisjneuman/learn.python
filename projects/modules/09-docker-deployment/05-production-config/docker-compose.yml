@@ -1,0 +1,129 @@
+# ============================================================================
+# docker-compose.yml — Production-Like Configuration
+# ============================================================================
+# This docker-compose file demonstrates production best practices:
+#   - Health checks for both services
+#   - Restart policies for automatic recovery
+#   - Resource limits to prevent runaway containers
+#   - Environment variables for all configuration
+#   - Named volumes for data persistence
+#
+# Commands:
+#   docker compose up --build     Start both services
+#   docker compose up -d          Start in background
+#   docker compose ps             Check health status
+#   docker compose logs -f web    Follow web service logs
+#   docker compose down           Stop everything
+# ============================================================================
+
+services:
+
+  # ========================================================================
+  # Web service — production-ready FastAPI application
+  # ========================================================================
+  web:
+    build: .
+
+    ports:
+      - "8000:8000"
+
+    # ----------------------------------------------------------------------
+    # environment: all configuration is passed via environment variables.
+    # This means the same Docker image works in development, staging, and
+    # production — only the environment variables change.
+    # ----------------------------------------------------------------------
+    environment:
+      - APP_NAME=production-app
+      - APP_VERSION=1.0.0
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=postgresql://appuser:apppassword@db:5432/appdb
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+      - WORKERS=2
+
+    # ----------------------------------------------------------------------
+    # depends_on with health check condition.
+    # Unlike basic depends_on (which just waits for the container to start),
+    # this waits until the database passes its health check. This prevents
+    # the web service from starting before PostgreSQL is ready to accept
+    # connections.
+    # ----------------------------------------------------------------------
+    depends_on:
+      db:
+        condition: service_healthy
+
+    # ----------------------------------------------------------------------
+    # restart: automatic restart policy.
+    # "unless-stopped" restarts the container if it crashes, but does NOT
+    # restart it if you manually stop it with "docker compose stop".
+    #
+    # Options:
+    #   "no"             — never restart (default)
+    #   "always"         — restart no matter what
+    #   "on-failure"     — restart only on non-zero exit code
+    #   "unless-stopped" — restart unless manually stopped
+    # ----------------------------------------------------------------------
+    restart: unless-stopped
+
+    # ----------------------------------------------------------------------
+    # deploy.resources: limit CPU and memory usage.
+    # Without limits, a container can consume all available resources on the
+    # host, affecting other containers and the host OS.
+    #
+    # limits: the maximum resources the container can use.
+    # reservations: the minimum resources guaranteed to the container.
+    #
+    # Note: deploy.resources requires Docker Compose v2 and may not work
+    # with older docker-compose (v1) configurations.
+    # ----------------------------------------------------------------------
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+
+  # ========================================================================
+  # Database service — PostgreSQL with health check
+  # ========================================================================
+  db:
+    image: postgres:16
+
+    environment:
+      - POSTGRES_USER=appuser
+      - POSTGRES_PASSWORD=apppassword
+      - POSTGRES_DB=appdb
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    # ----------------------------------------------------------------------
+    # healthcheck: verify PostgreSQL is ready to accept connections.
+    # "pg_isready" is a PostgreSQL utility that checks if the server is
+    # accepting connections. The -U flag specifies which user to check.
+    #
+    # The web service's depends_on uses this health check to wait until
+    # the database is actually ready, not just started.
+    # ----------------------------------------------------------------------
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    restart: unless-stopped
+
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+volumes:
+  pgdata:
