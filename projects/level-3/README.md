@@ -1,6 +1,8 @@
 # Level 3 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~25 hours**
+
 ## Level objective
 Adopt junior engineering structure: modules, logging, and test-first habits.
 

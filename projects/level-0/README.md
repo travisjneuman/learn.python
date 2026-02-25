@@ -1,6 +1,8 @@
 # Level 0 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~15 hours**
+
 ## Level objective
 Build confidence running and reading basic Python scripts.
 

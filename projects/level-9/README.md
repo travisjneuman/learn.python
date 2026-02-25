@@ -1,6 +1,8 @@
 # Level 9 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~35 hours**
+
 ## Level objective
 Think architecturally with governance, reliability modeling, and rollout strategy.
 

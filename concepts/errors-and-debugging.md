@@ -89,16 +89,14 @@ if True:
 
 ## Practice This
 
+- [Level 00 / 08 Making Decisions](../projects/level-00-absolute-beginner/08-making-decisions/)
+- [Level 00 / 15 Putting It Together](../projects/level-00-absolute-beginner/15-putting-it-together/)
+- [Level 0 / 07 First File Reader](../projects/level-0/07-first-file-reader/README.md)
 - [Level 1 / 01 Input Validator Lab](../projects/level-1/01-input-validator-lab/README.md)
+- [Level 1 / 08 Path Exists Checker](../projects/level-1/08-path-exists-checker/README.md)
 - [Level 1 / 11 Command Dispatcher](../projects/level-1/11-command-dispatcher/README.md)
-- [Level 10 / 01 Enterprise Python Blueprint](../projects/level-10/01-enterprise-python-blueprint/README.md)
-- [Level 10 / 02 Autonomous Run Orchestrator](../projects/level-10/02-autonomous-run-orchestrator/README.md)
-- [Level 10 / 03 Policy As Code Validator](../projects/level-10/03-policy-as-code-validator/README.md)
-- [Level 10 / 04 Multi Tenant Data Guard](../projects/level-10/04-multi-tenant-data-guard/README.md)
-- [Level 10 / 05 Compliance Evidence Builder](../projects/level-10/05-compliance-evidence-builder/README.md)
-- [Level 10 / 06 Resilience Chaos Workbench](../projects/level-10/06-resilience-chaos-workbench/README.md)
-- [Level 10 / 07 High Risk Change Gate](../projects/level-10/07-high-risk-change-gate/README.md)
-- [Level 10 / 08 Zero Downtime Migration Lab](../projects/level-10/08-zero-downtime-migration-lab/README.md)
+- [Level 2 / 04 Error Safe Divider](../projects/level-2/04-error-safe-divider/README.md)
+- [Level 2 / 11 Retry Loop Practice](../projects/level-2/11-retry-loop-practice/README.md)
 
 **Quick check:** [Take the quiz](quizzes/errors-and-debugging-quiz.py)
 

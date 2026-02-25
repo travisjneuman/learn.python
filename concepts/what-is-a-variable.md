@@ -61,10 +61,10 @@ print(score)     # Now it works
 
 ## Practice This
 
-- [Module: 04 Fastapi Web / 01 Hello Fastapi](../projects/modules/04-fastapi-web/01-hello-fastapi/README.md)
-- [Module: 05 Async Python / 04 Producer Consumer](../projects/modules/05-async-python/04-producer-consumer/README.md)
-- [Module: 07 Data Analysis / 01 Pandas Basics](../projects/modules/07-data-analysis/01-pandas-basics/README.md)
-- [Module: 09 Docker Deployment / 03 Docker Compose](../projects/modules/09-docker-deployment/03-docker-compose/README.md)
+- [Level 00 / 04 Variables](../projects/level-00-absolute-beginner/04-variables/)
+- [Level 00 / 05 Numbers and Math](../projects/level-00-absolute-beginner/05-numbers-and-math/)
+- [Level 00 / 06 Strings and Text](../projects/level-00-absolute-beginner/06-strings-and-text/)
+- [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
 
 **Quick check:** [Take the quiz](quizzes/what-is-a-variable-quiz.py)
 

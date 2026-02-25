@@ -1,6 +1,8 @@
 # Level 1 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~20 hours**
+
 ## Level objective
 Strengthen input handling, branching logic, and simple file workflows.
 

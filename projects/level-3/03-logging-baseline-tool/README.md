@@ -29,9 +29,10 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--log-level` flag that controls the minimum level written to the log file (DEBUG, INFO, WARNING, ERROR).
+2. Add timestamps in ISO 8601 format to each log line.
+3. Write logs to both a file and stdout simultaneously (tee pattern).
+4. Re-run script and tests.
 
 ## Break it (required)
 1. Use malformed or edge-case input.

@@ -1,6 +1,8 @@
 # Level 5 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~25 hours**
+
 ## Level objective
 Build robust automation behavior with stronger reliability and reporting.
 

@@ -29,9 +29,10 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add support for a second settings file that overrides values from the first (e.g., `defaults.json` + `local.json`).
+2. Handle malformed JSON gracefully -- print what went wrong and fall back to defaults.
+3. Add a `--validate` flag that checks whether all required keys exist without running the main logic.
+4. Re-run script and tests.
 
 ## Break it (required)
 1. Use malformed or edge-case input.

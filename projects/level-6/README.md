@@ -1,6 +1,8 @@
 # Level 6 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~30 hours**
+
 ## Level objective
 Design SQL-friendly ETL patterns with idempotency and operational safeguards.
 

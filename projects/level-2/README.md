@@ -1,6 +1,8 @@
 # Level 2 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~20 hours**
+
 ## Level objective
 Practice small data pipelines with dictionaries, validation, and transformations.
 

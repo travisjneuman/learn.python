@@ -93,7 +93,7 @@ items = [item for item in items if item != "remove_me"]
 - [Level 1 / 05 Csv First Reader](../projects/level-1/05-csv-first-reader/README.md)
 - [Level 1 / 09 Json Settings Loader](../projects/level-1/09-json-settings-loader/README.md)
 - [Level 1 / 12 File Extension Counter](../projects/level-1/12-file-extension-counter/README.md)
-- [Level 10 / 11 Production Readiness Director](../projects/level-10/11-production-readiness-director/README.md)
+- [Level 1 / 14 Basic Expense Tracker](../projects/level-1/14-basic-expense-tracker/README.md)
 - [Level 2 / 01 Dictionary Lookup Service](../projects/level-2/01-dictionary-lookup-service/README.md)
 - [Level 2 / 02 Nested Data Flattener](../projects/level-2/02-nested-data-flattener/README.md)
 

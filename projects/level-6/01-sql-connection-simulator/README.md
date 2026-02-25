@@ -29,9 +29,10 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add connection pooling simulation -- reuse connections instead of creating new ones each time.
+2. Add a `--timeout` flag that sets the maximum seconds to wait for a connection before failing.
+3. Log each connection attempt with timestamp, status (success/fail), and retry count.
+4. Re-run script and tests.
 
 ## Break it (required)
 1. Use malformed or edge-case input.

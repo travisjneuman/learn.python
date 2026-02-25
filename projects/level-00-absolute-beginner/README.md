@@ -1,6 +1,8 @@
 # Level 00 — Absolute Beginner
 Home: [README](../../README.md)
 
+**Estimated time: ~5 hours**
+
 ## Who this is for
 You have never written a line of code in your life. You may not know what a "terminal" is. That is completely fine. This level will get you there.
 

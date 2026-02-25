@@ -1,6 +1,8 @@
 # Level 4 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~25 hours**
+
 ## Level objective
 Handle real-world messy data safely with repeatable tooling patterns.
 

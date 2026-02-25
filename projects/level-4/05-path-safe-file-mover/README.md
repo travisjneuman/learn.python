@@ -29,9 +29,10 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a `--dry-run` flag that prints the planned moves without actually moving files.
+2. Handle filename collisions by appending a counter (e.g., `report_1.csv`, `report_2.csv`) instead of overwriting.
+3. Create a move log (JSON or CSV) recording source, destination, timestamp, and success/failure for each file.
+4. Re-run script and tests.
 
 ## Break it (required)
 1. Use malformed or edge-case input.

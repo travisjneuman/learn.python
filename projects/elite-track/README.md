@@ -1,6 +1,8 @@
 # Elite Track Projects (World-Class Full-Stack Engineering)
 Home: [README](../../README.md)
 
+**Estimated time: ~40 hours**
+
 This track extends the level-0 to level-10 ladder with advanced, systems-focused projects.
 
 ## Who should run this

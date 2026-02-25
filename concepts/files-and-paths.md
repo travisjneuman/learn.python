@@ -105,7 +105,7 @@ path = Path("C:/Users/alice/new_file.txt")  # Forward slashes work too
 
 ## Practice This
 
-- [Module: Elite Track / 05 Performance Profiler Workbench](../projects/elite-track/05-performance-profiler-workbench/README.md)
+- [Level 00 / 14 Reading Files](../projects/level-00-absolute-beginner/14-reading-files/)
 - [Level 0 / 01 Terminal Hello Lab](../projects/level-0/01-terminal-hello-lab/README.md)
 - [Level 0 / 02 Calculator Basics](../projects/level-0/02-calculator-basics/README.md)
 - [Level 0 / 03 Temperature Converter](../projects/level-0/03-temperature-converter/README.md)

@@ -1,6 +1,8 @@
 # Level 7 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~30 hours**
+
 ## Level objective
 Integrate multi-source telemetry with contracts, caching, and policy guardrails.
 

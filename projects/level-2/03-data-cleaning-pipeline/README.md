@@ -29,9 +29,10 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add a cleaning step that normalizes phone numbers to a consistent format (e.g., strip dashes and parentheses).
+2. Write rejected/invalid rows to a separate `quarantine.csv` file with a reason column explaining why each was rejected.
+3. Add a `--dry-run` flag that shows what would be cleaned without writing the output file.
+4. Re-run script and tests.
 
 ## Break it (required)
 1. Use malformed or edge-case input.

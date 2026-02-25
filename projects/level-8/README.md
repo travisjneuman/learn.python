@@ -1,6 +1,8 @@
 # Level 8 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~30 hours**
+
 ## Level objective
 Harden dashboard/data services for performance, resilience, and observability.
 

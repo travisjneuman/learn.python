@@ -1,6 +1,8 @@
 # Level 10 Projects
 Home: [README](../../README.md)
 
+**Estimated time: ~35 hours**
+
 ## Level objective
 Operate at SME level with enterprise controls, mentorship, and platform strategy.
 

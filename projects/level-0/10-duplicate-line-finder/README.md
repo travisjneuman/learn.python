@@ -29,9 +29,10 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add one reliability or readability improvement.
-2. Add one validation or guard clause.
-3. Re-run script and tests.
+1. Add case-insensitive duplicate detection (so "Hello" and "hello" count as duplicates).
+2. Show the line numbers where each duplicate appears, not just the duplicate text.
+3. Add a `--ignore-blank` flag that skips empty lines when checking for duplicates.
+4. Re-run script and tests.
 
 ## Break it (required)
 1. Use malformed or edge-case input.
