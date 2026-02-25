@@ -1,0 +1,95 @@
+# Functions Explained
+
+A function is a reusable block of code with a name. You define it once, then call it whenever you need it.
+
+## Defining a function
+
+```python
+def greet(name):
+    return f"Hello, {name}!"
+```
+
+- `def` means "I am defining a function"
+- `greet` is the name you chose
+- `name` is a parameter — a value the function expects to receive
+- `return` sends a value back to whoever called the function
+
+## Calling a function
+
+```python
+message = greet("Travis")
+print(message)  # Hello, Travis!
+
+# Or use it directly
+print(greet("Alice"))  # Hello, Alice!
+```
+
+## Functions without return
+
+Some functions do something (like printing) but do not return a value:
+
+```python
+def say_hello():
+    print("Hello!")
+
+say_hello()  # Prints: Hello!
+```
+
+If there is no `return`, the function returns `None` automatically.
+
+## Parameters and arguments
+
+**Parameters** are the names in the function definition.
+**Arguments** are the values you pass when calling.
+
+```python
+def add(a, b):     # a and b are parameters
+    return a + b
+
+add(3, 5)          # 3 and 5 are arguments
+```
+
+## Default values
+
+```python
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+greet("Travis")           # Hello, Travis!
+greet("Travis", "Hey")    # Hey, Travis!
+```
+
+## Why functions matter
+
+1. **Reuse** — write code once, use it everywhere
+2. **Organize** — break big problems into named pieces
+3. **Test** — test each piece independently
+4. **Read** — `calculate_tax(price)` is clearer than 5 lines of math
+
+## Common mistakes
+
+**Forgetting parentheses when calling:**
+```python
+greet          # This is the function OBJECT, not a call
+greet("Travis") # This CALLS the function
+```
+
+**Forgetting to return:**
+```python
+def add(a, b):
+    result = a + b
+    # Forgot to return result!
+
+total = add(3, 5)  # total is None, not 8
+```
+
+**Defining after calling:**
+```python
+greet("Travis")    # Error! greet is not defined yet
+
+def greet(name):
+    return f"Hello, {name}!"
+```
+
+## Related exercises
+- [Level 00, Exercise 13 — Functions](../projects/level-00-absolute-beginner/13-functions/)

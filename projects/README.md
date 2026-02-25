@@ -1,10 +1,11 @@
-# Projects Ladder (Level 0 -> Level 10)
+# Projects Ladder (Level 00 -> Level 10)
 Home: [README](../README.md)
 
-This ladder contains 11 levels with 15 projects per level.
-Each level now has unique project themes aligned to that skill stage.
+This ladder contains 12 levels with 15 projects/exercises per level.
+Each level has unique project themes aligned to that skill stage.
 
 ## Levels
+- [level-00-absolute-beginner](./level-00-absolute-beginner/README.md) — Start here if you have never coded before
 - [level-0](./level-0/README.md)
 - [level-1](./level-1/README.md)
 - [level-2](./level-2/README.md)

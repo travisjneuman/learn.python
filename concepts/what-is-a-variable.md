@@ -1,0 +1,58 @@
+# What is a Variable?
+
+A variable is a name that holds a value. You create it by writing a name, then `=`, then the value.
+
+```python
+name = "Travis"
+age = 30
+is_student = True
+```
+
+Think of it like a labeled jar. The label is the name. The contents are the value. You can:
+- **Look at** the contents: `print(name)` shows `Travis`
+- **Replace** the contents: `name = "Alice"` — now it holds `"Alice"`
+- **Use** the contents in calculations: `next_year = age + 1`
+
+## Rules for naming variables
+- Must start with a letter or underscore (not a number)
+- Can contain letters, numbers, and underscores
+- Case-sensitive: `Name` and `name` are different variables
+- Convention: use `lowercase_with_underscores` (called "snake_case")
+
+## Good names vs bad names
+
+```python
+# Good — describes what the value represents
+student_count = 42
+max_temperature = 98.6
+is_active = True
+
+# Bad — vague or misleading
+x = 42
+temp = 98.6  # temp... temperature? temporary?
+flag = True  # flag for what?
+```
+
+## Common mistakes
+
+**Using = instead of ==:**
+```python
+x = 5       # This STORES 5 in x
+x == 5      # This CHECKS if x equals 5 (returns True or False)
+```
+
+**Forgetting quotes for text:**
+```python
+name = Travis    # Error! Python thinks Travis is a variable name
+name = "Travis"  # Correct — quotes make it text (a string)
+```
+
+**Using a variable before creating it:**
+```python
+print(score)     # Error! score does not exist yet
+score = 100      # This line creates it
+print(score)     # Now it works
+```
+
+## Related exercises
+- [Level 00, Exercise 04 — Variables](../projects/level-00-absolute-beginner/04-variables/)

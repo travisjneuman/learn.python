@@ -3,8 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-expected_files=(
+# Root-level docs (00-15 + README + supporting files)
+root_files=(
   "README.md"
+  "00_COMPUTER_LITERACY_PRIMER.md"
   "01_ROADMAP.md"
   "02_GLOSSARY.md"
   "03_SETUP_ALL_PLATFORMS.md"
@@ -20,6 +22,10 @@ expected_files=(
   "13_ENTERPRISE_SAMPLE_SCHEMAS.md"
   "14_NAVIGATION_AND_STUDY_WORKFLOW.md"
   "15_NEXT_LEVEL_EXPANSION_PLAN.md"
+)
+
+# Curriculum-level docs (16-50, in curriculum/ subdirectory)
+curriculum_files=(
   "16_LEARNER_PROFILE_AND_PLACEMENT.md"
   "17_ASSESSMENT_AND_RUBRICS.md"
   "18_REMEDIATION_PLAYBOOK.md"
@@ -65,7 +71,8 @@ normalize_line() {
 
 expected_next() {
   case "$1" in
-    README.md) echo "01_ROADMAP.md" ;;
+    README.md) echo "00_COMPUTER_LITERACY_PRIMER.md" ;;
+    00_COMPUTER_LITERACY_PRIMER.md) echo "01_ROADMAP.md" ;;
     01_ROADMAP.md) echo "02_GLOSSARY.md" ;;
     02_GLOSSARY.md) echo "03_SETUP_ALL_PLATFORMS.md" ;;
     03_SETUP_ALL_PLATFORMS.md) echo "04_FOUNDATIONS.md" ;;
@@ -161,8 +168,8 @@ SECTIONS
   esac
 }
 
-# File existence and home-link checks.
-for file in "${expected_files[@]}"; do
+# Check root-level files exist
+for file in "${root_files[@]}"; do
   path="$ROOT_DIR/$file"
   if [[ ! -f "$path" ]]; then
     echo "missing root doc: $file"
@@ -170,10 +177,13 @@ for file in "${expected_files[@]}"; do
     continue
   fi
 
-  home_line="$(awk 'NF{count++; if(count==2){print; exit}}' "$path" | normalize_line)"
-  if [[ "$home_line" != "Home: [README](./README.md)" ]]; then
-    echo "bad home line: $file"
-    fail=1
+  # Check home line (skip README which links to itself)
+  if [[ "$file" != "README.md" ]]; then
+    home_line="$(awk 'NF{count++; if(count==2){print; exit}}' "$path" | normalize_line)"
+    if [[ "$home_line" != "Home: [README](./README.md)" ]]; then
+      echo "bad home line: $file"
+      fail=1
+    fi
   fi
 
   # Ensure Next is the final heading.
@@ -182,11 +192,32 @@ for file in "${expected_files[@]}"; do
     echo "last heading is not ## Next: $file"
     fail=1
   fi
-
 done
 
-# Next-chain checks.
-for file in "${expected_files[@]}"; do
+# Check curriculum-level files exist
+for file in "${curriculum_files[@]}"; do
+  path="$ROOT_DIR/curriculum/$file"
+  if [[ ! -f "$path" ]]; then
+    echo "missing curriculum doc: curriculum/$file"
+    fail=1
+    continue
+  fi
+
+  home_line="$(awk 'NF{count++; if(count==2){print; exit}}' "$path" | normalize_line)"
+  if [[ "$home_line" != "Home: [README](../README.md)" ]]; then
+    echo "bad home line: curriculum/$file"
+    fail=1
+  fi
+
+  last_heading="$(rg '^## ' "$path" | tail -n1 | normalize_line || true)"
+  if [[ "$last_heading" != "## Next" ]]; then
+    echo "last heading is not ## Next: curriculum/$file"
+    fail=1
+  fi
+done
+
+# Next-chain checks for root files
+for file in "${root_files[@]}"; do
   path="$ROOT_DIR/$file"
   [[ -f "$path" ]] || continue
 
@@ -197,8 +228,14 @@ for file in "${expected_files[@]}"; do
     continue
   fi
 
-  next_target="$(tail -n +$((next_header_line + 1)) "$path" | normalize_line | rg -n '^(Go to|Return to) \[[^]]+\]\(\./[^)]+\)' | head -n1 | sed -E 's#.*\(\./([^)]+)\).*#\1#' || true)"
+  # Extract next link target (handles both ./ and ./curriculum/ prefixes)
+  next_target="$(tail -n +$((next_header_line + 1)) "$path" | normalize_line | rg -o '\]\(\./([^)]+)\)' | head -n1 | sed -E 's#\]\(\./([^)]+)\)#\1#' || true)"
   expected_target="$(expected_next "$file")"
+
+  # For 15_NEXT_LEVEL_EXPANSION_PLAN.md, the next link goes to curriculum/
+  if [[ "$file" == "15_NEXT_LEVEL_EXPANSION_PLAN.md" ]]; then
+    expected_target="curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md"
+  fi
 
   if [[ -z "$next_target" ]]; then
     echo "missing next link after ## Next: $file"
@@ -210,12 +247,45 @@ for file in "${expected_files[@]}"; do
     echo "bad next target in $file: expected $expected_target got $next_target"
     fail=1
   fi
-
 done
 
-# Source-section checks for root docs except README.
-for file in "${expected_files[@]}"; do
+# Next-chain checks for curriculum files
+for file in "${curriculum_files[@]}"; do
+  path="$ROOT_DIR/curriculum/$file"
+  [[ -f "$path" ]] || continue
+
+  next_header_line="$(rg -n '^## Next\r?$' "$path" | tail -n1 | cut -d: -f1 || true)"
+  if [[ -z "$next_header_line" ]]; then
+    echo "missing ## Next: curriculum/$file"
+    fail=1
+    continue
+  fi
+
+  next_target="$(tail -n +$((next_header_line + 1)) "$path" | normalize_line | rg -o '\]\(\./([^)]+)\)' | head -n1 | sed -E 's#\]\(\./([^)]+)\)#\1#' || true)"
+  expected_target="$(expected_next "$file")"
+
+  # Last curriculum file links back to root README
+  if [[ "$file" == "50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md" ]]; then
+    next_target="$(tail -n +$((next_header_line + 1)) "$path" | normalize_line | rg -o '\]\(\.\./([^)]+)\)' | head -n1 | sed -E 's#\]\(\.\./([^)]+)\)#\1#' || true)"
+    expected_target="README.md"
+  fi
+
+  if [[ -z "$next_target" ]]; then
+    echo "missing next link after ## Next: curriculum/$file"
+    fail=1
+    continue
+  fi
+
+  if [[ "$next_target" != "$expected_target" ]]; then
+    echo "bad next target in curriculum/$file: expected $expected_target got $next_target"
+    fail=1
+  fi
+done
+
+# Source-section checks for root docs (except README and 00_PRIMER).
+for file in "${root_files[@]}"; do
   [[ "$file" == "README.md" ]] && continue
+  [[ "$file" == "00_COMPUTER_LITERACY_PRIMER.md" ]] && continue
   path="$ROOT_DIR/$file"
   [[ -f "$path" ]] || continue
 
@@ -227,11 +297,25 @@ for file in "${expected_files[@]}"; do
     echo "missing Optional Resources: $file"
     fail=1
   fi
+done
 
+# Source-section checks for curriculum docs.
+for file in "${curriculum_files[@]}"; do
+  path="$ROOT_DIR/curriculum/$file"
+  [[ -f "$path" ]] || continue
+
+  if ! rg -n '^## Primary Sources\r?$' "$path" >/dev/null; then
+    echo "missing Primary Sources: curriculum/$file"
+    fail=1
+  fi
+  if ! rg -n '^## Optional Resources\r?$' "$path" >/dev/null; then
+    echo "missing Optional Resources: curriculum/$file"
+    fail=1
+  fi
 done
 
 # Section contract checks for 01-11.
-for file in "${expected_files[@]}"; do
+for file in "${root_files[@]}"; do
   path="$ROOT_DIR/$file"
   [[ -f "$path" ]] || continue
 
@@ -244,8 +328,8 @@ for file in "${expected_files[@]}"; do
   done < <(required_sections "$file")
 done
 
-# Stale README reference check.
-if rg -n --glob '*.md' --glob '!PythonBootcamp/**' '00_README\.md' "$ROOT_DIR" >/dev/null; then
+# Stale reference checks.
+if rg -n --glob '*.md' --glob '!_archive/**' '00_README\.md' "$ROOT_DIR" >/dev/null; then
   echo "stale 00_README.md references found"
   fail=1
 fi

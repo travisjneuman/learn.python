@@ -164,4 +164,4 @@ A learner is "SME-ready" when they can reliably:
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
 ## Next
-Go to [16_LEARNER_PROFILE_AND_PLACEMENT.md](./16_LEARNER_PROFILE_AND_PLACEMENT.md).
+Go to [16_LEARNER_PROFILE_AND_PLACEMENT.md](./curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md).

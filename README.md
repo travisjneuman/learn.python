@@ -1,7 +1,7 @@
 # Python SME Plan (Zero Experience -> Enterprise Python Builder)
 Home: [README](./README.md)
 
-Last updated: **February 16, 2026**
+Last updated: **February 24, 2026**
 
 This repository is a complete beginner-to-advanced Python learning system designed for a real enterprise environment:
 - SolarWinds Orion
@@ -10,6 +10,11 @@ This repository is a complete beginner-to-advanced Python learning system design
 - Browser-based dashboard delivery
 
 The plan is hands-on first. You will learn by building, breaking, fixing, and explaining.
+
+## Never programmed before?
+Start here: [START_HERE.md](./START_HERE.md)
+
+Or if you need to understand what a terminal and file are first: [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md)
 
 ## Cross-platform baseline (Windows, macOS, Linux, Android, iOS)
 This learning plan supports all major desktop platforms plus mobile companion paths.
@@ -45,10 +50,10 @@ In many docs and project READMEs, `<repo-root>` means:
 2. Choose your platform path (Windows, macOS, Linux, Android, or iOS).
 3. Complete install + verification until `python --version` (or equivalent) works.
 4. Create and activate `.venv` if your platform supports it.
-5. Run your first script and first `pytest` test.
+5. Run your first exercise: `python projects/level-00-absolute-beginner/01-first-steps/exercise.py`
 6. Return here and pick your learning mode.
 
-If you only do one thing today: finish Setup and commit your first working project folder.
+If you only do one thing today: finish Setup and run your first exercise.
 
 ## Click-through navigation rule (very important)
 If you want the exact intended order with zero guesswork:
@@ -83,64 +88,79 @@ Use the mode that matches how you learn best. You can switch any week.
 Do not optimize for speed. Optimize for repeatable output and understanding.
 
 ## How to use this repo (exact order)
-Full root-doc sequence (deterministic, no guesswork):
-1. [01_ROADMAP.md](./01_ROADMAP.md)
-2. [02_GLOSSARY.md](./02_GLOSSARY.md)
-3. [03_SETUP_ALL_PLATFORMS.md](./03_SETUP_ALL_PLATFORMS.md)
-4. [04_FOUNDATIONS.md](./04_FOUNDATIONS.md)
-5. [09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md)
-6. [05_AUTOMATION_FILES_EXCEL.md](./05_AUTOMATION_FILES_EXCEL.md)
-7. [06_SQL.md](./06_SQL.md)
-8. [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md)
-9. [08_DASHBOARDS.md](./08_DASHBOARDS.md)
-10. [10_CAPSTONE_PROJECTS.md](./10_CAPSTONE_PROJECTS.md)
-11. [11_CHECKLISTS.md](./11_CHECKLISTS.md)
-12. [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md)
-13. [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md)
-14. [14_NAVIGATION_AND_STUDY_WORKFLOW.md](./14_NAVIGATION_AND_STUDY_WORKFLOW.md)
-15. [15_NEXT_LEVEL_EXPANSION_PLAN.md](./15_NEXT_LEVEL_EXPANSION_PLAN.md)
-16. [16_LEARNER_PROFILE_AND_PLACEMENT.md](./16_LEARNER_PROFILE_AND_PLACEMENT.md)
-17. [17_ASSESSMENT_AND_RUBRICS.md](./17_ASSESSMENT_AND_RUBRICS.md)
-18. [18_REMEDIATION_PLAYBOOK.md](./18_REMEDIATION_PLAYBOOK.md)
-19. [19_MENTOR_GUIDE.md](./19_MENTOR_GUIDE.md)
-20. [20_CURRICULUM_CHANGELOG.md](./20_CURRICULUM_CHANGELOG.md)
-21. [21_FULL_STACK_MASTERY_PATH.md](./21_FULL_STACK_MASTERY_PATH.md)
-22. [22_SPECIALIZATION_TRACKS.md](./22_SPECIALIZATION_TRACKS.md)
-23. [23_RESOURCE_AND_CURRICULUM_MAP.md](./23_RESOURCE_AND_CURRICULUM_MAP.md)
-24. [24_MASTERY_SCORING_AND_GATES.md](./24_MASTERY_SCORING_AND_GATES.md)
-25. [25_INFINITY_MASTERY_LOOP.md](./25_INFINITY_MASTERY_LOOP.md)
-26. [26_ZERO_TO_MASTER_PLAYBOOK.md](./26_ZERO_TO_MASTER_PLAYBOOK.md)
-27. [27_DAY_0_TO_DAY_30_BOOTSTRAP.md](./27_DAY_0_TO_DAY_30_BOOTSTRAP.md)
-28. [28_LEVEL_0_TO_2_DEEP_GUIDE.md](./28_LEVEL_0_TO_2_DEEP_GUIDE.md)
-29. [29_LEVEL_3_TO_5_DEEP_GUIDE.md](./29_LEVEL_3_TO_5_DEEP_GUIDE.md)
-30. [30_LEVEL_6_TO_8_DEEP_GUIDE.md](./30_LEVEL_6_TO_8_DEEP_GUIDE.md)
-31. [31_LEVEL_9_TO_10_AND_BEYOND.md](./31_LEVEL_9_TO_10_AND_BEYOND.md)
-32. [32_DAILY_SESSION_SCRIPT.md](./32_DAILY_SESSION_SCRIPT.md)
-33. [33_WEEKLY_REVIEW_TEMPLATE.md](./33_WEEKLY_REVIEW_TEMPLATE.md)
-34. [34_FAILURE_RECOVERY_ATLAS.md](./34_FAILURE_RECOVERY_ATLAS.md)
-35. [35_CAPSTONE_BLUEPRINTS.md](./35_CAPSTONE_BLUEPRINTS.md)
-36. [36_ELITE_ENGINEERING_TRACK.md](./36_ELITE_ENGINEERING_TRACK.md)
-37. [37_QUARTERLY_EXAMS_AND_DEFENSES.md](./37_QUARTERLY_EXAMS_AND_DEFENSES.md)
-38. [38_SYSTEM_DESIGN_AND_RFCS.md](./38_SYSTEM_DESIGN_AND_RFCS.md)
-39. [39_PRODUCTION_PLATFORM_LAB.md](./39_PRODUCTION_PLATFORM_LAB.md)
-40. [40_SECURITY_COMPLIANCE_HARDENING.md](./40_SECURITY_COMPLIANCE_HARDENING.md)
-41. [41_PERFORMANCE_ENGINEERING_LAB.md](./41_PERFORMANCE_ENGINEERING_LAB.md)
-42. [42_OPEN_SOURCE_CONTRIBUTION_LANE.md](./42_OPEN_SOURCE_CONTRIBUTION_LANE.md)
-43. [43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md](./43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md)
-44. [44_SME_INTERVIEW_AND_DEBATE_BANK.md](./44_SME_INTERVIEW_AND_DEBATE_BANK.md)
-45. [45_MASTERY_TELEMETRY_AND_REMEDIATION.md](./45_MASTERY_TELEMETRY_AND_REMEDIATION.md)
-46. [46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md](./46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md)
-47. [47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md](./47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md)
-48. [48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md](./48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md)
-49. [49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md](./49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md)
-50. [50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md](./50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md)
 
-If you only have 8-10 hours/week, focus on docs 01 to 11 first, then run docs 26 to 35 as your deep step-by-step execution layer.
+### Foundation path (docs 00-15, in this directory)
+0. [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md) — what is a terminal, file, program
+1. [01_ROADMAP.md](./01_ROADMAP.md) — full program overview
+2. [02_GLOSSARY.md](./02_GLOSSARY.md) — key terms defined
+3. [03_SETUP_ALL_PLATFORMS.md](./03_SETUP_ALL_PLATFORMS.md) — install Python
+4. [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) — core Python concepts
+5. [09_QUALITY_TOOLING.md](./09_QUALITY_TOOLING.md) — Ruff, Black, pytest, logging
+6. [05_AUTOMATION_FILES_EXCEL.md](./05_AUTOMATION_FILES_EXCEL.md) — file and Excel automation
+7. [06_SQL.md](./06_SQL.md) — MSSQL and SQLAlchemy
+8. [07_SOLARWINDS_ORION.md](./07_SOLARWINDS_ORION.md) — monitoring data ingestion
+9. [08_DASHBOARDS.md](./08_DASHBOARDS.md) — Streamlit/Dash delivery
+10. [10_CAPSTONE_PROJECTS.md](./10_CAPSTONE_PROJECTS.md) — integration projects
+11. [11_CHECKLISTS.md](./11_CHECKLISTS.md) — gate verification
+12. [12_SCREENSHOT_CHECKPOINTS.md](./12_SCREENSHOT_CHECKPOINTS.md) — screenshot evidence
+13. [13_ENTERPRISE_SAMPLE_SCHEMAS.md](./13_ENTERPRISE_SAMPLE_SCHEMAS.md) — MSSQL schemas
+14. [14_NAVIGATION_AND_STUDY_WORKFLOW.md](./14_NAVIGATION_AND_STUDY_WORKFLOW.md) — study patterns
+15. [15_NEXT_LEVEL_EXPANSION_PLAN.md](./15_NEXT_LEVEL_EXPANSION_PLAN.md) — what comes next
+
+### Advanced path (docs 16-50, in `curriculum/`)
+These are for after you complete the foundation path:
+
+**Assessment & placement (16-20):**
+- [curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md](./curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md)
+- [curriculum/17_ASSESSMENT_AND_RUBRICS.md](./curriculum/17_ASSESSMENT_AND_RUBRICS.md)
+- [curriculum/18_REMEDIATION_PLAYBOOK.md](./curriculum/18_REMEDIATION_PLAYBOOK.md)
+- [curriculum/19_MENTOR_GUIDE.md](./curriculum/19_MENTOR_GUIDE.md)
+- [curriculum/20_CURRICULUM_CHANGELOG.md](./curriculum/20_CURRICULUM_CHANGELOG.md)
+
+**Full-stack mastery (21-25):**
+- [curriculum/21_FULL_STACK_MASTERY_PATH.md](./curriculum/21_FULL_STACK_MASTERY_PATH.md)
+- [curriculum/22_SPECIALIZATION_TRACKS.md](./curriculum/22_SPECIALIZATION_TRACKS.md)
+- [curriculum/23_RESOURCE_AND_CURRICULUM_MAP.md](./curriculum/23_RESOURCE_AND_CURRICULUM_MAP.md)
+- [curriculum/24_MASTERY_SCORING_AND_GATES.md](./curriculum/24_MASTERY_SCORING_AND_GATES.md)
+- [curriculum/25_INFINITY_MASTERY_LOOP.md](./curriculum/25_INFINITY_MASTERY_LOOP.md)
+
+**Zero-to-master execution (26-35):**
+- [curriculum/26_ZERO_TO_MASTER_PLAYBOOK.md](./curriculum/26_ZERO_TO_MASTER_PLAYBOOK.md)
+- [curriculum/27_DAY_0_TO_DAY_30_BOOTSTRAP.md](./curriculum/27_DAY_0_TO_DAY_30_BOOTSTRAP.md)
+- [curriculum/28_LEVEL_0_TO_2_DEEP_GUIDE.md](./curriculum/28_LEVEL_0_TO_2_DEEP_GUIDE.md)
+- [curriculum/29_LEVEL_3_TO_5_DEEP_GUIDE.md](./curriculum/29_LEVEL_3_TO_5_DEEP_GUIDE.md)
+- [curriculum/30_LEVEL_6_TO_8_DEEP_GUIDE.md](./curriculum/30_LEVEL_6_TO_8_DEEP_GUIDE.md)
+- [curriculum/31_LEVEL_9_TO_10_AND_BEYOND.md](./curriculum/31_LEVEL_9_TO_10_AND_BEYOND.md)
+- [curriculum/32_DAILY_SESSION_SCRIPT.md](./curriculum/32_DAILY_SESSION_SCRIPT.md)
+- [curriculum/33_WEEKLY_REVIEW_TEMPLATE.md](./curriculum/33_WEEKLY_REVIEW_TEMPLATE.md)
+- [curriculum/34_FAILURE_RECOVERY_ATLAS.md](./curriculum/34_FAILURE_RECOVERY_ATLAS.md)
+- [curriculum/35_CAPSTONE_BLUEPRINTS.md](./curriculum/35_CAPSTONE_BLUEPRINTS.md)
+
+**Elite world-class extension (36-45):**
+- [curriculum/36_ELITE_ENGINEERING_TRACK.md](./curriculum/36_ELITE_ENGINEERING_TRACK.md)
+- [curriculum/37_QUARTERLY_EXAMS_AND_DEFENSES.md](./curriculum/37_QUARTERLY_EXAMS_AND_DEFENSES.md)
+- [curriculum/38_SYSTEM_DESIGN_AND_RFCS.md](./curriculum/38_SYSTEM_DESIGN_AND_RFCS.md)
+- [curriculum/39_PRODUCTION_PLATFORM_LAB.md](./curriculum/39_PRODUCTION_PLATFORM_LAB.md)
+- [curriculum/40_SECURITY_COMPLIANCE_HARDENING.md](./curriculum/40_SECURITY_COMPLIANCE_HARDENING.md)
+- [curriculum/41_PERFORMANCE_ENGINEERING_LAB.md](./curriculum/41_PERFORMANCE_ENGINEERING_LAB.md)
+- [curriculum/42_OPEN_SOURCE_CONTRIBUTION_LANE.md](./curriculum/42_OPEN_SOURCE_CONTRIBUTION_LANE.md)
+- [curriculum/43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md](./curriculum/43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md)
+- [curriculum/44_SME_INTERVIEW_AND_DEBATE_BANK.md](./curriculum/44_SME_INTERVIEW_AND_DEBATE_BANK.md)
+- [curriculum/45_MASTERY_TELEMETRY_AND_REMEDIATION.md](./curriculum/45_MASTERY_TELEMETRY_AND_REMEDIATION.md)
+
+**Universal learner-adaptive (46-50):**
+- [curriculum/46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md](./curriculum/46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md)
+- [curriculum/47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md](./curriculum/47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md)
+- [curriculum/48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md](./curriculum/48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md)
+- [curriculum/49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md](./curriculum/49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md)
+- [curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md)
+
+If you only have 8-10 hours/week, focus on docs 00 to 11 first, then run docs 26 to 35 as your deep step-by-step execution layer.
 After that, run docs 36 to 45 as the elite-world-class extension layer.
 Then run docs 46 to 50 to guarantee adaptive coverage for any learner profile.
 
 Exact click path if you follow `Next` in each file:
-`README -> 01 -> 02 -> 03 -> 04 -> 09 -> 05 -> 06 -> 07 -> 08 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 21 -> 22 -> 23 -> 24 -> 25 -> 26 -> 27 -> 28 -> 29 -> 30 -> 31 -> 32 -> 33 -> 34 -> 35 -> 36 -> 37 -> 38 -> 39 -> 40 -> 41 -> 42 -> 43 -> 44 -> 45 -> 46 -> 47 -> 48 -> 49 -> 50 -> README`
+`README -> 00 -> 01 -> 02 -> 03 -> 04 -> 09 -> 05 -> 06 -> 07 -> 08 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 21 -> 22 -> 23 -> 24 -> 25 -> 26 -> 27 -> 28 -> 29 -> 30 -> 31 -> 32 -> 33 -> 34 -> 35 -> 36 -> 37 -> 38 -> 39 -> 40 -> 41 -> 42 -> 43 -> 44 -> 45 -> 46 -> 47 -> 48 -> 49 -> 50 -> README`
 
 ## Deliverable milestones
 - Gate A: setup complete + first script + first passing test.
@@ -149,14 +169,13 @@ Exact click path if you follow `Next` in each file:
 - Gate D: Orion + DPA data is ingested into MSSQL cache tables.
 - Gate E: Browser dashboard for non-technical users is delivered.
 
-## Project lab ladder (level 0 -> level 10 + elite extension)
+## Project lab ladder (level-00 -> level 10 + elite extension)
 - Hands-on projects live in [`./projects`](./projects).
-- There are 11 levels: `level-0` through `level-10`.
+- **Start with level-00-absolute-beginner** if you have never coded before: [`./projects/level-00-absolute-beginner/README.md`](./projects/level-00-absolute-beginner/README.md)
+- Then progress through `level-0` through `level-10`.
 - Each level includes 15 projects designed to be altered, broken, fixed, and extended.
 - Elite extension projects live in [`./projects/elite-track`](./projects/elite-track) for top-tier architecture and systems depth.
-- Start here:
-  - [`./projects/README.md`](./projects/README.md)
-  - [`./projects/level-0/README.md`](./projects/level-0/README.md)
+- Project index: [`./projects/README.md`](./projects/README.md)
 
 ## Second-pass support packs
 - Screenshot checkpoints and study prompts:
@@ -216,55 +235,5 @@ Run these from repo root to verify curriculum integrity:
 - `./tools/run_all_curriculum_checks.sh`
 - `./tools/run_all_curriculum_checks.sh --full`
 
-## Full-stack expert + infinite mastery track
-If your goal is top-end Python mastery (not just competency), follow this advanced chain after finishing the baseline roadmap:
-- [21_FULL_STACK_MASTERY_PATH.md](./21_FULL_STACK_MASTERY_PATH.md)
-- [22_SPECIALIZATION_TRACKS.md](./22_SPECIALIZATION_TRACKS.md)
-- [23_RESOURCE_AND_CURRICULUM_MAP.md](./23_RESOURCE_AND_CURRICULUM_MAP.md)
-- [24_MASTERY_SCORING_AND_GATES.md](./24_MASTERY_SCORING_AND_GATES.md)
-- [25_INFINITY_MASTERY_LOOP.md](./25_INFINITY_MASTERY_LOOP.md)
-
-## Next-level expansion plan
-- [15_NEXT_LEVEL_EXPANSION_PLAN.md](./15_NEXT_LEVEL_EXPANSION_PLAN.md)
-- [16_LEARNER_PROFILE_AND_PLACEMENT.md](./16_LEARNER_PROFILE_AND_PLACEMENT.md)
-- [17_ASSESSMENT_AND_RUBRICS.md](./17_ASSESSMENT_AND_RUBRICS.md)
-- [18_REMEDIATION_PLAYBOOK.md](./18_REMEDIATION_PLAYBOOK.md)
-- [19_MENTOR_GUIDE.md](./19_MENTOR_GUIDE.md)
-- [20_CURRICULUM_CHANGELOG.md](./20_CURRICULUM_CHANGELOG.md)
-
-## Zero-to-Master execution layer (literal step-by-step)
-If you need every process broken down, run this chain after baseline setup:
-- [26_ZERO_TO_MASTER_PLAYBOOK.md](./26_ZERO_TO_MASTER_PLAYBOOK.md)
-- [27_DAY_0_TO_DAY_30_BOOTSTRAP.md](./27_DAY_0_TO_DAY_30_BOOTSTRAP.md)
-- [28_LEVEL_0_TO_2_DEEP_GUIDE.md](./28_LEVEL_0_TO_2_DEEP_GUIDE.md)
-- [29_LEVEL_3_TO_5_DEEP_GUIDE.md](./29_LEVEL_3_TO_5_DEEP_GUIDE.md)
-- [30_LEVEL_6_TO_8_DEEP_GUIDE.md](./30_LEVEL_6_TO_8_DEEP_GUIDE.md)
-- [31_LEVEL_9_TO_10_AND_BEYOND.md](./31_LEVEL_9_TO_10_AND_BEYOND.md)
-- [32_DAILY_SESSION_SCRIPT.md](./32_DAILY_SESSION_SCRIPT.md)
-- [33_WEEKLY_REVIEW_TEMPLATE.md](./33_WEEKLY_REVIEW_TEMPLATE.md)
-- [34_FAILURE_RECOVERY_ATLAS.md](./34_FAILURE_RECOVERY_ATLAS.md)
-- [35_CAPSTONE_BLUEPRINTS.md](./35_CAPSTONE_BLUEPRINTS.md)
-
-## Elite world-class extension layer
-Run this after the baseline and zero-to-master layers:
-- [36_ELITE_ENGINEERING_TRACK.md](./36_ELITE_ENGINEERING_TRACK.md)
-- [37_QUARTERLY_EXAMS_AND_DEFENSES.md](./37_QUARTERLY_EXAMS_AND_DEFENSES.md)
-- [38_SYSTEM_DESIGN_AND_RFCS.md](./38_SYSTEM_DESIGN_AND_RFCS.md)
-- [39_PRODUCTION_PLATFORM_LAB.md](./39_PRODUCTION_PLATFORM_LAB.md)
-- [40_SECURITY_COMPLIANCE_HARDENING.md](./40_SECURITY_COMPLIANCE_HARDENING.md)
-- [41_PERFORMANCE_ENGINEERING_LAB.md](./41_PERFORMANCE_ENGINEERING_LAB.md)
-- [42_OPEN_SOURCE_CONTRIBUTION_LANE.md](./42_OPEN_SOURCE_CONTRIBUTION_LANE.md)
-- [43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md](./43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md)
-- [44_SME_INTERVIEW_AND_DEBATE_BANK.md](./44_SME_INTERVIEW_AND_DEBATE_BANK.md)
-- [45_MASTERY_TELEMETRY_AND_REMEDIATION.md](./45_MASTERY_TELEMETRY_AND_REMEDIATION.md)
-
-## Universal learner-adaptive completion layer
-Run this to ensure the plan adapts to any learning profile:
-- [46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md](./46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md)
-- [47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md](./47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md)
-- [48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md](./48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md)
-- [49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md](./49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md)
-- [50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md](./50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md)
-
 ## Next
-Go to [01_ROADMAP.md](./01_ROADMAP.md).
+Go to [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md).
