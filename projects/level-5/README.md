@@ -28,6 +28,11 @@ Build robust automation behavior with stronger reliability and reporting.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
+## Next
+
+- Continue to [level-6](../level-6/README.md).
+- Return to [projects index](../README.md).
+
 ---
 
 | [← Prev](../level-4/README.md) | [Home](../../README.md) | [Next →](../../07_MONITORING_API_INTEGRATION.md) |

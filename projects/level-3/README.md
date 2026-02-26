@@ -28,6 +28,11 @@ Adopt junior engineering structure: modules, logging, and test-first habits.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
+## Next
+
+- Continue to [level-4](../level-4/README.md).
+- Return to [projects index](../README.md).
+
 ---
 
 | [← Prev](../../05_AUTOMATION_FILES_EXCEL.md) | [Home](../../README.md) | [Next →](../../06_SQL.md) |

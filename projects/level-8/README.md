@@ -28,6 +28,11 @@ Harden dashboard/data services for performance, resilience, and observability.
 2. Deeply alter/break/fix at least 3 projects.
 3. Evolve one into a stronger mini-capstone.
 
+## Next
+
+- Continue to [level-9](../level-9/README.md).
+- Return to [projects index](../README.md).
+
 ---
 
 | [← Prev](../../08_DASHBOARDS.md) | [Home](../../README.md) | [Next →](../level-9/README.md) |

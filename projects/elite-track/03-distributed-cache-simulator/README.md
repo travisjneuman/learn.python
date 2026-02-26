@@ -73,6 +73,11 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
+## Next
+
+- Continue to [04-secure-auth-gateway](../04-secure-auth-gateway/README.md).
+- Return to [elite track index](../README.md).
+
 ---
 
 | [← Prev](../02-concurrent-job-system/README.md) | [Home](../../../README.md) | [Next →](../04-secure-auth-gateway/README.md) |

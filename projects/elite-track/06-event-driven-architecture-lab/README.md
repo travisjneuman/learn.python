@@ -72,6 +72,11 @@ You can move on when you can:
 - [Decorators Explained](../../../concepts/decorators-explained.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
+## Next
+
+- Continue to [07-observability-slo-platform](../07-observability-slo-platform/README.md).
+- Return to [elite track index](../README.md).
+
 ---
 
 | [← Prev](../05-performance-profiler-workbench/README.md) | [Home](../../../README.md) | [Next →](../07-observability-slo-platform/README.md) |

@@ -73,6 +73,11 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
+## Next
+
+- Continue to [06-event-driven-architecture-lab](../06-event-driven-architecture-lab/README.md).
+- Return to [elite track index](../README.md).
+
 ---
 
 | [← Prev](../04-secure-auth-gateway/README.md) | [Home](../../../README.md) | [Next →](../06-event-driven-architecture-lab/README.md) |

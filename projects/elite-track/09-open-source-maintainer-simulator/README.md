@@ -73,6 +73,11 @@ You can move on when you can:
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
+## Next
+
+- Continue to [10-staff-engineer-capstone](../10-staff-engineer-capstone/README.md).
+- Return to [elite track index](../README.md).
+
 ---
 
 | [← Prev](../08-policy-compliance-engine/README.md) | [Home](../../../README.md) | [Next →](../10-staff-engineer-capstone/README.md) |

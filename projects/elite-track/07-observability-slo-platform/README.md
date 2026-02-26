@@ -73,6 +73,11 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Async Explained](../../../concepts/quizzes/async-explained-quiz.py)
 
+## Next
+
+- Continue to [08-policy-compliance-engine](../08-policy-compliance-engine/README.md).
+- Return to [elite track index](../README.md).
+
 ---
 
 | [← Prev](../06-event-driven-architecture-lab/README.md) | [Home](../../../README.md) | [Next →](../08-policy-compliance-engine/README.md) |
