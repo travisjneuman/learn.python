@@ -4,7 +4,7 @@
 
 ## What This Repo Is
 
-A comprehensive Python curriculum: zero tech experience to world-class full-stack mastery. Contains 50+ sequenced documents, 175+ hands-on projects across 12 levels, 56 expansion module projects across 12 technology domains, CI validation tooling, and a personalized study plan generator.
+A comprehensive, multi-modal Python curriculum: zero tech experience to world-class full-stack mastery. Contains 50+ sequenced documents, 251 hands-on projects across 13 levels + 12 technology modules, 36 Mermaid diagrams, 40 curated video resource pages, 51 step-by-step walkthroughs, 248 annotated solutions, 34 quizzes, 24 flashcard decks, 8 browser exercises, CI validation tooling, and a personalized study plan generator. Every concept and project has a "Learn Your Way" modality hub linking all available learning formats.
 
 ## Learner Context
 
