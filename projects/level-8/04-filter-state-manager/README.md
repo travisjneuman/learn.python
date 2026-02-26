@@ -65,6 +65,12 @@ You can move on when you can:
 - describe why immutable state snapshots prevent subtle UI bugs,
 - implement undo/redo for any state-management scenario from scratch.
 
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
+
 ---
 
 ## Related Concepts

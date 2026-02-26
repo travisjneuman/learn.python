@@ -29,25 +29,16 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a `network_latency` metric adapter that returns latency in milliseconds.
-2. Add a `severity` field to alerts (info / warning / critical) based on how far above threshold the value is.
-3. Re-run script and tests — verify new metric and severity appear in output.
+Extend this project in a meaningful way — add a feature that addresses a real use case.
 
 ## Break it (required)
-1. Set a threshold to a negative number and observe what alerts are generated.
-2. Return a non-numeric value from a mock API (e.g. `"N/A"`) and watch the comparison fail.
-3. Capture the TypeError or unexpected alert behavior.
+Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-1. Validate that thresholds are positive before comparing.
-2. Wrap metric values in a `float()` cast with a try/except to handle non-numeric responses.
-3. Add a test for non-numeric metric values and negative thresholds.
+Review your code critically — is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
-1. Why does each metric type need its own adapter function?
-2. What happened when the mock API returned a string instead of a number?
-3. How did input validation prevent the false alert?
-4. How would you extend this to a real Prometheus or Datadog integration?
+Could you explain the architectural trade-offs to a colleague?
 
 ## Mastery check
 You can move on when you can:
@@ -55,6 +46,12 @@ You can move on when you can:
 - explain one core function line-by-line,
 - break and recover in one session,
 - keep tests passing after your change.
+
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
 
 ---
 

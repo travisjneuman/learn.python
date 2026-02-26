@@ -29,25 +29,16 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a TTL (time-to-live) parameter so cached entries expire after N seconds.
-2. Add a `clear()` method to each backend that removes all entries and resets stats.
-3. Re-run script and tests — verify TTL expiry and clear work on all three backends.
+Extend this project in a meaningful way — add a feature that addresses a real use case.
 
 ## Break it (required)
-1. Request an unknown backend name (e.g. `"redis"`) from `get_cache()` and observe the KeyError.
-2. Write a very large value to the file backend and check if JSON serialization handles it.
-3. Close the SQLite connection mid-operation and observe the error.
+Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-1. Have `get_cache()` raise a clear `ValueError` for unknown backends with the valid options listed.
-2. Add a max-size check before writing to the file backend.
-3. Add a test confirming unknown backends produce a helpful error message.
+Review your code critically — is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
-1. Why is the strategy pattern useful for swappable cache backends?
-2. What happened when an unknown backend was requested?
-3. How did the explicit `ValueError` message help debugging?
-4. When would you choose SQLite cache over memory or file cache in production?
+Could you explain the architectural trade-offs to a colleague?
 
 ## Mastery check
 You can move on when you can:
@@ -55,6 +46,12 @@ You can move on when you can:
 - explain one core function line-by-line,
 - break and recover in one session,
 - keep tests passing after your change.
+
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
 
 ---
 

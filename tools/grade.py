@@ -209,6 +209,167 @@ def print_summary(results):
     print()
 
 
+def grade_with_detail(project_dir):
+    """Run pytest and return detailed per-test results with partial credit.
+
+    Runs pytest with JSON output to capture individual test outcomes.
+    Reports "X/Y tests passing" with test names and descriptions of
+    what each failing test expected.
+
+    Args:
+        project_dir: Path to the project directory.
+
+    Returns:
+        A dict with keys:
+            score: float percentage (0-100)
+            passed: int count of passing tests
+            total: int count of total tests
+            tests: list of dicts with {name, status, message}
+    """
+    test_dir = Path(project_dir) / "tests"
+    if not test_dir.exists():
+        return {"score": 0.0, "passed": 0, "total": 0, "tests": []}
+
+    test_files = list(test_dir.glob("test_*.py"))
+    if not test_files:
+        return {"score": 0.0, "passed": 0, "total": 0, "tests": []}
+
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", "-v", "--tb=line", str(test_dir)],
+            capture_output=True,
+            text=True,
+            cwd=str(project_dir),
+            timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        return {"score": 0.0, "passed": 0, "total": 0, "tests": [{"name": "ALL", "status": "timeout", "message": "Tests timed out after 30 seconds"}]}
+    except FileNotFoundError:
+        return {"score": 0.0, "passed": 0, "total": 0, "tests": [{"name": "ALL", "status": "error", "message": "pytest not found"}]}
+
+    output = result.stdout + result.stderr
+    tests = []
+    passed_count = 0
+    total_count = 0
+
+    for line in output.split("\n"):
+        if " PASSED" in line or " FAILED" in line or " ERROR" in line:
+            total_count += 1
+            # Extract test name: "tests/test_foo.py::test_bar PASSED"
+            parts = line.strip().split(" ")
+            test_path = parts[0] if parts else "unknown"
+            test_name = test_path.split("::")[-1] if "::" in test_path else test_path
+
+            if " PASSED" in line:
+                passed_count += 1
+                tests.append({"name": test_name, "status": "passed", "message": ""})
+            elif " FAILED" in line:
+                tests.append({"name": test_name, "status": "failed", "message": ""})
+            elif " ERROR" in line:
+                tests.append({"name": test_name, "status": "error", "message": ""})
+
+    # Extract failure details from tb=line output
+    for line in output.split("\n"):
+        line = line.strip()
+        if line.startswith("FAILED") or ("assert" in line.lower() and "Error" not in line):
+            # Match failure messages to tests
+            for test in tests:
+                if test["status"] == "failed" and not test["message"]:
+                    test["message"] = line
+                    break
+
+    score = (passed_count / total_count * 100) if total_count > 0 else 0.0
+
+    # Print friendly report
+    print(f"\n  {BOLD}Detailed Grade: {passed_count}/{total_count} tests passing ({score:.0f}%){RESET}")
+    for test in tests:
+        if test["status"] == "passed":
+            print(f"    {GREEN}PASS{RESET} {test['name']}")
+        elif test["status"] == "failed":
+            print(f"    {RED}FAIL{RESET} {test['name']}")
+            if test["message"]:
+                print(f"         {YELLOW}{test['message']}{RESET}")
+        else:
+            print(f"    {RED}ERR {RESET} {test['name']}")
+            if test["message"]:
+                print(f"         {YELLOW}{test['message']}{RESET}")
+
+    return {"score": score, "passed": passed_count, "total": total_count, "tests": tests}
+
+
+def check_style(file_path):
+    """Run ruff on a file and return a style score.
+
+    Runs `ruff check` via subprocess, counts violations by category,
+    and returns a score out of 100 with deductions per violation type.
+
+    Args:
+        file_path: Path to the Python file to check.
+
+    Returns:
+        A dict with keys:
+            score: int style score (100 minus deductions)
+            violations: int total violation count
+            by_category: dict mapping rule codes to counts
+            details: list of violation description strings
+    """
+    target = Path(file_path)
+    if not target.exists():
+        print(f"  {RED}File not found: {file_path}{RESET}")
+        return {"score": 0, "violations": 0, "by_category": {}, "details": []}
+
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "ruff", "check", "--output-format=text", str(target)],
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+    except subprocess.TimeoutExpired:
+        return {"score": 0, "violations": 0, "by_category": {}, "details": ["ruff timed out"]}
+    except FileNotFoundError:
+        print(f"  {YELLOW}ruff not found. Install with: pip install ruff{RESET}")
+        return {"score": 100, "violations": 0, "by_category": {}, "details": []}
+
+    output = result.stdout.strip()
+    if not output or result.returncode == 0:
+        print(f"  {GREEN}Style: 100/100 — No issues found{RESET}")
+        return {"score": 100, "violations": 0, "by_category": {}, "details": []}
+
+    # Parse ruff output lines like: "file.py:1:1: E401 ..."
+    by_category = {}
+    details = []
+    for line in output.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        # Extract rule code (e.g., E401, F841, W291)
+        parts = line.split(":")
+        if len(parts) >= 4:
+            msg = parts[3].strip()
+            code = msg.split(" ")[0] if msg else "unknown"
+            category = code[0] if code else "?"
+            by_category[category] = by_category.get(category, 0) + 1
+            details.append(line)
+
+    total_violations = sum(by_category.values())
+
+    # Deduction schedule: 3 points per violation, minimum score 0
+    deduction_per_violation = 3
+    score = max(0, 100 - total_violations * deduction_per_violation)
+
+    # Friendly output
+    color = GREEN if score >= 80 else YELLOW if score >= 50 else RED
+    print(f"  {color}Style: {score}/100 — {total_violations} issue(s) found{RESET}")
+    if by_category:
+        category_names = {"E": "errors", "W": "warnings", "F": "pyflakes", "I": "isort", "N": "naming", "C": "convention"}
+        for cat, count in sorted(by_category.items()):
+            label = category_names.get(cat, cat)
+            print(f"    {cat}: {count} {label}")
+
+    return {"score": score, "violations": total_violations, "by_category": by_category, "details": details}
+
+
 def main():
     import argparse
 

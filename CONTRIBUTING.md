@@ -62,6 +62,18 @@ project-name/
 - Every document should have navigation links (Previous / Home / Next) at the bottom.
 - New projects should include a README explaining what the learner builds and why.
 
+## Contributor Recognition
+
+Every accepted pull request earns you a spot in [CONTRIBUTORS.md](./CONTRIBUTORS.md). When your PR is merged, add your name to the contributors table (or we will add it for you).
+
+Significant contributions — new projects, modules, or major curriculum improvements — are highlighted in the contributor notes.
+
+## Translations
+
+We welcome translations of the curriculum into other languages. Translation work is coordinated in the `translations/` directory. See `translations/TRANSLATING.md` (when available) for guidelines on translating documents, maintaining parity with the English source, and getting credit for your work.
+
+If you want to start a translation for a new language, open an issue first so we can coordinate.
+
 ## Questions?
 
 Open an issue. There are no silly questions in a learning repo.

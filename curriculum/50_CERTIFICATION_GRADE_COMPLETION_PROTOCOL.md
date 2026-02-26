@@ -288,6 +288,78 @@ Fail when any are true:
 3. Critical security or reliability controls are missing.
 4. Oral defense cannot justify design decisions.
 
+## Sample Certification Output
+
+Below is an example of what a completed certification summary looks like. This is the document you produce when you have finished the entire curriculum and are claiming mastery.
+
+```markdown
+# Python Mastery Certification — [Your Name]
+# Date: 2025-06-15
+
+## Completion Summary
+
+| Requirement | Status | Evidence |
+|-------------|--------|----------|
+| Docs 01-35 (baseline chain) | Complete | All exercises done, notes filled |
+| Docs 36-45 (elite extension) | Complete | Elite track projects submitted |
+| Docs 46-49 (learner layer) | Complete | Self-assessments and gap analysis done |
+| Project evidence (levels 0-10 + elite) | Complete | 175 projects, all tests passing |
+| Assessments (written + practical + oral) | Complete | Scores below |
+
+## Level Scores
+
+| Level | Score | Threshold | Result |
+|-------|-------|-----------|--------|
+| Level 00 | Pass | Pass/Fail | PASS |
+| Levels 0-2 | 84/100 | 70 | PASS |
+| Levels 3-5 | 78/100 | 70 | PASS |
+| Levels 6-8 | 82/100 | 75 | PASS |
+| Levels 9-10 | 85/100 | 80 | PASS |
+| Elite Track | 81/100 | 80 | PASS |
+
+## Portfolio Highlights
+
+1. **Level 5 Capstone — Data Pipeline Engine**
+   Batch CSV processor with schema validation, error quarantine, and checkpoint recovery.
+   Tests: 42 passing. Coverage: 87%.
+
+2. **Level 8 Capstone — Monitoring Dashboard**
+   Real-time metrics aggregator with structured logging, alerting thresholds, and a Flask dashboard.
+   Tests: 61 passing. Coverage: 79%.
+
+3. **Elite Track — Distributed Task Queue**
+   Multi-worker task queue with Redis backend, dead-letter handling, and graceful shutdown.
+   Tests: 38 passing. Defended in oral exam.
+
+## Oral Defense
+
+| Criterion | Score |
+|-----------|-------|
+| Clarity | Excellent |
+| Depth | Excellent |
+| Honesty | Excellent |
+| Adaptability | Adequate |
+
+## Expansion Modules Completed
+
+Modules 01-08, 10-11 (10 of 12 modules, 47 of 56 projects)
+
+## Quality Gate Summary
+
+- ruff check: 0 violations across all projects
+- black formatting: applied to all files
+- Type hints: present on all function signatures (levels 3+)
+- No hardcoded secrets found
+
+## Self-Assessment
+
+Strongest areas: data processing, testing, API design
+Areas for continued growth: async programming, deployment automation
+Next goals: complete modules 09 (Docker) and 12 (Cloud Deploy)
+```
+
+---
+
 ## Post-completion operating cadence
 - Weekly: run one project improvement cycle.
 - Monthly: publish one new technical artifact.

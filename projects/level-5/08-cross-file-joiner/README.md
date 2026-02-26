@@ -1,6 +1,8 @@
 # Level 5 / Project 08 - Cross File Joiner
 Home: [README](../../../README.md)
 
+> **Quick Recall:** This project uses dictionary lookups to match records across files. Before starting, make sure you can: build a dictionary from CSV rows using one column as the key, then look up values by that key (Level 1, Project 05 - CSV First Reader).
+
 ## Focus
 - join records across source files
 

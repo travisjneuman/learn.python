@@ -31,25 +31,16 @@ pytest -q
 ```
 
 ## Alter it (required)
-1. Add a `--sort-descending` flag that reverses the data before paginating.
-2. Implement a `seek_to_item(item)` method that returns the page containing that item.
-3. Add response time tracking to the stress test and flag slow pages.
+Extend this project in a meaningful way — add a feature that addresses a real use case.
 
 ## Break it (required)
-1. Pass `page_size=0` — does the paginator crash or return infinity pages?
-2. Insert items mid-iteration — does offset pagination skip or duplicate items?
-3. Request page 1 of an empty dataset — is the response well-formed?
+Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-1. Add validation that page_size >= 1 in `total_pages()`.
-2. Handle empty datasets gracefully (total_pages should be 1, not 0).
-3. Write a test that verifies no duplicates when iterating all pages.
+Review your code critically — is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
-1. What is the "page drift" problem and how does cursor pagination solve it?
-2. Why does the stress test go one page beyond total_pages?
-3. When would you choose cursor-based over offset-based pagination?
-4. How do databases like PostgreSQL implement `LIMIT ... OFFSET`?
+Could you explain the architectural trade-offs to a colleague?
 
 ## Mastery check
 You can move on when you can:
@@ -57,6 +48,12 @@ You can move on when you can:
 - describe the tradeoff between offset and cursor pagination,
 - write a stress test that catches off-by-one errors,
 - explain why the last page often has fewer items than page_size.
+
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
 
 ---
 

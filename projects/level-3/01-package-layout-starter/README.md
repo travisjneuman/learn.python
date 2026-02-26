@@ -1,6 +1,8 @@
 # Level 3 / Project 01 - Package Layout Starter
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=1) — browser exercises cover Level 2 topics
+
 ## Before You Start
 
 Recall these prerequisites before diving in:
@@ -67,20 +69,27 @@ def scan_file_types(directory):
 
 **The thought process:** Validate input first (is it a directory?). Use `pathlib` for cross-platform path handling. Use `Counter` for counting. This is the same approach the package layout scanner uses.
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `--recursive` flag to scan nested packages.
-2. Add a `pyproject.toml` generator alongside `__init__.py`.
-3. Count lines of code per module and include in the report.
+1. Try adding support for nested packages — what flag or argument would make sense?
+2. What other metadata could the scanner generate beyond what it already does?
+3. Add a useful metric to the report output.
 
 ## Break it (required)
-1. Point the scanner at a directory with no `.py` files.
-2. Create a circular import between two modules — does validation catch it?
-3. Scan a file (not a directory) — what error appears?
+1. Try pointing the scanner at something unexpected — what breaks first?
+2. Can you create a situation where imports get confused?
+3. What happens when the input is not what the tool expects?
 
 ## Fix it (required)
-1. Add a check that the path is a directory, not a file.
-2. Improve circular import detection heuristic.
-3. Handle permission errors when scanning directories.
+1. Add input validation for the most obvious failure case you found.
+2. Improve how the tool handles the import issue you discovered.
+3. Make the tool resilient to permission problems.
 
 ## Explain it (teach-back)
 1. What makes a directory a Python package (hint: `__init__.py`)?

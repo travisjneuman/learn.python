@@ -326,6 +326,7 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CON
 | [Career Readiness](./CAREER_READINESS.md) | Map curriculum levels to job roles, interview prep by stage |
 | [Portfolio Guide](./PORTFOLIO_GUIDE.md) | How to present your projects to employers |
 | [Teaching Guide](./TEACHING_GUIDE.md) | Classroom adaptation: semester mappings, rubrics, GitHub Classroom |
+| [Workshop Kit](./WORKSHOP_KIT.md) | Run a 2-hour Python workshop at meetups and user groups |
 | [Accessibility](./ACCESSIBILITY.md) | Screen reader guidance, cognitive accessibility, accommodations |
 | [Creator Kit](./CREATOR_KIT.md) | Guide for YouTubers and bloggers creating companion content |
 | [Certification Protocol](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) | Formal completion standard with scoring rubrics and defense format |
@@ -334,6 +335,7 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CON
 | [Changelog](./CHANGELOG.md) | Version history and release notes |
 | [Contributing](./CONTRIBUTING.md) | How to contribute to this project |
 | [Code of Conduct](./CODE_OF_CONDUCT.md) | Community standards |
+| [Translations](./translations/README.md) | Community translations (Spanish, Portuguese in progress) |
 | [License](./LICENSE) | MIT License |
 
 ---

@@ -1,6 +1,8 @@
 # Level 5 / Project 06 - Metrics Summary Engine
 Home: [README](../../../README.md)
 
+> **Quick Recall:** This project uses numeric aggregation and statistics from structured data. Before starting, make sure you can: load a CSV into a list of dictionaries and compute a column's min, max, and average using a simple loop (Level 1, Project 05 - CSV First Reader).
+
 ## Focus
 - aggregate operational metrics
 

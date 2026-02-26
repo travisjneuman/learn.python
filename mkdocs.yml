@@ -28,6 +28,7 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
+    - navigation.tabs
     - navigation.instant
     - navigation.instant.progress
     - navigation.tracking
@@ -94,6 +95,8 @@ not_in_nav: |
   projects/**/notes.md
   **/__pycache__/**
   .github/**
+  translations/**
+  _metadata/**
 
 exclude_docs: |
   __pycache__/
@@ -195,6 +198,20 @@ nav:
       - Match/Case: concepts/match-case-explained.md
       - Modern Python Tooling: concepts/modern-python-tooling.md
       - Async Explained: concepts/async-explained.md
+      - Context Managers: concepts/context-managers-explained.md
+      - Generators & Iterators: concepts/generators-and-iterators.md
+      - Comprehensions: concepts/comprehensions-explained.md
+      - Args & Kwargs: concepts/args-kwargs-explained.md
+      - Enums: concepts/enums-explained.md
+      - Regex: concepts/regex-explained.md
+      - Git Basics: concepts/git-basics.md
+      - Security Basics: concepts/security-basics.md
+      - Testing Strategies: concepts/testing-strategies.md
+      - Functools & Itertools: concepts/functools-and-itertools.md
+      - Collections Deep Dive: concepts/collections-deep-dive.md
+      - Reading Documentation: concepts/reading-documentation.md
+      - Debugging Methodology: concepts/debugging-methodology.md
+      - Jupyter Notebooks: concepts/jupyter-notebooks.md
   - Projects:
       - projects/README.md
       - Absolute Beginners (Level 00): projects/level-00-absolute-beginner/README.md
@@ -216,15 +233,31 @@ nav:
       - practice/README.md
       - Challenges:
           - practice/challenges/README.md
+          - Beginner: practice/challenges/beginner/README.md
+          - Intermediate: practice/challenges/intermediate/README.md
+          - Advanced: practice/challenges/advanced/README.md
+      - Bug Hunt: practice/challenges/bug-hunt/README.md
+      - Fill-In Problems: practice/challenges/fill-in/README.md
+      - Refactoring: practice/challenges/refactoring/README.md
+      - Code Reading: practice/code-reading/README.md
+      - Capstone Projects: projects/capstones/README.md
       - Flashcards:
           - practice/flashcards/README.md
   - Guides:
       - AI Usage Guide: AI_USAGE_GUIDE.md
+      - Accessibility: ACCESSIBILITY.md
+      - "30-Day Python Challenge": 30_DAY_PYTHON_CHALLENGE.md
       - Career Readiness: CAREER_READINESS.md
+      - Creator Kit: CREATOR_KIT.md
       - Fast Track: FAST_TRACK.md
       - Feature Unlock Chart: FEATURE_UNLOCK.md
+      - Learning How to Learn: LEARNING_HOW_TO_LEARN.md
       - Portfolio Guide: PORTFOLIO_GUIDE.md
+      - Review Schedule: REVIEW_SCHEDULE.md
       - Teaching Guide: TEACHING_GUIDE.md
+      - Workshop Kit: WORKSHOP_KIT.md
+      - Self-Assessment: SELF_ASSESSMENT.md
+      - AI Code Review Checklist: AI_CODE_REVIEW_CHECKLIST.md
   - Reference:
       - Glossary: 02_GLOSSARY.md
       - Validation: VALIDATION.md
@@ -232,3 +265,5 @@ nav:
   - Contributing:
       - Contributing Guide: CONTRIBUTING.md
       - Code of Conduct: CODE_OF_CONDUCT.md
+      - Contributors: CONTRIBUTORS.md
+      - Hall of Fame: HALL_OF_FAME.md

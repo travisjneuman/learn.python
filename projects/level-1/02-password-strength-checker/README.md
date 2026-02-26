@@ -1,6 +1,8 @@
 # Level 1 / Project 02 - Password Strength Checker
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=2) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

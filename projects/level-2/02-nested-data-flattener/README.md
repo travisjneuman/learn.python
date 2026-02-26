@@ -1,6 +1,8 @@
 # Level 2 / Project 02 - Nested Data Flattener
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=2) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

@@ -67,6 +67,12 @@ You can move on when you can:
 - add a new SLI type and wire it through the full pack,
 - describe how real teams use error budgets to decide when to freeze deployments.
 
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
+
 ---
 
 ## Related Concepts

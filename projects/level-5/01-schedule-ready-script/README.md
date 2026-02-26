@@ -74,19 +74,26 @@ def process_directory(input_dir, output_file):
 
 **The thought process:** Scripts that run on a schedule must never hang waiting for input, must log everything, and must handle errors per-item. This is the same pattern the schedule-ready project uses.
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `--max-retries` flag that retries the work function on failure.
-2. Add email notification simulation (log a "would send email" message) on success/failure.
-3. Re-run script and tests — add a test for the retry behavior.
+1. What resilience feature would make this script more production-ready?
+2. How could the script notify someone about its results?
+3. Write a test for the feature you added.
 
 ## Break it (required)
-1. Set `--start-hour 23 --end-hour 1` (overnight window) and run at noon — confirm it skips.
-2. Manually create a lock file and run — verify the "another instance running" message.
-3. Point `--input` at a missing file and observe the error status.
+1. Try running the script outside its intended conditions — what safeguards exist?
+2. What happens when another instance is already running?
+3. What about missing or invalid input?
 
 ## Fix it (required)
-1. Add lock-file staleness detection with a configurable timeout.
-2. Add a `--force` flag that ignores the time window check.
+1. Address a concurrency or stale-state issue you discovered.
+2. Add a way to override the safety checks when needed.
 3. Re-run until all tests pass.
 
 ## Explain it (teach-back)

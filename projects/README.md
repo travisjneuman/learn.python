@@ -21,6 +21,10 @@ Each level has unique project themes aligned to that skill stage.
 ## Elite extension
 - [elite-track](./elite-track/README.md)
 
+## Capstone projects
+Open-ended projects where you design the architecture yourself:
+- [capstones](./capstones/README.md) — Personal finance tracker, API aggregator, task automation system
+
 ## Expansion modules (full-stack Python)
 12 technology modules with 56 projects covering the full Python ecosystem:
 - [modules](./modules/README.md) — Web scraping, CLI tools, REST APIs, FastAPI, async, databases, data analysis, testing, Docker, Django, package publishing, cloud deploy

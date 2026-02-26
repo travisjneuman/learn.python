@@ -69,19 +69,26 @@ def validate_config(config, schema):
 
 **The thought process:** Separate schema definition from validation logic. Check each field against its rules. Collect all errors (do not stop at the first one). This is exactly how the schema validator engine works.
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `"pattern"` rule to the schema (e.g., email must contain `@`) and enforce it in `validate_record`.
-2. Add a `--strict` CLI flag that treats unexpected extra fields as errors instead of warnings.
-3. Re-run script and tests — add a test for your new pattern rule.
+1. What additional validation rule would make the schema more useful? Implement it.
+2. How could the CLI be more configurable for strict vs lenient validation?
+3. Write a test for your new feature.
 
 ## Break it (required)
-1. Feed the validator a record where `"age"` is a float like `30.5` — it should fail the `"integer"` type check.
-2. Create a schema with an unknown type string (e.g., `"type": "uuid"`) and observe what happens.
-3. Pass an empty JSON array `[]` and confirm the report still generates correctly.
+1. Try feeding the validator data with subtle type mismatches — what slips through?
+2. What happens when the schema itself contains something unexpected?
+3. Test with minimal or empty input — does the tool handle it?
 
 ## Fix it (required)
-1. Handle unknown type strings gracefully — log a warning instead of silently skipping.
-2. Add a test for float-vs-integer edge cases.
+1. Address the most surprising failure you found — make it produce a clear message instead.
+2. Add a test for an edge case the original code misses.
 3. Re-run until all tests pass deterministically.
 
 ## Explain it (teach-back)

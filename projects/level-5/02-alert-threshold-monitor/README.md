@@ -63,22 +63,27 @@ def evaluate_metrics(current_values, thresholds):
 
 **The thought process:** Check the most severe condition first (critical before warn). Skip metrics without thresholds. Return structured alerts. This is the same pattern the threshold monitor uses.
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `--cooldown` flag that suppresses repeated alerts for the same metric within N seconds.
-2. Add an "info" severity level for metrics that are within 10% of the warn threshold.
-3. Log each breach with the metric name, current value, and which threshold it crossed.
-4. Re-run script and tests.
+1. What feature would reduce alert noise in a real monitoring system? Implement it.
+2. Can you add a finer-grained severity level?
+3. Improve the logging to capture more context per breach.
 
 ## Break it (required)
-1. Set a `warn` threshold higher than the `crit` threshold in `thresholds.json` and observe what happens.
-2. Remove a metric from `metrics.json` that the thresholds file expects.
-3. Capture the first failing test or visible bad output.
+1. What happens when the configuration itself is invalid or contradictory?
+2. What if expected data is missing from the metrics input?
+3. Find the first failure and capture it.
 
 ## Fix it (required)
-1. Add validation that `warn < crit` and raise a clear error if not.
-2. Handle missing metrics gracefully (skip or report as "no data").
-3. Add tests for the broken cases.
-4. Re-run until output and tests are deterministic.
+1. Add validation for the configuration issue you found.
+2. Handle missing data gracefully rather than crashing.
+3. Write tests for the broken cases and re-run until deterministic.
 
 ## Explain it (teach-back)
 1. Why is cooldown important in production alerting systems?

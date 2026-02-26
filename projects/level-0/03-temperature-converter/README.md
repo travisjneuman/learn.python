@@ -1,6 +1,8 @@
 # Level 0 / Project 03 - Temperature Converter
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=3) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

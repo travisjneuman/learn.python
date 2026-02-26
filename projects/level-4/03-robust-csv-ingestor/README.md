@@ -35,19 +35,26 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `--max-errors` flag that stops processing after N quarantined rows.
-2. Add type validation: check that the `age` column contains only integers.
-3. Re-run script and tests — add a parametrized test for the new type check.
+1. What early-stopping condition would be useful for very bad input files?
+2. Can you add a validation rule for a specific column's data type?
+3. Write a parametrized test for your new validation.
 
 ## Break it (required)
-1. Feed it a CSV with no header row — observe what happens to the column count logic.
-2. Create a CSV where quoted fields contain the delimiter character (`"Smith, Jr."`) — does it handle this?
-3. Add a row with embedded newlines and see if the parser splits it incorrectly.
+1. What happens when the CSV structure itself is unusual (no headers, weird quoting)?
+2. Try embedding tricky characters inside fields — does the parser handle them?
+3. Find an edge case that confuses the row counting logic.
 
 ## Fix it (required)
-1. Add a `--has-header` flag (default True) to handle header-less CSVs.
-2. Ensure the quarantine file includes the original error reason per row.
+1. Make the tool configurable for the structural issue you found.
+2. Ensure error reporting includes enough context to fix the source data.
 3. Re-run until all tests pass.
 
 ## Explain it (teach-back)

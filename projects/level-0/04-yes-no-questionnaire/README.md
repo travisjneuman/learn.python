@@ -1,6 +1,8 @@
 # Level 0 / Project 04 - Yes No Questionnaire
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=4) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

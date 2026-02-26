@@ -1,6 +1,8 @@
 # Level 1 / Project 01 - Input Validator Lab
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=1) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

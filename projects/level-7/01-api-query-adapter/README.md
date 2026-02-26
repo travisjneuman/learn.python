@@ -29,25 +29,16 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a third source adapter (e.g. `gamma`) that maps `{"ref": ..., "info": ...}` to the unified schema.
-2. Add a `sort_by` parameter to `filter_records` that sorts results by a chosen field.
-3. Re-run script and tests — verify the new adapter appears in output.
+Extend this project in a meaningful way — add a feature that addresses a real use case.
 
 ## Break it (required)
-1. Pass a source name that has no registered adapter (e.g. `"unknown_api"`).
-2. Feed a record where the expected field is missing (e.g. `{"uid": "1"}` with no `"data"` key).
-3. Observe the KeyError or None values in the unified output.
+Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-1. Return a clear error or skip unknown sources instead of crashing.
-2. Add `.get()` with defaults in each adapter so missing fields produce `None` instead of KeyError.
-3. Add a test that confirms unknown sources are handled gracefully.
+Review your code critically — is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
-1. Why does the adapter pattern make adding new sources easy?
-2. What happened when a source had no adapter registered?
-3. How did `.get()` with a default prevent the crash?
-4. Where would you use this pattern in a real multi-vendor integration?
+Could you explain the architectural trade-offs to a colleague?
 
 ## Mastery check
 You can move on when you can:
@@ -55,6 +46,12 @@ You can move on when you can:
 - explain one core function line-by-line,
 - break and recover in one session,
 - keep tests passing after your change.
+
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
 
 ---
 

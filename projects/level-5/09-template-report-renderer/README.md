@@ -1,6 +1,8 @@
 # Level 5 / Project 09 - Template Report Renderer
 Home: [README](../../../README.md)
 
+> **Quick Recall:** This project uses string parsing and pattern matching to find placeholders in text. Before starting, make sure you can: split a string on a delimiter and use `str.replace()` to substitute values into a template string (Level 1, Project 04 - Log Line Parser).
+
 ## Focus
 - report generation by template blocks
 

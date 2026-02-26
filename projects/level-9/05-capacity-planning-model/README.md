@@ -66,6 +66,12 @@ You can move on when you can:
 - describe how capacity planning prevents outages vs reactive scaling,
 - add a new growth model without modifying existing forecast logic.
 
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
+
 ---
 
 ## Related Concepts

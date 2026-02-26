@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 1 — Python in the Browser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 200px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1 id="exerciseTitle">Exercise</h1>
+    <div class="nav-links">
+      <a href="#" id="prevLink">&larr; Prev</a>
+      <a href="index.html">All Exercises</a>
+      <a href="#" id="nextLink">Next &rarr;</a>
+    </div>
+  </div>
+
+  <div class="description" id="description"></div>
+
+  <div class="editor-wrapper">
+    <textarea id="editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var EXERCISES = {
+  "1": {
+    title: "Exercise 1 — Input Validator",
+    description: "Write a function validate_email(email) that checks if a string is a plausible email.\n\nRules:\n  - Must contain exactly one \"@\"\n  - Must have at least one character before the \"@\"\n  - The part after \"@\" must contain at least one \".\"\n  - Return True if valid, False otherwise\n\nExamples:\n  validate_email(\"user@example.com\")  ->  True\n  validate_email(\"bad-email\")         ->  False\n  validate_email(\"@no-local.com\")     ->  False",
+    code: 'def validate_email(email):\n    """Return True if email looks valid, False otherwise."""\n    # Your code here\n    pass\n\n\n# Try it out:\ntest_emails = [\n    "user@example.com",\n    "bad-email",\n    "@no-local.com",\n    "hello@world",\n    "a@b.c",\n    "two@@ats.com",\n]\nfor e in test_emails:\n    print(f"  {e:25s} -> {validate_email(e)}")\n',
+    check: 'assert validate_email("user@example.com") == True, "user@example.com should be valid"\nassert validate_email("bad-email") == False, "bad-email should be invalid (no @)"\nassert validate_email("@no-local.com") == False, "nothing before @ should be invalid"\nassert validate_email("hello@world") == False, "no dot in domain should be invalid"\nassert validate_email("a@b.c") == True, "a@b.c should be valid"\nassert validate_email("two@@ats.com") == False, "two @@ should be invalid"\nassert validate_email("") == False, "empty string should be invalid"\nprint("All tests passed!")\n'
+  },
+  "2": {
+    title: "Exercise 2 — Password Strength Checker",
+    description: "Write a function check_strength(password) that returns \"weak\", \"medium\", or \"strong\".\n\nRules:\n  weak:   fewer than 8 characters\n  medium: 8+ characters, but missing uppercase, lowercase, or digit\n  strong: 8+ characters AND has uppercase AND lowercase AND digit\n\nExamples:\n  check_strength(\"abc\")         ->  \"weak\"\n  check_strength(\"abcdefgh\")    ->  \"medium\"\n  check_strength(\"Abcdefg1\")    ->  \"strong\"",
+    code: 'def check_strength(password):\n    """Return weak, medium, or strong."""\n    # Your code here\n    pass\n\n\n# Try it out:\npasswords = ["abc", "abcdefgh", "Abcdefg1", "ALLCAPS123", "Short1A", "c0mPl3x!"]\nfor pw in passwords:\n    print(f"  {pw:20s} -> {check_strength(pw)}")\n',
+    check: 'assert check_strength("abc") == "weak", f"\'abc\' should be weak"\nassert check_strength("abcdefgh") == "medium", f"\'abcdefgh\' should be medium (no upper/digit)"\nassert check_strength("Abcdefg1") == "strong", f"\'Abcdefg1\' should be strong"\nassert check_strength("ALLCAPS123") == "medium", f"\'ALLCAPS123\' should be medium (no lowercase)"\nassert check_strength("Short1A") == "weak", f"\'Short1A\' should be weak (< 8 chars)"\nassert check_strength("12345678") == "medium", f"\'12345678\' should be medium (no letters)"\nprint("All tests passed!")\n'
+  },
+  "3": {
+    title: "Exercise 3 — Unit Price Calculator",
+    description: "Write a function best_deal(items) that finds the item with the lowest unit price.\n\nitems is a list of dicts: [{\"name\": \"...\", \"price\": float, \"quantity\": int}, ...]\n\nReturn the name of the item with the lowest price-per-unit.\nIf the list is empty, return None.\n\nExample:\n  items = [\n    {\"name\": \"Pack A\", \"price\": 10.00, \"quantity\": 5},\n    {\"name\": \"Pack B\", \"price\": 8.00, \"quantity\": 3},\n  ]\n  best_deal(items)  ->  \"Pack A\"  (2.00/unit vs 2.67/unit)",
+    code: 'def best_deal(items):\n    """Return the name of the item with the lowest unit price."""\n    # Your code here\n    pass\n\n\n# Try it out:\nitems = [\n    {"name": "Pack A", "price": 10.00, "quantity": 5},\n    {"name": "Pack B", "price": 8.00, "quantity": 3},\n    {"name": "Pack C", "price": 25.00, "quantity": 15},\n]\nprint(f"Best deal: {best_deal(items)}")\n\n# Show all unit prices\nfor item in items:\n    up = item["price"] / item["quantity"]\n    print(f"  {item[\'name\']}: ${up:.2f}/unit")\n',
+    check: 'items1 = [\n    {"name": "Pack A", "price": 10.00, "quantity": 5},\n    {"name": "Pack B", "price": 8.00, "quantity": 3},\n]\nassert best_deal(items1) == "Pack A", f"Pack A is cheaper per unit, got {best_deal(items1)}"\n\nitems2 = [\n    {"name": "Single", "price": 1.00, "quantity": 1},\n    {"name": "Bulk", "price": 50.00, "quantity": 100},\n]\nassert best_deal(items2) == "Bulk", f"Bulk is 0.50/unit, got {best_deal(items2)}"\nassert best_deal([]) is None, "Empty list should return None"\n\nitems3 = [{"name": "Only", "price": 5.0, "quantity": 2}]\nassert best_deal(items3) == "Only", "Single item should return that item"\nprint("All tests passed!")\n'
+  },
+  "4": {
+    title: "Exercise 4 — Log Line Parser",
+    description: "Write a function parse_log(line) that extracts parts from a log line.\n\nLog format: \"[LEVEL] TIMESTAMP - MESSAGE\"\nExample:    \"[ERROR] 2024-01-15 14:30:00 - Connection refused\"\n\nReturn a dict: {\"level\": \"ERROR\", \"timestamp\": \"2024-01-15 14:30:00\", \"message\": \"Connection refused\"}\n\nIf the line does not match the expected format, return\n  {\"level\": \"UNKNOWN\", \"timestamp\": \"\", \"message\": <the full line>}",
+    code: 'def parse_log(line):\n    """Parse a log line into level, timestamp, and message."""\n    # Your code here\n    pass\n\n\n# Try it out:\nlines = [\n    "[ERROR] 2024-01-15 14:30:00 - Connection refused",\n    "[INFO] 2024-01-15 14:31:00 - Server started",\n    "[WARN] 2024-01-15 14:32:00 - Disk space low",\n    "This is not a valid log line",\n]\nfor line in lines:\n    result = parse_log(line)\n    print(f"  {result[\'level\']:8s} | {result[\'timestamp\']:20s} | {result[\'message\']}")\n',
+    check: 'r1 = parse_log("[ERROR] 2024-01-15 14:30:00 - Connection refused")\nassert r1["level"] == "ERROR", f"Level should be ERROR, got {r1[\'level\']}"\nassert r1["timestamp"] == "2024-01-15 14:30:00", f"Bad timestamp: {r1[\'timestamp\']}"\nassert r1["message"] == "Connection refused", f"Bad message: {r1[\'message\']}"\n\nr2 = parse_log("[INFO] 2024-01-15 14:31:00 - Server started")\nassert r2["level"] == "INFO"\nassert r2["message"] == "Server started"\n\nr3 = parse_log("This is not a valid log line")\nassert r3["level"] == "UNKNOWN"\nassert r3["message"] == "This is not a valid log line"\nprint("All tests passed!")\n'
+  },
+  "5": {
+    title: "Exercise 5 — CSV Reader",
+    description: "Write a function parse_csv(text) that parses CSV text into a list of dicts.\n\nThe first line is the header row. Each subsequent line is a data row.\nReturn a list of dicts where keys come from the header.\n\nExample:\n  csv_text = \"name,age,city\\nAlice,30,Denver\\nBob,25,Austin\"\n  parse_csv(csv_text)  ->  [\n    {\"name\": \"Alice\", \"age\": \"30\", \"city\": \"Denver\"},\n    {\"name\": \"Bob\", \"age\": \"25\", \"city\": \"Austin\"}\n  ]\n\nEmpty text should return an empty list.",
+    code: 'def parse_csv(text):\n    """Parse CSV text into a list of dicts."""\n    # Your code here\n    pass\n\n\n# Try it out:\ncsv_data = \"\"\"name,age,city\nAlice,30,Denver\nBob,25,Austin\nCharlie,35,Seattle\"\"\"\n\nresult = parse_csv(csv_data)\nfor row in result:\n    print(row)\n',
+    check: 'csv1 = "name,age,city\\nAlice,30,Denver\\nBob,25,Austin"\nr = parse_csv(csv1)\nassert len(r) == 2, f"Expected 2 rows, got {len(r)}"\nassert r[0] == {"name": "Alice", "age": "30", "city": "Denver"}, f"Row 0 wrong: {r[0]}"\nassert r[1]["name"] == "Bob"\n\nassert parse_csv("") == [], "Empty text should return empty list"\n\ncsv2 = "x,y\\n1,2"\nr2 = parse_csv(csv2)\nassert r2 == [{"x": "1", "y": "2"}]\nprint("All tests passed!")\n'
+  },
+  "6": {
+    title: "Exercise 6 — Gradebook Engine",
+    description: "Write a function gradebook(students) that takes a list of student dicts:\n  [{\"name\": \"Alice\", \"scores\": [90, 85, 92]}, ...]\n\nReturn a list of dicts with added fields:\n  - \"average\": the mean score (rounded to 1 decimal)\n  - \"grade\": letter grade based on average\n    A: 90+, B: 80-89, C: 70-79, D: 60-69, F: below 60\n\nExample:\n  gradebook([{\"name\": \"Alice\", \"scores\": [90, 85, 92]}])\n  -> [{\"name\": \"Alice\", \"scores\": [90, 85, 92], \"average\": 89.0, \"grade\": \"B\"}]",
+    code: 'def gradebook(students):\n    """Add average and letter grade to each student."""\n    # Your code here\n    pass\n\n\n# Try it out:\nstudents = [\n    {"name": "Alice", "scores": [90, 85, 92]},\n    {"name": "Bob", "scores": [70, 65, 72]},\n    {"name": "Charlie", "scores": [95, 98, 100]},\n    {"name": "Diana", "scores": [50, 55, 48]},\n]\n\nresults = gradebook(students)\nfor s in results:\n    print(f"  {s[\'name\']:10s} avg={s[\'average\']}  grade={s[\'grade\']}")\n',
+    check: 'r = gradebook([{"name": "Alice", "scores": [90, 85, 92]}])\nassert r[0]["average"] == 89.0, f"Average should be 89.0, got {r[0][\'average\']}"\nassert r[0]["grade"] == "B", f"Grade should be B, got {r[0][\'grade\']}"\n\nr2 = gradebook([\n    {"name": "A", "scores": [95, 95]},\n    {"name": "F", "scores": [40, 50]},\n])\nassert r2[0]["grade"] == "A"\nassert r2[1]["grade"] == "F"\n\nr3 = gradebook([{"name": "X", "scores": [80]}])\nassert r3[0]["average"] == 80.0\nassert r3[0]["grade"] == "B"\n\nassert gradebook([]) == [], "Empty input should return empty list"\nprint("All tests passed!")\n'
+  }
+};
+
+var params = new URLSearchParams(window.location.search);
+var exNum = params.get('ex') || window.location.hash.replace('#exercise-', '') || '1';
+var exercise = EXERCISES[exNum];
+
+document.getElementById('exerciseTitle').textContent = exercise ? exercise.title : 'Not Found';
+document.getElementById('description').textContent = exercise ? exercise.description : 'Exercise not found.';
+document.title = exercise ? exercise.title + ' - Level 1 - Python in the Browser' : 'Not Found';
+
+var exNums = Object.keys(EXERCISES);
+var currentIdx = exNums.indexOf(exNum);
+var prevLink = document.getElementById('prevLink');
+var nextLink = document.getElementById('nextLink');
+if (currentIdx > 0) { prevLink.href = 'level-1.html?ex=' + exNums[currentIdx - 1]; }
+else { prevLink.style.visibility = 'hidden'; }
+if (currentIdx < exNums.length - 1) { nextLink.href = 'level-1.html?ex=' + exNums[currentIdx + 1]; }
+else { nextLink.style.visibility = 'hidden'; }
+
+var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'python', theme: 'dracula', lineNumbers: true,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+  extraKeys: {
+    'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+    'Ctrl-Enter': function() { runCode(); },
+    'Cmd-Enter': function() { runCode(); }
+  }
+});
+var originalCode = exercise ? exercise.code : '';
+
+var storageKey = 'learn-python-l1-ex-' + exNum;
+var savedCode = localStorage.getItem(storageKey);
+if (savedCode !== null) { cmEditor.setValue(savedCode); }
+else if (exercise) { cmEditor.setValue(exercise.code); }
+
+var saveTimer = null;
+cmEditor.on('change', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(storageKey, cmEditor.getValue());
+  }, 500);
+});
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    var needsInput = code.indexOf('input(') !== -1;
+    if (needsInput) {
+      pyodideInstance.globals.set('_js_prompt', function(promptText) {
+        return prompt(promptText || 'Enter value:') || '';
+      });
+      pyodideInstance.runPython(
+        'import builtins\n_orig_input = builtins.input\n' +
+        'def _patched_input(prompt_text=""):\n' +
+        '    sys.stdout.write(str(prompt_text))\n' +
+        '    val = _js_prompt(str(prompt_text))\n' +
+        '    if hasattr(val, "to_py"): val = str(val)\n' +
+        '    sys.stdout.write(str(val) + "\\n")\n' +
+        '    return str(val)\n' +
+        'builtins.input = _patched_input\n'
+      );
+    }
+
+    pyodideInstance.runPython(code);
+
+    if (needsInput) {
+      pyodideInstance.runPython('builtins.input = _orig_input\n');
+    }
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkCode() {
+  if (!exercise || !exercise.check) return;
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + exercise.check;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkCode);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

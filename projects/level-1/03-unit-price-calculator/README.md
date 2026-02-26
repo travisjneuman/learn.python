@@ -1,6 +1,8 @@
 # Level 1 / Project 03 - Unit Price Calculator
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=3) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

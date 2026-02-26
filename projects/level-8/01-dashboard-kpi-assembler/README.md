@@ -36,25 +36,16 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a new KPI definition (e.g. `memory_usage_pct`) to `sample_input.json` with samples.
-2. Change `compute_trend` to use a sliding-window approach instead of simple half-split.
-3. Add a `--format` flag that supports both JSON and CSV output.
+Extend this project in a meaningful way — add a feature that addresses a real use case.
 
 ## Break it (required)
-1. Remove one KPI from `kpi_definitions` but leave its samples — what happens to orphan data?
-2. Pass negative values in samples — does the percentile function handle them?
-3. Set `green_threshold` higher than `yellow_threshold` — what status does `evaluate` return?
+Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-1. Add validation that `green_threshold <= yellow_threshold` in `KPIDefinition`.
-2. Handle the case where samples reference a KPI not in definitions (log a warning).
-3. Add a test for negative metric values.
+Review your code critically — is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
-1. Why does the project use `dataclass` instead of plain dictionaries?
-2. What is the nearest-rank percentile method and when might it give surprising results?
-3. How does `compute_trend` decide between "improving" and "degrading"?
-4. In a production system, where would the metric samples come from?
+Could you explain the architectural trade-offs to a colleague?
 
 ## Mastery check
 You can move on when you can:
@@ -62,6 +53,12 @@ You can move on when you can:
 - add a new KPI end-to-end (definition + samples + threshold) without looking at docs,
 - describe how this pattern scales to thousands of metrics per minute,
 - explain why trend detection needs a minimum sample count.
+
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
 
 ---
 

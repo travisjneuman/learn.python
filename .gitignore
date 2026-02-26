@@ -15,8 +15,14 @@ learning/
 # Flashcard progress (SM-2 engine)
 data/flashcard_progress.json
 
+# Progress tracker history (personal scan data)
+data/progress.json
+
 # Ruff cache
 .ruff_cache/
 
 # MkDocs build output
 site/
+
+# Internal launch planning docs
+_launch/

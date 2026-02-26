@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 00 - Python in the Browser</title>
+<title>Python in the Browser — All Exercises</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -46,11 +46,26 @@ h1 {
   font-size: 1rem;
 }
 
+h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.level-desc {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
 .exercise-list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .exercise-list a {
@@ -84,6 +99,10 @@ h1 {
   font-size: 0.85rem;
   flex-shrink: 0;
 }
+
+.exercise-num.green { background: var(--green); }
+.exercise-num.yellow { background: var(--yellow); }
+.exercise-num.red { background: var(--red); }
 
 .exercise-title {
   font-weight: 600;
@@ -120,39 +139,42 @@ h1 {
 </head>
 <body>
 <div class="container">
-  <h1>Level 00 &mdash; Python in the Browser</h1>
-  <p class="subtitle">No installation needed. Run real Python code right here using Pyodide.</p>
+  <h1>Python in the Browser</h1>
+  <p class="subtitle">No installation needed. Run real Python code right here using Pyodide. Pick a level to start.</p>
 
+  <!-- Level 00 -->
+  <h2>Level 00 &mdash; Absolute Beginner</h2>
+  <p class="level-desc">Follow-along demos: print, variables, loops, functions. No coding challenges — just explore and experiment.</p>
   <ol class="exercise-list">
     <li><a href="exercise.html?ex=01">
       <span class="exercise-num">01</span>
       <div><div class="exercise-title">First Steps</div>
-      <div class="exercise-desc">Open Python, do some math, print a message</div></div>
+      <div class="exercise-desc">Math and print statements</div></div>
     </a></li>
     <li><a href="exercise.html?ex=02">
       <span class="exercise-num">02</span>
       <div><div class="exercise-title">Hello World</div>
-      <div class="exercise-desc">Your first print() statements</div></div>
+      <div class="exercise-desc">Your first print() calls</div></div>
     </a></li>
     <li><a href="exercise.html?ex=03">
       <span class="exercise-num">03</span>
       <div><div class="exercise-title">Your First Script</div>
-      <div class="exercise-desc">Run multiple lines of code from top to bottom</div></div>
+      <div class="exercise-desc">Code runs top to bottom</div></div>
     </a></li>
     <li><a href="exercise.html?ex=04">
       <span class="exercise-num">04</span>
       <div><div class="exercise-title">Variables</div>
-      <div class="exercise-desc">Store values and use them later</div></div>
+      <div class="exercise-desc">Store and reuse values</div></div>
     </a></li>
     <li><a href="exercise.html?ex=05">
       <span class="exercise-num">05</span>
       <div><div class="exercise-title">Numbers and Math</div>
-      <div class="exercise-desc">Arithmetic operations and order of operations</div></div>
+      <div class="exercise-desc">Arithmetic and order of operations</div></div>
     </a></li>
     <li><a href="exercise.html?ex=06">
       <span class="exercise-num">06</span>
       <div><div class="exercise-title">Strings and Text</div>
-      <div class="exercise-desc">Working with text, f-strings, string methods</div></div>
+      <div class="exercise-desc">f-strings and string methods</div></div>
     </a></li>
     <li><a href="exercise.html?ex=07">
       <span class="exercise-num">07</span>
@@ -162,52 +184,165 @@ h1 {
     <li><a href="exercise.html?ex=08">
       <span class="exercise-num">08</span>
       <div><div class="exercise-title">Making Decisions</div>
-      <div class="exercise-desc">if, elif, else and comparisons</div></div>
+      <div class="exercise-desc">if, elif, else</div></div>
     </a></li>
     <li><a href="exercise.html?ex=09">
       <span class="exercise-num">09</span>
       <div><div class="exercise-title">Lists</div>
-      <div class="exercise-desc">Collecting multiple items together</div></div>
+      <div class="exercise-desc">Ordered collections</div></div>
     </a></li>
     <li><a href="exercise.html?ex=10">
       <span class="exercise-num">10</span>
       <div><div class="exercise-title">For Loops</div>
-      <div class="exercise-desc">Doing something for each item</div></div>
+      <div class="exercise-desc">Iterate over items</div></div>
     </a></li>
     <li><a href="exercise.html?ex=11">
       <span class="exercise-num">11</span>
       <div><div class="exercise-title">While Loops</div>
-      <div class="exercise-desc">Repeating until a condition is met</div></div>
+      <div class="exercise-desc">Repeat until condition met</div></div>
     </a></li>
     <li><a href="exercise.html?ex=12">
       <span class="exercise-num">12</span>
       <div><div class="exercise-title">Dictionaries</div>
-      <div class="exercise-desc">Labeled data storage with key-value pairs</div></div>
+      <div class="exercise-desc">Key-value pairs</div></div>
     </a></li>
     <li><a href="exercise.html?ex=13">
       <span class="exercise-num">13</span>
       <div><div class="exercise-title">Functions</div>
-      <div class="exercise-desc">Reusable blocks of code</div></div>
+      <div class="exercise-desc">Reusable code blocks</div></div>
     </a></li>
     <li><a href="exercise.html?ex=14">
       <span class="exercise-num">14</span>
       <div><div class="exercise-title">Reading Files</div>
-      <div class="exercise-desc">Getting data from files (simulated)</div></div>
+      <div class="exercise-desc">Data from files (simulated)</div></div>
     </a></li>
     <li><a href="exercise.html?ex=15">
       <span class="exercise-num">15</span>
       <div><div class="exercise-title">Putting It Together</div>
-      <div class="exercise-desc">A complete mini-program using everything</div></div>
+      <div class="exercise-desc">Complete mini-program</div></div>
+    </a></li>
+  </ol>
+
+  <!-- Level 0 -->
+  <h2>Level 0 &mdash; First Real Projects</h2>
+  <p class="level-desc">Write functions, pass tests, and solve problems. Each exercise has a Check button to validate your solution.</p>
+  <ol class="exercise-list">
+    <li><a href="level-0.html?ex=1">
+      <span class="exercise-num green">1</span>
+      <div><div class="exercise-title">Hello Lab</div>
+      <div class="exercise-desc">Write a greeting function</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=2">
+      <span class="exercise-num green">2</span>
+      <div><div class="exercise-title">Calculator</div>
+      <div class="exercise-desc">Four arithmetic operations</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=3">
+      <span class="exercise-num green">3</span>
+      <div><div class="exercise-title">Temperature Converter</div>
+      <div class="exercise-desc">Celsius and Fahrenheit</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=4">
+      <span class="exercise-num green">4</span>
+      <div><div class="exercise-title">Yes/No Questionnaire</div>
+      <div class="exercise-desc">Count responses by category</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=5">
+      <span class="exercise-num green">5</span>
+      <div><div class="exercise-title">Number Classifier</div>
+      <div class="exercise-desc">Even/odd, positive/negative</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=6">
+      <span class="exercise-num green">6</span>
+      <div><div class="exercise-title">Word Counter</div>
+      <div class="exercise-desc">Count word occurrences</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=7">
+      <span class="exercise-num green">7</span>
+      <div><div class="exercise-title">Password Generator</div>
+      <div class="exercise-desc">Random secure passwords</div></div>
+    </a></li>
+    <li><a href="level-0.html?ex=8">
+      <span class="exercise-num green">8</span>
+      <div><div class="exercise-title">String Cleaner</div>
+      <div class="exercise-desc">Normalize messy text</div></div>
+    </a></li>
+  </ol>
+
+  <!-- Level 1 -->
+  <h2>Level 1 &mdash; Building Confidence</h2>
+  <p class="level-desc">Validation, parsing, and data processing. Functions return structured results.</p>
+  <ol class="exercise-list">
+    <li><a href="level-1.html?ex=1">
+      <span class="exercise-num yellow">1</span>
+      <div><div class="exercise-title">Input Validator</div>
+      <div class="exercise-desc">Validate email format</div></div>
+    </a></li>
+    <li><a href="level-1.html?ex=2">
+      <span class="exercise-num yellow">2</span>
+      <div><div class="exercise-title">Password Strength Checker</div>
+      <div class="exercise-desc">Classify weak/medium/strong</div></div>
+    </a></li>
+    <li><a href="level-1.html?ex=3">
+      <span class="exercise-num yellow">3</span>
+      <div><div class="exercise-title">Unit Price Calculator</div>
+      <div class="exercise-desc">Find the best deal</div></div>
+    </a></li>
+    <li><a href="level-1.html?ex=4">
+      <span class="exercise-num yellow">4</span>
+      <div><div class="exercise-title">Log Line Parser</div>
+      <div class="exercise-desc">Extract structured data from logs</div></div>
+    </a></li>
+    <li><a href="level-1.html?ex=5">
+      <span class="exercise-num yellow">5</span>
+      <div><div class="exercise-title">CSV Reader</div>
+      <div class="exercise-desc">Parse CSV text into dicts</div></div>
+    </a></li>
+    <li><a href="level-1.html?ex=6">
+      <span class="exercise-num yellow">6</span>
+      <div><div class="exercise-title">Gradebook Engine</div>
+      <div class="exercise-desc">Calculate averages and letter grades</div></div>
+    </a></li>
+  </ol>
+
+  <!-- Level 2 -->
+  <h2>Level 2 &mdash; Data Structures</h2>
+  <p class="level-desc">Nested data, error handling, pipelines, and report generation.</p>
+  <ol class="exercise-list">
+    <li><a href="level-2.html?ex=1">
+      <span class="exercise-num red">1</span>
+      <div><div class="exercise-title">Dictionary Lookup</div>
+      <div class="exercise-desc">Safe lookups and search</div></div>
+    </a></li>
+    <li><a href="level-2.html?ex=2">
+      <span class="exercise-num red">2</span>
+      <div><div class="exercise-title">Data Flattener</div>
+      <div class="exercise-desc">Flatten nested structures</div></div>
+    </a></li>
+    <li><a href="level-2.html?ex=3">
+      <span class="exercise-num red">3</span>
+      <div><div class="exercise-title">Data Cleaning Pipeline</div>
+      <div class="exercise-desc">Strip, convert, filter records</div></div>
+    </a></li>
+    <li><a href="level-2.html?ex=4">
+      <span class="exercise-num red">4</span>
+      <div><div class="exercise-title">Error-Safe Divider</div>
+      <div class="exercise-desc">Graceful error handling</div></div>
+    </a></li>
+    <li><a href="level-2.html?ex=5">
+      <span class="exercise-num red">5</span>
+      <div><div class="exercise-title">Text Report Generator</div>
+      <div class="exercise-desc">Formatted text output</div></div>
     </a></li>
   </ol>
 
   <div class="note">
     <strong>Note:</strong> These browser exercises use <a href="https://pyodide.org/" style="color:var(--accent)">Pyodide</a> to run real Python in your browser.
-    For the full experience (file I/O, user input), install Python locally using the
+    For the full experience (file I/O, pytest, linting), install Python locally using the
     <a href="../03_SETUP_ALL_PLATFORMS.md" style="color:var(--accent)">Setup Guide</a>.
   </div>
 
-  <a class="back-link" href="../projects/level-00-absolute-beginner/README.md">&larr; Back to Level 00</a>
+  <a class="back-link" href="../README.md">&larr; Back to Curriculum</a>
 </div>
 </body>
 </html>

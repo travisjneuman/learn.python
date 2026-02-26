@@ -28,22 +28,27 @@ ETL complete: 5 records from 2 files
 - Passing tests
 - Updated `notes.md`
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `--verbose` flag that prints each file name and row count as it is processed.
-2. If one file fails, continue processing the remaining files and report failures at the end.
-3. Add a summary report: total files processed, total rows ingested, files skipped, elapsed time.
-4. Re-run script and tests.
+1. How could you make the tool more observable — what progress information would help?
+2. What should happen when one file in the batch fails?
+3. Add a summary report with the statistics you think matter most.
 
 ## Break it (required)
-1. Put a CSV with different headers (e.g. `user,value`) in the sources directory alongside the existing files.
-2. Point `--source-dir` at an empty directory with no CSV files.
-3. Capture the first failing test or visible bad output.
+1. What happens when source files do not share the same structure?
+2. Try running with no input files at all.
+3. Find the first failure and capture it.
 
 ## Fix it (required)
-1. Validate that all source files share the same header columns before merging.
-2. Return an empty result with a clear message when no files are found.
-3. Add tests for mixed-header and empty-directory cases.
-4. Re-run until output and tests are deterministic.
+1. Add validation for the structural consistency issue you found.
+2. Handle the empty-input case with a clear message.
+3. Write tests for both edge cases and re-run until deterministic.
 
 ## Explain it (teach-back)
 1. What is the difference between append, deduplicate, and update merge strategies?

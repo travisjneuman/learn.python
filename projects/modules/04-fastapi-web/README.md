@@ -68,3 +68,70 @@ This module requires several packages (listed in `requirements.txt`):
 - **passlib** — hashes passwords securely so you never store plaintext passwords.
 - **httpx** — an HTTP client used by FastAPI's TestClient for testing your endpoints.
 - **pytest** — the test runner you already know from Level 3.
+
+## Security Considerations
+
+As you build web APIs you must think about security from the start. Here are the key threats and how FastAPI helps you defend against them.
+
+### SQL Injection Prevention
+
+Never build SQL queries by concatenating user input into strings. Use parameterized queries or, better yet, use SQLAlchemy ORM which generates safe queries automatically.
+
+```python
+# DANGEROUS — never do this
+cursor.execute(f"SELECT * FROM users WHERE name = '{user_input}'")
+
+# SAFE — parameterized query
+cursor.execute("SELECT * FROM users WHERE name = ?", (user_input,))
+
+# SAFE — SQLAlchemy ORM (used in this module)
+user = db.query(User).filter(User.name == user_input).first()
+```
+
+### XSS Prevention
+
+If your API serves HTML (via Jinja2 templates), always escape user content. Jinja2 auto-escapes by default, but be careful with the `| safe` filter. On the API side, set security headers:
+
+- Return `Content-Type: application/json` for API responses (FastAPI does this automatically).
+- Add a `Content-Security-Policy` header to restrict where scripts can load from.
+
+### CSRF Protection
+
+CSRF (Cross-Site Request Forgery) is less of a concern for pure JSON APIs that use Bearer tokens, because browsers do not automatically attach Authorization headers. If you serve HTML forms, use a CSRF token library such as `starlette-csrf`.
+
+### Input Validation with Pydantic
+
+FastAPI validates all request data through Pydantic models. This is your first line of defense: define strict types and constraints so invalid data is rejected before it reaches your business logic.
+
+```python
+from pydantic import BaseModel, Field, EmailStr
+
+class UserCreate(BaseModel):
+    username: str = Field(min_length=3, max_length=30, pattern=r"^[a-zA-Z0-9_]+$")
+    email: EmailStr
+    password: str = Field(min_length=8)
+```
+
+### Authentication Best Practices
+
+- **Hash passwords** with bcrypt (via `passlib`) — never store plaintext passwords.
+- **Use short-lived JWT tokens** (15-30 minutes) with a refresh token flow.
+- **Rate-limit login endpoints** to prevent brute-force attacks (use a middleware or library like `slowapi`).
+- **Never log tokens or passwords**, even in debug mode.
+
+### Secrets Management
+
+- Store secrets (database URLs, JWT signing keys, API keys) in a `.env` file and load them with `python-dotenv` or Pydantic's `BaseSettings`.
+- Add `.env` to `.gitignore` so secrets are never committed.
+- Never hardcode secrets in source code.
+
+```python
+# settings.py
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    database_url: str
+    jwt_secret: str
+    class Config:
+        env_file = ".env"
+```

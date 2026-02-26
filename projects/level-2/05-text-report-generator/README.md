@@ -1,6 +1,8 @@
 # Level 2 / Project 05 - Text Report Generator
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=5) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

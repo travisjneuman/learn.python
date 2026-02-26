@@ -1,6 +1,8 @@
 # Level 2 / Project 03 - Data Cleaning Pipeline
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=3) — no installation needed!
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

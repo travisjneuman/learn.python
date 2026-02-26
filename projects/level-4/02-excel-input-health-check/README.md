@@ -64,19 +64,26 @@ def score_completeness(records, required_fields):
 
 **The thought process:** Define measurable quality criteria. Score them numerically. Set thresholds for actionable categories. This is the same pattern the health check project uses.
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a check for rows that contain only numeric data (possible header/data swap).
-2. Add a `--format` flag that supports both CSV and TSV input auto-detection.
-3. Re-run script and tests — add a test for TSV delimiter detection.
+1. What additional quality check would catch problems the current tool misses?
+2. Can you make the tool support more than one input format?
+3. Write a test to verify your new check works.
 
 ## Break it (required)
-1. Create a CSV where every row has a different number of columns — observe how completeness reports it.
-2. Feed it a file with mixed encodings (e.g., Latin-1 characters) and watch the encoding check fail.
-3. Create a CSV with 100+ duplicate header names and check the report.
+1. Create messy input data — what quality issues does the tool miss?
+2. What happens with files that use unexpected encodings?
+3. Try extreme cases (huge headers, wildly inconsistent rows) — where does it struggle?
 
 ## Fix it (required)
-1. Add a max-issues limit so the report does not grow unbounded on very messy files.
-2. Handle the mixed-encoding case by falling back to `latin-1` when UTF-8 fails.
+1. Add a safeguard so the report stays manageable even with very messy input.
+2. Handle the encoding issue you discovered.
 3. Re-run until all tests pass.
 
 ## Explain it (teach-back)

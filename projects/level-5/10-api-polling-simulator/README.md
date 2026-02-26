@@ -1,6 +1,8 @@
 # Level 5 / Project 10 - API Polling Simulator
 Home: [README](../../../README.md)
 
+> **Quick Recall:** This project uses rule-based scoring to decide when to retry or back off. Before starting, make sure you can: write a function that evaluates multiple conditions and returns a score or category based on thresholds (Level 1, Project 02 - Password Strength Checker).
+
 ## Focus
 - poll cycles, retries, and delays
 

@@ -1,0 +1,125 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "learn.python",
+  "description": "A comprehensive Python curriculum from zero tech experience to world-class full-stack mastery. 50+ sequenced documents, 246 hands-on projects across 13 levels, 56 expansion module projects across 12 technology domains.",
+  "url": "https://github.com/travisjneuman/learn.python",
+  "provider": {
+    "@type": "Person",
+    "name": "Travis J. Neuman",
+    "url": "https://github.com/travisjneuman"
+  },
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/MIT",
+  "educationalLevel": ["Beginner", "Intermediate", "Advanced"],
+  "teaches": [
+    "Python programming",
+    "Web development",
+    "Data analysis",
+    "REST API design",
+    "Database management",
+    "Test-driven development",
+    "Command-line tools",
+    "Async programming",
+    "Docker deployment",
+    "Cloud deployment",
+    "Software architecture",
+    "Security fundamentals"
+  ],
+  "competencyRequired": "None — designed for absolute beginners",
+  "educationalCredentialAwarded": "Self-assessed mastery certification (see curriculum doc 50)",
+  "hasCourseInstance": [
+    {
+      "@type": "CourseInstance",
+      "name": "Level 00 — Absolute Beginner",
+      "description": "First steps with Python. No imports, no tests. Print statements, variables, input, basic math, simple string operations.",
+      "timeRequired": "PT5H",
+      "courseWorkload": "15 exercises"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 0 — Terminal and Files",
+      "description": "Terminal usage, file reading/writing, basic I/O, string manipulation, simple menus.",
+      "timeRequired": "PT15H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 1 — Input Validation and Data Formats",
+      "description": "Input validation, CSV and JSON handling, date operations, file paths, basic automation.",
+      "timeRequired": "PT20H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 2 — Data Structures and Error Handling",
+      "description": "Dictionaries, nested data, error handling, data cleaning, config-driven programs, retry patterns.",
+      "timeRequired": "PT25H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 3 — Packages, Logging, and TDD",
+      "description": "Package layout, CLI arguments, logging, test-driven development, refactoring, structured error handling.",
+      "timeRequired": "PT30H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 4 — Schema Validation and Pipelines",
+      "description": "Schema validation, data contracts, transformation pipelines, backup tools, checkpoint recovery.",
+      "timeRequired": "PT30H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 5 — Scheduling, Monitoring, Resilience",
+      "description": "Task scheduling, health monitoring, retry with backoff, circuit breakers, alerting systems.",
+      "timeRequired": "PT35H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 6 — SQL and ETL",
+      "description": "SQL fundamentals, staging tables, ETL pipelines, idempotent operations, incremental loads.",
+      "timeRequired": "PT35H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 7 — APIs, Caching, Observability",
+      "description": "API adapters, caching strategies, polling, webhook simulation, ingestion observability.",
+      "timeRequired": "PT40H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 8 — Dashboards and Concurrency",
+      "description": "Dashboard building, concurrent processing, fault injection, performance testing, data visualization.",
+      "timeRequired": "PT40H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 9 — Architecture and SLOs",
+      "description": "System architecture, SLO definition, capacity planning, security auditing, reliability scorecards.",
+      "timeRequired": "PT45H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Level 10 — Enterprise Engineering",
+      "description": "Enterprise blueprints, compliance, multi-tenant systems, zero-downtime migrations, production readiness.",
+      "timeRequired": "PT50H",
+      "courseWorkload": "15 projects"
+    },
+    {
+      "@type": "CourseInstance",
+      "name": "Elite Track",
+      "description": "Algorithms, distributed systems, event-driven architecture, observability platforms, staff-engineer capstone.",
+      "timeRequired": "PT60H",
+      "courseWorkload": "10 projects"
+    }
+  ]
+}

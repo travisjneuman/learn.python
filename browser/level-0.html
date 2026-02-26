@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 0 — Python in the Browser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 200px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+.output-content .pass { color: var(--green); font-weight: 600; }
+.output-content .fail { color: var(--red); font-weight: 600; }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1 id="exerciseTitle">Exercise</h1>
+    <div class="nav-links">
+      <a href="#" id="prevLink">&larr; Prev</a>
+      <a href="index.html">All Exercises</a>
+      <a href="#" id="nextLink">Next &rarr;</a>
+    </div>
+  </div>
+
+  <div class="description" id="description"></div>
+
+  <div class="editor-wrapper">
+    <textarea id="editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var EXERCISES = {
+  "1": {
+    title: "Exercise 1 — Hello Lab",
+    description: "Write a function greet(name) that returns \"Hello, <name>!\".\n\nExample:\n  greet(\"Alice\")  ->  \"Hello, Alice!\"\n  greet(\"World\")  ->  \"Hello, World!\"\n\nFill in the function body below, then click Check.",
+    code: 'def greet(name):\n    """Return a greeting string for the given name."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(greet("Alice"))\nprint(greet("Python Learner"))\n',
+    check: 'assert greet("Alice") == "Hello, Alice!", f"Expected \'Hello, Alice!\' but got \'{greet(\"Alice\")}\'"\nassert greet("World") == "Hello, World!", f"Expected \'Hello, World!\' but got \'{greet(\"World\")}\'"\nassert greet("") == "Hello, !", f"Expected \'Hello, !\' but got \'{greet(\"\")}\'"\nprint("All tests passed!")\n'
+  },
+  "2": {
+    title: "Exercise 2 — Calculator",
+    description: "Write four functions: add(a, b), subtract(a, b), multiply(a, b), divide(a, b).\n\nEach returns the result of the operation.\ndivide() should return the float result. If b is 0, return \"Error: division by zero\".\n\nExamples:\n  add(2, 3)       ->  5\n  divide(10, 3)   ->  3.333...\n  divide(5, 0)    ->  \"Error: division by zero\"",
+    code: 'def add(a, b):\n    # Your code here\n    pass\n\ndef subtract(a, b):\n    # Your code here\n    pass\n\ndef multiply(a, b):\n    # Your code here\n    pass\n\ndef divide(a, b):\n    # Your code here\n    pass\n\n\n# Try it out:\nprint("2 + 3 =", add(2, 3))\nprint("10 - 4 =", subtract(10, 4))\nprint("6 * 7 =", multiply(6, 7))\nprint("10 / 3 =", divide(10, 3))\nprint("5 / 0 =", divide(5, 0))\n',
+    check: 'assert add(2, 3) == 5, f"add(2, 3) should be 5, got {add(2, 3)}"\nassert add(-1, 1) == 0, f"add(-1, 1) should be 0"\nassert subtract(10, 4) == 6, f"subtract(10, 4) should be 6"\nassert multiply(6, 7) == 42, f"multiply(6, 7) should be 42"\nassert divide(10, 2) == 5.0, f"divide(10, 2) should be 5.0"\nassert divide(5, 0) == "Error: division by zero", f"divide(5, 0) should return error string"\nprint("All tests passed!")\n'
+  },
+  "3": {
+    title: "Exercise 3 — Temperature Converter",
+    description: "Write two functions:\n  celsius_to_fahrenheit(c) — returns (c * 9/5) + 32\n  fahrenheit_to_celsius(f) — returns (f - 32) * 5/9\n\nRound results to 1 decimal place using round(value, 1).\n\nExamples:\n  celsius_to_fahrenheit(0)    ->  32.0\n  celsius_to_fahrenheit(100)  ->  212.0\n  fahrenheit_to_celsius(72)   ->  22.2",
+    code: 'def celsius_to_fahrenheit(c):\n    # Your code here\n    pass\n\ndef fahrenheit_to_celsius(f):\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(f"0 C = {celsius_to_fahrenheit(0)} F")\nprint(f"100 C = {celsius_to_fahrenheit(100)} F")\nprint(f"72 F = {fahrenheit_to_celsius(72)} C")\nprint(f"32 F = {fahrenheit_to_celsius(32)} C")\n',
+    check: 'assert celsius_to_fahrenheit(0) == 32.0, f"0C should be 32.0F, got {celsius_to_fahrenheit(0)}"\nassert celsius_to_fahrenheit(100) == 212.0, f"100C should be 212.0F"\nassert fahrenheit_to_celsius(32) == 0.0, f"32F should be 0.0C"\nassert fahrenheit_to_celsius(72) == 22.2, f"72F should be 22.2C, got {fahrenheit_to_celsius(72)}"\nassert celsius_to_fahrenheit(-40) == -40.0, f"-40C should be -40.0F"\nprint("All tests passed!")\n'
+  },
+  "4": {
+    title: "Exercise 4 — Yes/No Questionnaire",
+    description: "Write a function ask_questions(answers) that takes a list of \"yes\"/\"no\" strings\nand returns a dictionary with counts:\n  {\"yes\": <count>, \"no\": <count>, \"invalid\": <count>}\n\nThe function should be case-insensitive (\"Yes\", \"YES\", \"yes\" all count as yes).\nAnything other than yes/no counts as invalid.\n\nExamples:\n  ask_questions([\"yes\", \"no\", \"Yes\", \"maybe\"])  ->  {\"yes\": 2, \"no\": 1, \"invalid\": 1}",
+    code: 'def ask_questions(answers):\n    """Count yes, no, and invalid responses."""\n    # Your code here\n    pass\n\n\n# Try it out:\nresult = ask_questions(["yes", "no", "Yes", "NO", "maybe", "yes"])\nprint(result)\n\nresult2 = ask_questions([])\nprint(result2)\n',
+    check: 'r = ask_questions(["yes", "no", "Yes", "NO", "maybe", "yes"])\nassert r == {"yes": 3, "no": 2, "invalid": 1}, f"Got {r}"\nr2 = ask_questions([])\nassert r2 == {"yes": 0, "no": 0, "invalid": 0}, f"Empty list should give all zeros, got {r2}"\nr3 = ask_questions(["YES", "NO", "yEs", "nO"])\nassert r3 == {"yes": 2, "no": 2, "invalid": 0}, f"Case insensitive failed, got {r3}"\nprint("All tests passed!")\n'
+  },
+  "5": {
+    title: "Exercise 5 — Number Classifier",
+    description: "Write a function classify(n) that returns a string describing the number:\n  - \"positive even\", \"positive odd\", \"negative even\", \"negative odd\", or \"zero\"\n\nExamples:\n  classify(4)   ->  \"positive even\"\n  classify(-3)  ->  \"negative odd\"\n  classify(0)   ->  \"zero\"",
+    code: 'def classify(n):\n    """Classify a number as positive/negative, even/odd, or zero."""\n    # Your code here\n    pass\n\n\n# Try it out:\nfor num in [4, -3, 0, 7, -8, 1, -1]:\n    print(f"classify({num}) = {classify(num)}")\n',
+    check: 'assert classify(4) == "positive even", f"classify(4) should be \'positive even\', got \'{classify(4)}\'"\nassert classify(-3) == "negative odd", f"classify(-3) should be \'negative odd\'"\nassert classify(0) == "zero", f"classify(0) should be \'zero\'"\nassert classify(7) == "positive odd"\nassert classify(-8) == "negative even"\nassert classify(1) == "positive odd"\nassert classify(-1) == "negative odd"\nprint("All tests passed!")\n'
+  },
+  "6": {
+    title: "Exercise 6 — Word Counter",
+    description: "Write a function count_words(text) that returns a dictionary of word counts.\nConvert all words to lowercase before counting.\n\nExample:\n  count_words(\"the cat and the dog\")\n  ->  {\"the\": 2, \"cat\": 1, \"and\": 1, \"dog\": 1}\n\nFor empty or whitespace-only input, return an empty dict {}.",
+    code: 'def count_words(text):\n    """Count occurrences of each word (case-insensitive)."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(count_words("the cat and the dog"))\nprint(count_words("Hello hello HELLO"))\nprint(count_words(""))\n',
+    check: 'assert count_words("the cat and the dog") == {"the": 2, "cat": 1, "and": 1, "dog": 1}\nassert count_words("Hello hello HELLO") == {"hello": 3}\nassert count_words("") == {}\nassert count_words("   ") == {}\nassert count_words("one") == {"one": 1}\nprint("All tests passed!")\n'
+  },
+  "7": {
+    title: "Exercise 7 — Password Generator",
+    description: "Write a function generate_password(length) that returns a random password string.\n\nRules:\n  - Uses lowercase letters, uppercase letters, and digits\n  - Length must be at least 4; if less, return \"Error: too short\"\n  - The password should contain at least one lowercase, one uppercase, and one digit\n\nHint: use the random module. random.choice(seq) picks a random item.\n      random.shuffle(list) shuffles a list in place.",
+    code: 'import random\nimport string\n\ndef generate_password(length):\n    """Generate a random password of the given length."""\n    # Your code here\n    pass\n\n\n# Try it out:\nfor i in range(5):\n    pw = generate_password(12)\n    print(f"Password {i+1}: {pw}")\n\nprint(f"Too short: {generate_password(2)}")\n',
+    check: 'pw = generate_password(12)\nassert isinstance(pw, str), f"Should return a string, got {type(pw)}"\nassert len(pw) == 12, f"Length should be 12, got {len(pw)}"\nassert any(c.islower() for c in pw), "Must contain a lowercase letter"\nassert any(c.isupper() for c in pw), "Must contain an uppercase letter"\nassert any(c.isdigit() for c in pw), "Must contain a digit"\nassert generate_password(2) == "Error: too short", "Length < 4 should return error"\nassert generate_password(4) != generate_password(4) or True, "Passes (randomness)"\nassert len(generate_password(50)) == 50, "Should work for length 50"\nprint("All tests passed!")\n'
+  },
+  "8": {
+    title: "Exercise 8 — String Cleaner",
+    description: "Write a function clean(text) that cleans up messy text:\n  1. Strip leading/trailing whitespace\n  2. Replace multiple spaces with a single space\n  3. Convert to lowercase\n  4. Remove any characters that are not letters, digits, or spaces\n\nExamples:\n  clean(\"  Hello,   World!  \")  ->  \"hello world\"\n  clean(\"Python 3.11!!!\")       ->  \"python 311\"",
+    code: 'def clean(text):\n    """Clean up messy text."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(repr(clean("  Hello,   World!  ")))\nprint(repr(clean("Python 3.11!!!")))\nprint(repr(clean("  LOTS   of   SPACES  ")))\nprint(repr(clean("")))\n',
+    check: 'assert clean("  Hello,   World!  ") == "hello world", f"Got \'{clean(\"  Hello,   World!  \")}\'"\nassert clean("Python 3.11!!!") == "python 311", f"Got \'{clean(\"Python 3.11!!!\")}\'" \nassert clean("  LOTS   of   SPACES  ") == "lots of spaces"\nassert clean("") == ""\nassert clean("abc") == "abc"\nassert clean("  @#$  ") == ""\nassert clean("Hello   123   World") == "hello 123 world"\nprint("All tests passed!")\n'
+  }
+};
+
+// Get exercise from URL hash or query param
+var params = new URLSearchParams(window.location.search);
+var exNum = params.get('ex') || window.location.hash.replace('#exercise-', '') || '1';
+var exercise = EXERCISES[exNum];
+
+document.getElementById('exerciseTitle').textContent = exercise ? exercise.title : 'Not Found';
+document.getElementById('description').textContent = exercise ? exercise.description : 'Exercise not found.';
+document.title = exercise ? exercise.title + ' - Level 0 - Python in the Browser' : 'Not Found';
+
+var exNums = Object.keys(EXERCISES);
+var currentIdx = exNums.indexOf(exNum);
+var prevLink = document.getElementById('prevLink');
+var nextLink = document.getElementById('nextLink');
+if (currentIdx > 0) { prevLink.href = 'level-0.html?ex=' + exNums[currentIdx - 1]; }
+else { prevLink.style.visibility = 'hidden'; }
+if (currentIdx < exNums.length - 1) { nextLink.href = 'level-0.html?ex=' + exNums[currentIdx + 1]; }
+else { nextLink.style.visibility = 'hidden'; }
+
+var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'python', theme: 'dracula', lineNumbers: true,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+  extraKeys: {
+    'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+    'Ctrl-Enter': function() { runCode(); },
+    'Cmd-Enter': function() { runCode(); }
+  }
+});
+var originalCode = exercise ? exercise.code : '';
+
+var storageKey = 'learn-python-l0-ex-' + exNum;
+var savedCode = localStorage.getItem(storageKey);
+if (savedCode !== null) { cmEditor.setValue(savedCode); }
+else if (exercise) { cmEditor.setValue(exercise.code); }
+
+var saveTimer = null;
+cmEditor.on('change', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(storageKey, cmEditor.getValue());
+  }, 500);
+});
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    var needsInput = code.indexOf('input(') !== -1;
+    if (needsInput) {
+      pyodideInstance.globals.set('_js_prompt', function(promptText) {
+        return prompt(promptText || 'Enter value:') || '';
+      });
+      pyodideInstance.runPython(
+        'import builtins\n_orig_input = builtins.input\n' +
+        'def _patched_input(prompt_text=""):\n' +
+        '    sys.stdout.write(str(prompt_text))\n' +
+        '    val = _js_prompt(str(prompt_text))\n' +
+        '    if hasattr(val, "to_py"): val = str(val)\n' +
+        '    sys.stdout.write(str(val) + "\\n")\n' +
+        '    return str(val)\n' +
+        'builtins.input = _patched_input\n'
+      );
+    }
+
+    pyodideInstance.runPython(code);
+
+    if (needsInput) {
+      pyodideInstance.runPython('builtins.input = _orig_input\n');
+    }
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkCode() {
+  if (!exercise || !exercise.check) return;
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + exercise.check;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    } else {
+      statusLabel.style.color = '';
+    }
+  }
+}
+
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkCode);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

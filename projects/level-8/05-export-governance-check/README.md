@@ -68,6 +68,12 @@ You can move on when you can:
 - describe PII categories and why each requires different handling,
 - explain how severity levels (info → blocking) drive approval decisions.
 
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
+
 ---
 
 ## Related Concepts

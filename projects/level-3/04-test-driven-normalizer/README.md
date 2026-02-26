@@ -1,6 +1,8 @@
 # Level 3 / Project 04 - Test Driven Normalizer
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=4) — browser exercises cover Level 2 topics
+
 ## Before You Start
 
 Recall these prerequisites before diving in:

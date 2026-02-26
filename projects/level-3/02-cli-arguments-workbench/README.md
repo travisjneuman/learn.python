@@ -1,6 +1,8 @@
 # Level 3 / Project 02 - CLI Arguments Workbench
 Home: [README](../../../README.md)
 
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=2) — browser exercises cover Level 2 topics
+
 ## Before You Start
 
 Recall these prerequisites before diving in:
@@ -76,20 +78,27 @@ def convert_size(value, from_unit, to_unit):
 
 **The thought process:** Argparse handles parsing and validation. The hub-and-spoke pattern (through bytes) handles conversion. Subcommands make the CLI extensible. This is the same approach the CLI workbench uses.
 
+## Design First
+Before writing code, sketch your approach in `notes.md`:
+- What functions or classes do you need?
+- What data structures will you use?
+- What's the flow from input to output?
+- What could go wrong?
+
 ## Alter it (required)
-1. Add a `liters-to-gallons` conversion under a new `volume` subcommand.
-2. Add a `--precision` flag that controls how many decimal places appear in output.
-3. Add `--reverse` flag to each subcommand that swaps the default conversion direction.
+1. Add a new conversion category — pick a domain that interests you.
+2. What output formatting options would make this tool more useful?
+3. Can you make the conversion direction configurable instead of hardcoded?
 
 ## Break it (required)
-1. Pass a string instead of a number to `temp --c-to-f` — what error appears?
-2. Pass a negative value to `dist --km-to-mi` — does `positive_float` catch it?
-3. Run `batch` with a malformed JSON file — what happens?
+1. Try feeding the tool unexpected input types — what happens?
+2. Can you find an edge case where validation fails silently?
+3. What happens when batch input is malformed?
 
 ## Fix it (required)
-1. Add a friendly error message when `batch` file does not exist.
-2. Handle the case where `batch` JSON is a dict instead of a list.
-3. Add input range validation (e.g., temperature cannot be below absolute zero).
+1. Improve the error experience for the most confusing failure you found.
+2. Handle a data format edge case the tool currently misses.
+3. Add domain-appropriate input validation.
 
 ## Explain it (teach-back)
 1. What does `add_mutually_exclusive_group` do and why use it?

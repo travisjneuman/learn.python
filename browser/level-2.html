@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 2 — Python in the Browser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 200px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1 id="exerciseTitle">Exercise</h1>
+    <div class="nav-links">
+      <a href="#" id="prevLink">&larr; Prev</a>
+      <a href="index.html">All Exercises</a>
+      <a href="#" id="nextLink">Next &rarr;</a>
+    </div>
+  </div>
+
+  <div class="description" id="description"></div>
+
+  <div class="editor-wrapper">
+    <textarea id="editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var EXERCISES = {
+  "1": {
+    title: "Exercise 1 — Dictionary Lookup",
+    description: "Write a function lookup(dictionary, key) that safely looks up a key.\n\ndictionary is a dict. key is the string to find.\n\nReturn {\"found\": True, \"value\": <the value>} if the key exists.\nReturn {\"found\": False, \"value\": None} if it does not.\n\nAlso write search(dictionary, substring) that returns a list of all keys\nthat contain the substring (case-insensitive).\n\nExamples:\n  d = {\"python\": \"A language\", \"java\": \"Another language\"}\n  lookup(d, \"python\")     -> {\"found\": True, \"value\": \"A language\"}\n  lookup(d, \"rust\")       -> {\"found\": False, \"value\": None}\n  search(d, \"a\")          -> [\"java\"]  (\"python\" does not contain \"a\"... wait, it does not)",
+    code: 'def lookup(dictionary, key):\n    """Safely look up a key in a dictionary."""\n    # Your code here\n    pass\n\ndef search(dictionary, substring):\n    """Return all keys that contain the substring (case-insensitive)."""\n    # Your code here\n    pass\n\n\n# Try it out:\nd = {\n    "python": "A high-level programming language",\n    "java": "A compiled OOP language",\n    "javascript": "The language of the web",\n    "rust": "A systems programming language",\n}\n\nprint(lookup(d, "python"))\nprint(lookup(d, "go"))\nprint(f"Search \'java\': {search(d, \'java\')}")\nprint(f"Search \'lang\': {search(d, \'lang\')}")\n',
+    check: 'd = {"python": "A language", "java": "Another", "javascript": "Web lang"}\nr = lookup(d, "python")\nassert r == {"found": True, "value": "A language"}, f"Got {r}"\nr2 = lookup(d, "go")\nassert r2 == {"found": False, "value": None}, f"Got {r2}"\n\ns = search(d, "java")\nassert sorted(s) == ["java", "javascript"], f"Search \'java\' got {s}"\nassert search(d, "xyz") == []\nassert search(d, "PYTHON") == ["python"], "Search should be case-insensitive"\nprint("All tests passed!")\n'
+  },
+  "2": {
+    title: "Exercise 2 — Data Flattener",
+    description: "Write a function flatten(data) that takes a nested dict/list structure\nand returns a flat dictionary with dot-separated keys.\n\nRules:\n  - Dict keys become path segments: {\"a\": {\"b\": 1}}  ->  {\"a.b\": 1}\n  - List indices become path segments: {\"a\": [10, 20]}  ->  {\"a.0\": 10, \"a.1\": 20}\n  - Only flatten dicts and lists, not other types\n\nExamples:\n  flatten({\"a\": 1, \"b\": {\"c\": 2}})        ->  {\"a\": 1, \"b.c\": 2}\n  flatten({\"x\": [1, 2, 3]})                ->  {\"x.0\": 1, \"x.1\": 2, \"x.2\": 3}\n  flatten({\"a\": {\"b\": {\"c\": \"deep\"}}})     ->  {\"a.b.c\": \"deep\"}",
+    code: 'def flatten(data, prefix=""):\n    """Flatten a nested dict/list into dot-separated keys."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(flatten({"a": 1, "b": {"c": 2, "d": 3}}))\nprint(flatten({"users": [{"name": "Alice"}, {"name": "Bob"}]}))\nprint(flatten({"x": [1, 2, 3]}))\n',
+    check: 'assert flatten({"a": 1, "b": {"c": 2}}) == {"a": 1, "b.c": 2}\nassert flatten({"x": [1, 2, 3]}) == {"x.0": 1, "x.1": 2, "x.2": 3}\nassert flatten({"a": {"b": {"c": "deep"}}}) == {"a.b.c": "deep"}\nassert flatten({}) == {}\nassert flatten({"a": {"b": [10, 20]}}) == {"a.b.0": 10, "a.b.1": 20}\nprint("All tests passed!")\n'
+  },
+  "3": {
+    title: "Exercise 3 — Data Cleaning Pipeline",
+    description: "Write a function clean_records(records) that takes a list of dicts and:\n  1. Strips whitespace from all string values\n  2. Converts empty strings to None\n  3. Removes any record where \"name\" is None or missing\n  4. Converts \"age\" values to int (if present and numeric), or None if not\n\nReturn the cleaned list.\n\nExample:\n  records = [\n    {\"name\": \"  Alice  \", \"age\": \"30\", \"city\": \"Denver\"},\n    {\"name\": \"\", \"age\": \"25\", \"city\": \"Austin\"},\n    {\"name\": \"Bob\", \"age\": \"not a number\", \"city\": \"  Seattle  \"},\n  ]\n  clean_records(records) -> [\n    {\"name\": \"Alice\", \"age\": 30, \"city\": \"Denver\"},\n    {\"name\": \"Bob\", \"age\": None, \"city\": \"Seattle\"},\n  ]",
+    code: 'def clean_records(records):\n    """Clean a list of record dicts."""\n    # Your code here\n    pass\n\n\n# Try it out:\nrecords = [\n    {"name": "  Alice  ", "age": "30", "city": "Denver"},\n    {"name": "", "age": "25", "city": "Austin"},\n    {"name": "Bob", "age": "not a number", "city": "  Seattle  "},\n    {"name": "   ", "age": "40", "city": "Portland"},\n    {"name": "Charlie", "age": "28", "city": ""},\n]\n\ncleaned = clean_records(records)\nfor r in cleaned:\n    print(r)\n',
+    check: 'records = [\n    {"name": "  Alice  ", "age": "30", "city": "Denver"},\n    {"name": "", "age": "25", "city": "Austin"},\n    {"name": "Bob", "age": "xyz", "city": "  Seattle  "},\n]\nr = clean_records(records)\nassert len(r) == 2, f"Expected 2 records, got {len(r)}"\nassert r[0] == {"name": "Alice", "age": 30, "city": "Denver"}, f"First record: {r[0]}"\nassert r[1] == {"name": "Bob", "age": None, "city": "Seattle"}, f"Second record: {r[1]}"\n\nassert clean_records([]) == []\nassert clean_records([{"name": "   "}]) == [], "Whitespace-only name should be removed"\nprint("All tests passed!")\n'
+  },
+  "4": {
+    title: "Exercise 4 — Error-Safe Divider",
+    description: "Write a function safe_divide(a, b) that returns the result of a / b.\n\nBut handle errors gracefully:\n  - If b is 0, return {\"ok\": False, \"error\": \"division by zero\"}\n  - If a or b cannot be converted to float, return {\"ok\": False, \"error\": \"invalid input\"}\n  - On success, return {\"ok\": True, \"result\": <the float result rounded to 4 decimals>}\n\nAlso write batch_divide(pairs) that takes a list of (a, b) tuples\nand returns a list of results from safe_divide.\n\nExamples:\n  safe_divide(10, 3)      ->  {\"ok\": True, \"result\": 3.3333}\n  safe_divide(5, 0)       ->  {\"ok\": False, \"error\": \"division by zero\"}\n  safe_divide(\"a\", 2)     ->  {\"ok\": False, \"error\": \"invalid input\"}",
+    code: 'def safe_divide(a, b):\n    """Safely divide a by b, handling errors gracefully."""\n    # Your code here\n    pass\n\ndef batch_divide(pairs):\n    """Apply safe_divide to a list of (a, b) tuples."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(safe_divide(10, 3))\nprint(safe_divide(5, 0))\nprint(safe_divide("hello", 2))\n\npairs = [(10, 3), (5, 0), (100, 4), ("x", 1)]\nfor result in batch_divide(pairs):\n    print(result)\n',
+    check: 'r1 = safe_divide(10, 3)\nassert r1 == {"ok": True, "result": 3.3333}, f"Got {r1}"\n\nr2 = safe_divide(5, 0)\nassert r2 == {"ok": False, "error": "division by zero"}, f"Got {r2}"\n\nr3 = safe_divide("hello", 2)\nassert r3 == {"ok": False, "error": "invalid input"}, f"Got {r3}"\n\nr4 = safe_divide(10, 4)\nassert r4 == {"ok": True, "result": 2.5}, f"Got {r4}"\n\nbatch = batch_divide([(10, 2), (1, 0)])\nassert len(batch) == 2\nassert batch[0]["ok"] == True\nassert batch[1]["ok"] == False\nprint("All tests passed!")\n'
+  },
+  "5": {
+    title: "Exercise 5 — Text Report Generator",
+    description: "Write a function generate_report(title, data) that produces a formatted text report.\n\ndata is a list of dicts with consistent keys.\n\nThe report should have:\n  1. A title line, centered in a 50-char wide field\n  2. A separator line of \"=\" characters (50 wide)\n  3. Column headers from the dict keys\n  4. A \"-\" separator line\n  5. One row per dict, values left-aligned in 15-char columns\n  6. A final \"=\" separator\n  7. A \"Total rows: N\" line\n\nReturn the report as a string.\n\nExample output:\n               Sales Report\n==================================================\nname           amount         region\n--------------------------------------------------\nAlice          1500           North\nBob            2300           South\n==================================================\nTotal rows: 2",
+    code: 'def generate_report(title, data):\n    """Generate a formatted text report."""\n    # Your code here\n    pass\n\n\n# Try it out:\nsales = [\n    {"name": "Alice", "amount": 1500, "region": "North"},\n    {"name": "Bob", "amount": 2300, "region": "South"},\n    {"name": "Charlie", "amount": 1800, "region": "East"},\n]\n\nprint(generate_report("Sales Report", sales))\n',
+    check: 'data = [\n    {"name": "Alice", "amount": 1500, "region": "North"},\n    {"name": "Bob", "amount": 2300, "region": "South"},\n]\nreport = generate_report("Sales Report", data)\nassert "Sales Report" in report, "Title missing"\nassert "=" * 50 in report, "Separator missing"\nassert "Alice" in report, "Data row missing"\nassert "Bob" in report, "Data row missing"\nassert "Total rows: 2" in report, f"Footer missing. Report:\\n{report}"\nassert "name" in report, "Column headers missing"\n\nempty_report = generate_report("Empty", [])\nassert "Total rows: 0" in empty_report\nprint("All tests passed!")\n'
+  }
+};
+
+var params = new URLSearchParams(window.location.search);
+var exNum = params.get('ex') || window.location.hash.replace('#exercise-', '') || '1';
+var exercise = EXERCISES[exNum];
+
+document.getElementById('exerciseTitle').textContent = exercise ? exercise.title : 'Not Found';
+document.getElementById('description').textContent = exercise ? exercise.description : 'Exercise not found.';
+document.title = exercise ? exercise.title + ' - Level 2 - Python in the Browser' : 'Not Found';
+
+var exNums = Object.keys(EXERCISES);
+var currentIdx = exNums.indexOf(exNum);
+var prevLink = document.getElementById('prevLink');
+var nextLink = document.getElementById('nextLink');
+if (currentIdx > 0) { prevLink.href = 'level-2.html?ex=' + exNums[currentIdx - 1]; }
+else { prevLink.style.visibility = 'hidden'; }
+if (currentIdx < exNums.length - 1) { nextLink.href = 'level-2.html?ex=' + exNums[currentIdx + 1]; }
+else { nextLink.style.visibility = 'hidden'; }
+
+var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'python', theme: 'dracula', lineNumbers: true,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+  extraKeys: {
+    'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+    'Ctrl-Enter': function() { runCode(); },
+    'Cmd-Enter': function() { runCode(); }
+  }
+});
+var originalCode = exercise ? exercise.code : '';
+
+var storageKey = 'learn-python-l2-ex-' + exNum;
+var savedCode = localStorage.getItem(storageKey);
+if (savedCode !== null) { cmEditor.setValue(savedCode); }
+else if (exercise) { cmEditor.setValue(exercise.code); }
+
+var saveTimer = null;
+cmEditor.on('change', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(storageKey, cmEditor.getValue());
+  }, 500);
+});
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    var needsInput = code.indexOf('input(') !== -1;
+    if (needsInput) {
+      pyodideInstance.globals.set('_js_prompt', function(promptText) {
+        return prompt(promptText || 'Enter value:') || '';
+      });
+      pyodideInstance.runPython(
+        'import builtins\n_orig_input = builtins.input\n' +
+        'def _patched_input(prompt_text=""):\n' +
+        '    sys.stdout.write(str(prompt_text))\n' +
+        '    val = _js_prompt(str(prompt_text))\n' +
+        '    if hasattr(val, "to_py"): val = str(val)\n' +
+        '    sys.stdout.write(str(val) + "\\n")\n' +
+        '    return str(val)\n' +
+        'builtins.input = _patched_input\n'
+      );
+    }
+
+    pyodideInstance.runPython(code);
+
+    if (needsInput) {
+      pyodideInstance.runPython('builtins.input = _orig_input\n');
+    }
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkCode() {
+  if (!exercise || !exercise.check) return;
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + exercise.check;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkCode);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

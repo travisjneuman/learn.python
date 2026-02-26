@@ -1,6 +1,8 @@
 # Level 5 / Project 07 - Resilient JSON Loader
 Home: [README](../../../README.md)
 
+> **Quick Recall:** This project uses structured error handling and fallback logic. Before starting, make sure you can: write a try/except block that catches a specific exception and provides a useful default value instead of crashing (Level 1, Project 01 - Input Validator Lab).
+
 ## Focus
 - safe parsing with fallback behavior
 

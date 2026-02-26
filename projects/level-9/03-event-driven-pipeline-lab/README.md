@@ -66,6 +66,12 @@ You can move on when you can:
 - describe the tradeoff between event sourcing and traditional state management,
 - explain why append-only logs enable temporal queries and audit trails.
 
+## Mastery Check
+- [ ] Can you explain the architectural trade-offs in your solution?
+- [ ] Could you refactor this for a completely different use case?
+- [ ] Can you identify at least two alternative approaches and explain why you chose yours?
+- [ ] Could you debug this without print statements, using only breakpoint()?
+
 ---
 
 ## Related Concepts
