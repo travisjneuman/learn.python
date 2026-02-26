@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     @retry(max_retries=3, base_delay=0.001)
     def always_works():
-        nonlocal call_count
+        global call_count
         call_count += 1
         return "ok"
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     @retry(max_retries=5, base_delay=0.001)
     def works_third_try():
-        nonlocal attempt
+        global attempt
         attempt += 1
         if attempt < 3:
             raise ValueError("not yet")

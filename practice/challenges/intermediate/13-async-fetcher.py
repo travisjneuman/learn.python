@@ -44,7 +44,7 @@ if __name__ == "__main__":
     current_simultaneous = 0
 
     async def fake_fetch(url: str) -> str:
-        nonlocal fetch_count, max_simultaneous, current_simultaneous
+        global fetch_count, max_simultaneous, current_simultaneous
         fetch_count += 1
         current_simultaneous += 1
         max_simultaneous = max(max_simultaneous, current_simultaneous)
