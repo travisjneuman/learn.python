@@ -24,7 +24,9 @@ def configure_logging() -> None:
 
 # ---------- backup classification ----------
 
-# We expect backup filenames like: backup_2025-01-15_143022.tar.gz
+# WHY parse dates from filenames? -- Filesystem timestamps (mtime) can be
+# unreliable across OS copies and restores. Embedding the date in the
+# filename makes backup age deterministic and portable.
 TIMESTAMP_PATTERN = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
 
@@ -67,7 +69,9 @@ def classify_backups(
         else:
             unparseable.append(f)
 
-    # Sort newest first
+    # WHY sort newest first? -- Retention policies keep the N most recent
+    # entries. Processing newest-first lets us fill daily/weekly/monthly
+    # buckets greedily, preferring newer backups when there's a tie.
     dated.sort(key=lambda x: x[1], reverse=True)
 
     keep: list[dict] = []

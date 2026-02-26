@@ -34,6 +34,10 @@ class ServiceHealth(Enum):
     DOWN = "down"
 
 
+# WHY collect raw latency samples instead of pre-computed averages? -- Keeping
+# individual measurements lets you compute any statistic after the fact:
+# mean, percentiles, histograms. Pre-computing averages loses the distribution
+# shape, making it impossible to spot tail latency issues later.
 @dataclass
 class ServiceMetrics:
     """Collected metrics for a single service."""

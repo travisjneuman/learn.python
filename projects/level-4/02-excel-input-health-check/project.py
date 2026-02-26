@@ -30,6 +30,8 @@ def detect_delimiter(sample_lines: list[str]) -> str:
     We check comma, tab, semicolon, and pipe across the first few lines.
     The character with the most consistent count wins.
     """
+    # WHY these four candidates? -- They cover 99% of real-world CSV dialects.
+    # Comma is the default fallback if no clear winner emerges.
     candidates = [",", "\t", ";", "|"]
     best = ","
     best_score = -1
@@ -38,8 +40,10 @@ def detect_delimiter(sample_lines: list[str]) -> str:
         counts = [line.count(char) for line in sample_lines if line.strip()]
         if not counts:
             continue
-        # Score = minimum count (consistency) — a real delimiter appears the same
-        # number of times in every row.
+        # WHY use min(counts) as the score? -- A real delimiter appears the
+        # same number of times in every row. The minimum count across rows
+        # filters out characters that appear inconsistently (e.g., commas
+        # inside free-text fields).
         if min(counts) > 0 and min(counts) >= best_score:
             best_score = min(counts)
             best = char
@@ -68,6 +72,8 @@ def check_headers(rows: list[list[str]]) -> dict:
     if blanks:
         issues.append(f"blank header(s) at column index(es): {blanks}")
 
+    # WHY normalize before duplicate check? -- "Name" and "name" would cause
+    # subtle bugs when used as dictionary keys, so we treat them as duplicates.
     seen: set[str] = set()
     for h in headers:
         normalized = h.strip().lower()
@@ -87,7 +93,9 @@ def check_row_completeness(rows: list[list[str]]) -> dict:
     short: list[int] = []
     long: list[int] = []
 
-    for idx, row in enumerate(rows[1:], start=2):  # 1-indexed, header is row 1
+    # WHY start=2? -- Row 1 is the header; data rows start at 2
+    # so error messages match what users see in their spreadsheet.
+    for idx, row in enumerate(rows[1:], start=2):
         if len(row) < expected:
             short.append(idx)
         elif len(row) > expected:
@@ -156,7 +164,9 @@ def health_check(path: Path) -> dict:
     # 6. Empty columns
     report["empty_columns"] = check_empty_columns(rows)
 
-    # Overall status
+    # WHY a three-tier status (OK/WARN/FAIL)? -- FAIL means the file is
+    # unreadable; WARN means it loads but has quality issues; OK means clean.
+    # This lets downstream tools decide whether to proceed or stop.
     has_issues = (
         report["headers"].get("issues", [])
         or report["completeness"].get("short_rows", [])

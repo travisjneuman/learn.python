@@ -375,7 +375,6 @@ Next goals: complete modules 09 (Docker) and 12 (Cloud Deploy)
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
----
+## Next
 
-| [← Prev](49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md) | [Home](../README.md) | [Next →](../README.md) |
-|:---|:---:|---:|
+[Next: README.md →](../README.md)

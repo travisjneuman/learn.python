@@ -43,7 +43,6 @@ This file tracks curriculum evolution and release decisions.
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](19_MENTOR_GUIDE.md) | [Home](../README.md) | [Next →](21_FULL_STACK_MASTERY_PATH.md) |
-|:---|:---:|---:|
+[Next: 21_FULL_STACK_MASTERY_PATH.md →](./21_FULL_STACK_MASTERY_PATH.md)

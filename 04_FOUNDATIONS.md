@@ -115,7 +115,6 @@ You are ready for the next phase when you can:
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
----
+## Next
 
-| [← Prev](projects/level-00-absolute-beginner/README.md) | [Home](README.md) | [Next →](concepts/how-loops-work.md) |
-|:---|:---:|---:|
+[Next: concepts/how-loops-work.md →](./concepts/how-loops-work.md)

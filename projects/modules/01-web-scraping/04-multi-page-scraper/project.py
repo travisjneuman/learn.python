@@ -19,9 +19,10 @@ from bs4 import BeautifulSoup
 # The site has 50 pages total, but we only scrape 3 to be respectful.
 PAGES_TO_SCRAPE = 3
 
-# Seconds to wait between requests.
-# This prevents us from overwhelming the server with rapid-fire requests.
-# Even though this is a practice site, building the habit matters.
+# WHY rate-limit yourself? -- Sending hundreds of requests per second can
+# get your IP blocked and overloads the server. A 1-second delay is polite
+# and shows respect for shared resources. Production scrapers use even more
+# sophisticated throttling (adaptive delays, exponential backoff).
 DELAY_BETWEEN_REQUESTS = 1
 
 

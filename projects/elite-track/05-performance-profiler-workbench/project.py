@@ -5,6 +5,11 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY a profiling workbench? -- Optimization without measurement is guesswork.
+# This project teaches systematic profiling: instrument, measure, identify
+# bottlenecks, optimize, re-measure. The deterministic input ensures profiling
+# results are comparable across runs — essential for validating that an
+# optimization actually improved performance.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

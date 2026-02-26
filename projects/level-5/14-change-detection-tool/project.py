@@ -46,8 +46,10 @@ def file_hash(path: Path) -> str:
 def is_binary_file(path: Path, sample_size: int = 8192) -> bool:
     """Detect whether a file is binary by checking for null bytes.
 
-    Reads the first *sample_size* bytes and looks for ``\\x00``.
-    This is the same heuristic used by Git.
+    WHY the null-byte heuristic? -- Text files virtually never contain
+    null bytes (\\x00), while binary formats (images, executables) do.
+    Git uses this same check to decide whether to show diffs or just
+    report "binary file differs."
     """
     sample = path.read_bytes()[:sample_size]
     return b"\x00" in sample

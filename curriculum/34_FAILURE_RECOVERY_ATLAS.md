@@ -107,7 +107,6 @@ Recovery sequence:
 ## Optional Resources
 - [Python Tutor](https://pythontutor.com/)
 
----
+## Next
 
-| [← Prev](33_WEEKLY_REVIEW_TEMPLATE.md) | [Home](../README.md) | [Next →](35_CAPSTONE_BLUEPRINTS.md) |
-|:---|:---:|---:|
+[Next: 35_CAPSTONE_BLUEPRINTS.md →](./35_CAPSTONE_BLUEPRINTS.md)

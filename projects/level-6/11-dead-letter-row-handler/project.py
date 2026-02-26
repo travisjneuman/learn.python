@@ -31,6 +31,11 @@ CREATE TABLE IF NOT EXISTS processed (
 );
 """
 
+# WHY a dead-letter table? -- Instead of silently dropping failed rows
+# (data loss) or crashing the whole pipeline (one bad row blocks all),
+# we route failures to a separate table with the error reason. This
+# lets operators inspect what went wrong and retry after fixing the
+# root cause — the same idea as a dead-letter queue in messaging.
 DEAD_LETTER_DDL = """\
 CREATE TABLE IF NOT EXISTS dead_letters (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,

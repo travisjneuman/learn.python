@@ -1,0 +1,126 @@
+{
+  "deck": "Module 11 — Package Publishing",
+  "description": "pyproject.toml, build, TestPyPI, wheels, sdist, versioning, distribution",
+  "cards": [
+    {
+      "id": "m11-01",
+      "front": "What is pyproject.toml and why did it replace setup.py?",
+      "back": "pyproject.toml is the modern, standard way to configure Python projects (PEP 621).\n\n[build-system]\nrequires = [\"setuptools>=68.0\"]\nbuild-backend = \"setuptools.backends._legacy:_Backend\"\n\n[project]\nname = \"my-package\"\nversion = \"1.0.0\"\ndescription = \"A useful tool\"\nrequires-python = \">= 3.10\"\ndependencies = [\n    \"requests>=2.28\",\n    \"click>=8.0\",\n]\n\nWhy replace setup.py?\n- setup.py was executable code (security risk)\n- pyproject.toml is declarative (just data)\n- Single file for project metadata, build config, and tool config\n- Standardized across build tools (setuptools, flit, hatchling, poetry)",
+      "concept_ref": "projects/modules/11-package-publishing/README.md",
+      "difficulty": 1,
+      "tags": ["pyproject-toml", "packaging", "pep621"]
+    },
+    {
+      "id": "m11-02",
+      "front": "How do you build a Python package for distribution?",
+      "back": "# Install build tool\npip install build\n\n# Build the package\npython -m build\n\nThis creates two files in dist/:\n  dist/\n    my_package-1.0.0.tar.gz   # sdist (source distribution)\n    my_package-1.0.0-py3-none-any.whl  # wheel (built distribution)\n\nsdist: source code archive, needs to be built on install\nwheel: pre-built, installs fast, no build step needed\n\nAlways distribute both. Wheels are preferred by pip but sdist is the fallback.\n\n# Verify the contents\ntar tzf dist/my_package-1.0.0.tar.gz\npython -m zipfile -l dist/my_package-1.0.0-py3-none-any.whl",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 1,
+      "tags": ["build", "sdist", "wheel"]
+    },
+    {
+      "id": "m11-03",
+      "front": "What is the difference between a wheel and an sdist?",
+      "back": "sdist (source distribution):\n- .tar.gz archive of source code\n- Must be built during installation\n- May require compilers for C extensions\n- Contains pyproject.toml, source files, tests\n- Fallback format\n\nWheel (built distribution):\n- .whl file (actually a zip)\n- Pre-built, installs instantly\n- No build step needed\n- Named: {name}-{version}-{python}-{abi}-{platform}.whl\n- Example: requests-2.31.0-py3-none-any.whl\n  py3 = Python 3, none = no ABI, any = any platform\n\npip prefers wheels. If no matching wheel exists, it falls back to sdist.\nAlways upload both to PyPI.",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 2,
+      "tags": ["wheel", "sdist", "distribution"]
+    },
+    {
+      "id": "m11-04",
+      "front": "How do you upload a package to TestPyPI?",
+      "back": "TestPyPI is a separate instance of PyPI for testing uploads.\n\n# Install twine\npip install twine\n\n# Upload to TestPyPI\ntwine upload --repository testpypi dist/*\n\n# You'll need a TestPyPI account and API token:\n# 1. Register at https://test.pypi.org/account/register/\n# 2. Create API token at https://test.pypi.org/manage/account/#api-tokens\n\n# Configure in ~/.pypirc\n[testpypi]\n  repository = https://test.pypi.org/legacy/\n  username = __token__\n  password = pypi-AgEI...\n\n# Install from TestPyPI to verify\npip install --index-url https://test.pypi.org/simple/ my-package\n\nAlways test on TestPyPI before uploading to real PyPI.",
+      "concept_ref": "projects/modules/11-package-publishing/02-publish-testpypi/README.md",
+      "difficulty": 2,
+      "tags": ["testpypi", "twine", "upload"]
+    },
+    {
+      "id": "m11-05",
+      "front": "How do you structure a Python package for distribution?",
+      "back": "my-package/\n    pyproject.toml       # project metadata\n    README.md            # description (shown on PyPI)\n    LICENSE              # license file\n    src/\n        my_package/      # the actual package\n            __init__.py  # makes it a package\n            core.py\n            utils.py\n    tests/\n        test_core.py\n        test_utils.py\n\nThe src/ layout prevents accidental imports from the local directory during testing.\n\n# pyproject.toml for src layout\n[tool.setuptools.packages.find]\nwhere = [\"src\"]\n\n# __init__.py exports public API\nfrom my_package.core import main_function\n__version__ = \"1.0.0\"",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 2,
+      "tags": ["structure", "src-layout", "packaging"]
+    },
+    {
+      "id": "m11-06",
+      "front": "How does semantic versioning work?",
+      "back": "Semantic versioning (SemVer): MAJOR.MINOR.PATCH\n\nMAJOR (1.0.0 -> 2.0.0): Breaking changes\n  - Removed functions, changed signatures\n  - Users must update their code\n\nMINOR (1.0.0 -> 1.1.0): New features, backward compatible\n  - Added functions, new optional parameters\n  - Existing code still works\n\nPATCH (1.0.0 -> 1.0.1): Bug fixes, backward compatible\n  - Fixed a bug, no API changes\n  - Safe to upgrade\n\nPre-release: 1.0.0-alpha, 1.0.0-beta.1, 1.0.0-rc.1\nDev releases: 1.0.0.dev1 (PEP 440)\n\nIn requirements:\n  requests>=2.28,<3.0  # any 2.x from 2.28 up\n  requests~=2.28       # same as >=2.28,<2.29",
+      "concept_ref": "projects/modules/11-package-publishing/README.md",
+      "difficulty": 1,
+      "tags": ["semver", "versioning", "compatibility"]
+    },
+    {
+      "id": "m11-07",
+      "front": "What is __init__.py and what should go in it?",
+      "back": "__init__.py makes a directory a Python package. It runs when the package is imported.\n\n# Minimal (just makes it a package)\n# __init__.py is empty\n\n# Define public API\nfrom my_package.core import process\nfrom my_package.utils import helper\n__version__ = '1.0.0'\n__all__ = ['process', 'helper']  # controls 'from pkg import *'\n\n# Users can now do:\nfrom my_package import process   # clean import\n# Instead of:\nfrom my_package.core import process  # internal structure exposed\n\nRules:\n- Keep __init__.py light (avoid heavy computation)\n- Use __all__ to define the public API\n- Lazy imports for optional dependencies:\n  def plot(): from matplotlib import pyplot; ...",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 1,
+      "tags": ["__init__", "packages", "imports"]
+    },
+    {
+      "id": "m11-08",
+      "front": "How do you specify dependencies in pyproject.toml?",
+      "back": "[project]\ndependencies = [\n    \"requests>=2.28\",\n    \"click>=8.0,<9.0\",\n    \"pydantic~=2.0\",\n]\n\n# Optional dependencies (extras)\n[project.optional-dependencies]\ndev = [\n    \"pytest>=7.0\",\n    \"ruff>=0.1.0\",\n    \"mypy>=1.0\",\n]\ndocs = [\n    \"mkdocs>=1.5\",\n    \"mkdocs-material>=9.0\",\n]\n\n# Install with extras\npip install my-package[dev]\npip install my-package[dev,docs]\n\nVersion specifiers:\n  >=2.28      # minimum version\n  >=2.28,<3.0 # range\n  ~=2.28      # compatible release (>=2.28,<2.29)\n  ==2.28.1    # exact (avoid in libraries)",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 2,
+      "tags": ["dependencies", "pyproject-toml", "extras"]
+    },
+    {
+      "id": "m11-09",
+      "front": "What are entry points (console_scripts) and how do you configure them?",
+      "back": "Entry points create commands that are available after pip install.\n\n[project.scripts]\nmytool = \"my_package.cli:main\"\nmy-other-tool = \"my_package.other:run\"\n\nThis means:\n  pip install my-package\n  mytool --help    # runs my_package.cli.main()\n\nThe function must be callable with no arguments:\n# my_package/cli.py\nimport click\n\n@click.command()\ndef main():\n    click.echo('Hello!')\n\nGUI entry points:\n[project.gui-scripts]\nmyapp = \"my_package.gui:main\"\n\nPlugin entry points:\n[project.entry-points.\"my_framework.plugins\"]\nmy_plugin = \"my_package.plugin:MyPlugin\"",
+      "concept_ref": "projects/modules/11-package-publishing/03-cli-package/README.md",
+      "difficulty": 2,
+      "tags": ["entry-points", "console-scripts", "cli"]
+    },
+    {
+      "id": "m11-10",
+      "front": "How do you include non-Python files (data files) in a package?",
+      "back": "# Method 1: package_data in pyproject.toml\n[tool.setuptools.package-data]\nmy_package = [\"data/*.json\", \"templates/*.html\"]\n\n# Method 2: MANIFEST.in (for sdist)\ninclude LICENSE\ninclude README.md\nrecursive-include src/my_package/data *.json\n\n# Access data files at runtime\nfrom importlib.resources import files\n\ndata_dir = files('my_package') / 'data'\nconfig_path = data_dir / 'config.json'\nconfig_text = config_path.read_text()\n\n# For older Python (< 3.9)\nfrom importlib import resources\nwith resources.open_text('my_package.data', 'config.json') as f:\n    config = json.load(f)\n\nNever use __file__ to find data — it breaks in zip imports and wheels.",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 3,
+      "tags": ["data-files", "package-data", "resources"]
+    },
+    {
+      "id": "m11-11",
+      "front": "What is twine and why use it instead of setup.py upload?",
+      "back": "twine is the recommended tool for uploading packages to PyPI.\n\npip install twine\n\n# Check package before uploading\ntwine check dist/*\n\n# Upload to PyPI\ntwine upload dist/*\n\n# Upload to TestPyPI\ntwine upload --repository testpypi dist/*\n\nWhy twine over setup.py upload?\n- Uses HTTPS (setup.py upload sent passwords in plaintext)\n- Uploads pre-built files (no arbitrary code execution)\n- Verifies package metadata before uploading\n- Supports API tokens (more secure than passwords)\n- Can upload both wheel and sdist in one command\n\nsetup.py upload is deprecated and should never be used.",
+      "concept_ref": "projects/modules/11-package-publishing/02-publish-testpypi/README.md",
+      "difficulty": 1,
+      "tags": ["twine", "upload", "pypi"]
+    },
+    {
+      "id": "m11-12",
+      "front": "How do you choose a license for your Python package?",
+      "back": "Common open-source licenses:\n\nMIT — most permissive\n  Do anything, just include the license text\n  Used by: Flask, requests, Django\n\nApache 2.0 — permissive + patent protection\n  Like MIT but includes patent rights grant\n  Used by: TensorFlow, Kubernetes\n\nGPL 3.0 — copyleft\n  Derivatives must also be GPL\n  Used by: Linux, GCC\n\nBSD 3-Clause — permissive\n  Like MIT, different wording\n  Used by: NumPy, pandas\n\nIn pyproject.toml:\n[project]\nlicense = {text = \"MIT\"}\n\nAlso include a LICENSE file in the root directory.\n\nNo license = all rights reserved (nobody can use your code).",
+      "concept_ref": "projects/modules/11-package-publishing/README.md",
+      "difficulty": 1,
+      "tags": ["license", "open-source", "legal"]
+    },
+    {
+      "id": "m11-13",
+      "front": "How do you write a good README for a PyPI package?",
+      "back": "A README is shown on the PyPI package page. Essential sections:\n\n# my-package\n\nOne-line description of what it does.\n\n## Installation\npip install my-package\n\n## Quick Start\nfrom my_package import main_function\nresult = main_function('input')\n\n## Features\n- Feature 1\n- Feature 2\n\n## Usage\nDetailed examples...\n\n## API Reference\nBrief docs for public functions...\n\n## License\nMIT\n\nIn pyproject.toml:\n[project]\nreadme = \"README.md\"\n\nPyPI renders Markdown and reStructuredText.\nKeep the README focused on USAGE, not implementation details.",
+      "concept_ref": "projects/modules/11-package-publishing/04-docs-and-metadata/README.md",
+      "difficulty": 1,
+      "tags": ["readme", "documentation", "pypi"]
+    },
+    {
+      "id": "m11-14",
+      "front": "What are classifiers in pyproject.toml?",
+      "back": "Classifiers are standardized tags that help users find your package on PyPI.\n\n[project]\nclassifiers = [\n    \"Development Status :: 4 - Beta\",\n    \"Intended Audience :: Developers\",\n    \"License :: OSI Approved :: MIT License\",\n    \"Programming Language :: Python :: 3\",\n    \"Programming Language :: Python :: 3.10\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\",\n    \"Topic :: Software Development :: Libraries\",\n    \"Typing :: Typed\",\n]\n\nDevelopment Status:\n  1 - Planning\n  3 - Alpha\n  4 - Beta\n  5 - Production/Stable\n\nFull list: https://pypi.org/classifiers/\nClassifiers are for discovery only — they do not enforce anything.",
+      "concept_ref": "projects/modules/11-package-publishing/04-docs-and-metadata/README.md",
+      "difficulty": 1,
+      "tags": ["classifiers", "metadata", "pypi"]
+    },
+    {
+      "id": "m11-15",
+      "front": "How do you install a package in development (editable) mode?",
+      "back": "pip install -e .\n\nThis installs the package as a link to your source code. Changes take effect immediately without reinstalling.\n\n# With optional dependencies\npip install -e '.[dev]'\npip install -e '.[dev,docs]'\n\nHow it works:\n- Creates a .egg-link file pointing to your project\n- Adds your project to sys.path\n- Imports come directly from your source files\n- No need to rebuild/reinstall after code changes\n\nWithout -e:\n- pip copies files to site-packages/\n- You must reinstall after every change\n\nAlways use -e during development.\nRemove -e for production installs.",
+      "concept_ref": "projects/modules/11-package-publishing/01-first-package/README.md",
+      "difficulty": 1,
+      "tags": ["editable", "development", "pip"]
+    }
+  ]
+}

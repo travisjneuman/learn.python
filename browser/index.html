@@ -104,6 +104,13 @@ h2 {
 .exercise-num.yellow { background: var(--yellow); }
 .exercise-num.red { background: var(--red); }
 
+.difficulty-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .exercise-title {
   font-weight: 600;
   font-size: 1rem;
@@ -138,201 +145,343 @@ h2 {
 </style>
 </head>
 <body>
-<div class="container">
+<div class="container" role="main">
   <h1>Python in the Browser</h1>
   <p class="subtitle">No installation needed. Run real Python code right here using Pyodide. Pick a level to start.</p>
 
   <!-- Level 00 -->
   <h2>Level 00 &mdash; Absolute Beginner</h2>
   <p class="level-desc">Follow-along demos: print, variables, loops, functions. No coding challenges — just explore and experiment.</p>
-  <ol class="exercise-list">
+  <ol class="exercise-list" role="navigation" aria-label="Level 00 exercises">
     <li><a href="exercise.html?ex=01">
-      <span class="exercise-num">01</span>
+      <span class="exercise-num" aria-label="Exercise 01, Difficulty: Beginner">01</span>
       <div><div class="exercise-title">First Steps</div>
       <div class="exercise-desc">Math and print statements</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=02">
-      <span class="exercise-num">02</span>
+      <span class="exercise-num" aria-label="Exercise 02, Difficulty: Beginner">02</span>
       <div><div class="exercise-title">Hello World</div>
       <div class="exercise-desc">Your first print() calls</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=03">
-      <span class="exercise-num">03</span>
+      <span class="exercise-num" aria-label="Exercise 03, Difficulty: Beginner">03</span>
       <div><div class="exercise-title">Your First Script</div>
       <div class="exercise-desc">Code runs top to bottom</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=04">
-      <span class="exercise-num">04</span>
+      <span class="exercise-num" aria-label="Exercise 04, Difficulty: Beginner">04</span>
       <div><div class="exercise-title">Variables</div>
       <div class="exercise-desc">Store and reuse values</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=05">
-      <span class="exercise-num">05</span>
+      <span class="exercise-num" aria-label="Exercise 05, Difficulty: Beginner">05</span>
       <div><div class="exercise-title">Numbers and Math</div>
       <div class="exercise-desc">Arithmetic and order of operations</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=06">
-      <span class="exercise-num">06</span>
+      <span class="exercise-num" aria-label="Exercise 06, Difficulty: Beginner">06</span>
       <div><div class="exercise-title">Strings and Text</div>
       <div class="exercise-desc">f-strings and string methods</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=07">
-      <span class="exercise-num">07</span>
+      <span class="exercise-num" aria-label="Exercise 07, Difficulty: Beginner">07</span>
       <div><div class="exercise-title">User Input</div>
       <div class="exercise-desc">Interactive programs with input()</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=08">
-      <span class="exercise-num">08</span>
+      <span class="exercise-num" aria-label="Exercise 08, Difficulty: Beginner">08</span>
       <div><div class="exercise-title">Making Decisions</div>
       <div class="exercise-desc">if, elif, else</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=09">
-      <span class="exercise-num">09</span>
+      <span class="exercise-num" aria-label="Exercise 09, Difficulty: Beginner">09</span>
       <div><div class="exercise-title">Lists</div>
       <div class="exercise-desc">Ordered collections</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=10">
-      <span class="exercise-num">10</span>
+      <span class="exercise-num" aria-label="Exercise 10, Difficulty: Beginner">10</span>
       <div><div class="exercise-title">For Loops</div>
       <div class="exercise-desc">Iterate over items</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=11">
-      <span class="exercise-num">11</span>
+      <span class="exercise-num" aria-label="Exercise 11, Difficulty: Beginner">11</span>
       <div><div class="exercise-title">While Loops</div>
       <div class="exercise-desc">Repeat until condition met</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=12">
-      <span class="exercise-num">12</span>
+      <span class="exercise-num" aria-label="Exercise 12, Difficulty: Beginner">12</span>
       <div><div class="exercise-title">Dictionaries</div>
       <div class="exercise-desc">Key-value pairs</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=13">
-      <span class="exercise-num">13</span>
+      <span class="exercise-num" aria-label="Exercise 13, Difficulty: Beginner">13</span>
       <div><div class="exercise-title">Functions</div>
       <div class="exercise-desc">Reusable code blocks</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=14">
-      <span class="exercise-num">14</span>
+      <span class="exercise-num" aria-label="Exercise 14, Difficulty: Beginner">14</span>
       <div><div class="exercise-title">Reading Files</div>
       <div class="exercise-desc">Data from files (simulated)</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
     <li><a href="exercise.html?ex=15">
-      <span class="exercise-num">15</span>
+      <span class="exercise-num" aria-label="Exercise 15, Difficulty: Beginner">15</span>
       <div><div class="exercise-title">Putting It Together</div>
       <div class="exercise-desc">Complete mini-program</div></div>
+      <span class="difficulty-label">Beginner</span>
     </a></li>
   </ol>
 
   <!-- Level 0 -->
   <h2>Level 0 &mdash; First Real Projects</h2>
   <p class="level-desc">Write functions, pass tests, and solve problems. Each exercise has a Check button to validate your solution.</p>
-  <ol class="exercise-list">
+  <ol class="exercise-list" role="navigation" aria-label="Level 0 exercises">
     <li><a href="level-0.html?ex=1">
-      <span class="exercise-num green">1</span>
+      <span class="exercise-num green" aria-label="Exercise 1, Difficulty: Easy">1</span>
       <div><div class="exercise-title">Hello Lab</div>
       <div class="exercise-desc">Write a greeting function</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=2">
-      <span class="exercise-num green">2</span>
+      <span class="exercise-num green" aria-label="Exercise 2, Difficulty: Easy">2</span>
       <div><div class="exercise-title">Calculator</div>
       <div class="exercise-desc">Four arithmetic operations</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=3">
-      <span class="exercise-num green">3</span>
+      <span class="exercise-num green" aria-label="Exercise 3, Difficulty: Easy">3</span>
       <div><div class="exercise-title">Temperature Converter</div>
       <div class="exercise-desc">Celsius and Fahrenheit</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=4">
-      <span class="exercise-num green">4</span>
+      <span class="exercise-num green" aria-label="Exercise 4, Difficulty: Easy">4</span>
       <div><div class="exercise-title">Yes/No Questionnaire</div>
       <div class="exercise-desc">Count responses by category</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=5">
-      <span class="exercise-num green">5</span>
+      <span class="exercise-num green" aria-label="Exercise 5, Difficulty: Easy">5</span>
       <div><div class="exercise-title">Number Classifier</div>
       <div class="exercise-desc">Even/odd, positive/negative</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=6">
-      <span class="exercise-num green">6</span>
+      <span class="exercise-num green" aria-label="Exercise 6, Difficulty: Easy">6</span>
       <div><div class="exercise-title">Word Counter</div>
       <div class="exercise-desc">Count word occurrences</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=7">
-      <span class="exercise-num green">7</span>
+      <span class="exercise-num green" aria-label="Exercise 7, Difficulty: Easy">7</span>
       <div><div class="exercise-title">Password Generator</div>
       <div class="exercise-desc">Random secure passwords</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
     <li><a href="level-0.html?ex=8">
-      <span class="exercise-num green">8</span>
+      <span class="exercise-num green" aria-label="Exercise 8, Difficulty: Easy">8</span>
       <div><div class="exercise-title">String Cleaner</div>
       <div class="exercise-desc">Normalize messy text</div></div>
+      <span class="difficulty-label">Easy</span>
     </a></li>
   </ol>
 
   <!-- Level 1 -->
   <h2>Level 1 &mdash; Building Confidence</h2>
   <p class="level-desc">Validation, parsing, and data processing. Functions return structured results.</p>
-  <ol class="exercise-list">
+  <ol class="exercise-list" role="navigation" aria-label="Level 1 exercises">
     <li><a href="level-1.html?ex=1">
-      <span class="exercise-num yellow">1</span>
+      <span class="exercise-num yellow" aria-label="Exercise 1, Difficulty: Medium">1</span>
       <div><div class="exercise-title">Input Validator</div>
       <div class="exercise-desc">Validate email format</div></div>
+      <span class="difficulty-label">Medium</span>
     </a></li>
     <li><a href="level-1.html?ex=2">
-      <span class="exercise-num yellow">2</span>
+      <span class="exercise-num yellow" aria-label="Exercise 2, Difficulty: Medium">2</span>
       <div><div class="exercise-title">Password Strength Checker</div>
       <div class="exercise-desc">Classify weak/medium/strong</div></div>
+      <span class="difficulty-label">Medium</span>
     </a></li>
     <li><a href="level-1.html?ex=3">
-      <span class="exercise-num yellow">3</span>
+      <span class="exercise-num yellow" aria-label="Exercise 3, Difficulty: Medium">3</span>
       <div><div class="exercise-title">Unit Price Calculator</div>
       <div class="exercise-desc">Find the best deal</div></div>
+      <span class="difficulty-label">Medium</span>
     </a></li>
     <li><a href="level-1.html?ex=4">
-      <span class="exercise-num yellow">4</span>
+      <span class="exercise-num yellow" aria-label="Exercise 4, Difficulty: Medium">4</span>
       <div><div class="exercise-title">Log Line Parser</div>
       <div class="exercise-desc">Extract structured data from logs</div></div>
+      <span class="difficulty-label">Medium</span>
     </a></li>
     <li><a href="level-1.html?ex=5">
-      <span class="exercise-num yellow">5</span>
+      <span class="exercise-num yellow" aria-label="Exercise 5, Difficulty: Medium">5</span>
       <div><div class="exercise-title">CSV Reader</div>
       <div class="exercise-desc">Parse CSV text into dicts</div></div>
+      <span class="difficulty-label">Medium</span>
     </a></li>
     <li><a href="level-1.html?ex=6">
-      <span class="exercise-num yellow">6</span>
+      <span class="exercise-num yellow" aria-label="Exercise 6, Difficulty: Medium">6</span>
       <div><div class="exercise-title">Gradebook Engine</div>
       <div class="exercise-desc">Calculate averages and letter grades</div></div>
+      <span class="difficulty-label">Medium</span>
     </a></li>
   </ol>
 
   <!-- Level 2 -->
   <h2>Level 2 &mdash; Data Structures</h2>
   <p class="level-desc">Nested data, error handling, pipelines, and report generation.</p>
-  <ol class="exercise-list">
+  <ol class="exercise-list" role="navigation" aria-label="Level 2 exercises">
     <li><a href="level-2.html?ex=1">
-      <span class="exercise-num red">1</span>
+      <span class="exercise-num red" aria-label="Exercise 1, Difficulty: Challenging">1</span>
       <div><div class="exercise-title">Dictionary Lookup</div>
       <div class="exercise-desc">Safe lookups and search</div></div>
+      <span class="difficulty-label">Challenging</span>
     </a></li>
     <li><a href="level-2.html?ex=2">
-      <span class="exercise-num red">2</span>
+      <span class="exercise-num red" aria-label="Exercise 2, Difficulty: Challenging">2</span>
       <div><div class="exercise-title">Data Flattener</div>
       <div class="exercise-desc">Flatten nested structures</div></div>
+      <span class="difficulty-label">Challenging</span>
     </a></li>
     <li><a href="level-2.html?ex=3">
-      <span class="exercise-num red">3</span>
+      <span class="exercise-num red" aria-label="Exercise 3, Difficulty: Challenging">3</span>
       <div><div class="exercise-title">Data Cleaning Pipeline</div>
       <div class="exercise-desc">Strip, convert, filter records</div></div>
+      <span class="difficulty-label">Challenging</span>
     </a></li>
     <li><a href="level-2.html?ex=4">
-      <span class="exercise-num red">4</span>
+      <span class="exercise-num red" aria-label="Exercise 4, Difficulty: Challenging">4</span>
       <div><div class="exercise-title">Error-Safe Divider</div>
       <div class="exercise-desc">Graceful error handling</div></div>
+      <span class="difficulty-label">Challenging</span>
     </a></li>
     <li><a href="level-2.html?ex=5">
-      <span class="exercise-num red">5</span>
+      <span class="exercise-num red" aria-label="Exercise 5, Difficulty: Challenging">5</span>
       <div><div class="exercise-title">Text Report Generator</div>
       <div class="exercise-desc">Formatted text output</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+  </ol>
+
+  <!-- Level 3 -->
+  <h2>Level 3 &mdash; Packages and Testing</h2>
+  <p class="level-desc">File paths with pathlib, module systems, and writing your own tests.</p>
+  <ol class="exercise-list" role="navigation" aria-label="Level 3 exercises">
+    <li><a href="level-3.html?ex=1">
+      <span class="exercise-num red" aria-label="Exercise 1, Difficulty: Challenging">1</span>
+      <div><div class="exercise-title">Path Builder with pathlib</div>
+      <div class="exercise-desc">Join paths and get extensions</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-3.html?ex=2">
+      <span class="exercise-num red" aria-label="Exercise 2, Difficulty: Challenging">2</span>
+      <div><div class="exercise-title">Module Simulator</div>
+      <div class="exercise-desc">Create and call module namespaces</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-3.html?ex=3">
+      <span class="exercise-num red" aria-label="Exercise 3, Difficulty: Challenging">3</span>
+      <div><div class="exercise-title">Simple Test Runner</div>
+      <div class="exercise-desc">Build a mini test framework</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-3.html?ex=4">
+      <span class="exercise-num red" aria-label="Exercise 4, Difficulty: Challenging">4</span>
+      <div><div class="exercise-title">Path Manipulation Toolkit</div>
+      <div class="exercise-desc">Split, change ext, get parent</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-3.html?ex=5">
+      <span class="exercise-num red" aria-label="Exercise 5, Difficulty: Challenging">5</span>
+      <div><div class="exercise-title">Package Registry</div>
+      <div class="exercise-desc">Register and search packages</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+  </ol>
+
+  <!-- Level 4 -->
+  <h2>Level 4 &mdash; Data Pipelines</h2>
+  <p class="level-desc">Schema validation, data transformation, nested extraction, and pipeline composition.</p>
+  <ol class="exercise-list" role="navigation" aria-label="Level 4 exercises">
+    <li><a href="level-4.html?ex=1">
+      <span class="exercise-num red" aria-label="Exercise 1, Difficulty: Challenging">1</span>
+      <div><div class="exercise-title">Schema Validator</div>
+      <div class="exercise-desc">Validate dicts against type schemas</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-4.html?ex=2">
+      <span class="exercise-num red" aria-label="Exercise 2, Difficulty: Challenging">2</span>
+      <div><div class="exercise-title">Data Transformer</div>
+      <div class="exercise-desc">Filter, map, sort pipelines</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-4.html?ex=3">
+      <span class="exercise-num red" aria-label="Exercise 3, Difficulty: Challenging">3</span>
+      <div><div class="exercise-title">JSON Parser</div>
+      <div class="exercise-desc">Extract nested data with dot paths</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-4.html?ex=4">
+      <span class="exercise-num red" aria-label="Exercise 4, Difficulty: Challenging">4</span>
+      <div><div class="exercise-title">Data Pipeline Builder</div>
+      <div class="exercise-desc">Compose load, clean, transform steps</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-4.html?ex=5">
+      <span class="exercise-num red" aria-label="Exercise 5, Difficulty: Challenging">5</span>
+      <div><div class="exercise-title">Schema Builder</div>
+      <div class="exercise-desc">Infer and validate data schemas</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+  </ol>
+
+  <!-- Level 5 -->
+  <h2>Level 5 &mdash; Resilience Patterns</h2>
+  <p class="level-desc">Retry logic, circuit breakers, scheduling, backoff, and fault-tolerant processing.</p>
+  <ol class="exercise-list" role="navigation" aria-label="Level 5 exercises">
+    <li><a href="level-5.html?ex=1">
+      <span class="exercise-num red" aria-label="Exercise 1, Difficulty: Challenging">1</span>
+      <div><div class="exercise-title">Retry with Counter</div>
+      <div class="exercise-desc">Retry failing functions N times</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-5.html?ex=2">
+      <span class="exercise-num red" aria-label="Exercise 2, Difficulty: Challenging">2</span>
+      <div><div class="exercise-title">Circuit Breaker</div>
+      <div class="exercise-desc">Stop calling failing services</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-5.html?ex=3">
+      <span class="exercise-num red" aria-label="Exercise 3, Difficulty: Challenging">3</span>
+      <div><div class="exercise-title">Priority Task Scheduler</div>
+      <div class="exercise-desc">Schedule tasks by priority</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-5.html?ex=4">
+      <span class="exercise-num red" aria-label="Exercise 4, Difficulty: Challenging">4</span>
+      <div><div class="exercise-title">Exponential Backoff</div>
+      <div class="exercise-desc">Calculate retry delay timings</div></div>
+      <span class="difficulty-label">Challenging</span>
+    </a></li>
+    <li><a href="level-5.html?ex=5">
+      <span class="exercise-num red" aria-label="Exercise 5, Difficulty: Challenging">5</span>
+      <div><div class="exercise-title">Fault-Tolerant Processor</div>
+      <div class="exercise-desc">Process batches with fallbacks</div></div>
+      <span class="difficulty-label">Challenging</span>
     </a></li>
   </ol>
 

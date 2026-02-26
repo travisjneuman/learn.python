@@ -243,7 +243,6 @@ You are ready to advance when you can:
 - [Exercism Python](https://exercism.org/tracks/python)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](00_COMPUTER_LITERACY_PRIMER.md) | [Home](README.md) | [Next →](02_GLOSSARY.md) |
-|:---|:---:|---:|
+[Next: 02_GLOSSARY.md →](./02_GLOSSARY.md)

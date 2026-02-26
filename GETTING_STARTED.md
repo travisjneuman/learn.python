@@ -109,5 +109,19 @@ The curriculum supports three modes. Pick the one that fits how you learn:
 
 ---
 
+---
+
+## Practice Tools
+
+The curriculum includes several tools to reinforce your learning beyond the main projects:
+
+- **Quizzes** — Test your understanding of each concept: [`concepts/quizzes/`](./concepts/quizzes/)
+- **Flashcards** — Quick-review decks for key terms and patterns: [`practice/flashcards/`](./practice/flashcards/)
+- **Challenges** — Standalone problems sorted by difficulty: [`practice/challenges/`](./practice/challenges/)
+- **Browser Exercises** — Run Python in your browser with no install: [`browser/`](./browser/index.html)
+- **Spaced Repetition** — SM-2 algorithm to schedule your reviews: [`tools/spaced_repetition.py`](./tools/spaced_repetition.py)
+
+---
+
 | [← Prev](README.md) | [Home](README.md) | [Next →](START_HERE.md) |
 |:---|:---:|---:|

@@ -38,7 +38,11 @@ class Permission(Enum):
     ADMIN = auto()
 
 
-# Role -> permissions mapping
+# WHY a declarative permission matrix? -- Defining role→permission as data
+# rather than if/elif logic makes the access model auditable and testable.
+# Security reviewers can verify the matrix at a glance. SUPER_ADMIN gets
+# the same permissions as ADMIN but with cross-tenant access granted at
+# the TenantContext level, not the permission level — separation of concerns.
 ROLE_PERMISSIONS: dict[Role, set[Permission]] = {
     Role.VIEWER: {Permission.READ},
     Role.EDITOR: {Permission.READ, Permission.WRITE},

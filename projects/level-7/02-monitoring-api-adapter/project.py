@@ -24,6 +24,9 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 
+# WHY a unified Metric dataclass? -- Each monitoring API returns different
+# field names and units (pct, value_mb, free_pct). Normalizing into one
+# shape lets downstream alerting logic work identically regardless of source.
 @dataclass
 class Metric:
     name: str

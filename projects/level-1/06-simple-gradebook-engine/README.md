@@ -1,6 +1,8 @@
 # Level 1 / Project 06 - Simple Gradebook Engine
 Home: [README](../../../README.md)
 
+**Estimated time:** 25 minutes
+
 ## Focus
 - aggregate scores and grade bands
 
@@ -33,20 +35,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--curve` flag that adds N points to every student's average before assigning letter grades.
 2. Add a "pass/fail" summary showing how many students scored above/below 60%.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a student row with non-numeric scores like `Alice,A,B,C` -- does `calculate_average()` crash?
 2. Add a student with no scores (just a name) -- does the parser handle it?
 3. Add a score above 100 like `Alice,105,98,92` -- does `letter_grade()` still work?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Validate that all scores are numeric in `parse_student_row()`.
 2. Handle students with no scores by assigning an average of 0.
 3. Add a test for the non-numeric-scores case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `letter_grade()` use if/elif chains with descending thresholds (90, 80, 70, 60)?

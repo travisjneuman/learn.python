@@ -54,11 +54,15 @@ def is_skip_day(now: datetime, skip_days: list[int]) -> bool:
 def acquire_lock(lock_path: Path) -> bool:
     """Try to create a lock file. Returns False if already locked.
 
-    A lock file prevents overlapping runs when the script is scheduled
-    to run more frequently than it takes to complete.
+    WHY a lock file? -- When a script is scheduled (e.g., every 5 minutes
+    via cron) but sometimes takes longer than 5 minutes, two instances
+    can overlap and corrupt shared output files. A lock file acts as a
+    mutex: the second instance sees the lock and exits immediately.
     """
     if lock_path.exists():
-        # Check if lock is stale (older than 1 hour)
+        # WHY check staleness? -- If the previous run crashed without
+        # releasing the lock, we'd be permanently blocked. Treating
+        # locks older than 1 hour as stale provides automatic recovery.
         age_seconds = (datetime.now(timezone.utc).timestamp()
                        - lock_path.stat().st_mtime)
         if age_seconds < 3600:
@@ -163,6 +167,9 @@ def main() -> None:
         start_hour=args.start_hour, end_hour=args.end_hour, skip_days=skip,
     )
     print(json.dumps(result, indent=2))
+    # WHY structured exit codes? -- Schedulers like cron and Task Scheduler
+    # use exit codes to decide whether to send failure notifications.
+    # 0 = success, non-zero = something went wrong.
     sys.exit(0 if result.get("status") == "completed" else 1)
 
 

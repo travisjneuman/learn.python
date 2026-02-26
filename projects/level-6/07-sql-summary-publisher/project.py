@@ -73,7 +73,9 @@ def build_summary(conn: sqlite3.Connection) -> SummaryReport:
     """Run aggregate queries and assemble a SummaryReport."""
     report = SummaryReport()
 
-    # Overall totals
+    # WHY COALESCE? -- SUM() returns NULL when the table is empty.
+    # COALESCE replaces NULL with 0 so downstream code never has to
+    # handle None for a numeric field.
     row = conn.execute(
         "SELECT COUNT(*), COALESCE(SUM(revenue), 0) FROM sales"
     ).fetchone()

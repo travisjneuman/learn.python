@@ -35,10 +35,16 @@ def parse_rules(raw: list[dict]) -> list[FieldRule]:
     ]
 
 
+# WHY a cast registry dict? -- Mapping type names to callables avoids a
+# long if/elif chain for type coercion. Adding a new type means adding one
+# dict entry, not modifying control flow. This is the Strategy pattern
+# applied to type conversion.
 CAST_FUNCTIONS = {
     "str": str,
     "int": int,
     "float": float,
+    # WHY a lambda for bool? -- Python's bool("false") is True because the
+    # string is non-empty. We need custom logic to interpret common truthy values.
     "bool": lambda v: str(v).lower() in ("true", "1", "yes"),
 }
 

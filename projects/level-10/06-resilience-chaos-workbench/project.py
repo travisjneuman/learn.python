@@ -37,6 +37,11 @@ class ImpactLevel(Enum):
     FULL_OUTAGE = "full_outage"
 
 
+# WHY track recovery_time_ms per fault? -- Resilience isn't binary (recovers
+# or doesn't). A system that recovers in 50ms vs 30 seconds has vastly
+# different user impact. Measuring recovery time per fault type produces a
+# resilience scorecard that quantifies exactly how well the system handles
+# each failure mode — transforming "we're resilient" from opinion to data.
 @dataclass(frozen=True)
 class FaultResult:
     """Outcome of injecting a single fault."""

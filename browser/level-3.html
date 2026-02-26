@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 3 — Python in the Browser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 200px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner" role="status" aria-label="Loading Python runtime"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container" role="main">
+  <div class="header">
+    <h1 id="exerciseTitle">Exercise</h1>
+    <nav class="nav-links" role="navigation" aria-label="Exercise navigation">
+      <a href="#" id="prevLink">&larr; Prev</a>
+      <a href="index.html">All Exercises</a>
+      <a href="#" id="nextLink">Next &rarr;</a>
+    </nav>
+  </div>
+
+  <div class="description" id="description"></div>
+
+  <div class="editor-wrapper" aria-label="Python code editor">
+    <textarea id="editor" aria-label="Python code editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output" role="log" aria-live="polite">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var EXERCISES = {
+  "1": {
+    title: "Exercise 1 — Path Builder with pathlib",
+    description: "Write a function build_path(*parts) that joins path parts using pathlib.PurePosixPath\nand returns the path as a string.\n\nAlso write get_extension(filepath) that returns the file extension\n(including the dot), or an empty string if there is none.\n\nNote: In the browser we use PurePosixPath (no real filesystem).\n\nExamples:\n  build_path(\"home\", \"user\", \"docs\", \"file.txt\")\n  -> \"home/user/docs/file.txt\"\n\n  get_extension(\"report.pdf\")  -> \".pdf\"\n  get_extension(\"Makefile\")    -> \"\"",
+    code: 'from pathlib import PurePosixPath\n\ndef build_path(*parts):\n    """Join path parts using pathlib and return as string."""\n    # Your code here\n    pass\n\ndef get_extension(filepath):\n    """Return the file extension (with dot) or empty string."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(build_path("home", "user", "docs", "file.txt"))\nprint(build_path("src", "main.py"))\nprint(get_extension("report.pdf"))\nprint(get_extension("Makefile"))\nprint(get_extension("archive.tar.gz"))\n',
+    check: 'assert build_path("home", "user", "docs") == "home/user/docs"\nassert build_path("src", "main.py") == "src/main.py"\nassert build_path("a") == "a"\nassert get_extension("report.pdf") == ".pdf"\nassert get_extension("Makefile") == ""\nassert get_extension("archive.tar.gz") == ".gz"\nassert get_extension(".hidden") == ""\nprint("All tests passed!")\n'
+  },
+  "2": {
+    title: "Exercise 2 — Module Simulator",
+    description: "Simulate importing a module by creating a namespace dict.\n\nWrite make_module(name, functions) where:\n  - name is a string (module name)\n  - functions is a dict of {func_name: func}\n\nReturn a dict: {\"__name__\": name, **functions}\n\nAlso write call_module_func(module, func_name, *args) that calls\na function from the module dict and returns its result.\nIf func_name is not found, return \"Error: <func_name> not found in <module_name>\".\n\nExamples:\n  math_mod = make_module(\"mymath\", {\"add\": lambda a, b: a + b})\n  call_module_func(math_mod, \"add\", 2, 3)  -> 5\n  call_module_func(math_mod, \"sub\", 1, 2)  -> \"Error: sub not found in mymath\"",
+    code: 'def make_module(name, functions):\n    """Create a module-like namespace dict."""\n    # Your code here\n    pass\n\ndef call_module_func(module, func_name, *args):\n    """Call a function from a module dict."""\n    # Your code here\n    pass\n\n\n# Try it out:\nmath_mod = make_module("mymath", {\n    "add": lambda a, b: a + b,\n    "multiply": lambda a, b: a * b,\n})\n\nprint(math_mod["__name__"])\nprint(call_module_func(math_mod, "add", 10, 5))\nprint(call_module_func(math_mod, "multiply", 3, 7))\nprint(call_module_func(math_mod, "subtract", 1, 2))\n',
+    check: 'mod = make_module("testmod", {"greet": lambda name: f"Hi {name}"})\nassert mod["__name__"] == "testmod"\nassert "greet" in mod\nassert call_module_func(mod, "greet", "Alice") == "Hi Alice"\nassert call_module_func(mod, "missing") == "Error: missing not found in testmod"\n\nempty_mod = make_module("empty", {})\nassert empty_mod["__name__"] == "empty"\nassert call_module_func(empty_mod, "foo") == "Error: foo not found in empty"\nprint("All tests passed!")\n'
+  },
+  "3": {
+    title: "Exercise 3 — Simple Test Runner",
+    description: "Write a function run_tests(test_cases) that acts as a mini test runner.\n\ntest_cases is a list of dicts:\n  [{\"name\": \"test add\", \"got\": 5, \"expected\": 5}, ...]\n\nFor each test case, compare got vs expected.\nReturn a dict: {\"passed\": <count>, \"failed\": <count>, \"results\": [...]}\nwhere results is a list of dicts:\n  {\"name\": ..., \"status\": \"PASS\" or \"FAIL\", \"detail\": ...}\n\ndetail is \"\" for passing tests, and \"got X, expected Y\" for failures.\n\nExample:\n  run_tests([{\"name\": \"t1\", \"got\": 5, \"expected\": 5}])\n  -> {\"passed\": 1, \"failed\": 0, \"results\": [{\"name\": \"t1\", \"status\": \"PASS\", \"detail\": \"\"}]}",
+    code: 'def run_tests(test_cases):\n    """Run test cases and return a summary."""\n    # Your code here\n    pass\n\n\n# Try it out:\ntests = [\n    {"name": "addition", "got": 2 + 3, "expected": 5},\n    {"name": "string upper", "got": "hello".upper(), "expected": "HELLO"},\n    {"name": "list length", "got": len([1,2,3]), "expected": 4},  # This should fail\n    {"name": "boolean", "got": True, "expected": True},\n]\n\nresult = run_tests(tests)\nprint(f"Passed: {result[\'passed\']}, Failed: {result[\'failed\']}")\nfor r in result["results"]:\n    symbol = "+" if r["status"] == "PASS" else "-"\n    line = f"  [{symbol}] {r[\'name\']}: {r[\'status\']}"\n    if r["detail"]:\n        line += f" ({r[\'detail\']})"\n    print(line)\n',
+    check: 'r = run_tests([\n    {"name": "t1", "got": 5, "expected": 5},\n    {"name": "t2", "got": 3, "expected": 4},\n])\nassert r["passed"] == 1, f"Expected 1 passed, got {r[\'passed\']}"\nassert r["failed"] == 1, f"Expected 1 failed, got {r[\'failed\']}"\nassert r["results"][0]["status"] == "PASS"\nassert r["results"][1]["status"] == "FAIL"\nassert "got 3" in r["results"][1]["detail"]\nassert "expected 4" in r["results"][1]["detail"]\n\nr2 = run_tests([])\nassert r2["passed"] == 0 and r2["failed"] == 0\nprint("All tests passed!")\n'
+  },
+  "4": {
+    title: "Exercise 4 — Path Manipulation Toolkit",
+    description: "Write three utility functions using pathlib.PurePosixPath:\n\n1. split_path(filepath) — return a list of all path components.\n   split_path(\"src/utils/helpers.py\") -> [\"src\", \"utils\", \"helpers.py\"]\n\n2. change_extension(filepath, new_ext) — return filepath with a new extension.\n   change_extension(\"report.txt\", \".md\") -> \"report.md\"\n   change_extension(\"Makefile\", \".bak\") -> \"Makefile.bak\"\n\n3. get_parent(filepath, levels=1) — return the parent directory N levels up.\n   get_parent(\"a/b/c/d.txt\", 1) -> \"a/b/c\"\n   get_parent(\"a/b/c/d.txt\", 2) -> \"a/b\"\n   If levels exceeds depth, return \".\"",
+    code: 'from pathlib import PurePosixPath\n\ndef split_path(filepath):\n    """Split a filepath into its components."""\n    # Your code here\n    pass\n\ndef change_extension(filepath, new_ext):\n    """Change the file extension."""\n    # Your code here\n    pass\n\ndef get_parent(filepath, levels=1):\n    """Get the parent directory N levels up."""\n    # Your code here\n    pass\n\n\n# Try it out:\nprint(split_path("src/utils/helpers.py"))\nprint(change_extension("report.txt", ".md"))\nprint(change_extension("Makefile", ".bak"))\nprint(get_parent("a/b/c/d.txt", 1))\nprint(get_parent("a/b/c/d.txt", 2))\nprint(get_parent("file.txt", 5))\n',
+    check: 'assert split_path("src/utils/helpers.py") == ["src", "utils", "helpers.py"]\nassert split_path("single.py") == ["single.py"]\nassert change_extension("report.txt", ".md") == "report.md"\nassert change_extension("Makefile", ".bak") == "Makefile.bak"\nassert get_parent("a/b/c/d.txt", 1) == "a/b/c"\nassert get_parent("a/b/c/d.txt", 2) == "a/b"\nassert get_parent("file.txt", 5) == "."\nassert get_parent("a/b.txt", 1) == "a"\nprint("All tests passed!")\n'
+  },
+  "5": {
+    title: "Exercise 5 — Package Registry",
+    description: "Simulate a Python package registry.\n\nWrite a class-like set of functions using a dict as state:\n\n1. create_registry() — return an empty registry dict\n   {\"packages\": {}, \"count\": 0}\n\n2. register_package(registry, name, version, modules)\n   - name: string, version: string, modules: list of strings\n   - Add to registry[\"packages\"][name] = {\"version\": version, \"modules\": modules}\n   - Increment count\n   - Return the registry\n\n3. find_module(registry, module_name)\n   - Search all packages for one whose modules list contains module_name\n   - Return the package name, or None if not found\n\n4. list_packages(registry)\n   - Return a sorted list of package names\n\nExample:\n  reg = create_registry()\n  register_package(reg, \"utils\", \"1.0\", [\"helpers\", \"formatters\"])\n  find_module(reg, \"helpers\")  -> \"utils\"",
+    code: 'def create_registry():\n    """Create an empty package registry."""\n    # Your code here\n    pass\n\ndef register_package(registry, name, version, modules):\n    """Register a package with its modules."""\n    # Your code here\n    pass\n\ndef find_module(registry, module_name):\n    """Find which package provides a module."""\n    # Your code here\n    pass\n\ndef list_packages(registry):\n    """Return sorted list of package names."""\n    # Your code here\n    pass\n\n\n# Try it out:\nreg = create_registry()\nregister_package(reg, "web", "2.1", ["router", "views", "middleware"])\nregister_package(reg, "utils", "1.0", ["helpers", "formatters"])\nregister_package(reg, "auth", "3.0", ["jwt", "sessions", "middleware"])\n\nprint(f"Packages: {list_packages(reg)}")\nprint(f"Count: {reg[\'count\']}")\nprint(f"Who has \'jwt\'? {find_module(reg, \'jwt\')}")\nprint(f"Who has \'router\'? {find_module(reg, \'router\')}")\nprint(f"Who has \'missing\'? {find_module(reg, \'missing\')}")\n',
+    check: 'reg = create_registry()\nassert reg["packages"] == {} and reg["count"] == 0\n\nregister_package(reg, "web", "2.0", ["router", "views"])\nassert reg["count"] == 1\nassert "web" in reg["packages"]\nassert reg["packages"]["web"]["version"] == "2.0"\n\nregister_package(reg, "utils", "1.0", ["helpers"])\nassert reg["count"] == 2\n\nassert find_module(reg, "router") == "web"\nassert find_module(reg, "helpers") == "utils"\nassert find_module(reg, "missing") is None\n\nassert list_packages(reg) == ["utils", "web"]\nprint("All tests passed!")\n'
+  }
+};
+
+var params = new URLSearchParams(window.location.search);
+var exNum = params.get('ex') || window.location.hash.replace('#exercise-', '') || '1';
+var exercise = EXERCISES[exNum];
+
+document.getElementById('exerciseTitle').textContent = exercise ? exercise.title : 'Not Found';
+document.getElementById('description').textContent = exercise ? exercise.description : 'Exercise not found.';
+document.title = exercise ? exercise.title + ' - Level 3 - Python in the Browser' : 'Not Found';
+
+var exNums = Object.keys(EXERCISES);
+var currentIdx = exNums.indexOf(exNum);
+var prevLink = document.getElementById('prevLink');
+var nextLink = document.getElementById('nextLink');
+if (currentIdx > 0) { prevLink.href = 'level-3.html?ex=' + exNums[currentIdx - 1]; }
+else { prevLink.style.visibility = 'hidden'; }
+if (currentIdx < exNums.length - 1) { nextLink.href = 'level-3.html?ex=' + exNums[currentIdx + 1]; }
+else { nextLink.style.visibility = 'hidden'; }
+
+var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'python', theme: 'dracula', lineNumbers: true,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+  extraKeys: {
+    'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+    'Ctrl-Enter': function() { runCode(); },
+    'Cmd-Enter': function() { runCode(); }
+  }
+});
+var originalCode = exercise ? exercise.code : '';
+
+var storageKey = 'learn-python-l3-ex-' + exNum;
+var savedCode = localStorage.getItem(storageKey);
+if (savedCode !== null) { cmEditor.setValue(savedCode); }
+else if (exercise) { cmEditor.setValue(exercise.code); }
+
+var saveTimer = null;
+cmEditor.on('change', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(storageKey, cmEditor.getValue());
+  }, 500);
+});
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    var needsInput = code.indexOf('input(') !== -1;
+    if (needsInput) {
+      pyodideInstance.globals.set('_js_prompt', function(promptText) {
+        return prompt(promptText || 'Enter value:') || '';
+      });
+      pyodideInstance.runPython(
+        'import builtins\n_orig_input = builtins.input\n' +
+        'def _patched_input(prompt_text=""):\n' +
+        '    sys.stdout.write(str(prompt_text))\n' +
+        '    val = _js_prompt(str(prompt_text))\n' +
+        '    if hasattr(val, "to_py"): val = str(val)\n' +
+        '    sys.stdout.write(str(val) + "\\n")\n' +
+        '    return str(val)\n' +
+        'builtins.input = _patched_input\n'
+      );
+    }
+
+    pyodideInstance.runPython(code);
+
+    if (needsInput) {
+      pyodideInstance.runPython('builtins.input = _orig_input\n');
+    }
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkCode() {
+  if (!exercise || !exercise.check) return;
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + exercise.check;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkCode);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

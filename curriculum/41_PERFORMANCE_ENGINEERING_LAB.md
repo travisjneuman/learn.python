@@ -28,7 +28,6 @@ World-class engineering includes predictable performance under load.
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](40_SECURITY_COMPLIANCE_HARDENING.md) | [Home](../README.md) | [Next →](42_OPEN_SOURCE_CONTRIBUTION_LANE.md) |
-|:---|:---:|---:|
+[Next: 42_OPEN_SOURCE_CONTRIBUTION_LANE.md →](./42_OPEN_SOURCE_CONTRIBUTION_LANE.md)

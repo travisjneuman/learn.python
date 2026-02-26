@@ -1,6 +1,8 @@
 # Level 0 / Project 09 - Daily Checklist Writer
 Home: [README](../../../README.md)
 
+**Estimated time:** 25 minutes
+
 ## Focus
 - write text output files
 
@@ -34,20 +36,28 @@ Checklist written to data/checklist.txt
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--header` flag that puts a custom title at the top of the checklist (e.g. "Monday Tasks").
 2. Add priority markers -- lines starting with `!` get a `[!]` prefix instead of `[ ]`.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use an empty task list -- does `format_checklist()` return something sensible or crash?
 2. Add tasks with only whitespace -- do blank tasks get numbered or skipped?
 3. Use a task file with 100+ items -- does the numbering still align correctly?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle the empty-list case by returning a "(no tasks)" message.
 2. Ensure `load_tasks()` strips whitespace and skips blank lines.
 3. Add a test for the empty-task-list edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `format_checklist()` use `enumerate(tasks, start=1)` instead of a manual counter?

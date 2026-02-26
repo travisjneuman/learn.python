@@ -1,6 +1,8 @@
 # Level 5 / Project 11 - Retry Backoff Runner
 Home: [README](../../../README.md)
 
+**Estimated time:** 80 minutes
+
 ## Focus
 - exponential backoff strategy practice
 
@@ -28,22 +30,30 @@ Success after 3 retries (total delay: 0.7s)
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add jitter to the backoff delay (random variation) to prevent thundering-herd behavior.
 2. Add a `--max-retries` flag that overrides the default retry count from the command line.
 3. Log each retry attempt with the delay duration and the error that triggered it.
 4. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Set `--max-retries 0` so no retries are allowed and the flaky function always fails.
 2. Set `--base-delay` to a negative number.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Validate that max_retries >= 1 and base_delay > 0.
 2. Return a clear error report when all retries are exhausted.
 3. Add tests for zero retries and negative delay.
 4. Re-run until output and tests are deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does exponential backoff calculate the delay for each retry attempt?

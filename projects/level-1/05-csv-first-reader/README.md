@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you open a file and read its contents line by line?
 - Can you use a dictionary to store key-value pairs?
 
+**Estimated time:** 25 minutes
+
 ## Focus
 - read csv rows into dictionaries
 
@@ -42,20 +44,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--columns` flag that selects which columns to display (comma-separated names).
 2. Add row numbering to the formatted table output.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a CSV file with no data rows (just headers) -- does `column_stats()` crash on empty data?
 2. Use a CSV with inconsistent column counts (some rows have extra commas) -- what happens?
 3. Use a column with mixed numeric/text values like `"10, N/A, 30"` -- does `detect_numeric_columns()` handle it?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle empty-data CSVs by returning zero stats without crashing.
 2. Ensure `detect_numeric_columns()` treats columns with any non-numeric values as text.
 3. Add a test for the headers-only CSV case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `load_csv()` use `csv.DictReader` instead of splitting lines on commas?

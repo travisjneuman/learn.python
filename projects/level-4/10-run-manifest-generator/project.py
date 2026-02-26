@@ -28,10 +28,14 @@ def configure_logging() -> None:
 def compute_checksum(path: Path, algorithm: str = "md5") -> str:
     """Compute a hex digest checksum for a file.
 
-    Reads in chunks to handle large files without loading them fully into memory.
+    WHY chunk-based reading? -- Loading a multi-GB file entirely into
+    memory would crash the process. Reading in 8 KB chunks keeps memory
+    usage constant regardless of file size.
     """
     hasher = hashlib.new(algorithm)
     with path.open("rb") as f:
+        # WHY iter(lambda, sentinel)? -- This two-argument form of iter()
+        # calls f.read(8192) repeatedly until it returns b"" (end of file).
         for chunk in iter(lambda: f.read(8192), b""):
             hasher.update(chunk)
     return hasher.hexdigest()

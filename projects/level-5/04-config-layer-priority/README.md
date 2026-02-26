@@ -1,6 +1,8 @@
 # Level 5 / Project 04 - Config Layer Priority
 Home: [README](../../../README.md)
 
+**Estimated time:** 65 minutes
+
 ## Focus
 - defaults, env, and cli precedence
 
@@ -30,22 +32,30 @@ Resolved config: 5 keys from 3 layers
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--set` flag that allows setting individual keys from the CLI (e.g. `--set log_level=TRACE`).
 2. Add a `--dump-sources` mode that prints which layer each final value came from.
 3. Support nested config keys using dot notation (e.g. `database.host`).
 4. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Set an environment variable with a non-numeric value for a key that expects an integer (e.g. `APP_MAX_CONNECTIONS=abc`).
 2. Reference a config file that does not exist.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add type coercion with error handling that logs a warning and falls back to the default.
 2. Handle missing config file gracefully (use defaults only).
 3. Add tests for bad env var types and missing files.
 4. Re-run until output and tests are deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why is env > file > defaults the standard precedence order?

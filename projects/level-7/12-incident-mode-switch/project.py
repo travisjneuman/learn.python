@@ -37,7 +37,10 @@ class Criticality(Enum):
     OPTIONAL = "optional"
 
 
-# Allowed transitions: from_mode → set of to_modes
+# WHY explicit transition rules? -- Not all mode changes are safe. Jumping
+# directly from MAINTENANCE to EMERGENCY could skip necessary recovery steps.
+# Declaring valid transitions as data (not if/elif) makes the state machine
+# auditable and prevents accidental illegal transitions.
 TRANSITIONS: dict[Mode, set[Mode]] = {
     Mode.NORMAL: {Mode.DEGRADED, Mode.MAINTENANCE, Mode.EMERGENCY},
     Mode.DEGRADED: {Mode.NORMAL, Mode.EMERGENCY},
@@ -45,7 +48,9 @@ TRANSITIONS: dict[Mode, set[Mode]] = {
     Mode.EMERGENCY: {Mode.DEGRADED, Mode.NORMAL},
 }
 
-# Which criticality levels run in each mode
+# WHY map modes to criticality sets? -- During an incident, you want to
+# shed load by disabling non-essential stages. This lookup table makes the
+# decision mechanical: check if stage.criticality is in ACTIVE_IN[current_mode].
 ACTIVE_IN: dict[Mode, set[Criticality]] = {
     Mode.NORMAL: {Criticality.CRITICAL, Criticality.STANDARD, Criticality.OPTIONAL},
     Mode.DEGRADED: {Criticality.CRITICAL, Criticality.STANDARD},

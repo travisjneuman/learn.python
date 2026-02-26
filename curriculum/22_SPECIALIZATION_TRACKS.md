@@ -70,7 +70,6 @@ Ship:
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
----
+## Next
 
-| [← Prev](21_FULL_STACK_MASTERY_PATH.md) | [Home](../README.md) | [Next →](23_RESOURCE_AND_CURRICULUM_MAP.md) |
-|:---|:---:|---:|
+[Next: 23_RESOURCE_AND_CURRICULUM_MAP.md →](./23_RESOURCE_AND_CURRICULUM_MAP.md)

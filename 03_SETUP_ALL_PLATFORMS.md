@@ -368,7 +368,6 @@ You pass setup when you can:
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Python Tutor](https://pythontutor.com/)
 
----
+## Next
 
-| [← Prev](02_GLOSSARY.md) | [Home](README.md) | [Next →](concepts/what-is-a-variable.md) |
-|:---|:---:|---:|
+[Next: concepts/what-is-a-variable.md →](./concepts/what-is-a-variable.md)

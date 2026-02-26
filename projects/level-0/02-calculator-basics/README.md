@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you write a function that takes two arguments and returns their sum?
 - Can you convert a string to a number using `int()` or `float()`?
 
+**Estimated time:** 15 minutes
+
 ## Focus
 - numeric input, arithmetic, and safe casting
 
@@ -86,20 +88,28 @@ def parse_power(text):
 
 **The thought process:** Parse first, validate, then compute. This is the same pattern the calculator project uses with its `operations` dict.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add support for modulo (`%`) and exponentiation (`**`) operations.
 2. After each calculation, ask the user "Round to how many decimal places? (Enter to skip): " and round accordingly.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Type `10 / 0` -- does it raise `ValueError` or crash with `ZeroDivisionError`?
 2. Type just one number like `5` -- what happens when there is no operator or second operand?
 3. Type text instead of numbers like `hello + world` -- does `float()` fail gracefully?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `divide()` raises `ValueError` with a clear message for zero divisors.
 2. Add validation in `calculate()` that checks for exactly two numeric operands.
 3. Add a test for the malformed-expression case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the `operations` dict map strings to functions, instead of using if/elif chains?

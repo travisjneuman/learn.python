@@ -1,0 +1,126 @@
+{
+  "deck": "Module 05 — Async Python",
+  "description": "asyncio, aiohttp, async/await, event loops, tasks, concurrency patterns",
+  "cards": [
+    {
+      "id": "m05-01",
+      "front": "What is async/await and why use it instead of threads?",
+      "back": "async/await lets you write concurrent code that waits for I/O without blocking.\n\nimport asyncio\n\nasync def fetch_data():\n    print('Starting...')\n    await asyncio.sleep(1)  # non-blocking wait\n    print('Done!')\n    return 42\n\nasyncio.run(fetch_data())\n\nWhy not threads?\n- No race conditions (single-threaded)\n- Lower memory overhead\n- Scales to thousands of concurrent I/O operations\n- Ideal for network requests, file I/O, database queries\n\nThreads are better for CPU-bound work. async is better for I/O-bound work.",
+      "concept_ref": "projects/modules/05-async-python/README.md",
+      "difficulty": 1,
+      "tags": ["async", "await", "concurrency"]
+    },
+    {
+      "id": "m05-02",
+      "front": "What is a coroutine and how do you run one?",
+      "back": "A coroutine is a function defined with async def. Calling it returns a coroutine object, not the result.\n\nasync def greet(name):\n    return f'Hello, {name}'\n\n# WRONG — returns coroutine object, does not execute\nresult = greet('Alice')  # <coroutine object>\n\n# RIGHT — must use await or asyncio.run()\nresult = asyncio.run(greet('Alice'))  # 'Hello, Alice'\n\n# Inside another async function, use await:\nasync def main():\n    result = await greet('Alice')\n    print(result)\n\nasyncio.run(main())\n\nawait can only be used inside async functions.",
+      "concept_ref": "projects/modules/05-async-python/01-async-timer/README.md",
+      "difficulty": 1,
+      "tags": ["coroutine", "async", "run"]
+    },
+    {
+      "id": "m05-03",
+      "front": "What is the event loop and what does asyncio.run() do?",
+      "back": "The event loop is the scheduler that runs coroutines. It:\n1. Picks a ready coroutine\n2. Runs it until it hits an await\n3. Switches to another ready coroutine\n4. Resumes when the awaited thing completes\n\nasyncio.run(main())\n  - Creates a new event loop\n  - Runs main() to completion\n  - Closes the loop\n\nYou should call asyncio.run() exactly once, at the top level. Never nest asyncio.run() calls.\n\nFor advanced cases:\nloop = asyncio.get_event_loop()\nloop.run_until_complete(main())",
+      "concept_ref": "projects/modules/05-async-python/01-async-timer/README.md",
+      "difficulty": 2,
+      "tags": ["event-loop", "asyncio", "scheduler"]
+    },
+    {
+      "id": "m05-04",
+      "front": "How do you run multiple coroutines concurrently with asyncio.gather()?",
+      "back": "asyncio.gather() runs multiple coroutines at the same time and waits for all to finish.\n\nasync def fetch(url):\n    await asyncio.sleep(1)\n    return f'Data from {url}'\n\nasync def main():\n    results = await asyncio.gather(\n        fetch('http://a.com'),\n        fetch('http://b.com'),\n        fetch('http://c.com'),\n    )\n    # results = ['Data from a', 'Data from b', 'Data from c']\n    # Total time: ~1 second (not 3!)\n\nWith return_exceptions=True, exceptions are returned as values instead of raised:\n    results = await asyncio.gather(*tasks, return_exceptions=True)",
+      "concept_ref": "projects/modules/05-async-python/02-concurrent-fetcher/README.md",
+      "difficulty": 2,
+      "tags": ["gather", "concurrency", "parallel"]
+    },
+    {
+      "id": "m05-05",
+      "front": "What is asyncio.create_task() and how does it differ from await?",
+      "back": "create_task() schedules a coroutine to run in the background.\n\nasync def main():\n    # Sequential — waits for each one\n    a = await fetch('url1')  # wait...\n    b = await fetch('url2')  # wait...\n\n    # Concurrent — starts immediately, await later\n    task_a = asyncio.create_task(fetch('url1'))  # starts now\n    task_b = asyncio.create_task(fetch('url2'))  # starts now\n    a = await task_a  # get result\n    b = await task_b  # get result\n\ncreate_task() returns a Task object. The coroutine starts running immediately on the event loop. await just retrieves the result.",
+      "concept_ref": "projects/modules/05-async-python/02-concurrent-fetcher/README.md",
+      "difficulty": 2,
+      "tags": ["create-task", "task", "concurrency"]
+    },
+    {
+      "id": "m05-06",
+      "front": "How do you make HTTP requests asynchronously with aiohttp?",
+      "back": "import aiohttp\nimport asyncio\n\nasync def fetch(url):\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n\nasync def main():\n    data = await fetch('https://api.example.com/data')\n    print(data)\n\nasyncio.run(main())\n\nKey differences from requests:\n- Must use async with for session and response\n- response.json() is a coroutine (needs await)\n- ClientSession should be reused across requests\n- Cannot use requests library in async code (it blocks)",
+      "concept_ref": "projects/modules/05-async-python/02-concurrent-fetcher/README.md",
+      "difficulty": 2,
+      "tags": ["aiohttp", "http", "async"]
+    },
+    {
+      "id": "m05-07",
+      "front": "Why must you reuse aiohttp.ClientSession across requests?",
+      "back": "Creating a new ClientSession for each request is wasteful.\n\n# BAD — new session per request\nasync def fetch(url):\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as resp:\n            return await resp.json()\n\n# GOOD — shared session\nasync def main():\n    async with aiohttp.ClientSession() as session:\n        tasks = [\n            fetch_with(session, url)\n            for url in urls\n        ]\n        results = await asyncio.gather(*tasks)\n\nasync def fetch_with(session, url):\n    async with session.get(url) as resp:\n        return await resp.json()\n\nShared sessions reuse TCP connections (connection pooling), handle cookies, and are faster.",
+      "concept_ref": "projects/modules/05-async-python/02-concurrent-fetcher/README.md",
+      "difficulty": 2,
+      "tags": ["aiohttp", "session", "performance"]
+    },
+    {
+      "id": "m05-08",
+      "front": "What is an asyncio.Semaphore and when do you use one?",
+      "back": "A Semaphore limits how many coroutines can run a section of code concurrently.\n\nsem = asyncio.Semaphore(10)  # max 10 concurrent\n\nasync def fetch(url):\n    async with sem:  # blocks if 10 already running\n        async with session.get(url) as resp:\n            return await resp.json()\n\nasync def main():\n    tasks = [fetch(url) for url in thousand_urls]\n    results = await asyncio.gather(*tasks)\n\nWithout a semaphore, gathering 1000 tasks would open 1000 connections simultaneously, overwhelming the server and your system.\n\nCommon limits: 10-50 for API calls, 100+ for local I/O.",
+      "concept_ref": "projects/modules/05-async-python/03-rate-limited-fetcher/README.md",
+      "difficulty": 3,
+      "tags": ["semaphore", "rate-limiting", "concurrency"]
+    },
+    {
+      "id": "m05-09",
+      "front": "What is an asyncio.Queue and how do you use the producer-consumer pattern?",
+      "back": "asyncio.Queue is a thread-safe queue for async code.\n\nasync def producer(queue):\n    for i in range(10):\n        await queue.put(i)\n    await queue.put(None)  # signal done\n\nasync def consumer(queue):\n    while True:\n        item = await queue.get()\n        if item is None:\n            break\n        print(f'Processing {item}')\n        queue.task_done()\n\nasync def main():\n    queue = asyncio.Queue(maxsize=5)\n    await asyncio.gather(\n        producer(queue),\n        consumer(queue),\n    )\n\nmaxsize limits the queue — put() blocks when full, get() blocks when empty. This creates natural backpressure.",
+      "concept_ref": "projects/modules/05-async-python/04-async-pipeline/README.md",
+      "difficulty": 3,
+      "tags": ["queue", "producer-consumer", "async"]
+    },
+    {
+      "id": "m05-10",
+      "front": "What is the difference between asyncio.wait() and asyncio.gather()?",
+      "back": "gather() waits for ALL tasks and returns results in order:\n  results = await asyncio.gather(task1, task2, task3)\n  # results = [result1, result2, result3]\n\nwait() gives you fine-grained control:\n  done, pending = await asyncio.wait(\n      tasks,\n      return_when=asyncio.FIRST_COMPLETED  # or ALL_COMPLETED\n  )\n  for task in done:\n      result = task.result()\n\nUse gather() when you want all results.\nUse wait() when you want:\n  - First result (FIRST_COMPLETED)\n  - Timeout handling\n  - Processing results as they arrive\n  - Cancelling remaining tasks after one finishes",
+      "concept_ref": "projects/modules/05-async-python/02-concurrent-fetcher/README.md",
+      "difficulty": 3,
+      "tags": ["wait", "gather", "comparison"]
+    },
+    {
+      "id": "m05-11",
+      "front": "How do you handle timeouts in async code?",
+      "back": "Use asyncio.wait_for() or asyncio.timeout() (Python 3.11+).\n\n# wait_for (all versions)\ntry:\n    result = await asyncio.wait_for(fetch(url), timeout=5.0)\nexcept asyncio.TimeoutError:\n    print('Request timed out')\n\n# timeout context manager (Python 3.11+)\nasync with asyncio.timeout(5.0):\n    result = await fetch(url)\n\n# aiohttp timeout\ntimeout = aiohttp.ClientTimeout(total=10)\nasync with aiohttp.ClientSession(timeout=timeout) as session:\n    async with session.get(url) as resp:\n        data = await resp.json()\n\nAlways set timeouts for network operations.",
+      "concept_ref": "projects/modules/05-async-python/03-rate-limited-fetcher/README.md",
+      "difficulty": 2,
+      "tags": ["timeout", "asyncio", "error-handling"]
+    },
+    {
+      "id": "m05-12",
+      "front": "What happens if you call a blocking function inside async code?",
+      "back": "It blocks the entire event loop. No other coroutines can run.\n\nimport time\n\nasync def bad():\n    time.sleep(5)  # BLOCKS everything for 5 seconds\n\nasync def good():\n    await asyncio.sleep(5)  # yields control, others can run\n\nFor unavoidable blocking calls, run them in a thread:\n    result = await asyncio.to_thread(blocking_function, arg)\n\nOr use run_in_executor:\n    loop = asyncio.get_event_loop()\n    result = await loop.run_in_executor(None, blocking_function, arg)\n\nCommon blocking calls: time.sleep(), requests.get(), open().read(), CPU-heavy computation.",
+      "concept_ref": "projects/modules/05-async-python/README.md",
+      "difficulty": 2,
+      "tags": ["blocking", "to-thread", "pitfalls"]
+    },
+    {
+      "id": "m05-13",
+      "front": "How do you cancel an asyncio Task?",
+      "back": "task = asyncio.create_task(long_running())\n\n# Cancel it\ntask.cancel()\n\ntry:\n    await task\nexcept asyncio.CancelledError:\n    print('Task was cancelled')\n\n# Inside the coroutine, handle cancellation:\nasync def long_running():\n    try:\n        while True:\n            await asyncio.sleep(1)\n    except asyncio.CancelledError:\n        print('Cleaning up...')\n        raise  # re-raise to confirm cancellation\n\nRules:\n- cancel() requests cancellation (not immediate)\n- CancelledError is raised at the next await point\n- Always re-raise CancelledError after cleanup",
+      "concept_ref": "projects/modules/05-async-python/04-async-pipeline/README.md",
+      "difficulty": 3,
+      "tags": ["cancel", "task", "cleanup"]
+    },
+    {
+      "id": "m05-14",
+      "front": "What is an async context manager and how do you write one?",
+      "back": "An async context manager uses __aenter__ and __aexit__ (or @asynccontextmanager).\n\nfrom contextlib import asynccontextmanager\n\n@asynccontextmanager\nasync def db_connection(url):\n    conn = await connect(url)\n    try:\n        yield conn\n    finally:\n        await conn.close()\n\nasync def main():\n    async with db_connection('postgres://...') as conn:\n        data = await conn.fetch('SELECT * FROM users')\n\nClass-based:\nclass AsyncDB:\n    async def __aenter__(self):\n        self.conn = await connect()\n        return self.conn\n    async def __aexit__(self, *exc):\n        await self.conn.close()\n\nUsed for resources that need async setup/teardown.",
+      "concept_ref": "projects/modules/05-async-python/05-chat-server/README.md",
+      "difficulty": 3,
+      "tags": ["context-manager", "async-with", "resources"]
+    },
+    {
+      "id": "m05-15",
+      "front": "What is an async iterator and async for loop?",
+      "back": "Async iterators yield values asynchronously, useful for streaming data.\n\nasync def fetch_pages(url):\n    page = 1\n    while True:\n        data = await fetch(f'{url}?page={page}')\n        if not data:\n            break\n        yield data  # async generator\n        page += 1\n\nasync def main():\n    async for page_data in fetch_pages('https://api.example.com'):\n        process(page_data)\n\nClass-based:\nclass AsyncCounter:\n    def __init__(self, n):\n        self.n = n\n        self.i = 0\n    def __aiter__(self):\n        return self\n    async def __anext__(self):\n        if self.i >= self.n:\n            raise StopAsyncIteration\n        self.i += 1\n        await asyncio.sleep(0.1)\n        return self.i",
+      "concept_ref": "projects/modules/05-async-python/04-async-pipeline/README.md",
+      "difficulty": 3,
+      "tags": ["async-iterator", "async-for", "generator"]
+    }
+  ]
+}

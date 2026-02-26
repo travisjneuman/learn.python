@@ -28,7 +28,6 @@ Contributing to high-quality open source raises your engineering bar quickly.
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](41_PERFORMANCE_ENGINEERING_LAB.md) | [Home](../README.md) | [Next →](43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md) |
-|:---|:---:|---:|
+[Next: 43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md →](./43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md)

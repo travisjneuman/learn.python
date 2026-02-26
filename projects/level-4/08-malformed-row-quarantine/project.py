@@ -22,8 +22,10 @@ def configure_logging() -> None:
 
 # ---------- validation rules ----------
 
-# Each rule is a function that takes (fields, header_count) and returns
-# an error string or None. This pattern makes rules composable and testable.
+# WHY individual rule functions? -- Each rule is a function that takes
+# (fields, header_count) and returns an error string or None. This pattern
+# makes rules composable, testable in isolation, and easy to extend:
+# adding a new check is just writing one small function.
 
 
 def rule_column_count(fields: list[str], expected: int) -> str | None:
@@ -42,7 +44,12 @@ def rule_no_empty_required(fields: list[str], required_indexes: list[int]) -> st
 
 
 def rule_no_control_chars(fields: list[str]) -> str | None:
-    """Reject rows containing control characters (except tab/newline)."""
+    """Reject rows containing control characters (except tab/newline).
+
+    WHY allow tab and newline? -- Tabs appear in TSV data and newlines
+    can appear inside quoted CSV fields. Other control characters (like
+    null bytes or bell) usually indicate file corruption.
+    """
     for i, field in enumerate(fields):
         for ch in field:
             if ord(ch) < 32 and ch not in ("\t", "\n", "\r"):

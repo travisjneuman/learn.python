@@ -26,6 +26,10 @@ from pathlib import Path
 # Schema
 # ---------------------------------------------------------------------------
 
+# WHY store runbook history? -- When an operator runs a maintenance
+# script, the audit trail records exactly which SQL was executed and
+# with what parameters. If something goes wrong, you can trace back
+# to the exact runbook version that caused the issue.
 RUNBOOK_DDL = """\
 CREATE TABLE IF NOT EXISTS runbook_history (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,

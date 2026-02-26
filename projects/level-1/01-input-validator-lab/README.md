@@ -10,6 +10,8 @@ Recall these prerequisites before diving in:
 - Can you use `if`/`elif`/`else` to check multiple conditions?
 - Can you check if a character is in a string? (`"@" in "user@example.com"`)
 
+**Estimated time:** 20 minutes
+
 ## Focus
 - validate required fields and safe defaults
 
@@ -69,20 +71,28 @@ def validate_date(text):
 
 **The thought process:** Validate one thing at a time: format first, then types, then ranges. Return structured results (dict with valid + reason) so the caller can display useful messages. This is the same pattern the input validator project uses.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a new validation type: "url" that checks for `http://` or `https://` prefix and a dot in the domain.
 2. Add a `--strict` flag that rejects emails without a TLD of at least 2 characters.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a line with an unknown type like `ssn: 123-45-6789` -- does `validate_input()` handle it or crash?
 2. Add a line with no colon separator like `just some text` -- does parsing fail gracefully?
 3. Add an email like `user@` -- does `validate_email()` accept it when it should not?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `validate_input()` returns an "unknown type" result for unrecognised types instead of crashing.
 2. Handle lines without the `type: value` format by skipping them with a warning.
 3. Add a test for the unknown-type case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `validate_email()` use basic string checks (`"@" in value`) rather than a full regex?

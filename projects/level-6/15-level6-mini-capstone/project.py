@@ -27,6 +27,10 @@ from pathlib import Path
 # Schema
 # ---------------------------------------------------------------------------
 
+# WHY separate staging and target tables? -- Staging is a scratch area
+# for raw ingest; target is the clean, deduplicated production table.
+# This separation lets you validate and transform in staging without
+# risking corruption of production data.
 SCHEMA_DDL = """\
 CREATE TABLE IF NOT EXISTS staging (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,

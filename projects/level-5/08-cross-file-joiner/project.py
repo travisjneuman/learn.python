@@ -73,8 +73,12 @@ def validate_key_exists(records: list[dict], key: str, source_name: str) -> None
 def index_by_key(records: list[dict], key: str) -> dict[str, dict]:
     """Build a lookup dictionary indexed by the value of *key*.
 
-    If duplicate key values exist, the last record wins.  Empty key
-    values are skipped with a warning.
+    WHY index first, then join? -- Indexing both sides into dicts makes
+    lookups O(1) instead of scanning the entire right side for every
+    left row (O(n*m) down to O(n+m)). This is the same technique
+    databases use with hash joins.
+
+    If duplicate key values exist, the last record wins.
     """
     index: dict[str, dict] = {}
     duplicates = 0
@@ -136,7 +140,8 @@ def join_full(left: dict[str, dict], right: dict[str, dict]) -> list[dict]:
     return result
 
 
-# Map strategy names to functions for clean dispatch.
+# WHY a strategy map? -- Dispatching by string name lets the join type
+# be specified via CLI flag or config file without if/elif chains.
 JOIN_STRATEGIES: dict[str, Callable[..., Any]] = {
     "inner": join_inner,
     "left": join_left,

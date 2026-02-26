@@ -32,6 +32,11 @@ class EventCategory(Enum):
     PAYMENT = "payment"
 
 
+# WHY frozen=True for events? -- Event sourcing's core invariant is that
+# events are immutable once stored. Frozen dataclasses enforce this at the
+# language level — any attempt to mutate an event raises AttributeError.
+# The version field supports schema evolution: when the event shape changes,
+# bump the version so projections can handle both old and new formats.
 @dataclass(frozen=True)
 class Event:
     """An immutable domain event."""

@@ -42,6 +42,11 @@ class AlertSeverity(Enum):
     PAGE = "page"
 
 
+# WHY separate SLA definitions from measurement? -- SLAs are contractual
+# (99.9% uptime) while measurements are operational (actual uptime this week).
+# Keeping them separate lets you evaluate the same measurements against
+# different SLA tiers (e.g. premium vs standard customers) and detect
+# breaches using burn-rate analysis before the SLA window closes.
 @dataclass
 class SLADefinition:
     """Defines an SLA target for a specific metric."""

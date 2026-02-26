@@ -33,6 +33,11 @@ class IncidentSeverity(Enum):
     SEV4 = "sev4"
 
 
+# WHY track action items with priority AND status? -- Postmortems without
+# tracked action items are theater. The priority ensures critical fixes
+# (prevent recurrence) are addressed before nice-to-haves. The status
+# tracks completion — blameless postmortem culture requires following
+# through on commitments, and the status field makes that visible.
 class ActionPriority(Enum):
     CRITICAL = "critical"
     HIGH = "high"

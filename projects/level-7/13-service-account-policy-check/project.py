@@ -48,6 +48,10 @@ class Violation:
 
 # -- Core logic ----------------------------------------------------------
 
+# WHY an allowlist of permissions? -- Least-privilege means accounts should
+# only have permissions from a known set. Any permission not in this set is
+# either a typo or a privilege escalation risk. The set data structure gives
+# O(1) membership checks.
 ALLOWED_PERMISSIONS: set[str] = {
     "read", "write", "delete", "admin", "deploy",
     "logs:read", "logs:write", "metrics:read",

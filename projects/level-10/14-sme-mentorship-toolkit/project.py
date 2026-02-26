@@ -22,6 +22,11 @@ from typing import Any
 # Domain types
 # ---------------------------------------------------------------------------
 
+# WHY integer values on SkillLevel? -- The numeric values enable arithmetic:
+# experience_delta = mentor.level.value - mentee.level.value. A delta of 1-2
+# is ideal (close enough to empathize, far enough to teach). Delta 0 means
+# peer pairing, delta 3+ may cause communication gaps. The matching algorithm
+# uses these numbers to compute compatibility scores.
 class SkillLevel(Enum):
     BEGINNER = 1
     INTERMEDIATE = 2

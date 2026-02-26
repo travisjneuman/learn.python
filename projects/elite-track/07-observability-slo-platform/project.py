@@ -5,6 +5,11 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY SLOs over SLAs? -- SLAs are contractual (penalties for breach). SLOs are
+# internal targets set tighter than SLAs, giving teams an error budget to spend
+# on velocity. When the error budget is exhausted, freeze features and fix
+# reliability. This SRE pattern (from Google's SRE book) balances innovation
+# with stability.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

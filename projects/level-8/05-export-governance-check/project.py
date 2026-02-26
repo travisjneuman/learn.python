@@ -27,6 +27,10 @@ from typing import Any, Callable
 
 # --- Domain types -------------------------------------------------------
 
+# WHY four severity levels? -- Not all policy violations are equal. INFO
+# is advisory, WARNING needs review, CRITICAL requires remediation, and
+# BLOCKING prevents the export entirely. This graduated response lets
+# governance rules be strict where needed (PII) without blocking every export.
 class Severity(Enum):
     """Violation severity levels."""
     INFO = "info"

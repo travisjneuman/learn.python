@@ -1,6 +1,8 @@
 # Level 1 / Project 13 - Batch Rename Simulator
 Home: [README](../../../README.md)
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - safe rename planning without destructive changes
 
@@ -33,20 +35,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a new rule: `add_date` that prepends today's date as `YYYY-MM-DD_` to the filename.
 2. Add a `--dry-run` flag that prints the plan but does not write the output file.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add two files that would rename to the same target (e.g. `A.TXT` and `a.txt` with the `lower` rule) -- does `detect_conflicts()` catch it?
 2. Add an empty filename (blank line) -- does `simulate_rename()` raise `ValueError`?
 3. Use an unknown rule name like `--rule banana` -- does argparse reject it or does the code crash?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `detect_conflicts()` identifies all files that would collide after renaming.
 2. Handle blank lines in the input by skipping them in `simulate_batch()`.
 3. Add a test for the conflict-detection case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why is this a "simulator" and not an actual renamer? What safety benefit does simulation provide?

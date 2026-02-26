@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you write a function that takes one argument and returns a calculated result?
 - Can you use a dictionary to look up a value by key?
 
+**Estimated time:** 15 minutes
+
 ## Focus
 - functions and unit conversion practice
 
@@ -85,20 +87,28 @@ def convert_distance(value, from_unit, to_unit):
 
 **The thought process:** The hub-and-spoke pattern means adding a new unit (like feet) only requires two new functions (feet-to-km and km-to-feet), not six new pair functions. This is exactly how the temperature converter works with Celsius as the hub.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add Rankine as a fourth temperature scale (Rankine = Fahrenheit + 459.67).
 2. Ask the user how many decimal places they want in results and round accordingly.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Enter `-300` as a Kelvin value -- this is below absolute zero. Does `convert_temperature()` catch it?
 2. Enter `X` as a unit -- what happens?
 3. Enter `hot` instead of a number -- does `float()` fail gracefully?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `celsius_to_kelvin()` and `kelvin_to_celsius()` reject temperatures below absolute zero.
 2. Add validation for unknown unit codes in `convert_temperature()`.
 3. Add a test that verifies the below-absolute-zero ValueError.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the converter route all conversions through Celsius instead of having 6 direct functions?

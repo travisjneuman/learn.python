@@ -1,6 +1,8 @@
 # Level 4 / Project 07 - Duplicate Record Investigator
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - collision analysis and root cause
 
@@ -32,20 +34,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--method` flag supporting both `bigram` (current) and `levenshtein` similarity.
 2. Add a `--group` mode that clusters duplicates into groups instead of listing pairs.
 3. Re-run script and tests — add a parametrized test for the new method.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a very low threshold (0.1) and observe how many false positives appear.
 2. Feed it a CSV with only one row — verify no crash on the single-record case.
 3. Use key fields that do not exist in the CSV and observe the behavior.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Validate that key fields exist in the CSV headers before comparing.
 2. Add a warning when the threshold produces more than 50% of records as duplicates.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What are character bigrams and why are they useful for fuzzy matching?

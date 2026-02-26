@@ -1,6 +1,8 @@
 # Level 3 / Project 12 - Parser With Fixtures
 Home: [README](../../../README.md)
 
+**Estimated time:** 55 minutes
+
 ## Focus
 - test fixtures and parser stability
 
@@ -33,20 +35,28 @@ Format: ini, Lines: 15
 - Passing tests with fixture-generated files
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a YAML-like parser (indentation-based key: value pairs).
 2. Add `--validate` flag that checks all sections have at least one entry.
 3. Add line number tracking to each parsed record for error reporting.
 
-## Break it (required)
+## Break it (required) — Core
 1. Parse an INI file with duplicate section names — what happens?
 2. Parse a CSV with quoted fields containing commas — does simple split work?
 3. Auto-detect format on ambiguous input (e.g., `a=b,c=d`) — which parser wins?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle duplicate sections by merging entries (or warning).
 2. Document that the CSV parser doesn't handle quoted fields (limitation).
 3. Add a `--format` override so users can bypass auto-detection.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is a pytest fixture and how does it differ from setup/teardown?

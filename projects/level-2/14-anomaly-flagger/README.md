@@ -1,6 +1,8 @@
 # Level 2 / Project 14 - Anomaly Flagger
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - threshold and outlier tagging
 
@@ -31,20 +33,28 @@ Anomalies found: 2
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--method` flag to use only z-score or only IQR detection.
 2. Add a visual indicator (e.g. asterisks) showing where anomalies fall.
 3. Output the "cleaned" dataset with anomalies removed.
 
-## Break it (required)
+## Break it (required) — Core
 1. Feed a dataset with all identical values — does z-score divide by zero?
 2. Feed a dataset with fewer than 4 values — does IQR work?
 3. Feed a dataset with only 1 value — what stats are meaningful?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Guard against zero std_dev in z_score calculation.
 2. Return empty anomalies list when dataset is too small for IQR.
 3. Handle single-value datasets gracefully in statistics.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is a z-score and what does |z| > 2 mean practically?

@@ -433,6 +433,21 @@ def main():
         if not args.summary:
             print_project_result(proj, result, config, verbose=args.verbose)
 
+        # Award XP for passing projects
+        if result["status"] == "passed":
+            try:
+                from xp_tracker import award_xp
+                xp = award_xp("project_completion", proj.name)
+                if xp:
+                    print(f"    {GREEN}+{xp} XP{RESET}")
+            except Exception:
+                pass
+            try:
+                from streak_tracker import record_activity
+                record_activity("grade")
+            except Exception:
+                pass
+
     print_summary(results)
 
 

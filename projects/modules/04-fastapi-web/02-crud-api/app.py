@@ -20,11 +20,11 @@ from pydantic import BaseModel
 # 2. Serialize outgoing responses (convert Python objects to JSON).
 # 3. Generate documentation (the /docs page shows these schemas).
 #
-# We use SEPARATE models for input and output because:
-# - TodoCreate: what the client sends (just a title). The client should not
-#   set the id or completed status — the server controls those.
-# - TodoResponse: what the server returns (id, title, completed). The client
-#   needs to see the generated id and the default completed status.
+# WHY separate models for input and output? -- This prevents clients from
+# setting fields they shouldn't control (like id or completed). TodoCreate
+# accepts only a title; TodoResponse returns the full object with server-
+# generated fields. This is a security boundary: never trust client input
+# to define server-controlled state.
 # ============================================================================
 
 

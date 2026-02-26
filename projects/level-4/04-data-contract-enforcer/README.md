@@ -1,6 +1,8 @@
 # Level 4 / Project 04 - Data Contract Enforcer
 Home: [README](../../../README.md)
 
+**Estimated time:** 50 minutes
+
 ## Focus
 - contract validation and drift detection
 
@@ -33,20 +35,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `"pattern"` rule (regex) to the contract for email-like fields.
 2. Add a `--strict` flag that also treats extra columns as violations.
 3. Re-run script and tests — add a test for pattern enforcement.
 
-## Break it (required)
+## Break it (required) — Core
 1. Remove a required column entirely from the CSV and see what `missing_columns` reports.
 2. Feed a value that is technically the right type but fails range AND allowed-values checks simultaneously.
 3. Create a contract with contradictory rules (e.g., `min: 100, max: 50`) and observe the behavior.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add contract self-validation that catches contradictory rules before enforcement begins.
 2. Handle the case where a column exists in the contract but not in the CSV data headers.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `coerce_value` try to convert strings instead of checking types directly?

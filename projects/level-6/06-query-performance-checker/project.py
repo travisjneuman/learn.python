@@ -80,7 +80,12 @@ class QueryReport:
 
 
 def explain_query(conn: sqlite3.Connection, sql: str) -> list[str]:
-    """Run EXPLAIN QUERY PLAN and return the textual plan lines."""
+    """Run EXPLAIN QUERY PLAN and return the textual plan lines.
+
+    WHY EXPLAIN QUERY PLAN? -- It reveals how SQLite will execute the
+    query: whether it does a full table SCAN (slow) or uses an INDEX
+    (fast). This is the single most important tool for SQL optimization.
+    """
     rows = conn.execute(f"EXPLAIN QUERY PLAN {sql}").fetchall()
     return [row[-1] for row in rows]
 

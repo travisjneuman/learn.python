@@ -1,6 +1,8 @@
 # Level 4 / Project 01 - Schema Validator Engine
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - required fields and datatype checks
 
@@ -76,20 +78,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. What additional validation rule would make the schema more useful? Implement it.
 2. How could the CLI be more configurable for strict vs lenient validation?
 3. Write a test for your new feature.
 
-## Break it (required)
+## Break it (required) — Core
 1. Try feeding the validator data with subtle type mismatches — what slips through?
 2. What happens when the schema itself contains something unexpected?
 3. Test with minimal or empty input — does the tool handle it?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Address the most surprising failure you found — make it produce a clear message instead.
 2. Add a test for an edge case the original code misses.
 3. Re-run until all tests pass deterministically.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `validate_record` collect all errors instead of stopping at the first one?

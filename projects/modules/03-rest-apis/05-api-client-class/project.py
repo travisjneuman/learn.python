@@ -8,6 +8,10 @@ import requests
 import json
 
 
+# WHY a client class instead of standalone functions? -- Encapsulating
+# base_url, headers, and a Session in a class means callers don't repeat
+# configuration on every call. The Session reuses TCP connections (HTTP
+# keep-alive), avoiding the overhead of a new TLS handshake per request.
 class JSONPlaceholderClient:
     """A reusable client for the JSONPlaceholder API.
 

@@ -27,6 +27,10 @@ def configure_logging() -> None:
 def bigrams(text: str) -> set[str]:
     """Generate character bigrams for fuzzy matching.
 
+    WHY bigrams instead of comparing whole strings? -- Bigrams capture
+    local character patterns, making similarity robust to typos and minor
+    variations ("Jon" vs "John" share "Jo" and are scored as similar).
+
     Example: "hello" -> {"he", "el", "ll", "lo"}
     """
     t = text.lower().strip()
@@ -62,6 +66,9 @@ def find_duplicates(
     """
     duplicates: list[dict] = []
 
+    # WHY O(n^2) nested loop? -- For typical CSV datasets (hundreds to low
+    # thousands of rows) this brute-force approach is simple and correct.
+    # At scale you would use blocking/indexing strategies to reduce comparisons.
     for i in range(len(rows)):
         for j in range(i + 1, len(rows)):
             row_a = rows[i]

@@ -34,6 +34,11 @@ class HealthStatus(Enum):
     ERROR = "error"
 
 
+# WHY per-dependency timeout configs? -- A database query and an email API
+# have vastly different acceptable latencies. A single global timeout either
+# cuts off slow-but-valid operations or lets fast failures wait too long.
+# The critical flag determines whether a timeout degrades the whole system
+# or just that feature — essential for graceful degradation.
 @dataclass
 class DependencyConfig:
     """Configuration for a single external dependency."""

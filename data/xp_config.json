@@ -1,0 +1,16 @@
+{
+  "xp_values": {
+    "project_completion": 100,
+    "quiz_pass": 50,
+    "flashcard_review": 10,
+    "challenge_solved": 75,
+    "bridge_completed": 150
+  },
+  "milestones": [
+    {"name": "Apprentice", "xp": 500, "emoji": "\ud83d\udd30"},
+    {"name": "Builder", "xp": 2000, "emoji": "\ud83d\udd28"},
+    {"name": "Solver", "xp": 5000, "emoji": "\ud83e\udde9"},
+    {"name": "Engineer", "xp": 10000, "emoji": "\u2699\ufe0f"},
+    {"name": "Master", "xp": 25000, "emoji": "\ud83c\udfc6"}
+  ]
+}

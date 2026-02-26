@@ -41,6 +41,11 @@ class SortDirection(Enum):
     DESC = "desc"
 
 
+# WHY frozen=True? -- Filter conditions are stored in undo/redo history.
+# If they were mutable, modifying a condition would silently corrupt the
+# history stack. Frozen dataclasses prevent this by raising AttributeError
+# on any attempted mutation — enforcing the Command pattern's requirement
+# that past commands remain unchanged.
 @dataclass(frozen=True)
 class FilterCondition:
     """A single filter condition — immutable for safe history tracking."""

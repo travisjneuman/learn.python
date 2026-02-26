@@ -176,7 +176,6 @@ ON cache_perf_instances (collected_at_utc);
 ## Optional Resources
 - [python-oracledb docs](https://python-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html)
 
----
+## Next
 
-| [← Prev](12_SCREENSHOT_CHECKPOINTS.md) | [Home](README.md) | [Next →](14_NAVIGATION_AND_STUDY_WORKFLOW.md) |
-|:---|:---:|---:|
+[Next: 14_NAVIGATION_AND_STUDY_WORKFLOW.md →](./14_NAVIGATION_AND_STUDY_WORKFLOW.md)

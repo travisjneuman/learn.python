@@ -110,7 +110,6 @@ Fail when any are true:
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](34_FAILURE_RECOVERY_ATLAS.md) | [Home](../README.md) | [Next →](36_ELITE_ENGINEERING_TRACK.md) |
-|:---|:---:|---:|
+[Next: 36_ELITE_ENGINEERING_TRACK.md →](./36_ELITE_ENGINEERING_TRACK.md)

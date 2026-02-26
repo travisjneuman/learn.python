@@ -1,6 +1,8 @@
 # Level 1 / Project 10 - Ticket Priority Router
 Home: [README](../../../README.md)
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - business rules to route work
 
@@ -36,20 +38,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--priority` filter flag that shows only tickets matching a given priority level.
 2. Add an "escalation" rule: tickets containing "urgent" get bumped up one priority level.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a ticket with no keywords at all like `"Everything is fine"` -- does it correctly default to "low"?
 2. Add a ticket matching keywords from multiple priorities -- which priority wins?
 3. Add an empty line in the ticket file -- does `process_tickets()` skip it or crash?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `classify_ticket()` checks keywords in priority order (critical first) so the highest match wins.
 2. Handle blank lines by skipping them in `process_tickets()`.
 3. Add a test for the multi-keyword-match priority resolution.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `PRIORITY_KEYWORDS` use a dict mapping priority names to keyword lists?

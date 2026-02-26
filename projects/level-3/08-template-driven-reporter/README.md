@@ -1,6 +1,8 @@
 # Level 3 / Project 08 - Template Driven Reporter
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - report rendering from templates
 
@@ -33,20 +35,28 @@ Period: January 2024
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--validate` flag that checks all variables are provided before rendering.
 2. Add support for simple conditionals: `${if_debug}...${endif}`.
 3. Add an `--output` flag to write rendered output to a file.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a template with a missing variable in strict mode — what happens?
 2. Pass a data file with nested objects but no `build_report_context` flattening — what renders?
 3. Use `$$` literal dollar signs in a template — does Template handle them?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a `--missing` flag that lists all variables not provided by the data.
 2. Improve `build_report_context` to handle deeper nesting (2+ levels).
 3. Add error handling for invalid JSON in the data file.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does `string.Template` differ from f-strings?

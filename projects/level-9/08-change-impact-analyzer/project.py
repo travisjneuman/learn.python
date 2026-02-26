@@ -41,6 +41,11 @@ class RiskLevel(Enum):
     CRITICAL = "critical"
 
 
+# WHY tier on each service? -- Blast radius depends on criticality. A change
+# affecting a tier-1 (customer-facing) service requires more review gates
+# than the same change on a tier-3 (internal) service. BFS traversal of
+# the dependency graph propagates impact, and tier amplifies the risk score
+# at each hop — matching how incident commanders triage in practice.
 @dataclass
 class Service:
     """A service in the dependency graph."""

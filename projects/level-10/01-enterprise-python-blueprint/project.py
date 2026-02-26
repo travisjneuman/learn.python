@@ -32,6 +32,10 @@ class ComplianceTier(Enum):
     STRICT = auto()
 
 
+# WHY frozen=True for ProjectSpec? -- The spec is a contract: once a project
+# is defined, its configuration shouldn't silently change during generation.
+# Frozen dataclasses enforce this immutability at the language level, preventing
+# bugs where a generator modifies the spec and corrupts downstream generators.
 @dataclass(frozen=True)
 class ProjectSpec:
     """Immutable specification for a project to generate."""
@@ -42,6 +46,8 @@ class ProjectSpec:
     description: str = ""
 
     def __post_init__(self) -> None:
+        # WHY validate in __post_init__? -- Rejecting invalid names at construction
+        # time prevents invalid state from propagating through the system.
         if not self.name.replace("-", "").replace("_", "").isalnum():
             raise ValueError(f"Invalid project name: {self.name!r}")
 

@@ -52,7 +52,6 @@ If fail:
 - [Exercism Python Track](https://exercism.org/tracks/python)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](36_ELITE_ENGINEERING_TRACK.md) | [Home](../README.md) | [Next →](38_SYSTEM_DESIGN_AND_RFCS.md) |
-|:---|:---:|---:|
+[Next: 38_SYSTEM_DESIGN_AND_RFCS.md →](./38_SYSTEM_DESIGN_AND_RFCS.md)

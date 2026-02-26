@@ -35,6 +35,11 @@ class RolloutPhase(Enum):
     COMPLETED = "completed"
 
 
+# WHY multi-stage rollouts instead of instant deploys? -- Each stage
+# increases traffic gradually (e.g. 1% → 5% → 25% → 100%). If the canary
+# shows elevated errors at any stage, you roll back before most users are
+# affected. The error_threshold is relative to baseline — accounting for
+# the fact that some background error rate is normal.
 @dataclass
 class RolloutStage:
     """A single stage in the canary rollout."""

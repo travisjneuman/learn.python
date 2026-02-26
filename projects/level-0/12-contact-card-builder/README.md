@@ -1,6 +1,8 @@
 # Level 0 / Project 12 - Contact Card Builder
 Home: [README](../../../README.md)
 
+**Estimated time:** 25 minutes
+
 ## Focus
 - dictionary creation and formatting
 
@@ -36,20 +38,28 @@ Output written to data/contacts.json
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a phone number field (4th comma-separated value) to the contact card format.
 2. Add a `--format` flag to choose between "card" (box drawing) and "csv" (plain comma-separated) output.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a line with only a name and no email like `John Smith` -- does `parse_contact_line()` raise `ValueError`?
 2. Add a line with an invalid email like `alice@` -- does the email validator catch it?
 3. Add a line with extra commas like `Name, Role, email@test.com, , ,` -- what happens?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `parse_contact_line()` raises `ValueError` with a clear message for lines with fewer than 3 fields.
 2. Improve email validation to reject emails without a domain part.
 3. Add a test for the malformed-line edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `parse_contact_line()` use `.split(",")` and then `.strip()` each part?

@@ -18,9 +18,10 @@ from fastapi import FastAPI
 
 # ── Configuration from environment variables ─────────────────────────
 #
-# In production, you NEVER hardcode configuration. Instead, you read it
-# from environment variables. This lets you change behavior without
-# changing code (different databases, API keys, etc. per environment).
+# WHY environment variables? -- The Twelve-Factor App methodology requires
+# config in the environment, not in code. This lets you run the same code
+# in dev (local SQLite) and production (cloud Postgres) by changing only
+# env vars, with no code changes or secret keys committed to git.
 
 APP_NAME = os.environ.get("APP_NAME", "my-fastapi-app")
 APP_ENV = os.environ.get("APP_ENV", "development")

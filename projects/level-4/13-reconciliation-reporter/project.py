@@ -27,7 +27,10 @@ def configure_logging() -> None:
 def load_csv_as_dict(path: Path, key_field: str) -> dict[str, dict]:
     """Load a CSV into a dict keyed by the specified field.
 
-    Each row becomes {key_value: {column: value, ...}}.
+    WHY key by a field? -- Indexing rows by a unique key (like "id") lets
+    us look up matching records in O(1) instead of scanning the entire
+    list for each comparison. This is what makes reconciliation fast.
+
     Raises ValueError if key_field is not in the CSV headers.
     """
     if not path.exists():
@@ -65,6 +68,9 @@ def reconcile(
             "matched": int
         }
     """
+    # WHY set operations? -- Set difference and intersection are the natural
+    # way to express "only in A," "only in B," and "in both." Python's set
+    # operators (-, &) make this intent clear and run in O(n) time.
     source_keys = set(source.keys())
     target_keys = set(target.keys())
 

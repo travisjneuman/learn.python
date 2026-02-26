@@ -37,6 +37,12 @@ class HealthStatus(Enum):
     CRITICAL = "critical"
 
 
+# WHY fitness functions? -- From "Building Evolutionary Architectures":
+# fitness functions are automated checks that guard architectural qualities.
+# Unlike one-time reviews, they run continuously in CI. A coupling metric
+# that crosses its threshold triggers a build failure before the degradation
+# reaches production — making architecture constraints executable, not just
+# documented.
 @dataclass(frozen=True)
 class FitnessResult:
     """Result of evaluating one fitness function."""

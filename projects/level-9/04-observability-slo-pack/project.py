@@ -32,6 +32,11 @@ class SLIType(Enum):
     ERROR_RATE = "error_rate"        # inverse: % of errors below threshold
 
 
+# WHY good_count / total_count instead of a raw percentage? -- SRE best
+# practice tracks good events vs total events. This lets you combine SLIs
+# across time windows by simply summing counts, which you can't do with
+# pre-computed percentages (averaging percentages is statistically wrong
+# when sample sizes differ). The error budget = SLO target - actual SLI.
 @dataclass
 class SLI:
     """Service Level Indicator — a measurable metric."""

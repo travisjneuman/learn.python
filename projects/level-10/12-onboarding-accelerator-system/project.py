@@ -30,6 +30,10 @@ class TaskCategory(Enum):
     CODING = auto()
 
 
+# WHY time-based priority tiers? -- Onboarding tasks have natural ordering:
+# DAY_ONE (laptop access, email) must happen before FIRST_WEEK (codebase
+# walkthrough). Encoding priority as an enum rather than a raw number makes
+# the timeline self-documenting and prevents meaningless values like "priority 47."
 class TaskPriority(Enum):
     DAY_ONE = auto()
     FIRST_WEEK = auto()

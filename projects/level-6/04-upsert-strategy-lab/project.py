@@ -101,9 +101,11 @@ def upsert_replace(conn: sqlite3.Connection, rows: list[dict]) -> UpsertResult:
 def upsert_on_conflict(conn: sqlite3.Connection, rows: list[dict]) -> UpsertResult:
     """Strategy 2: INSERT ... ON CONFLICT DO UPDATE — selective merge.
 
-    Only the columns we explicitly list in the SET clause are touched.
-    This preserves any columns we do *not* mention, which is crucial
-    when different systems own different columns of the same row.
+    WHY prefer ON CONFLICT over OR REPLACE? -- OR REPLACE deletes the
+    old row and re-inserts, losing any columns not in the incoming data
+    (and resetting auto-increment side effects). ON CONFLICT DO UPDATE
+    modifies only the columns you list, preserving everything else.
+    This matters when different systems own different columns.
     """
     conn.execute(PRODUCTS_DDL)
     result = UpsertResult()

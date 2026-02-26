@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `zip()` to pair two lists together?
 - Can you group items from a list into a dictionary of lists?
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - build readable reports from records
 
@@ -41,20 +43,28 @@ Breakdown by department: ...
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--sort-by` flag to sort groups by total, mean, or count.
 2. Add a "Bottom 5" section alongside the "Top 5" section.
 3. Add a `--output` flag to save the report to a file.
 
-## Break it (required)
+## Break it (required) — Core
 1. Feed a CSV where the salary column has some non-numeric values (e.g. "N/A").
 2. Feed a CSV with mismatched column counts (some rows have more/fewer fields).
 3. Use a group field that does not exist in the header.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `extract_numeric` handles "N/A" and blank values without crashing.
 2. Handle rows with missing fields by padding with empty strings.
 3. Show "UNKNOWN" when a group field is missing from a record.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does `zip(headers, values)` pair headers with values?

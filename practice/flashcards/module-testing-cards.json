@@ -1,0 +1,126 @@
+{
+  "deck": "Module 08 — Advanced Testing",
+  "description": "parametrize, mocking, hypothesis, fixtures, coverage, test organization",
+  "cards": [
+    {
+      "id": "m08-01",
+      "front": "What is @pytest.mark.parametrize and how do you use it?",
+      "back": "parametrize runs the same test with different inputs.\n\nimport pytest\n\n@pytest.mark.parametrize('input,expected', [\n    ('hello', 5),\n    ('', 0),\n    ('hi there', 8),\n])\ndef test_length(input, expected):\n    assert len(input) == expected\n\nThis generates 3 separate tests, each reported individually.\n\nMultiple parameters:\n@pytest.mark.parametrize('x', [1, 2])\n@pytest.mark.parametrize('y', [10, 20])\ndef test_multiply(x, y):\n    assert x * y > 0\n# Generates 4 tests: (1,10), (1,20), (2,10), (2,20)\n\nUse ids for readable names:\n@pytest.mark.parametrize('n', [1, 2, 3], ids=['one', 'two', 'three'])",
+      "concept_ref": "projects/modules/08-testing-advanced/README.md",
+      "difficulty": 1,
+      "tags": ["pytest", "parametrize", "testing"]
+    },
+    {
+      "id": "m08-02",
+      "front": "What is a pytest fixture and how do you create one?",
+      "back": "A fixture provides test data or resources. It runs before each test that uses it.\n\nimport pytest\n\n@pytest.fixture\ndef sample_users():\n    return [\n        {'name': 'Alice', 'age': 30},\n        {'name': 'Bob', 'age': 25},\n    ]\n\ndef test_user_count(sample_users):\n    assert len(sample_users) == 2\n\ndef test_first_user(sample_users):\n    assert sample_users[0]['name'] == 'Alice'\n\nFixture scopes:\n@pytest.fixture(scope='function')  # default: new for each test\n@pytest.fixture(scope='class')     # shared within a test class\n@pytest.fixture(scope='module')    # shared within a test file\n@pytest.fixture(scope='session')   # shared across all tests\n\nUse narrow scope by default. Widen only for expensive setup.",
+      "concept_ref": "projects/modules/08-testing-advanced/01-fixture-factory/README.md",
+      "difficulty": 1,
+      "tags": ["pytest", "fixtures", "setup"]
+    },
+    {
+      "id": "m08-03",
+      "front": "How do you mock an external dependency with unittest.mock?",
+      "back": "from unittest.mock import patch, MagicMock\n\n# Mock a function\ndef get_weather(city):\n    response = requests.get(f'https://api.weather.com/{city}')\n    return response.json()\n\n# Test without hitting the real API\n@patch('mymodule.requests.get')\ndef test_get_weather(mock_get):\n    mock_get.return_value.json.return_value = {'temp': 72}\n    \n    result = get_weather('NYC')\n    \n    assert result['temp'] == 72\n    mock_get.assert_called_once_with('https://api.weather.com/NYC')\n\nKey: patch where the thing is USED, not where it is defined.\nWRONG: @patch('requests.get')\nRIGHT: @patch('mymodule.requests.get')",
+      "concept_ref": "projects/modules/08-testing-advanced/02-mock-master/README.md",
+      "difficulty": 2,
+      "tags": ["mock", "patch", "testing"]
+    },
+    {
+      "id": "m08-04",
+      "front": "What is the difference between Mock, MagicMock, and patch?",
+      "back": "Mock — base mock class, attributes return new Mocks\n  m = Mock()\n  m.foo()          # does not error\n  m.foo.return_value = 42\n\nMagicMock — Mock + magic methods (__len__, __getitem__, etc.)\n  m = MagicMock()\n  len(m)           # works (returns 0)\n  m[0]             # works\n\npatch — temporarily replaces an object with a Mock\n  @patch('mymodule.function_name')\n  def test_it(mock_fn):\n      mock_fn.return_value = 'fake'\n\n  with patch('mymodule.function_name') as mock_fn:\n      mock_fn.return_value = 'fake'\n\nUse MagicMock by default (it's the most flexible).\nUse patch to replace real objects during testing.",
+      "concept_ref": "projects/modules/08-testing-advanced/02-mock-master/README.md",
+      "difficulty": 2,
+      "tags": ["mock", "magicmock", "patch"]
+    },
+    {
+      "id": "m08-05",
+      "front": "What is property-based testing with Hypothesis?",
+      "back": "Hypothesis generates random test inputs to find edge cases you would not think of.\n\nfrom hypothesis import given\nfrom hypothesis import strategies as st\n\n@given(st.lists(st.integers()))\ndef test_sort_is_sorted(lst):\n    result = sorted(lst)\n    assert all(result[i] <= result[i+1] for i in range(len(result)-1))\n\n@given(st.text())\ndef test_reverse_reverse(s):\n    assert s[::-1][::-1] == s\n\nCommon strategies:\n  st.integers()          # any integer\n  st.floats()            # any float\n  st.text()              # any string\n  st.lists(st.integers()) # list of ints\n  st.dictionaries(st.text(), st.integers())\n\nHypothesis runs 100 examples by default and shrinks failures to minimal cases.",
+      "concept_ref": "projects/modules/08-testing-advanced/03-property-tests/README.md",
+      "difficulty": 2,
+      "tags": ["hypothesis", "property-based", "testing"]
+    },
+    {
+      "id": "m08-06",
+      "front": "How do you write a conftest.py file and why?",
+      "back": "conftest.py is a special pytest file for shared fixtures. Pytest finds it automatically.\n\n# tests/conftest.py\nimport pytest\n\n@pytest.fixture\ndef db_connection():\n    conn = create_test_db()\n    yield conn          # teardown after test\n    conn.close()\n\n@pytest.fixture\ndef sample_user(db_connection):\n    return db_connection.create_user('test@example.com')\n\nAll tests in the same directory (and subdirectories) can use these fixtures WITHOUT importing.\n\nRules:\n- conftest.py must be in the tests/ directory (or subdirectory)\n- Fixtures in conftest.py are auto-discovered\n- You can have multiple conftest.py files at different levels\n- No need to import conftest — pytest handles it",
+      "concept_ref": "projects/modules/08-testing-advanced/01-fixture-factory/README.md",
+      "difficulty": 2,
+      "tags": ["conftest", "fixtures", "organization"]
+    },
+    {
+      "id": "m08-07",
+      "front": "How do you test that code raises an exception?",
+      "back": "import pytest\n\ndef test_division_by_zero():\n    with pytest.raises(ZeroDivisionError):\n        1 / 0\n\n# Check the error message\ndef test_value_error():\n    with pytest.raises(ValueError, match='invalid literal'):\n        int('abc')\n\n# Access the exception object\ndef test_custom_error():\n    with pytest.raises(CustomError) as exc_info:\n        risky_function()\n    assert exc_info.value.code == 404\n    assert 'not found' in str(exc_info.value)\n\nCommon patterns:\n  pytest.raises(TypeError)      # wrong type\n  pytest.raises(FileNotFoundError)  # missing file\n  pytest.raises(KeyError)       # missing dict key\n  pytest.raises(RuntimeError)   # general runtime error",
+      "concept_ref": "projects/modules/08-testing-advanced/README.md",
+      "difficulty": 1,
+      "tags": ["pytest", "exceptions", "raises"]
+    },
+    {
+      "id": "m08-08",
+      "front": "How do you measure test coverage with pytest-cov?",
+      "back": "# Install\npip install pytest-cov\n\n# Run with coverage\npytest --cov=mypackage tests/\n\n# With line-by-line report\npytest --cov=mypackage --cov-report=term-missing tests/\n\n# Generate HTML report\npytest --cov=mypackage --cov-report=html tests/\n# Open htmlcov/index.html in browser\n\n# Set minimum coverage threshold\npytest --cov=mypackage --cov-fail-under=80 tests/\n\nOutput:\nName              Stmts   Miss  Cover   Missing\nmy_module.py         45      5    89%   23-27\n\nGuidelines:\n- 80%+ is a good target\n- 100% coverage does not mean no bugs\n- Focus on testing critical paths, not hitting 100%",
+      "concept_ref": "projects/modules/08-testing-advanced/04-coverage-quest/README.md",
+      "difficulty": 2,
+      "tags": ["coverage", "pytest-cov", "quality"]
+    },
+    {
+      "id": "m08-09",
+      "front": "What is the tmp_path fixture and when do you use it?",
+      "back": "tmp_path is a built-in pytest fixture that provides a temporary directory unique to each test.\n\ndef test_write_file(tmp_path):\n    # tmp_path is a pathlib.Path\n    file = tmp_path / 'output.txt'\n    file.write_text('hello')\n    \n    assert file.read_text() == 'hello'\n    assert file.exists()\n\ndef test_create_structure(tmp_path):\n    data_dir = tmp_path / 'data'\n    data_dir.mkdir()\n    (data_dir / 'file.csv').write_text('a,b\\n1,2')\n    \n    # test your CSV reader\n    result = read_csv(data_dir / 'file.csv')\n    assert len(result) == 1\n\nThe directory is automatically cleaned up after each test.\ntmp_path_factory (session scope) creates dirs shared across tests.",
+      "concept_ref": "projects/modules/08-testing-advanced/01-fixture-factory/README.md",
+      "difficulty": 1,
+      "tags": ["tmp_path", "fixtures", "filesystem"]
+    },
+    {
+      "id": "m08-10",
+      "front": "How do you mock file I/O in tests?",
+      "back": "# Option 1: Use tmp_path (preferred for real files)\ndef test_config_reader(tmp_path):\n    config = tmp_path / 'config.json'\n    config.write_text('{\"debug\": true}')\n    result = read_config(config)\n    assert result['debug'] is True\n\n# Option 2: Mock open() for unit tests\nfrom unittest.mock import mock_open, patch\n\ndef test_read_config():\n    m = mock_open(read_data='{\"debug\": true}')\n    with patch('builtins.open', m):\n        result = read_config('config.json')\n    assert result['debug'] is True\n    m.assert_called_once_with('config.json')\n\n# Option 3: StringIO for in-memory files\nfrom io import StringIO\ndef test_csv_parser():\n    fake_file = StringIO('name,age\\nAlice,30\\n')\n    result = parse_csv(fake_file)\n    assert result[0]['name'] == 'Alice'\n\nPrefer tmp_path for integration tests, mock_open for unit tests.",
+      "concept_ref": "projects/modules/08-testing-advanced/02-mock-master/README.md",
+      "difficulty": 2,
+      "tags": ["mock", "file-io", "tmp_path"]
+    },
+    {
+      "id": "m08-11",
+      "front": "What are Hypothesis strategies and how do you compose them?",
+      "back": "Strategies define what kinds of data Hypothesis generates.\n\nfrom hypothesis import strategies as st\n\n# Basic strategies\nst.integers(min_value=0, max_value=100)\nst.floats(allow_nan=False)\nst.text(min_size=1, max_size=50)\nst.booleans()\n\n# Composite strategies\nst.lists(st.integers(), min_size=1, max_size=10)\nst.tuples(st.text(), st.integers())\nst.dictionaries(st.text(), st.integers())\n\n# Custom strategy with @composite\n@st.composite\ndef user_strategy(draw):\n    name = draw(st.text(min_size=1, max_size=20))\n    age = draw(st.integers(min_value=0, max_value=150))\n    return {'name': name, 'age': age}\n\n@given(user_strategy())\ndef test_user(user):\n    assert 'name' in user",
+      "concept_ref": "projects/modules/08-testing-advanced/03-property-tests/README.md",
+      "difficulty": 3,
+      "tags": ["hypothesis", "strategies", "composite"]
+    },
+    {
+      "id": "m08-12",
+      "front": "How do you organize a large test suite with markers?",
+      "back": "Markers categorize tests so you can run subsets.\n\nimport pytest\n\n@pytest.mark.slow\ndef test_heavy_computation():\n    ...\n\n@pytest.mark.integration\ndef test_database_connection():\n    ...\n\n# Run only fast tests (skip slow)\npytest -m 'not slow'\n\n# Run only integration tests\npytest -m integration\n\n# Combine markers\npytest -m 'integration and not slow'\n\nRegister custom markers in pytest.ini or pyproject.toml:\n[tool.pytest.ini_options]\nmarkers = [\n    'slow: marks tests as slow',\n    'integration: marks integration tests',\n]\n\nBuilt-in markers: skip, skipif, xfail, parametrize",
+      "concept_ref": "projects/modules/08-testing-advanced/05-test-suite-org/README.md",
+      "difficulty": 2,
+      "tags": ["pytest", "markers", "organization"]
+    },
+    {
+      "id": "m08-13",
+      "front": "How do you use monkeypatch to modify behavior in tests?",
+      "back": "monkeypatch is a pytest fixture that safely modifies objects during a test.\n\ndef test_home_dir(monkeypatch):\n    monkeypatch.setenv('HOME', '/tmp/test')\n    assert os.environ['HOME'] == '/tmp/test'\n\ndef test_with_config(monkeypatch):\n    monkeypatch.setattr('myapp.config.DEBUG', True)\n    # myapp.config.DEBUG is True during this test\n\ndef test_disable_network(monkeypatch):\n    def mock_get(*args, **kwargs):\n        raise ConnectionError('No network in tests')\n    monkeypatch.setattr('requests.get', mock_get)\n\nAdvantages over unittest.mock.patch:\n- Automatically undone after each test\n- Simpler API for common operations\n- setenv / delenv for environment variables\n- setattr / delattr for object attributes\n- chdir for changing directory",
+      "concept_ref": "projects/modules/08-testing-advanced/02-mock-master/README.md",
+      "difficulty": 2,
+      "tags": ["monkeypatch", "pytest", "mocking"]
+    },
+    {
+      "id": "m08-14",
+      "front": "What is pytest.approx and when do you need it?",
+      "back": "Floating-point math is imprecise. pytest.approx handles this.\n\n# FAILS (floating point imprecision)\nassert 0.1 + 0.2 == 0.3  # False! 0.30000000000000004\n\n# PASSES\nassert 0.1 + 0.2 == pytest.approx(0.3)\n\n# Custom tolerance\nassert result == pytest.approx(expected, rel=1e-3)  # relative\nassert result == pytest.approx(expected, abs=0.01)  # absolute\n\n# Works with sequences\nassert [0.1 + 0.2, 0.2 + 0.3] == pytest.approx([0.3, 0.5])\n\n# Works with dicts\nassert {'x': 0.1 + 0.2} == pytest.approx({'x': 0.3})\n\nUse pytest.approx() whenever comparing floats in tests.",
+      "concept_ref": "projects/modules/08-testing-advanced/README.md",
+      "difficulty": 1,
+      "tags": ["pytest", "approx", "floating-point"]
+    },
+    {
+      "id": "m08-15",
+      "front": "How do you use yield in a fixture for setup/teardown?",
+      "back": "@pytest.fixture\ndef database():\n    # SETUP — runs before the test\n    db = create_database()\n    db.connect()\n    load_test_data(db)\n    \n    yield db  # provide the fixture value\n    \n    # TEARDOWN — runs after the test (even if test fails)\n    db.clear()\n    db.disconnect()\n\ndef test_query(database):\n    result = database.query('SELECT * FROM users')\n    assert len(result) > 0\n\nThe yield separates setup from teardown.\nEverything before yield = setup\nEverything after yield = teardown\n\nTeardown ALWAYS runs, even if the test raises an exception.\nThis replaces the older request.addfinalizer() pattern.",
+      "concept_ref": "projects/modules/08-testing-advanced/01-fixture-factory/README.md",
+      "difficulty": 2,
+      "tags": ["fixtures", "yield", "teardown"]
+    }
+  ]
+}

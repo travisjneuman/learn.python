@@ -1,6 +1,8 @@
 # Level 3 / Project 09 - Reusable Utils Library
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - common helper functions and reuse
 
@@ -32,20 +34,28 @@ myVariableName
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `deep_flatten` function that flattens arbitrarily nested lists.
 2. Add a `validate_phone` function similar to `validate_email`.
 3. Add a `pluralize` string utility (simple English rules: "cat" -> "cats").
 
-## Break it (required)
+## Break it (required) — Core
 1. Call `chunk` with size 0 — what happens?
 2. Call `slugify` with only special characters — what is returned?
 3. Call `camel_to_snake` on an already-snake string — is the result correct?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `chunk` raises a clear error for non-positive sizes.
 2. Handle edge case where `slugify` produces an empty string.
 3. Add idempotency: `camel_to_snake(snake_to_camel(x))` should round-trip.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What makes a function "reusable" vs. tightly coupled to one project?

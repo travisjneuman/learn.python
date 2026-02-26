@@ -114,8 +114,11 @@ def retry_with_backoff(
 def create_flaky_function(fail_count: int = 2) -> Callable[..., Any]:
     """Create a function that fails *fail_count* times then succeeds.
 
-    Useful for testing the retry mechanism with a controlled number
-    of failures before eventual success.
+    WHY a closure with mutable state? -- We need the function to
+    "remember" how many times it has been called across retries. Using
+    a dict ({"calls": 0}) instead of a plain int works around Python's
+    closure scoping rules: closures can read but not rebind outer
+    variables, but they CAN mutate a dict's contents.
     """
     state = {"calls": 0}
 

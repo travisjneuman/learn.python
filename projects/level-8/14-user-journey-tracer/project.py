@@ -37,6 +37,11 @@ class EventType(Enum):
     SESSION_END = "session_end"
 
 
+# WHY flat events instead of pre-structured journeys? -- Raw event streams
+# are how analytics data actually arrives — one event at a time, out of
+# order, from multiple users. Reconstructing journeys from flat events
+# teaches the groupby-then-sort pattern that tools like Amplitude and
+# Mixpanel use internally for session reconstruction and funnel analysis.
 @dataclass
 class UserEvent:
     """A single user interaction event."""

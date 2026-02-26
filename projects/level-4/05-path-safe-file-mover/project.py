@@ -49,8 +49,9 @@ def resolve_collision(dest: Path) -> Path:
 def plan_moves(source_dir: Path, dest_dir: Path) -> list[dict]:
     """Build a move plan: for each file in source_dir, compute the target path.
 
-    The plan is a list of dicts with keys: source, destination, status.
-    This separation lets us do dry-runs and rollbacks.
+    WHY separate planning from execution? -- The "plan then execute" pattern
+    lets us preview changes (dry-run) and undo them on failure (rollback).
+    This is a core resilience pattern in file operations.
     """
     if not source_dir.is_dir():
         raise NotADirectoryError(f"Source is not a directory: {source_dir}")
@@ -107,7 +108,12 @@ def execute_moves(plan: list[dict], dry_run: bool = False) -> list[dict]:
 
 
 def _rollback(completed: list[dict]) -> None:
-    """Undo completed moves by moving files back to their source paths."""
+    """Undo completed moves by moving files back to their source paths.
+
+    WHY reverse order? -- Rolling back in reverse ensures we undo the most
+    recent changes first, which avoids collisions if later moves depended
+    on earlier ones (like overwriting a collision-renamed file).
+    """
     for entry in reversed(completed):
         try:
             shutil.move(entry["destination"], entry["source"])

@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you write a pytest test function that uses `assert`?
 - Can you explain what TDD (test-driven development) means? (Write the test first, then the code)
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - write tests before transform logic
 
@@ -36,20 +38,28 @@ python project.py contacts.json --fields "email:email,name:name,phone:phone" --j
 - All tests passing (written before implementation — TDD)
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `normalise_zip_code` function that pads US ZIP codes to 5 digits.
 2. Add a `--report` flag that shows which fields were changed.
 3. Add support for nested field types: `"address.zip:zip_code"`.
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass a phone number with letters ("555-HELP") — what happens?
 2. Pass a date in an unsupported format ("Jan 15, 2024") — does it error or pass through?
 3. Pass an empty JSON array — does the batch normaliser handle it?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add graceful handling for unparseable phone numbers.
 2. Add a fallback for unrecognised date formats (return as-is with a warning).
 3. Validate that field_types reference real normaliser keys.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is TDD and how does writing tests first change your design?

@@ -1,6 +1,8 @@
 # Level 0 / Project 07 - First File Reader
 Home: [README](../../../README.md)
 
+**Estimated time:** 20 minutes
+
 ## Focus
 - opening and reading plain text safely
 
@@ -40,20 +42,28 @@ Enter a file path to read (e.g. data/sample_input.txt): data/sample_input.txt
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Ask the user for a start and end line number to display only a range of the file.
 2. After showing the summary, ask "Read another file? (y/n): " and loop if yes.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Enter a file path that does not exist -- does it show a clear error or crash?
 2. Create an empty file and read it -- does `file_summary()` crash or return zero counts?
 3. Read a file with very long lines (1000+ characters) -- does line numbering still align correctly?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `read_file_lines()` raises `FileNotFoundError` with the path in the message.
 2. Handle the empty-file case by returning a special "(empty file)" message.
 3. Add a test for the empty-file edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `format_with_line_numbers()` right-justify the line numbers?

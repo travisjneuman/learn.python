@@ -44,6 +44,11 @@ def load_config(config_path: Path | None = None) -> dict[str, Any]:
     """Merge defaults, file config, and environment overrides."""
     merged = dict(DEFAULTS)
 
+    # WHY three config layers? -- Defaults provide sensible out-of-box
+    # behavior, file config customizes per deployment, and env vars let
+    # operators override at runtime (e.g., in Docker containers) without
+    # editing any files. This is the twelve-factor app pattern.
+
     # Layer 2: file config
     if config_path and config_path.exists():
         raw = json.loads(config_path.read_text(encoding="utf-8"))
@@ -139,7 +144,12 @@ def check_thresholds(
 # ---------------------------------------------------------------------------
 
 def atomic_write(path: Path, data: str) -> None:
-    """Write data to a temp file then rename for crash safety."""
+    """Write data to a temp file then rename for crash safety.
+
+    WHY atomic writes in a pipeline? -- If the pipeline crashes mid-export,
+    consumers of the output file see either the previous complete version
+    or the new complete version — never a truncated mix.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp")
     tmp.write_text(data, encoding="utf-8")

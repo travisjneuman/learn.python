@@ -31,7 +31,6 @@ Security cannot be bolted on. It must be built in from first commit.
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](39_PRODUCTION_PLATFORM_LAB.md) | [Home](../README.md) | [Next →](41_PERFORMANCE_ENGINEERING_LAB.md) |
-|:---|:---:|---:|
+[Next: 41_PERFORMANCE_ENGINEERING_LAB.md →](./41_PERFORMANCE_ENGINEERING_LAB.md)

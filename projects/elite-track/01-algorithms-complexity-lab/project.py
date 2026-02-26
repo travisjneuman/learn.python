@@ -5,6 +5,9 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY deterministic execution? -- Algorithms labs must produce repeatable results
+# so learners can compare Big-O predictions against actual run behavior. Any
+# randomness would make performance analysis impossible to reproduce.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

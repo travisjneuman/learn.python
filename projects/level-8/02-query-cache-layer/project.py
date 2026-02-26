@@ -26,6 +26,10 @@ from typing import Any, Callable
 
 # --- Domain types -------------------------------------------------------
 
+# WHY build an LRU cache from scratch? -- functools.lru_cache doesn't support
+# TTL expiration or eviction callbacks. Understanding OrderedDict-based LRU
+# internals prepares you for tuning production caches (Redis, Memcached)
+# where eviction policy, TTL, and hit-rate monitoring all matter.
 @dataclass
 class CacheEntry:
     """A single cached value with metadata."""
@@ -38,6 +42,9 @@ class CacheEntry:
     @property
     def is_expired(self) -> bool:
         """Check if entry has exceeded its TTL."""
+        # WHY monotonic() instead of time()? -- time.time() can jump backwards
+        # (NTP adjustments, daylight saving). monotonic() only moves forward,
+        # preventing false expirations.
         return (time.monotonic() - self.created_at) > self.ttl_seconds
 
 

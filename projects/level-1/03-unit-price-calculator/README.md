@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you open and read a CSV file using Python's `csv` module?
 - Can you sort a list using `sorted()` with a `key` argument?
 
+**Estimated time:** 25 minutes
+
 ## Focus
 - math accuracy and formatting
 
@@ -40,20 +42,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--category` filter flag that shows only products matching a category column.
 2. Add a "savings" column showing how much you save vs the most expensive option.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a CSV row with quantity `0` -- does `calculate_unit_price()` crash with division by zero?
 2. Add a row with a negative price -- does the calculator accept it or reject it?
 3. Add a row with missing columns -- does `parse_product_row()` handle it gracefully?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `calculate_unit_price()` raises `ValueError` for zero or negative quantities.
 2. Validate that prices are non-negative in `parse_product_row()`.
 3. Add a test for the zero-quantity edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `csv.DictReader` map columns by header name instead of by index?

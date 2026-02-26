@@ -40,6 +40,11 @@ class ControlCategory(Enum):
     AUTHENTICATION = "authentication"
 
 
+# WHY check_fn as a callable per control? -- Each security control has
+# unique validation logic (encryption checks differ from access control checks).
+# Storing the check function alongside the control metadata (Strategy pattern)
+# means adding a new CIS Benchmark control is just adding one dataclass
+# instance — no if/elif chain modifications needed.
 @dataclass
 class SecurityControl:
     """A single security control to audit."""

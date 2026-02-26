@@ -39,6 +39,11 @@ class EvidenceType(Enum):
     SCREENSHOT = "screenshot"
 
 
+# WHY tuple for control_ids instead of list? -- One evidence artifact can
+# satisfy multiple compliance controls (e.g. encryption config satisfies
+# both "data at rest" and "data in transit" controls). Using a tuple (not list)
+# keeps Evidence immutable (frozen=True) — critical because evidence must
+# not change after collection for audit integrity.
 @dataclass(frozen=True)
 class Evidence:
     """A single piece of compliance evidence."""

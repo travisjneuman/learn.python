@@ -47,8 +47,10 @@ def load_checkpoint(checkpoint_path: Path) -> dict:
 def save_checkpoint(checkpoint_path: Path, index: int, results: list[dict]) -> None:
     """Persist current progress to a checkpoint file.
 
-    We write to a temp file first, then rename — this ensures the checkpoint
-    is never partially written (atomic write pattern).
+    WHY write-then-rename (atomic write pattern)? -- If the process crashes
+    mid-write, a partially written checkpoint file would corrupt recovery.
+    Writing to a .tmp file first and then atomically replacing the real
+    checkpoint ensures we always have a complete, valid checkpoint.
     """
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     temp_path = checkpoint_path.with_suffix(".tmp")
@@ -139,7 +141,8 @@ def run(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
-    # Clean up checkpoint on success
+    # WHY clear the checkpoint on success? -- Leaving a stale checkpoint would
+    # cause the next run to think it's resuming a crashed run and skip items.
     clear_checkpoint(checkpoint_path)
 
     summary = {

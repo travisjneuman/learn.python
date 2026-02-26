@@ -1,6 +1,8 @@
 # Level 1 / Project 08 - Path Exists Checker
 Home: [README](../../../README.md)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - filesystem existence and type checks
 
@@ -33,20 +35,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a "last modified" field showing when each file was last changed (use `os.path.getmtime()`).
 2. Add a `--exists-only` flag that only shows paths that actually exist.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a path with special characters like `data/my file (1).txt` -- does `check_path()` handle spaces in paths?
 2. Add a symbolic link (if on Linux/Mac) or a path to a network drive -- does it detect the type correctly?
 3. Add a very deeply nested path that does not exist -- does the checker handle long paths gracefully?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `check_path()` works with paths containing spaces by using `Path` objects consistently.
 2. Handle permission errors (e.g. restricted directories) by catching `PermissionError`.
 3. Add a test for the missing-path case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What does `Path.exists()` do and why is it better than `os.path.exists()`?

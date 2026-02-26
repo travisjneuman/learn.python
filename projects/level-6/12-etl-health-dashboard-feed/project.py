@@ -23,6 +23,10 @@ from pathlib import Path
 # Schema
 # ---------------------------------------------------------------------------
 
+# WHY track run history? -- Recording every ETL run's status, timing,
+# and row counts lets you build health dashboards that show success
+# rates, throughput trends, and duration regressions over time. A CHECK
+# constraint on status prevents invalid state values at the DB level.
 RUNS_DDL = """\
 CREATE TABLE IF NOT EXISTS etl_runs (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,

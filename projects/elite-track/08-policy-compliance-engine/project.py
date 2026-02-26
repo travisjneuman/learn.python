@@ -5,6 +5,10 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY policy-as-code? -- Writing compliance rules as executable code (not
+# documents) means they can be version-controlled, tested, and enforced
+# automatically in CI/CD pipelines. This is the same approach as OPA
+# (Open Policy Agent) and AWS Config Rules.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

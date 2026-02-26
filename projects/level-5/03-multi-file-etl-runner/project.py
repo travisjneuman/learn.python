@@ -55,6 +55,9 @@ def merge_update(existing: list[dict], new_rows: list[dict], key_field: str) -> 
             index[key] = len(result) - 1
     return result
 
+# WHY multiple merge strategies? -- Different business needs require
+# different behavior: "append" for growing a log, "deduplicate" for
+# combining sources without repeats, "update" for syncing latest values.
 MERGE_STRATEGIES = {"append": merge_append, "deduplicate": merge_deduplicate, "update": merge_update}
 
 def run_etl(source_paths: list[Path], strategy: str, key_field: str = "id") -> tuple[list[dict], list[dict]]:

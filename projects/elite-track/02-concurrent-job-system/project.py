@@ -5,6 +5,10 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY deterministic concurrency simulation? -- Real threading is non-deterministic,
+# making tests flaky. By simulating job scheduling deterministically, learners
+# study concurrency patterns (dependency resolution, resource contention) without
+# fighting race conditions in the test harness.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

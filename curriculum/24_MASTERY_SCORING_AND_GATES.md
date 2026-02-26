@@ -45,7 +45,6 @@ This is your self-scoring system to prevent fake progress.
 - [Real Python](https://realpython.com/tutorials/python/)
 - [Python Tutor](https://pythontutor.com/)
 
----
+## Next
 
-| [← Prev](23_RESOURCE_AND_CURRICULUM_MAP.md) | [Home](../README.md) | [Next →](25_INFINITY_MASTERY_LOOP.md) |
-|:---|:---:|---:|
+[Next: 25_INFINITY_MASTERY_LOOP.md →](./25_INFINITY_MASTERY_LOOP.md)

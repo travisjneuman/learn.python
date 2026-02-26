@@ -37,6 +37,10 @@ class TaskStatus(Enum):
     FAILED = "failed"
 
 
+# WHY a bounded Queue between producer and consumer? -- Without backpressure,
+# a fast producer can overwhelm a slow consumer, exhausting memory. A bounded
+# queue.Queue blocks the producer when full, applying backpressure automatically.
+# This is the same pattern message brokers (RabbitMQ, Kafka) use at scale.
 @dataclass
 class WorkItem:
     """A unit of work to be processed by a consumer."""

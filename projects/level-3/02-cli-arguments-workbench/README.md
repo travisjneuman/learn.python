@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `argparse` to create a basic command-line interface with required and optional arguments?
 - Can you write a class with an `__init__` method?
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - robust argparse patterns
 
@@ -85,20 +87,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a new conversion category — pick a domain that interests you.
 2. What output formatting options would make this tool more useful?
 3. Can you make the conversion direction configurable instead of hardcoded?
 
-## Break it (required)
+## Break it (required) — Core
 1. Try feeding the tool unexpected input types — what happens?
 2. Can you find an edge case where validation fails silently?
 3. What happens when batch input is malformed?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Improve the error experience for the most confusing failure you found.
 2. Handle a data format edge case the tool currently misses.
 3. Add domain-appropriate input validation.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What does `add_mutually_exclusive_group` do and why use it?

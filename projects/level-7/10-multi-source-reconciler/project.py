@@ -44,6 +44,9 @@ class ReconciliationReport:
 
 # -- Core logic ----------------------------------------------------------
 
+# WHY index-then-compare? -- Building a dict keyed by the join field turns
+# O(n*m) nested-loop comparison into O(n+m) hash lookups. This is the same
+# hash-join strategy databases use internally for equi-joins.
 def index_by_key(records: list[dict], key_field: str) -> dict[str, dict]:
     """Build a lookup dict keyed by the given field."""
     index: dict[str, dict] = {}

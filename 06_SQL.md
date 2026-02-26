@@ -115,7 +115,6 @@ You are ready for API integration when you can:
 - Full schema pack for staging/reporting/cache/marts:
   - [13_SAMPLE_DATABASE_SCHEMAS.md](./13_SAMPLE_DATABASE_SCHEMAS.md)
 
----
+## Next
 
-| [← Prev](projects/level-3/README.md) | [Home](README.md) | [Next →](projects/level-4/README.md) |
-|:---|:---:|---:|
+[Next: projects/level-4/README.md →](./projects/level-4/README.md)

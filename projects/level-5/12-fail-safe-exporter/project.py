@@ -33,10 +33,11 @@ def configure_logging() -> None:
 
 # ---------- atomic write helpers ----------
 
-# The "atomic write" pattern writes data to a temporary file first,
-# then uses rename (which is atomic on most filesystems) to replace
-# the target.  If anything fails, the temp file is cleaned up and
-# the original target is never touched.
+# WHY atomic writes? -- If the process crashes while writing, a partially
+# written file would corrupt the data. The "write-to-temp, then rename"
+# pattern guarantees that the target file is either the old complete version
+# or the new complete version — never a half-written mix of both.
+# rename() is atomic on most filesystems (POSIX guarantees it).
 
 
 def atomic_write_json(data: object, path: Path) -> None:

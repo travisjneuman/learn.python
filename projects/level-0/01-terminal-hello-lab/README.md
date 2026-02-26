@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you create a variable and print its value? (`name = "Ada"` then `print(name)`)
 - Can you use an f-string to combine text and variables? (`f"Hello, {name}"`)
 
+**Estimated time:** 15 minutes
+
 ## Focus
 - print output, variables, and command execution basics
 
@@ -87,20 +89,28 @@ def build_welcome(name):
 
 **The thought process:** Start with the simplest version that works. Then add a guard for bad input. This is the pattern you will use in this project and every project after it.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `build_greeting_box()` function that wraps the greeting in a box made of `+`, `-`, and `|` characters.
 2. Ask the user if they want UPPERCASE output. If they type "yes", print everything in upper case.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Type nothing when asked for your name (just press Enter) -- what happens to the greeting and banner?
 2. Type only spaces as your name -- does `build_banner()` handle it or crash?
 3. Try typing letters instead of a number for the day -- what error do you get?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a guard in `greet()` that returns a default message for empty names.
 2. Add a check that the day is a valid positive number, with a helpful error message.
 3. Add a test that verifies empty-name handling.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What does `f"Hello, {name}!"` do differently from `"Hello, " + name + "!"`?

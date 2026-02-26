@@ -27,6 +27,10 @@ from pathlib import Path
 
 # -- Adapters ------------------------------------------------------------
 
+# WHY adapters per source type? -- Each upstream API uses different field
+# names (uid vs identifier). The adapter normalizes into {id, value, source}
+# so all downstream stages (cache, validation, reconciliation) work with
+# a single shape. The else branch is a passthrough for unknown sources.
 def adapt_source(source_type: str, raw: list[dict]) -> list[dict]:
     """Normalise raw records from different source formats."""
     out: list[dict] = []

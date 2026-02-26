@@ -1,6 +1,8 @@
 # Level 3 / Project 15 - Level 3 Mini Capstone
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - junior-level production-style utility
 
@@ -36,20 +38,28 @@ Code lines: 180
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `check_type_hints` function that flags functions missing type annotations.
 2. Add a `--compare` flag that compares two directories side by side.
 3. Add a trend tracker that saves scores to a JSON file and shows improvement over time.
 
-## Break it (required)
+## Break it (required) — Core
 1. Point it at a file instead of a directory — what error appears?
 2. Scan a directory with binary files (.pyc, .jpg) — do they cause errors?
 3. Run on an empty directory — does the score calculation handle division by zero?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add clear error handling for non-directory input.
 2. Skip binary files gracefully with a warning.
 3. Handle empty directories without crashing.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does this capstone combine skills from projects 01-14?

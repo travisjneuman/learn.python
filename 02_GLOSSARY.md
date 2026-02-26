@@ -143,7 +143,6 @@ Use this file anytime you see unknown terms.
 - [Python Tutor](https://pythontutor.com/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
----
+## Next
 
-| [← Prev](01_ROADMAP.md) | [Home](README.md) | [Next →](03_SETUP_ALL_PLATFORMS.md) |
-|:---|:---:|---:|
+[Next: 03_SETUP_ALL_PLATFORMS.md →](./03_SETUP_ALL_PLATFORMS.md)

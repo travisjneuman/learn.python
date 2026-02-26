@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you write an if/elif/else chain that checks multiple conditions?
 - Do you know what `%` (modulo) does? What does `10 % 3` return?
 
+**Estimated time:** 20 minutes
+
 ## Focus
 - if-elif-else decision trees
 
@@ -54,20 +56,28 @@ Enter a number (or 'quit'): quit
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a "perfect number" check (a number equal to the sum of its proper divisors, e.g. 6 = 1+2+3).
 2. After all numbers are entered, ask "Show only primes? (y/n): " and filter the summary.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Enter `0` -- is it classified as prime or composite? (It should be neither.)
 2. Enter `1` -- the `is_prime()` function should return `False`, but does it?
 3. Enter a negative number like `-7` -- does `is_prime()` handle negatives correctly?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `is_prime()` returns `False` for values less than 2.
 2. Add the "neither prime nor composite" label for 0 and 1.
 3. Add a test that verifies `is_prime(1)` returns `False`.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `is_prime()` only check divisors up to the square root of `n`?

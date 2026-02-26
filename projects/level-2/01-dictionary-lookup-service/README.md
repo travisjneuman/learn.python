@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `dict.get(key, default)` to safely look up a key that might not exist?
 - Can you write a dictionary comprehension? (`{k: v for k, v in items}`)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - nested lookup safety and defaults
 
@@ -70,20 +72,28 @@ if not code or not code.strip():
 
 **The thought process:** Normalize input first (lowercase, strip). Try exact match. If that fails, try fuzzy match. Always return a structured result. This is the same pattern the dictionary lookup project uses.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--case-sensitive` flag that disables lowercase normalisation.
 2. Change `get_close_matches` cutoff from 0.6 to 0.5 — observe more suggestions.
 3. Add a `--add` option that appends a new `key=value` line to the dictionary file.
 
-## Break it (required)
+## Break it (required) — Core
 1. Create a dictionary file with duplicate keys — which value wins?
 2. Put a line with multiple `=` signs — does the definition split correctly?
 3. Search for an empty string `""` — what happens?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a guard for empty search terms in `lookup()`.
 2. Add a test that verifies duplicate-key behaviour is intentional.
 3. Ensure `=` inside definitions is preserved (split on first `=` only).
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the code normalise keys to lowercase?

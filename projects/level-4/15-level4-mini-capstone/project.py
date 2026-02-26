@@ -43,7 +43,9 @@ def transform_row(row: dict) -> dict:
     for key, value in row.items():
         k = key.strip().lower().replace(" ", "_")
         v = value.strip() if isinstance(value, str) else value
-        # Try numeric coercion
+        # WHY numeric coercion? -- CSV values are always strings. Converting
+        # "42" to int and "3.14" to float enables downstream numeric
+        # operations and produces cleaner JSON output.
         if isinstance(v, str):
             try:
                 v = int(v)
@@ -118,7 +120,9 @@ def run_pipeline(
     text = input_path.read_text(encoding="utf-8")
     rows = list(csv.DictReader(text.splitlines()))
 
-    # Load checkpoint if available
+    # WHY checkpointing in a capstone? -- This ties together the resilience
+    # pattern from project 12. If the pipeline crashes mid-run, restarting
+    # picks up where it left off instead of reprocessing everything.
     cp_path = checkpoint_path or (output_dir / ".checkpoint.json")
     state = load_checkpoint(cp_path)
     start = state["processed_count"]

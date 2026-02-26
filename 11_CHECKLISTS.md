@@ -78,7 +78,6 @@ Use before architecture reviews with experienced engineers:
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](10_CAPSTONE_PROJECTS.md) | [Home](README.md) | [Next →](12_SCREENSHOT_CHECKPOINTS.md) |
-|:---|:---:|---:|
+[Next: 12_SCREENSHOT_CHECKPOINTS.md →](./12_SCREENSHOT_CHECKPOINTS.md)

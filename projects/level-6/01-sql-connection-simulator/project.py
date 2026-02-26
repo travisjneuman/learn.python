@@ -48,9 +48,12 @@ class ConnectionConfig:
 class ConnectionPool:
     """Simple SQLite connection pool.
 
-    Real pools (e.g. SQLAlchemy's QueuePool) are far more capable, but
-    this version teaches the core idea: *reuse connections instead of
-    creating a new one for every query*.
+    WHY pool connections? -- Creating a new database connection for every
+    query involves TCP handshakes, authentication, and memory allocation.
+    A pool keeps idle connections ready to reuse, cutting per-query
+    overhead from milliseconds to microseconds. Real pools (e.g.
+    SQLAlchemy's QueuePool) add thread-safety and eviction, but this
+    version teaches the core reuse pattern.
     """
 
     def __init__(self, config: ConnectionConfig) -> None:
@@ -104,7 +107,10 @@ class ConnectionPool:
                 conn = sqlite3.connect(
                     self.config.db_path, timeout=self.config.timeout
                 )
-                conn.execute("SELECT 1")  # health-check ping
+                # WHY a health-check ping? -- A connection can be "open"
+                # but the database might be locked or corrupted. SELECT 1
+                # verifies the connection actually works end-to-end.
+                conn.execute("SELECT 1")
                 return conn
             except sqlite3.OperationalError as exc:
                 last_err = exc

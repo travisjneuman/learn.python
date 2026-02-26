@@ -1,6 +1,8 @@
 # Level 2 / Project 15 - Level 2 Mini Capstone
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - small end-to-end validated pipeline
 
@@ -36,20 +38,28 @@ Anomalies found:   1
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--rules` flag to load validation rules from a separate JSON file.
 2. Add an `--output` flag to save valid records as a new CSV.
 3. Add deduplication as a pipeline stage between cleaning and validation.
 
-## Break it (required)
+## Break it (required) — Core
 1. Feed a CSV where every record is invalid — does the report handle 0% pass rate?
 2. Feed a CSV with no numeric column — does anomaly detection crash?
 3. Feed an empty CSV (header only) — does the pipeline handle zero records?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Guard against zero-record pass rate calculations.
 2. Handle missing numeric fields in anomaly detection gracefully.
 3. Add a test for empty/header-only CSV files.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How do the five pipeline stages (load, clean, validate, analyse, report) connect?

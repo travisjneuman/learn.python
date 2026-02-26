@@ -34,6 +34,11 @@ class ADRStatus(Enum):
     REJECTED = "rejected"
 
 
+# WHY capture context, decision, AND consequences? -- The context explains
+# the forces that led to the decision; the consequences document trade-offs
+# accepted. Without context, future engineers don't know WHY a decision was
+# made and may reverse it without understanding the constraints. The
+# superseded_by field creates an audit chain across evolving decisions.
 @dataclass
 class ADR:
     """Architecture Decision Record."""

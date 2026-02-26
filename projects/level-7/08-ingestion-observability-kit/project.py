@@ -24,6 +24,10 @@ from pathlib import Path
 
 # -- Data model ----------------------------------------------------------
 
+# WHY structured log entries with correlation IDs? -- In a multi-stage
+# pipeline, a single input row passes through extract → validate → load.
+# When something fails, the correlation_id lets you trace that specific
+# row's journey across all stages — essential for debugging production issues.
 @dataclass
 class LogEntry:
     """One structured log line."""

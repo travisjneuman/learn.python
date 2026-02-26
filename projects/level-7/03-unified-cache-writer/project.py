@@ -24,11 +24,17 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 
+# WHY three separate backends behind one interface? -- This is the Strategy
+# pattern: each backend (memory, file, SQLite) has different trade-offs
+# (speed vs persistence vs capacity), but callers use the same get/set/delete
+# API. Swapping backends requires zero changes to calling code.
 class MemoryCache:
     """Fast in-memory cache using a plain dict."""
 
     def __init__(self) -> None:
         self._store: dict[str, str] = {}
+        # WHY track hits/misses? -- Cache hit rate is the primary metric for
+        # deciding whether the cache is effective or needs tuning.
         self._hits = 0
         self._misses = 0
 

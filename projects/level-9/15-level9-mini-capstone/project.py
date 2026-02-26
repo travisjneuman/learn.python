@@ -46,6 +46,13 @@ class CostTrend(Enum):
     SPIKING = "spiking"
 
 
+# WHY separate enums for health, governance, and cost? -- Each represents
+# a different operational concern with its own vocabulary. Collapsing them
+# into one "Status" enum would lose semantic precision — DEGRADED health,
+# NON_COMPLIANT governance, and SPIKING cost require different responses
+# from different teams. This is the Facade pattern: the capstone unifies
+# multiple subsystems behind one report without flattening their domains.
+
 # --- SLO subsystem ------------------------------------------------------
 
 @dataclass

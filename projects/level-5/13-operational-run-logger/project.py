@@ -37,9 +37,11 @@ def configure_logging() -> None:
 class RunLogger:
     """Context-aware logger that tracks run metadata.
 
-    Each run has a unique ID, a start time, and a list of events.
-    Call ``finish()`` at the end to record the final status and
-    compute the total duration.
+    WHY a dedicated class instead of plain logging? -- Standard logging
+    writes lines to a file and forgets them. RunLogger collects every
+    event into a structured list with timing data, so the complete run
+    history can be serialized to JSON and queried programmatically
+    (e.g., "show me all runs that took longer than 5 seconds").
     """
 
     def __init__(self, run_id: str | None = None) -> None:

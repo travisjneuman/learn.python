@@ -26,3 +26,10 @@ site/
 
 # Internal launch planning docs
 _launch/
+
+# Gamification progress (personal data)
+data/xp_progress.json
+data/streak.json
+
+# macOS metadata
+.DS_Store

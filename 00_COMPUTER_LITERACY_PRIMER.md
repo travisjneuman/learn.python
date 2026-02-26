@@ -130,7 +130,6 @@ Read error messages carefully. They almost always tell you what to fix.
 4. Errors are helpful clues, not failures
 5. You do not need to memorize anything — understanding the pattern is enough
 
----
+## Next
 
-| [← Prev](START_HERE.md) | [Home](README.md) | [Next →](01_ROADMAP.md) |
-|:---|:---:|---:|
+[Next: 01_ROADMAP.md →](./01_ROADMAP.md)

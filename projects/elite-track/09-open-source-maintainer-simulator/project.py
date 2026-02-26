@@ -5,6 +5,10 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY simulate open-source maintenance? -- Maintaining OSS requires skills
+# beyond coding: triaging issues, reviewing PRs from strangers, managing
+# breaking changes, writing changelogs, and communicating decisions. This
+# simulation exposes learners to the full maintainer workflow.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you move a function from one file to another and update the import?
 - Can you explain what "separation of concerns" means?
 
+**Estimated time:** 40 minutes
+
 ## Focus
 - split large function into modules
 
@@ -42,20 +44,28 @@ Engineering (4 people)
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--sort-by` flag (headcount, salary, tenure) to order departments.
 2. Add a median salary calculation to `DepartmentStats`.
 3. Add a `--top-earners N` flag to show the top N earners across all departments.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a CSV with a missing `salary` column — what error appears?
 2. Pass a non-numeric value in the salary column — does it crash or skip?
 3. Filter to a department that doesn't exist — what happens?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add validation that all required CSV columns exist before processing.
 2. Handle non-numeric salary/years values gracefully (skip with warning).
 3. Show a clear message when `--department` matches nothing.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is the "monolith" anti-pattern and why is it hard to test?

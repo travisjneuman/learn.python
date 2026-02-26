@@ -24,6 +24,10 @@ from pathlib import Path
 # Schema
 # ---------------------------------------------------------------------------
 
+# WHY batch windows? -- Without explicit time windows, batch jobs risk
+# reprocessing the same data or missing gaps between runs. Each window
+# claims a time range, and the status state machine (pending -> running
+# -> completed/failed) ensures no two jobs process the same window.
 WINDOWS_DDL = """\
 CREATE TABLE IF NOT EXISTS batch_windows (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,

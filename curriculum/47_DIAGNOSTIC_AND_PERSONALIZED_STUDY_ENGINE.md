@@ -49,7 +49,6 @@ The generated plan must include:
 - [Exercism Python Track](https://exercism.org/tracks/python)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md) | [Home](../README.md) | [Next →](48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md) |
-|:---|:---:|---:|
+[Next: 48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md →](./48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md)

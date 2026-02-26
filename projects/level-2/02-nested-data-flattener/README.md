@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `isinstance()` to check if a value is a dict or a list?
 - Can you explain what recursion is? (A function that calls itself)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - flatten lists/dicts to row structures
 
@@ -67,20 +69,28 @@ def flatten_list(nested):
 
 **The thought process:** Recursion handles arbitrary nesting depth because each level calls the same function. The dict flattener project uses the same approach but builds dot-separated keys instead of a flat list.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--max-depth` flag that stops flattening beyond N levels.
 2. Change the separator to `__` (double underscore) and observe the output.
 3. Add a `--keys-only` flag that prints just the flattened key names.
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass a JSON file whose root is a list `[1, 2, 3]` — what error appears?
 2. Create a key that already contains a dot, e.g. `{"a.b": 1}` — what happens?
 3. Flatten then unflatten a structure with lists — is the roundtrip perfect?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a guard in `flatten_from_file` for non-dict JSON roots.
 2. Handle keys that contain the separator character (escape or warn).
 3. Add a test for empty dict input `{}`.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is recursion and why is it useful for nested data?

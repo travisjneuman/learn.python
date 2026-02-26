@@ -37,6 +37,11 @@ class FaultType(Enum):
     TIMEOUT = "timeout"
 
 
+# WHY probability-based fault injection? -- Injecting faults on every call
+# makes tests deterministic but unrealistic. Real failures are stochastic.
+# A probability field (0.0-1.0) lets you simulate realistic failure rates
+# and test that your system degrades gracefully under partial failures,
+# not just total outages. This is the Netflix Chaos Monkey approach.
 @dataclass
 class FaultConfig:
     """Configuration for a single fault injection rule."""

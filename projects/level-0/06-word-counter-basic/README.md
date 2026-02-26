@@ -1,6 +1,8 @@
 # Level 0 / Project 06 - Word Counter Basic
 Home: [README](../../../README.md)
 
+**Estimated time:** 20 minutes
+
 ## Focus
 - string splitting and counting
 
@@ -46,20 +48,28 @@ Python is powerful and fun.
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add an "average word length" metric to `analyse_text()`.
 2. Ask the user "How many top words to show? " and use that number instead of the default 5.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Enter no text (just press Enter immediately) -- does `analyse_text()` crash?
 2. Enter only punctuation like `!!! ??? ...` -- are those counted as words?
 3. Enter unicode characters like emojis -- does `count_characters()` count them correctly?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a guard for empty text that returns zero counts without dividing.
 2. Ensure `word_frequencies()` strips punctuation before counting so `"hello!"` and `"hello"` are the same word.
 3. Add a test for the empty-text edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `word_frequencies()` use `.lower()` before counting?

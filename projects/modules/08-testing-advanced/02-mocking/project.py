@@ -13,9 +13,10 @@ replace requests.get() with a fake that returns whatever we want.
 import requests
 
 
-# This is the base URL for a weather API. In a real application this
-# would be something like "https://api.openweathermap.org/data/2.5".
-# We use a fake URL here because our tests will never actually call it.
+# WHY a fake URL? -- Tests must never make real HTTP calls. They'd be slow,
+# flaky (network failures), and non-deterministic (API data changes). By
+# mocking requests.get(), we control exactly what the "API" returns, making
+# tests fast, reliable, and able to simulate error scenarios on demand.
 API_BASE_URL = "https://api.weather-example.com/v1"
 
 

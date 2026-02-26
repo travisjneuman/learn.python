@@ -1,6 +1,8 @@
 # Level 5 / Project 12 - Fail Safe Exporter
 Home: [README](../../../README.md)
 
+**Estimated time:** 85 minutes
+
 ## Focus
 - atomic writes and export integrity
 
@@ -30,22 +32,30 @@ Exported 4 records to data/exported.csv (atomic write)
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--validate` flag that checks each record has required fields before exporting.
 2. Add a backup: before overwriting, copy the existing file to `.bak`.
 3. Add a `--dry-run` flag that validates and reports but does not write.
 4. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass an output path to a read-only directory (or a path with invalid characters).
 2. Pass input data where records have inconsistent keys (some missing columns).
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Catch `OSError` / `PermissionError` during atomic write and report clearly.
 2. Pad missing keys with empty strings during CSV export.
 3. Add tests for write failures and inconsistent records.
 4. Re-run until output and tests are deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `atomic_write_json` write to a `.tmp` file and then rename?

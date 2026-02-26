@@ -1,6 +1,8 @@
 # Level 4 / Project 15 - Level 4 Mini Capstone
 Home: [README](../../../README.md)
 
+**Estimated time:** 75 minutes
+
 ## Focus
 - data-quality-first automation workflow
 
@@ -35,20 +37,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--schema` flag that loads validation rules from a JSON file (like project 01).
 2. Add a `--report` flag that generates a human-readable summary alongside the JSON.
 3. Re-run script and tests — verify the schema-based validation works.
 
-## Break it (required)
+## Break it (required) — Core
 1. Kill the process mid-run (Ctrl+C after 2 rows) and restart — verify it resumes from checkpoint.
 2. Feed it a CSV with headers but no data rows.
 3. Remove the output directory and verify it is created automatically.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle keyboard interrupts gracefully (save checkpoint before exiting).
 2. Add total processing time to the manifest.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does this project combine skills from projects 01-14?

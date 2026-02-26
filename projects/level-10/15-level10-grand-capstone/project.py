@@ -42,6 +42,11 @@ class Status(Enum):
     WARN = "warn"
 
 
+# WHY a universal CheckResult shared across subsystems? -- The Facade pattern
+# needs a common language. Policy checks, readiness checks, and fitness
+# functions all produce pass/fail/warn verdicts. A shared CheckResult lets
+# the platform aggregate results into a single dashboard without translating
+# between subsystem-specific result types. This is composition at scale.
 @dataclass(frozen=True)
 class CheckResult:
     """Universal check result used by all subsystems."""

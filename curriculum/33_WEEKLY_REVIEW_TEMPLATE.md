@@ -69,7 +69,6 @@ Interpretation:
 ## Optional Resources
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 
----
+## Next
 
-| [← Prev](32_DAILY_SESSION_SCRIPT.md) | [Home](../README.md) | [Next →](34_FAILURE_RECOVERY_ATLAS.md) |
-|:---|:---:|---:|
+[Next: 34_FAILURE_RECOVERY_ATLAS.md →](./34_FAILURE_RECOVERY_ATLAS.md)

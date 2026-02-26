@@ -43,6 +43,11 @@ class HealthRating(Enum):
     RED = "red"
 
 
+# WHY normalize into MetricPoint? -- Engineering metrics come from many
+# sources in different formats. Normalizing into a common shape lets the
+# pipeline aggregate across sources (Adapter pattern). The frozen=True
+# ensures metric points are immutable once collected — audit-friendly
+# and safe for concurrent processing.
 @dataclass(frozen=True)
 class MetricPoint:
     """Normalized metric data point."""

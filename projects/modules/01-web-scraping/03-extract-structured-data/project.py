@@ -13,9 +13,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# This dictionary maps CSS class names to numeric star ratings.
-# On books.toscrape.com, each book has a <p> tag with a class like
-# "star-rating Three". We need to convert words to numbers.
+# WHY a lookup dict instead of if/elif? -- Converting "Three" to 3 is a
+# mapping problem. A dict is cleaner, faster (O(1) lookup), and easier
+# to extend than a chain of conditionals.
 RATING_MAP = {
     "One": 1,
     "Two": 2,

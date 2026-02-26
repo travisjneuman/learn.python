@@ -1,6 +1,8 @@
 # Level 4 / Project 12 - Checkpoint Recovery Tool
 Home: [README](../../../README.md)
 
+**Estimated time:** 70 minutes
+
 ## Focus
 - resume from checkpoints safely
 
@@ -33,20 +35,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--simulate-crash` flag that stops after N items to test recovery.
 2. Add a progress bar (percentage) logged at each checkpoint.
 3. Re-run script and tests — verify crash simulation creates a valid checkpoint.
 
-## Break it (required)
+## Break it (required) — Core
 1. Corrupt the checkpoint file (write invalid JSON) and run — observe the "starting fresh" behavior.
 2. Modify `process_item` to raise an exception on a specific item — verify the checkpoint has progress up to the failure point.
 3. Set `--batch-size 0` and observe what happens.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Validate `batch_size` is positive in `parse_args`.
 2. Add error handling in `process_item` so one bad item does not crash the whole batch.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `save_checkpoint` write to a `.tmp` file first then rename?

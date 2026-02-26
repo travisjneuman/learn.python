@@ -128,7 +128,6 @@ Advance when you can:
 - Use this schema pack for cache and downstream marts:
   - [13_SAMPLE_DATABASE_SCHEMAS.md](./13_SAMPLE_DATABASE_SCHEMAS.md)
 
----
+## Next
 
-| [← Prev](projects/level-5/README.md) | [Home](README.md) | [Next →](concepts/http-explained.md) |
-|:---|:---:|---:|
+[Next: concepts/http-explained.md →](./concepts/http-explained.md)

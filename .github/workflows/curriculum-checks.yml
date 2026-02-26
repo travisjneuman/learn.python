@@ -18,6 +18,9 @@ on:
 jobs:
   quick-checks:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,7 +28,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: pip install ruff pytest
@@ -52,7 +55,7 @@ jobs:
         run: python tools/check_elite_track_contract.py
 
       - name: Portable path contract checks
-        run: ./tools/check_portable_paths.sh
+        run: python tools/check_portable_paths.py
 
       - name: Run representative pytest sample
         run: |
@@ -67,6 +70,20 @@ jobs:
             projects/level-7/01-api-query-adapter/tests/ \
             projects/level-8/01-dashboard-kpi-assembler/tests/ \
             projects/level-9/01-architecture-decision-log/tests/ \
+            projects/level-10/01-enterprise-python-blueprint/tests/ \
+            projects/elite-track/01-algorithms-complexity-lab/tests/ \
+            projects/modules/01-web-scraping/01-fetch-a-webpage/tests/ \
+            projects/modules/02-cli-tools/01-click-basics/tests/ \
+            projects/modules/03-rest-apis/01-first-api-call/tests/ \
+            projects/modules/04-fastapi-web/01-hello-fastapi/tests/ \
+            projects/modules/05-async-python/01-async-basics/tests/ \
+            projects/modules/06-databases-orm/01-sqlite-basics/tests/ \
+            projects/modules/07-data-analysis/01-pandas-basics/tests/ \
+            projects/modules/08-testing-advanced/01-parametrize/tests/ \
+            projects/modules/09-docker-deployment/01-first-dockerfile/tests/ \
+            projects/modules/10-django-fullstack/01-django-setup/tests/ \
+            projects/modules/11-package-publishing/01-package-structure/tests/ \
+            projects/modules/12-cloud-deploy/01-deploy-to-railway/tests/ \
           || echo "Some representative tests failed — review output above"
 
       - name: Project quick smoke checks
@@ -91,4 +108,4 @@ jobs:
         run: pip install ruff pytest
 
       - name: Full curriculum checks
-        run: ./tools/run_all_curriculum_checks.sh --full
+        run: python tools/run_all_checks.py --full

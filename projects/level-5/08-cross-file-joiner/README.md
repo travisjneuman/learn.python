@@ -3,6 +3,8 @@ Home: [README](../../../README.md)
 
 > **Quick Recall:** This project uses dictionary lookups to match records across files. Before starting, make sure you can: build a dictionary from CSV rows using one column as the key, then look up values by that key (Level 1, Project 05 - CSV First Reader).
 
+**Estimated time:** 75 minutes
+
 ## Focus
 - join records across source files
 
@@ -30,22 +32,30 @@ Inner join: 4 matched rows on key 'dept_id'
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--join full` mode that includes unmatched rows from both sides with null fills.
 2. Add column selection: `--select name,dept_name` to keep only specific fields in output.
 3. Print a summary of matched, left-only, and right-only counts.
 4. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a `--key` that exists in only one of the two files.
 2. Use files with duplicate keys and observe which row wins.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Validate that the join key exists in both files before joining.
 2. Document or handle the duplicate-key behavior explicitly (first-wins or last-wins).
 3. Add tests for missing keys and duplicates.
 4. Re-run until output and tests are deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is the difference between inner, left, and full outer joins?

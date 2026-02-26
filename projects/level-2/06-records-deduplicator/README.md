@@ -1,6 +1,8 @@
 # Level 2 / Project 06 - Records Deduplicator
 Home: [README](../../../README.md)
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - dedupe logic with stable keys
 
@@ -31,20 +33,28 @@ Unique records (7): ...
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--output` flag that writes unique records to a new CSV file.
 2. Add a `--case-sensitive` flag that disables lowercase normalisation.
 3. Add a count of how many times each duplicate key appeared.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a key field that does not exist in the CSV — what happens?
 2. Feed a CSV where every row is identical — is the output correct?
 3. Use an empty file — does it crash?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Validate that key_fields exist in the headers before processing.
 2. Handle the all-duplicates case gracefully.
 3. Add a test for missing key fields raising a clear error.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why are sets used for tracking seen keys instead of lists?

@@ -47,7 +47,6 @@ This guide supports optional mentoring while preserving self-paced default behav
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](18_REMEDIATION_PLAYBOOK.md) | [Home](../README.md) | [Next →](20_CURRICULUM_CHANGELOG.md) |
-|:---|:---:|---:|
+[Next: 20_CURRICULUM_CHANGELOG.md →](./20_CURRICULUM_CHANGELOG.md)

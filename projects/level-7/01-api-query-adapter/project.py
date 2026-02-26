@@ -28,7 +28,13 @@ from typing import Any, Callable
 
 @dataclass
 class UnifiedRecord:
-    """The common shape that all API responses are normalized into."""
+    """The common shape that all API responses are normalized into.
+
+    WHY a unified dataclass? -- Each API returns different field names
+    (item_id vs id vs product_id). By normalizing into one dataclass,
+    downstream code only needs to understand ONE shape, regardless of
+    which API the data came from. This is the Adapter pattern.
+    """
 
     id: str
     name: str

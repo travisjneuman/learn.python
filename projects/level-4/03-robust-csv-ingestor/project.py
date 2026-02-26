@@ -71,12 +71,17 @@ def ingest_csv(
         error = validate_row(row, expected_columns, idx)
         if error:
             errors.append(error)
-            bad_rows.append([str(idx)] + row)  # prepend row number for traceability
+            # WHY prepend the row number? -- When a human reviews the
+            # quarantine file, they need to trace bad rows back to the
+            # original input without recounting lines manually.
+            bad_rows.append([str(idx)] + row)
             logging.warning("Quarantined: %s", error)
         else:
             good_rows.append(row)
 
-    # Write clean output
+    # WHY separate clean and quarantine outputs? -- Keeping bad rows in a
+    # separate file lets the clean output be fed directly into the next
+    # pipeline stage while bad rows get manual review later.
     good_path.parent.mkdir(parents=True, exist_ok=True)
     with good_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)

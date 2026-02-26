@@ -117,7 +117,6 @@ Move forward when you can:
 - [Pro Git Book](https://git-scm.com/book/en/v2.html)
 - [GitHub Git basics](https://docs.github.com/en/get-started/getting-started-with-git)
 
----
+## Next
 
-| [← Prev](practice/challenges/README.md) | [Home](README.md) | [Next →](concepts/errors-and-debugging.md) |
-|:---|:---:|---:|
+[Next: concepts/errors-and-debugging.md →](./concepts/errors-and-debugging.md)

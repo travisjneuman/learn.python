@@ -1,0 +1,126 @@
+{
+  "deck": "Module 12 — Cloud Deployment",
+  "description": "Railway, Postgres, production config, environment variables, WSGI/ASGI, monitoring",
+  "cards": [
+    {
+      "id": "m12-01",
+      "front": "What is the difference between development and production configuration?",
+      "back": "Development:\n  DEBUG = True\n  DATABASE = SQLite (local file)\n  ALLOWED_HOSTS = ['localhost']\n  SECRET_KEY = hardcoded (okay for dev)\n  LOGGING = verbose\n  Static files served by dev server\n\nProduction:\n  DEBUG = False\n  DATABASE = PostgreSQL (managed service)\n  ALLOWED_HOSTS = ['myapp.example.com']\n  SECRET_KEY = from environment variable\n  LOGGING = errors only\n  Static files served by CDN/nginx\n\nNever run DEBUG=True in production:\n- Exposes stack traces to users\n- Enables debug toolbar\n- Disables security features\n- Leaks sensitive data in error pages",
+      "concept_ref": "projects/modules/12-cloud-deploy/README.md",
+      "difficulty": 1,
+      "tags": ["configuration", "dev-vs-prod", "security"]
+    },
+    {
+      "id": "m12-02",
+      "front": "How do you use environment variables for configuration?",
+      "back": "import os\nfrom dotenv import load_dotenv\n\n# Load .env file (development only)\nload_dotenv()\n\n# Read with defaults\nDEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'\nPORT = int(os.environ.get('PORT', 8000))\nDATABASE_URL = os.environ['DATABASE_URL']  # required, crash if missing\nSECRET_KEY = os.environ.get('SECRET_KEY', 'dev-only-key')\n\n# .env file (NOT committed to git)\nDEBUG=true\nPORT=8000\nDATABASE_URL=postgresql://user:pass@localhost:5432/mydb\nSECRET_KEY=abc123\n\n# .env.example (committed, no real values)\nDEBUG=false\nPORT=8000\nDATABASE_URL=postgresql://user:pass@host:5432/dbname\nSECRET_KEY=change-me\n\nAlways add .env to .gitignore.",
+      "concept_ref": "projects/modules/12-cloud-deploy/01-config-and-env/README.md",
+      "difficulty": 1,
+      "tags": ["environment-variables", "dotenv", "configuration"]
+    },
+    {
+      "id": "m12-03",
+      "front": "What is Railway and how do you deploy a Python app to it?",
+      "back": "Railway is a PaaS (Platform as a Service) that deploys from Git.\n\nSteps:\n1. Create account at railway.app\n2. Connect GitHub repository\n3. Railway auto-detects Python (via requirements.txt or pyproject.toml)\n4. Set environment variables in Railway dashboard\n5. Deploy triggers on every git push\n\nRailway needs to know how to start your app:\n# Procfile\nweb: gunicorn app:app --bind 0.0.0.0:$PORT\n\n# Or in railway.toml\n[build]\nbuilder = \"nixpacks\"\n\n[deploy]\nstartCommand = \"gunicorn app:app\"\n\nRailway provides:\n- Managed PostgreSQL\n- Automatic HTTPS\n- Environment variables UI\n- Deployment logs",
+      "concept_ref": "projects/modules/12-cloud-deploy/03-railway-deploy/README.md",
+      "difficulty": 2,
+      "tags": ["railway", "paas", "deployment"]
+    },
+    {
+      "id": "m12-04",
+      "front": "What is the difference between WSGI and ASGI?",
+      "back": "WSGI (Web Server Gateway Interface):\n- Synchronous protocol\n- One request at a time per worker\n- Used by: Flask, Django (traditional)\n- Servers: gunicorn, uWSGI\n  gunicorn app:app --workers 4\n\nASGI (Asynchronous Server Gateway Interface):\n- Asynchronous protocol\n- Handles many concurrent connections\n- Used by: FastAPI, Django (async), Starlette\n- Servers: uvicorn, hypercorn, daphne\n  uvicorn app:app --workers 4\n\nWhen to use which:\n- Flask/Django sync views -> WSGI (gunicorn)\n- FastAPI/async views -> ASGI (uvicorn)\n- Django with both -> ASGI (uvicorn)\n\nNever use the built-in dev server in production.",
+      "concept_ref": "projects/modules/12-cloud-deploy/02-production-server/README.md",
+      "difficulty": 2,
+      "tags": ["wsgi", "asgi", "gunicorn", "uvicorn"]
+    },
+    {
+      "id": "m12-05",
+      "front": "How do you configure gunicorn for production?",
+      "back": "# Basic usage\ngunicorn app:app\n\n# With options\ngunicorn app:app \\\n    --bind 0.0.0.0:8000 \\\n    --workers 4 \\\n    --threads 2 \\\n    --timeout 120 \\\n    --access-logfile - \\\n    --error-logfile -\n\n# gunicorn.conf.py\nimport multiprocessing\n\nbind = '0.0.0.0:8000'\nworkers = multiprocessing.cpu_count() * 2 + 1\nthreads = 2\ntimeout = 120\naccesslog = '-'\nerrorlog = '-'\n\nWorker formula: (2 * CPU_CORES) + 1\n  1 CPU = 3 workers\n  2 CPUs = 5 workers\n  4 CPUs = 9 workers\n\nFor Railway/Heroku, use $PORT:\n  gunicorn app:app --bind 0.0.0.0:$PORT",
+      "concept_ref": "projects/modules/12-cloud-deploy/02-production-server/README.md",
+      "difficulty": 2,
+      "tags": ["gunicorn", "production", "workers"]
+    },
+    {
+      "id": "m12-06",
+      "front": "How do you connect to PostgreSQL from Python in production?",
+      "back": "# Connection URL format\n# postgresql://USER:PASSWORD@HOST:PORT/DATABASE\n\nimport os\nDATABASE_URL = os.environ['DATABASE_URL']\n\n# With psycopg2 (raw SQL)\nimport psycopg2\nconn = psycopg2.connect(DATABASE_URL)\n\n# With SQLAlchemy\nfrom sqlalchemy import create_engine\nengine = create_engine(DATABASE_URL)\n\n# With Django\nDATABASES = {\n    'default': dj_database_url.config(\n        default=DATABASE_URL,\n        conn_max_age=600\n    )\n}\n\nProduction tips:\n- Use connection pooling (conn_max_age, pgbouncer)\n- Set statement timeout to prevent long queries\n- Use SSL: ?sslmode=require in the URL\n- Railway provides DATABASE_URL automatically",
+      "concept_ref": "projects/modules/12-cloud-deploy/03-railway-deploy/README.md",
+      "difficulty": 2,
+      "tags": ["postgresql", "database", "connection"]
+    },
+    {
+      "id": "m12-07",
+      "front": "What is a Procfile and what goes in it?",
+      "back": "A Procfile tells the platform how to run your application. Each line defines a process type.\n\n# Web process (handles HTTP)\nweb: gunicorn app:app --bind 0.0.0.0:$PORT\n\n# Worker process (background jobs)\nworker: celery -A tasks worker --loglevel=info\n\n# Release command (runs before deployment)\nrelease: python manage.py migrate\n\nExamples by framework:\n# Flask\nweb: gunicorn app:app\n\n# Django\nweb: gunicorn myproject.wsgi\nrelease: python manage.py migrate\n\n# FastAPI\nweb: uvicorn app:app --host 0.0.0.0 --port $PORT\n\nThe Procfile must be in the root directory.\nOnly the web process receives HTTP traffic.\nOther processes run in separate containers.",
+      "concept_ref": "projects/modules/12-cloud-deploy/02-production-server/README.md",
+      "difficulty": 1,
+      "tags": ["procfile", "deployment", "processes"]
+    },
+    {
+      "id": "m12-08",
+      "front": "How do you run database migrations in production?",
+      "back": "Migrations change the database schema safely.\n\n# Django\npython manage.py makemigrations  # create migration files\npython manage.py migrate          # apply to database\n\n# Alembic (SQLAlchemy)\nalembic revision --autogenerate -m 'add users table'\nalembic upgrade head\n\nProduction deployment flow:\n1. Test migrations locally on a copy of production data\n2. Back up the production database\n3. Run migrations (via release command or deploy script)\n4. Deploy new code\n\n# In Procfile\nrelease: python manage.py migrate\n\nSafety rules:\n- Never delete columns without a deprecation period\n- Add columns as nullable first, then backfill\n- Test migrations are reversible: alembic downgrade -1\n- Keep migrations small and focused",
+      "concept_ref": "projects/modules/12-cloud-deploy/03-railway-deploy/README.md",
+      "difficulty": 2,
+      "tags": ["migrations", "database", "deployment"]
+    },
+    {
+      "id": "m12-09",
+      "front": "How do you serve static files in production?",
+      "back": "Development servers serve static files automatically. Production servers do NOT.\n\nOptions:\n\n1. WhiteNoise (simplest for Python apps)\n   pip install whitenoise\n   # Django settings\n   MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware', ...]\n   STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\n   python manage.py collectstatic\n\n2. CDN (fastest)\n   Upload to AWS S3, Cloudflare R2, or similar\n   Set STATIC_URL = 'https://cdn.example.com/static/'\n\n3. Reverse proxy (nginx)\n   location /static/ {\n       alias /app/staticfiles/;\n       expires 30d;\n   }\n\nWhiteNoise is recommended for Railway/Heroku.\nCDN is recommended for high-traffic sites.",
+      "concept_ref": "projects/modules/12-cloud-deploy/02-production-server/README.md",
+      "difficulty": 2,
+      "tags": ["static-files", "whitenoise", "cdn"]
+    },
+    {
+      "id": "m12-10",
+      "front": "What is HTTPS and why is it required in production?",
+      "back": "HTTPS encrypts traffic between the browser and your server.\n\nWithout HTTPS:\n- Passwords sent in plaintext (anyone on the network can read them)\n- Session cookies can be stolen\n- Data can be modified in transit\n- Browsers show 'Not Secure' warning\n- SEO penalty\n\nWith platforms like Railway:\n- HTTPS is automatic (free SSL certificate)\n- No configuration needed\n- HTTP redirects to HTTPS\n\nSelf-hosted:\n- Use Let's Encrypt (free certificates)\n- Configure nginx/caddy as reverse proxy\n- Redirect HTTP to HTTPS\n\nIn your app, enforce HTTPS:\n# Django\nSECURE_SSL_REDIRECT = True\nSECURE_HSTS_SECONDS = 31536000\nSESSION_COOKIE_SECURE = True\nCSRF_COOKIE_SECURE = True",
+      "concept_ref": "projects/modules/12-cloud-deploy/README.md",
+      "difficulty": 1,
+      "tags": ["https", "ssl", "security"]
+    },
+    {
+      "id": "m12-11",
+      "front": "How do you add logging and monitoring to a production app?",
+      "back": "import logging\n\n# Production logging config\nlogging.basicConfig(\n    level=logging.INFO,\n    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',\n)\nlogger = logging.getLogger(__name__)\n\n# Log important events\nlogger.info('User %s logged in', user_id)\nlogger.warning('Slow query: %dms', duration_ms)\nlogger.error('Payment failed for order %s', order_id, exc_info=True)\n\n# Structured logging (JSON)\nimport json_logging\njson_logging.init_fastapi(enable_json=True)\n\nMonitoring checklist:\n- Health check endpoint: GET /health -> 200\n- Request duration metrics\n- Error rate tracking\n- Database connection pool stats\n- Memory/CPU usage (platform provides this)\n\nServices: Sentry (errors), Datadog (metrics), Railway (logs)",
+      "concept_ref": "projects/modules/12-cloud-deploy/04-health-and-logging/README.md",
+      "difficulty": 2,
+      "tags": ["logging", "monitoring", "production"]
+    },
+    {
+      "id": "m12-12",
+      "front": "What is a health check endpoint and why do you need one?",
+      "back": "A health check tells the platform whether your app is ready to receive traffic.\n\n# Flask\n@app.route('/health')\ndef health():\n    return {'status': 'ok'}\n\n# FastAPI\n@app.get('/health')\ndef health():\n    return {'status': 'ok'}\n\n# Deep health check (verifies dependencies)\n@app.get('/health')\ndef health():\n    try:\n        db.execute('SELECT 1')  # check database\n        return {'status': 'ok', 'database': 'connected'}\n    except Exception:\n        return {'status': 'error'}, 503\n\nUsed by:\n- Load balancers (route traffic only to healthy instances)\n- Orchestrators (restart unhealthy containers)\n- Monitoring (alert when health check fails)\n- Railway/Heroku (zero-downtime deploys)",
+      "concept_ref": "projects/modules/12-cloud-deploy/04-health-and-logging/README.md",
+      "difficulty": 1,
+      "tags": ["health-check", "monitoring", "endpoint"]
+    },
+    {
+      "id": "m12-13",
+      "front": "How do you handle secrets securely in production?",
+      "back": "NEVER put secrets in code or git.\n\nHierarchy (best to worst):\n1. Cloud secrets manager (AWS Secrets Manager, Railway Variables)\n2. Environment variables (set in platform dashboard)\n3. .env file (local development only, gitignored)\n4. Hardcoded in code (NEVER)\n\n# Check .gitignore\n.env\n*.pem\n*.key\n\n# Verify no secrets in git history\ngit log --all --diff-filter=A -- '*.env'\ngit log --all -p | grep -i 'password\\|secret\\|api.key'\n\nIf a secret was committed:\n1. Rotate the secret immediately\n2. Remove from git history (git filter-branch or BFG)\n3. Force push (coordinate with team)\n\nCommon secrets:\n  SECRET_KEY, DATABASE_URL, API_KEY, SMTP_PASSWORD, JWT_SECRET",
+      "concept_ref": "projects/modules/12-cloud-deploy/01-config-and-env/README.md",
+      "difficulty": 2,
+      "tags": ["secrets", "security", "environment"]
+    },
+    {
+      "id": "m12-14",
+      "front": "What is zero-downtime deployment?",
+      "back": "Zero-downtime deployment updates your app without any interruption.\n\nHow it works (rolling deploy):\n1. New version starts alongside old version\n2. Health check verifies new version works\n3. Traffic gradually shifts to new version\n4. Old version shuts down after drain period\n\nRailway handles this automatically:\n- Starts new container\n- Waits for health check to pass\n- Switches traffic\n- Stops old container\n\nRequirements:\n- Health check endpoint\n- Database migrations compatible with both versions\n- No breaking API changes (or use versioning)\n- Graceful shutdown (handle SIGTERM)\n\n# Graceful shutdown in Python\nimport signal\ndef shutdown(signum, frame):\n    print('Finishing current requests...')\n    server.stop()\nsignal.signal(signal.SIGTERM, shutdown)",
+      "concept_ref": "projects/modules/12-cloud-deploy/05-production-checklist/README.md",
+      "difficulty": 3,
+      "tags": ["zero-downtime", "rolling-deploy", "production"]
+    },
+    {
+      "id": "m12-15",
+      "front": "What should be on your production deployment checklist?",
+      "back": "Before going live:\n\n[ ] Security\n  - DEBUG = False\n  - SECRET_KEY from environment\n  - HTTPS enforced\n  - CORS configured\n  - No secrets in code or git\n\n[ ] Database\n  - PostgreSQL (not SQLite)\n  - Migrations run\n  - Backups configured\n  - Connection pooling enabled\n\n[ ] Performance\n  - Production server (gunicorn/uvicorn)\n  - Static files served properly\n  - Database indexes in place\n\n[ ] Reliability\n  - Health check endpoint\n  - Logging configured\n  - Error tracking (Sentry)\n  - Graceful shutdown handler\n\n[ ] Operations\n  - Environment variables set\n  - Procfile or start command defined\n  - README documents deployment process\n  - Rollback plan documented",
+      "concept_ref": "projects/modules/12-cloud-deploy/05-production-checklist/README.md",
+      "difficulty": 2,
+      "tags": ["checklist", "production", "deployment"]
+    }
+  ]
+}

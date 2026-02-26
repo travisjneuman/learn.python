@@ -1,6 +1,8 @@
 # Level 1 / Project 12 - File Extension Counter
 Home: [README](../../../README.md)
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - directory scanning and grouped counts
 
@@ -33,20 +35,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--filter` flag that shows only specific extensions (e.g. `--filter .py,.txt`).
 2. Add a "hidden files" category for files starting with `.` (like `.gitignore`).
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Point `--dir` at an empty directory -- does `count_extensions()` return an empty dict or crash?
 2. Use a file list with files that have double extensions like `archive.tar.gz` -- which extension is counted?
 3. Point `--dir` at a path that does not exist -- does it raise `NotADirectoryError`?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle the empty-directory case by returning an empty dict with a "(no files found)" message.
 2. Ensure `NotADirectoryError` is raised with the path in the message for non-existent directories.
 3. Add a test for the empty-directory case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `count_extensions()` use `rglob("*")` instead of `iterdir()`?

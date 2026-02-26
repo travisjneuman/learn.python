@@ -41,6 +41,12 @@ class RecoveryPhase(Enum):
     DEPLOYMENT = "deployment"
 
 
+# WHY three-point estimates (min, expected, max)? -- Recovery times are
+# uncertain. Three-point estimates feed Monte Carlo simulation: randomly
+# sampling between min and max across all phases produces a probability
+# distribution of total recovery time. This gives stakeholders confidence
+# intervals ("90% chance of recovery within 45 min") instead of false
+# precision from a single number.
 @dataclass(frozen=True)
 class PhaseEstimate:
     """Time estimate for a single recovery phase."""

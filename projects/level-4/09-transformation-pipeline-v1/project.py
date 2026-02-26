@@ -23,8 +23,10 @@ def configure_logging() -> None:
     )
 
 # ---------- transform functions ----------
-# Each takes a list of record dicts and returns a new list.
-# This functional style keeps transforms composable and testable.
+# WHY pure functions? -- Each transform takes a list of record dicts and
+# returns a NEW list (no mutation). This functional style means transforms
+# are composable (chain any order), testable (no shared state), and
+# safe to retry (same input always gives same output).
 
 
 def transform_strip_whitespace(records: list[dict]) -> list[dict]:
@@ -83,7 +85,9 @@ def transform_coerce_numbers(records: list[dict]) -> list[dict]:
 
 # ---------- pipeline engine ----------
 
-# Registry of available transforms by name
+# WHY a registry dict? -- Mapping string names to functions lets the
+# pipeline be driven by configuration (a list of step names in JSON)
+# rather than hard-coded function calls. This is the Strategy pattern.
 TRANSFORMS: dict[str, Callable[..., Any]] = {
     "strip_whitespace": transform_strip_whitespace,
     "lowercase_keys": transform_lowercase_keys,

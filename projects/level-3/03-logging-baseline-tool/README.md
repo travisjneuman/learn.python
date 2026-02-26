@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `logging.basicConfig()` to set up Python's logging module?
 - Can you explain the difference between `print()` and `logging.info()`?
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - structured logs and run summaries
 
@@ -47,20 +49,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. What filtering or output options would make this tool more useful for a sysadmin?
 2. Try improving the output format — what information is missing?
 3. Can you redirect output to a file instead of the terminal?
 
-## Break it (required)
+## Break it (required) — Core
 1. What happens when the input data does not match the expected format?
 2. Try passing invalid arguments — how does the tool respond?
 3. What edge case produces surprising output?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add validation for the issue you found most confusing.
 2. Make the tool handle empty or minimal input gracefully.
 3. Improve parsing to handle messy real-world log data.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is `logging.getLogger(__name__)` and why use `__name__`?

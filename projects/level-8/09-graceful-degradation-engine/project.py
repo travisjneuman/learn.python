@@ -27,6 +27,10 @@ from typing import Any
 
 # --- Domain types -------------------------------------------------------
 
+# WHY a three-state circuit breaker? -- CLOSED (normal), OPEN (rejecting),
+# and HALF_OPEN (probing recovery) prevent cascading failures. Without
+# HALF_OPEN, the system would stay OPEN forever after a transient error.
+# HALF_OPEN lets a single request through to test if the dependency recovered.
 class CircuitState(Enum):
     """Circuit breaker states."""
     CLOSED = "closed"      # normal operation

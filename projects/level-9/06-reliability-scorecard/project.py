@@ -33,6 +33,11 @@ class Grade(Enum):
     F = "F"
 
 
+# WHY these specific dimensions? -- These align with the DORA metrics
+# (Deployment Frequency, Change Failure Rate, MTTR, Lead Time) plus
+# operational dimensions. DORA research shows these four metrics
+# statistically predict software delivery performance. Adding availability,
+# incident response, and test coverage rounds out the reliability picture.
 class Dimension(Enum):
     AVAILABILITY = "availability"
     MTTR = "mean_time_to_recovery"

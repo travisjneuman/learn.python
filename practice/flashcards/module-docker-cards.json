@@ -1,0 +1,126 @@
+{
+  "deck": "Module 09 — Docker & Deployment",
+  "description": "Docker, docker-compose, images, containers, volumes, Dockerfile, GitHub Actions",
+  "cards": [
+    {
+      "id": "m09-01",
+      "front": "What is Docker and why use it for Python projects?",
+      "back": "Docker packages your application and ALL its dependencies into a container — a lightweight, isolated environment that runs the same everywhere.\n\nWithout Docker:\n- 'Works on my machine' problems\n- Different Python versions, missing packages\n- OS-specific quirks\n\nWith Docker:\n- Same environment locally, in CI, and in production\n- Isolated from host system\n- Reproducible builds\n- Easy to share and deploy\n\nKey concepts:\n- Image: a blueprint (recipe)\n- Container: a running instance of an image\n- Dockerfile: instructions to build an image\n- Registry: where images are stored (Docker Hub)",
+      "concept_ref": "projects/modules/09-docker-deployment/README.md",
+      "difficulty": 1,
+      "tags": ["docker", "containers", "basics"]
+    },
+    {
+      "id": "m09-02",
+      "front": "How do you write a Dockerfile for a Python application?",
+      "back": "FROM python:3.12-slim\n\n# Set working directory\nWORKDIR /app\n\n# Install dependencies first (cached layer)\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Copy application code\nCOPY . .\n\n# Expose port (documentation, not enforcement)\nEXPOSE 8000\n\n# Run the application\nCMD [\"python\", \"app.py\"]\n\nKey practices:\n- Use slim or alpine base images (smaller)\n- Copy requirements.txt BEFORE code (layer caching)\n- Use --no-cache-dir to reduce image size\n- Use CMD for the default command\n- One process per container",
+      "concept_ref": "projects/modules/09-docker-deployment/01-containerize-app/README.md",
+      "difficulty": 1,
+      "tags": ["dockerfile", "python", "build"]
+    },
+    {
+      "id": "m09-03",
+      "front": "What is the difference between CMD and ENTRYPOINT in a Dockerfile?",
+      "back": "CMD — default command, can be overridden at runtime\n  CMD [\"python\", \"app.py\"]\n  docker run myapp                # runs python app.py\n  docker run myapp python test.py  # overrides to python test.py\n\nENTRYPOINT — fixed command, arguments are appended\n  ENTRYPOINT [\"python\"]\n  CMD [\"app.py\"]\n  docker run myapp               # runs python app.py\n  docker run myapp test.py        # runs python test.py\n\nCombined (best practice for CLI tools):\n  ENTRYPOINT [\"python\", \"manage.py\"]\n  CMD [\"runserver\"]\n  docker run myapp migrate        # runs python manage.py migrate\n\nUse exec form [\"cmd\", \"arg\"] not shell form \"cmd arg\" for proper signal handling.",
+      "concept_ref": "projects/modules/09-docker-deployment/01-containerize-app/README.md",
+      "difficulty": 2,
+      "tags": ["dockerfile", "cmd", "entrypoint"]
+    },
+    {
+      "id": "m09-04",
+      "front": "What are Docker volumes and why do you need them?",
+      "back": "Containers are ephemeral — data inside is lost when the container stops. Volumes persist data.\n\n# Named volume (managed by Docker)\ndocker run -v mydata:/app/data myapp\n\n# Bind mount (maps host directory)\ndocker run -v $(pwd)/data:/app/data myapp\n\n# In docker-compose.yml\nservices:\n  db:\n    image: postgres:16\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n\nvolumes:\n  pgdata:  # named volume, persists across restarts\n\nUse cases:\n- Database files\n- Uploaded files\n- Log files\n- Development: mount source code for live reloading",
+      "concept_ref": "projects/modules/09-docker-deployment/02-compose-stack/README.md",
+      "difficulty": 2,
+      "tags": ["volumes", "persistence", "docker"]
+    },
+    {
+      "id": "m09-05",
+      "front": "How do you use docker-compose to run multiple services?",
+      "back": "docker-compose.yml defines multi-container applications.\n\nservices:\n  web:\n    build: .\n    ports:\n      - '8000:8000'\n    environment:\n      - DATABASE_URL=postgresql://user:pass@db:5432/mydb\n    depends_on:\n      - db\n\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_USER: user\n      POSTGRES_PASSWORD: pass\n      POSTGRES_DB: mydb\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n\nvolumes:\n  pgdata:\n\nCommands:\n  docker compose up -d      # start all services\n  docker compose down        # stop all services\n  docker compose logs web    # view logs\n  docker compose exec web bash  # shell into container",
+      "concept_ref": "projects/modules/09-docker-deployment/02-compose-stack/README.md",
+      "difficulty": 2,
+      "tags": ["docker-compose", "services", "multi-container"]
+    },
+    {
+      "id": "m09-06",
+      "front": "What is Docker layer caching and why does COPY order matter?",
+      "back": "Each Dockerfile instruction creates a layer. Docker caches layers and reuses them if nothing changed.\n\n# BAD — code change invalidates pip install cache\nCOPY . .                        # layer 1: all files\nRUN pip install -r requirements.txt  # layer 2: reinstalls every time!\n\n# GOOD — requirements cached separately\nCOPY requirements.txt .         # layer 1: just requirements\nRUN pip install -r requirements.txt  # layer 2: cached until requirements change\nCOPY . .                        # layer 3: only code changes\n\nWhen a layer changes, ALL subsequent layers are rebuilt.\nSo put things that change rarely (dependencies) BEFORE things that change often (code).",
+      "concept_ref": "projects/modules/09-docker-deployment/01-containerize-app/README.md",
+      "difficulty": 2,
+      "tags": ["layers", "caching", "optimization"]
+    },
+    {
+      "id": "m09-07",
+      "front": "What is a .dockerignore file and why use one?",
+      "back": "Like .gitignore but for Docker builds. Excludes files from the build context.\n\n# .dockerignore\n.git\n.venv\n__pycache__\n*.pyc\n.env\nnode_modules\n*.md\ntests/\n.pytest_cache\n.mypy_cache\n\nBenefits:\n- Faster builds (less data sent to Docker daemon)\n- Smaller images (no unnecessary files)\n- Security (no .env files in image)\n- No cache busting from irrelevant changes\n\nWithout .dockerignore, COPY . . copies EVERYTHING — including .git (huge), .venv (wrong OS), and .env (secrets).",
+      "concept_ref": "projects/modules/09-docker-deployment/01-containerize-app/README.md",
+      "difficulty": 1,
+      "tags": ["dockerignore", "security", "optimization"]
+    },
+    {
+      "id": "m09-08",
+      "front": "How do you pass environment variables to Docker containers?",
+      "back": "# Command line\ndocker run -e DATABASE_URL=postgres://... myapp\ndocker run --env-file .env myapp\n\n# docker-compose.yml — inline\nservices:\n  web:\n    environment:\n      - DEBUG=false\n      - DATABASE_URL=postgres://...\n\n# docker-compose.yml — from file\nservices:\n  web:\n    env_file:\n      - .env\n\n# In Python code\nimport os\ndb_url = os.environ['DATABASE_URL']\ndebug = os.environ.get('DEBUG', 'false') == 'true'\n\nRules:\n- Never put secrets in Dockerfiles (they're baked into layers)\n- Use env_file for local development\n- Use cloud secrets managers for production",
+      "concept_ref": "projects/modules/09-docker-deployment/02-compose-stack/README.md",
+      "difficulty": 2,
+      "tags": ["environment", "variables", "configuration"]
+    },
+    {
+      "id": "m09-09",
+      "front": "What are the essential Docker CLI commands?",
+      "back": "# Images\ndocker build -t myapp .          # build image from Dockerfile\ndocker images                     # list images\ndocker rmi myapp                  # remove image\n\n# Containers\ndocker run -d -p 8000:8000 myapp  # run detached with port mapping\ndocker ps                         # list running containers\ndocker ps -a                      # list all containers\ndocker stop <id>                  # stop container\ndocker rm <id>                    # remove container\n\n# Debugging\ndocker logs <id>                  # view logs\ndocker exec -it <id> bash         # shell into running container\ndocker inspect <id>               # detailed container info\n\n# Cleanup\ndocker system prune               # remove unused data\ndocker volume prune               # remove unused volumes",
+      "concept_ref": "projects/modules/09-docker-deployment/README.md",
+      "difficulty": 1,
+      "tags": ["docker", "cli", "commands"]
+    },
+    {
+      "id": "m09-10",
+      "front": "How do you set up a GitHub Actions workflow for a Python project?",
+      "back": "# .github/workflows/ci.yml\nname: CI\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: '3.12'\n      - run: pip install -r requirements.txt\n      - run: pytest --cov=myapp tests/\n      - run: ruff check .\n\nKey concepts:\n- Triggers: push, pull_request, schedule\n- Jobs run in parallel by default\n- Steps run sequentially within a job\n- Uses: reusable actions from marketplace",
+      "concept_ref": "projects/modules/09-docker-deployment/04-ci-pipeline/README.md",
+      "difficulty": 2,
+      "tags": ["github-actions", "ci", "automation"]
+    },
+    {
+      "id": "m09-11",
+      "front": "What is multi-stage Docker build and why use it?",
+      "back": "Multi-stage builds use multiple FROM statements to create smaller final images.\n\n# Stage 1: Build\nFROM python:3.12 AS builder\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --user -r requirements.txt\n\n# Stage 2: Production\nFROM python:3.12-slim\nWORKDIR /app\nCOPY --from=builder /root/.local /root/.local\nCOPY . .\nENV PATH=/root/.local/bin:$PATH\nCMD [\"python\", \"app.py\"]\n\nBenefits:\n- Final image has no build tools (smaller)\n- No compiler, header files, or pip cache\n- Typical reduction: 900MB -> 150MB\n- Fewer vulnerabilities (less software installed)",
+      "concept_ref": "projects/modules/09-docker-deployment/03-optimize-image/README.md",
+      "difficulty": 3,
+      "tags": ["multi-stage", "optimization", "build"]
+    },
+    {
+      "id": "m09-12",
+      "front": "How do Docker networks work in docker-compose?",
+      "back": "docker-compose creates a default network for all services. Services can reach each other by service name.\n\nservices:\n  web:\n    build: .\n    ports:\n      - '8000:8000'\n  db:\n    image: postgres:16\n  redis:\n    image: redis:7\n\n# In Python code, connect using service names:\n# DATABASE_URL = 'postgresql://user:pass@db:5432/mydb'\n#                                       ^^ service name\n# REDIS_URL = 'redis://redis:6379'\n#                      ^^^^^ service name\n\nCustom networks:\nservices:\n  web:\n    networks: [frontend, backend]\n  db:\n    networks: [backend]  # not accessible from frontend\n\nnetworks:\n  frontend:\n  backend:",
+      "concept_ref": "projects/modules/09-docker-deployment/02-compose-stack/README.md",
+      "difficulty": 2,
+      "tags": ["networks", "docker-compose", "services"]
+    },
+    {
+      "id": "m09-13",
+      "front": "What is a Docker health check and how do you configure it?",
+      "back": "Health checks let Docker know if your application is actually working.\n\n# In Dockerfile\nHEALTHCHECK --interval=30s --timeout=3s --retries=3 \\\n  CMD curl -f http://localhost:8000/health || exit 1\n\n# In docker-compose.yml\nservices:\n  web:\n    build: .\n    healthcheck:\n      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']\n      interval: 30s\n      timeout: 3s\n      retries: 3\n      start_period: 10s\n\n# For Python apps without curl:\nHEALTHCHECK CMD python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\"\n\nContainer states: starting -> healthy -> unhealthy\ndepends_on can wait for healthy status.",
+      "concept_ref": "projects/modules/09-docker-deployment/03-optimize-image/README.md",
+      "difficulty": 2,
+      "tags": ["healthcheck", "monitoring", "docker"]
+    },
+    {
+      "id": "m09-14",
+      "front": "How do you use depends_on correctly in docker-compose?",
+      "back": "depends_on controls startup ORDER, not readiness.\n\n# Basic — only controls order\nservices:\n  web:\n    depends_on:\n      - db\n  db:\n    image: postgres:16\n\n# db starts first, BUT web may start before db is ready!\n\n# Better — wait for health check\nservices:\n  web:\n    depends_on:\n      db:\n        condition: service_healthy\n  db:\n    image: postgres:16\n    healthcheck:\n      test: ['CMD', 'pg_isready', '-U', 'postgres']\n      interval: 5s\n      timeout: 3s\n      retries: 5\n\nAlternative: add retry logic in your application code.\nProduction apps should ALWAYS handle connection failures gracefully, not rely solely on startup order.",
+      "concept_ref": "projects/modules/09-docker-deployment/02-compose-stack/README.md",
+      "difficulty": 2,
+      "tags": ["depends-on", "docker-compose", "startup"]
+    },
+    {
+      "id": "m09-15",
+      "front": "What security best practices should you follow with Docker?",
+      "back": "1. Don't run as root\n   RUN useradd -m appuser\n   USER appuser\n\n2. Use specific image tags\n   FROM python:3.12-slim    # good\n   FROM python:latest       # bad — unpredictable\n\n3. Never put secrets in images\n   # BAD: ENV API_KEY=abc123\n   # GOOD: pass at runtime with -e or --env-file\n\n4. Scan for vulnerabilities\n   docker scout quickview myapp\n\n5. Use .dockerignore (exclude .env, .git)\n\n6. Minimize installed packages\n   RUN pip install --no-cache-dir -r requirements.txt\n\n7. Use read-only filesystem where possible\n   docker run --read-only myapp\n\n8. Set resource limits\n   docker run --memory=512m --cpus=1 myapp",
+      "concept_ref": "projects/modules/09-docker-deployment/03-optimize-image/README.md",
+      "difficulty": 2,
+      "tags": ["security", "best-practices", "docker"]
+    }
+  ]
+}

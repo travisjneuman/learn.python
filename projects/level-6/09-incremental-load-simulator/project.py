@@ -31,6 +31,10 @@ CREATE TABLE IF NOT EXISTS events (
 );
 """
 
+# WHY a separate watermark table? -- Storing the "last loaded timestamp"
+# in its own table decouples load tracking from the data itself. This
+# means the watermark survives even if the target table is rebuilt, and
+# multiple tables can each track their own watermark independently.
 WATERMARK_DDL = """\
 CREATE TABLE IF NOT EXISTS watermarks (
     table_name TEXT PRIMARY KEY,

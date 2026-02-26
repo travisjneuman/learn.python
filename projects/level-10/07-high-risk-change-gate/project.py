@@ -28,6 +28,11 @@ class RiskLevel(Enum):
     HIGH = auto()
     CRITICAL = auto()
 
+    # WHY quantify risk as a numeric score? -- "This change is risky" is
+    # subjective. A weighted score (0-100) from measurable factors (blast
+    # radius, service tier, time of day, change frequency) produces repeatable
+    # decisions. The thresholds (25/50/75) map scores to human-readable levels
+    # that determine which approval gates apply.
     @classmethod
     def from_score(cls, score: float) -> RiskLevel:
         if score < 25:

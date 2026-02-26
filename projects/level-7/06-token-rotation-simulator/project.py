@@ -38,12 +38,18 @@ class Token:
         return not self.revoked and not self.is_expired
 
 
+# WHY a TokenManager class? -- Token lifecycle (generate → validate →
+# rotate → revoke) requires mutable state: the set of active tokens,
+# the current token, and an audit trail. Encapsulating this in a class
+# keeps the state machine coherent and prevents callers from bypassing
+# the lifecycle (e.g. using a revoked token).
 class TokenManager:
     def __init__(self, ttl_seconds: float = 3600) -> None:
         self.ttl = ttl_seconds
         self._tokens: dict[str, Token] = {}
         self._current_id: str = ""
-        self._audit: list[dict] = []
+        self._audit: list[dict] = []  # WHY an audit trail? -- Security compliance
+        # requires knowing who created/rotated/revoked which token and when.
 
     def generate(self, token_id: str | None = None) -> Token:
         now = time.time()

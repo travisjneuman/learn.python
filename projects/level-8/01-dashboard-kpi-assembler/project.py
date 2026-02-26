@@ -33,6 +33,10 @@ class KPIStatus(Enum):
     RED = "red"
 
 
+# WHY threshold-based evaluation on the KPI itself? -- Embedding the
+# evaluate method on KPIDefinition means each KPI carries its own
+# alerting logic. This is the Information Expert pattern: the object
+# with the threshold data is the one that decides the status colour.
 @dataclass
 class KPIDefinition:
     """Blueprint for a single KPI: what to measure and when to alert."""

@@ -32,9 +32,10 @@ def configure_logging() -> None:
 
 # ---------- statistical helpers ----------
 
-# Percentile uses linear interpolation between the two nearest data
-# points in a sorted list.  This matches the "exclusive" method used
-# by many statistics libraries.
+# WHY hand-roll percentile instead of using statistics.quantiles? --
+# The standard library function requires Python 3.8+ and has different
+# edge-case behavior. Writing it by hand teaches the linear interpolation
+# algorithm that most statistics libraries use internally.
 
 def percentile(values: list[float], p: float) -> float:
     """Compute the p-th percentile (0-100 scale) via linear interpolation.
@@ -70,8 +71,10 @@ def standard_deviation(values: list[float]) -> float:
 def moving_average(values: list[float], window: int = 3) -> list[float]:
     """Compute a simple moving average with the given window size.
 
-    Each output element is the mean of the current element and the
-    preceding (window - 1) elements, or fewer at the start of the list.
+    WHY moving averages? -- Raw metrics are noisy (CPU jumps from 30%
+    to 90% on a single spike). A moving average smooths out transient
+    spikes so you can see the underlying trend.
+
     A window of 0 or a negative value returns an empty list.
     """
     if window <= 0 or not values:

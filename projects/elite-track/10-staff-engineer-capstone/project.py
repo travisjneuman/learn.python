@@ -5,6 +5,11 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY a staff engineer capstone? -- Staff+ engineering is about system-level
+# thinking: making decisions that affect multiple teams, balancing technical
+# debt against feature velocity, and building platforms that scale organizational
+# output. This capstone integrates all prior elite track concepts into a
+# single system design exercise.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

@@ -1,6 +1,8 @@
 # Level 5 / Project 14 - Change Detection Tool
 Home: [README](../../../README.md)
 
+**Estimated time:** 90 minutes
+
 ## Focus
 - baseline vs current delta detection
 
@@ -28,22 +30,30 @@ Change detection: modified
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--summary-only` flag that prints just the status and counts, not the full diff.
 2. Add percentage change calculation: what fraction of lines were added/removed.
 3. Support comparing entire directories (detect new, deleted, and modified files).
 4. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Compare two binary files (e.g. images) and observe what happens to `line_diff`.
 2. Compare a file against itself (both `--old` and `--new` pointing to the same path).
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Detect binary files (by checking for null bytes) and skip line-level diffing.
 2. Short-circuit when old and new paths are identical (status = "unchanged").
 3. Add tests for binary detection and same-path comparison.
 4. Re-run until output and tests are deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does `file_hash` use SHA-256 to detect whether content changed?

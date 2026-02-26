@@ -38,6 +38,10 @@ class ViolationSeverity(Enum):
     CRITICAL = "critical"
 
 
+# WHY numeric layers? -- The Dependency Rule from Clean Architecture says
+# dependencies must point inward (higher → lower layer numbers). By assigning
+# numeric layers, you can mechanically detect violations: if module A at layer 2
+# imports module B at layer 3, that's an inward dependency violation.
 @dataclass
 class DomainModule:
     """A module or package within the system."""

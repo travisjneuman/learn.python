@@ -46,6 +46,10 @@ class StepResult:
 # Command pattern — self-contained workflow steps
 # ---------------------------------------------------------------------------
 
+# WHY a Protocol instead of an ABC? -- Protocol enables structural subtyping:
+# any callable with the right signature works without inheriting from a base
+# class. This means existing functions can be used as steps without wrapping
+# them — lowering the barrier to composing complex DAG workflows.
 class StepAction(Protocol):
     """Command interface: every step must be callable and return a string."""
     def __call__(self) -> str: ...

@@ -32,10 +32,11 @@ def configure_logging() -> None:
 
 # ---------- template rendering helpers ----------
 
-# The rendering pipeline processes blocks in order:
-#   1. {{#if key}} conditional blocks (removed if falsy)
-#   2. {{#each items}} loop blocks (expanded for each item)
-#   3. {{variable}} simple substitution (leftover placeholders)
+# WHY process in this specific order (if -> each -> variables)? --
+# IF blocks must resolve first so falsy sections are removed before
+# EACH expansion (otherwise we'd expand loops inside hidden blocks).
+# Variables go last because EACH blocks may introduce new placeholders
+# like {{name}} inside loop iterations.
 
 
 def render_variables(template: str, data: dict) -> str:

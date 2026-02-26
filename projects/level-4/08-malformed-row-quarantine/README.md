@@ -1,6 +1,8 @@
 # Level 4 / Project 08 - Malformed Row Quarantine
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - reject queue and reason tracking
 
@@ -34,20 +36,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a new rule: `rule_no_duplicate_values` that rejects rows where a key field repeats a value seen in a prior row.
 2. Add a `--delimiter` CLI flag to handle TSV or pipe-delimited files.
 3. Re-run script and tests — add a parametrized test for the new rule.
 
-## Break it (required)
+## Break it (required) — Core
 1. Feed it a file with only a header and no data rows — observe the counts.
 2. Create a row with a field containing 10,000+ characters and see if `rule_max_field_length` catches it.
 3. Remove the header row entirely and observe what happens to column-count validation.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle the no-data-rows case gracefully (valid output, zero counts).
 2. Add a `--has-header` flag for header-less files.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why are validation rules written as separate functions instead of one big `if/else` block?

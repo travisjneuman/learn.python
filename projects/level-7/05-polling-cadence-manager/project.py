@@ -21,12 +21,16 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 
+# WHY adaptive polling? -- Fixed polling wastes resources during quiet periods
+# and misses changes during busy ones. Adaptive intervals use backoff (slow
+# down when idle) and speedup (accelerate when changes detected), bounded by
+# min/max to prevent both runaway polling and excessive staleness.
 @dataclass
 class PollConfig:
     min_interval: float = 1.0
     max_interval: float = 60.0
-    backoff_factor: float = 1.5
-    speedup_factor: float = 0.5
+    backoff_factor: float = 1.5    # multiply interval when no change (slow down)
+    speedup_factor: float = 0.5    # multiply interval when change found (speed up)
 
 
 @dataclass

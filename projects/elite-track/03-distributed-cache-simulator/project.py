@@ -5,6 +5,10 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY simulate distributed caching? -- Real distributed caches (Redis, Memcached)
+# introduce network latency and consistency challenges. Simulating cache behavior
+# deterministically lets learners study eviction policies, hit rates, and consistency
+# models without infrastructure setup.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

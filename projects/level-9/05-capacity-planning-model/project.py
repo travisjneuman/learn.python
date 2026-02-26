@@ -39,6 +39,11 @@ class ResourceType(Enum):
     MEMORY = "memory"
 
 
+# WHY configurable growth models? -- Different resources grow differently.
+# Storage tends to grow linearly (constant data ingest rate). User traffic
+# grows exponentially during viral growth. Infrastructure scales in steps
+# (you add servers in whole units). Using the wrong model leads to either
+# premature over-provisioning (wasted cost) or capacity shortfalls (outages).
 @dataclass
 class ResourceProfile:
     """Current and maximum capacity for a resource."""

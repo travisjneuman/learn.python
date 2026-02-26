@@ -27,6 +27,10 @@ T = TypeVar("T")
 
 # --- Domain types -------------------------------------------------------
 
+# WHY __post_init__ validation? -- Dataclasses auto-generate __init__ but
+# don't validate arguments. __post_init__ runs immediately after __init__,
+# making it the idiomatic place to enforce invariants (page >= 1) without
+# writing a manual constructor. This prevents impossible states at creation.
 @dataclass
 class PageRequest:
     """Parameters for a single page request."""

@@ -34,6 +34,11 @@ class CheckStatus(Enum):
     SKIP = "skip"
 
 
+# WHY store check_fn as a callable on the dataclass? -- Each health check
+# has different logic (HTTP ping, DB query, disk space). Storing the check
+# function alongside its config (interval, timeout, critical) keeps the
+# definition self-contained. The runner just calls check_fn() without
+# knowing what kind of check it is — the Strategy pattern in action.
 @dataclass
 class CheckDefinition:
     """Definition of a synthetic health check."""

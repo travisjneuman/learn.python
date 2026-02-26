@@ -57,6 +57,10 @@ def load_csv_data(path: Path) -> tuple[list[str], list[dict]]:
 def coerce_value(raw: str, expected_type: str) -> tuple[object, str | None]:
     """Try to coerce a string value to the expected type.
 
+    WHY coerce instead of just checking? -- CSV values are always strings.
+    To enforce "age must be an integer between 0 and 150," we need the
+    actual int so we can do numeric comparisons.
+
     Returns (coerced_value, error_message_or_None).
     """
     if expected_type == "int":
@@ -102,7 +106,9 @@ def enforce_contract(
     col_specs = contract.get("columns", {})
     violations: list[dict] = []
 
-    # Check for missing/extra columns at the schema level.
+    # WHY check columns at the schema level first? -- If the CSV is missing
+    # an entire column, per-row checks would generate misleading errors for
+    # every single row. Catching it once here is cleaner and faster.
     expected_cols = set(col_specs.keys())
     actual_cols = set(headers)
     missing_columns = sorted(expected_cols - actual_cols)

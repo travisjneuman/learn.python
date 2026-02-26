@@ -1,6 +1,8 @@
 # Level 1 / Project 14 - Basic Expense Tracker
 Home: [README](../../../README.md)
 
+**Estimated time:** 40 minutes
+
 ## Focus
 - simple ledger aggregation and reporting
 
@@ -35,20 +37,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--category` filter flag that shows only expenses in a given category.
 2. Add a monthly breakdown showing total spending per month.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a CSV row with a negative amount -- does `parse_expense()` reject it?
 2. Add a row with a missing category field -- does validation catch it?
 3. Use a file with no data rows (just headers) -- does `overall_stats()` crash on empty data?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `parse_expense()` rejects negative amounts with a clear `ValueError`.
 2. Handle the empty-expenses case in `overall_stats()` by returning zero stats.
 3. Add a test for the missing-field case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `parse_expense()` normalise categories to lowercase with `.lower()`?

@@ -1,6 +1,8 @@
 # Level 4 / Project 05 - Path Safe File Mover
 Home: [README](../../../README.md)
 
+**Estimated time:** 55 minutes
+
 ## Focus
 - safe move plans and collision prevention
 
@@ -36,20 +38,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--pattern` flag to only move files matching a glob (e.g., `*.csv`).
 2. Add a `--backup` flag that copies instead of moves, preserving the originals.
 3. Re-run script and tests — add a test for the glob filter.
 
-## Break it (required)
+## Break it (required) — Core
 1. Try to move files from a non-existent source directory — observe the error.
 2. Create a situation where a move fails mid-batch (e.g., read-only destination) and verify rollback.
 3. Run the same move twice and confirm collision handling works.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a pre-check that validates source and destination directories before planning.
 2. Ensure the move log records both successes and rollbacks clearly.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the mover use a two-phase approach (plan then execute) instead of moving immediately?

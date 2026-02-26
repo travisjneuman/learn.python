@@ -1,6 +1,8 @@
 # Level 4 / Project 03 - Robust CSV Ingestor
 Home: [README](../../../README.md)
 
+**Estimated time:** 50 minutes
+
 ## Focus
 - malformed row handling and recovery
 
@@ -42,20 +44,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. What early-stopping condition would be useful for very bad input files?
 2. Can you add a validation rule for a specific column's data type?
 3. Write a parametrized test for your new validation.
 
-## Break it (required)
+## Break it (required) — Core
 1. What happens when the CSV structure itself is unusual (no headers, weird quoting)?
 2. Try embedding tricky characters inside fields — does the parser handle them?
 3. Find an edge case that confuses the row counting logic.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Make the tool configurable for the structural issue you found.
 2. Ensure error reporting includes enough context to fix the source data.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the quarantine file prepend the original row number?

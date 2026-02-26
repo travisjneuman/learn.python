@@ -39,6 +39,11 @@ class AccessLevel(Enum):
     ADMIN = "admin"
 
 
+# WHY classification on each asset? -- GDPR/CCPA require different handling
+# based on data sensitivity. PUBLIC data can be exported freely; RESTRICTED
+# data requires encryption and audit logging. Tagging each asset with its
+# classification lets the policy engine apply rules automatically instead
+# of relying on developers to remember per-field compliance requirements.
 @dataclass
 class DataAsset:
     """A data asset subject to governance."""

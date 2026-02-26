@@ -1,6 +1,8 @@
 # Level 5 / Project 01 - Schedule Ready Script
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - non-interactive execution patterns
 
@@ -81,20 +83,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. What resilience feature would make this script more production-ready?
 2. How could the script notify someone about its results?
 3. Write a test for the feature you added.
 
-## Break it (required)
+## Break it (required) — Core
 1. Try running the script outside its intended conditions — what safeguards exist?
 2. What happens when another instance is already running?
 3. What about missing or invalid input?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Address a concurrency or stale-state issue you discovered.
 2. Add a way to override the safety checks when needed.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the script use a lock file instead of checking if another process is running?

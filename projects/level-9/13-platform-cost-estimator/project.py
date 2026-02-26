@@ -32,6 +32,11 @@ class ResourceType(Enum):
     DATABASE = "database"
 
 
+# WHY model pricing tiers? -- The same cloud resource costs dramatically
+# different amounts based on commitment: on-demand (full price, no commitment),
+# reserved (30-70% discount, 1-3 year commitment), and spot (60-90% discount,
+# can be interrupted). Cost optimization means choosing the right tier for
+# each workload's reliability requirements.
 class PricingTier(Enum):
     ON_DEMAND = "on_demand"
     RESERVED = "reserved"

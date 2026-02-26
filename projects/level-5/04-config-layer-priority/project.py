@@ -88,7 +88,11 @@ def resolve_config(
 ) -> dict:
     """Merge config layers: defaults < file < environment.
 
-    Higher-priority layers override lower ones.
+    WHY this priority order? -- This follows the twelve-factor app
+    convention: hard-coded defaults are the baseline, config files
+    override for specific deployments, and environment variables are
+    the highest priority because they can be set per-container or
+    per-process without modifying any files.
     """
     merged = dict(defaults)
     merged.update(file_config)

@@ -1,6 +1,8 @@
 # Level 5 / Project 02 - Alert Threshold Monitor
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - threshold logic and breach summaries
 
@@ -70,20 +72,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. What feature would reduce alert noise in a real monitoring system? Implement it.
 2. Can you add a finer-grained severity level?
 3. Improve the logging to capture more context per breach.
 
-## Break it (required)
+## Break it (required) — Core
 1. What happens when the configuration itself is invalid or contradictory?
 2. What if expected data is missing from the metrics input?
 3. Find the first failure and capture it.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add validation for the configuration issue you found.
 2. Handle missing data gracefully rather than crashing.
 3. Write tests for the broken cases and re-run until deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why is cooldown important in production alerting systems?

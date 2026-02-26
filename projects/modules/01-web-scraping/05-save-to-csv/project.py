@@ -24,8 +24,9 @@ DELAY_BETWEEN_REQUESTS = 1
 OUTPUT_DIR = "data"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "books.csv")
 
-# The fields we want to extract and write to CSV.
-# This list also defines the column order in the output file.
+# WHY define fields as a constant? -- DictWriter needs the field list to
+# write the header row AND to order columns consistently. Defining it once
+# as a constant prevents header-data mismatches if you add a new field.
 CSV_FIELDS = ["title", "price", "rating", "availability"]
 
 # Map CSS class names to numeric star ratings (same as project 03).

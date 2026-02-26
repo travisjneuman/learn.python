@@ -35,6 +35,10 @@ class Verdict(Enum):
     SKIP = "skip"
 
 
+# WHY frozen=True for RuleResult? -- Rule results are evidence for audits.
+# They must be immutable once produced — if a result could be mutated after
+# evaluation, the audit trail would be untrustworthy. This is the same
+# principle that makes OPA (Open Policy Agent) decisions immutable.
 @dataclass(frozen=True)
 class RuleResult:
     """Outcome of evaluating a single policy rule against a resource."""

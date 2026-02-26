@@ -21,6 +21,9 @@ import time
 
 NUM_JOBS = 20       # Total jobs the producer will create
 NUM_WORKERS = 3     # Number of concurrent workers
+# WHY a bounded queue? -- Without a max size, a fast producer can fill
+# memory before slow consumers catch up. QUEUE_SIZE=10 applies backpressure:
+# put() blocks the producer when the queue is full, naturally throttling it.
 QUEUE_SIZE = 10     # Max items in the queue at once (0 = unlimited)
 
 

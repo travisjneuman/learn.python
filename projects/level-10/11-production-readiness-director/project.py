@@ -37,6 +37,11 @@ class CheckVerdict(Enum):
     SKIP = "skip"
 
 
+# WHY three-level launch decisions? -- Binary go/no-go is too rigid.
+# CONDITIONAL_GO says "launch is acceptable with known gaps if the team
+# commits to fixing them within a deadline." This matches real-world
+# launch reviews where perfect readiness is rare but acceptable risk
+# thresholds exist.
 class LaunchDecision(Enum):
     GO = "go"
     CONDITIONAL_GO = "conditional_go"

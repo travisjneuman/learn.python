@@ -1,0 +1,126 @@
+{
+  "deck": "Module 03 — REST APIs",
+  "description": "requests library, JSON, API clients, HTTP methods, authentication, error handling",
+  "cards": [
+    {
+      "id": "m03-01",
+      "front": "What are the main HTTP methods and when do you use each?",
+      "back": "GET    — Retrieve data (read-only, safe, idempotent)\nPOST   — Create a new resource\nPUT    — Replace an entire resource (idempotent)\nPATCH  — Partially update a resource\nDELETE — Remove a resource (idempotent)\n\nIdempotent means calling it multiple times has the same effect as calling it once.\n\nGET /users         — list users\nPOST /users        — create user\nGET /users/42      — get user 42\nPUT /users/42      — replace user 42\nPATCH /users/42    — update fields of user 42\nDELETE /users/42   — delete user 42",
+      "concept_ref": "projects/modules/03-rest-apis/README.md",
+      "difficulty": 1,
+      "tags": ["http", "methods", "rest"]
+    },
+    {
+      "id": "m03-02",
+      "front": "How do you make a GET request and parse JSON with the requests library?",
+      "back": "import requests\n\nresponse = requests.get('https://api.example.com/users')\nresponse.raise_for_status()  # raises HTTPError if status >= 400\n\ndata = response.json()  # parse JSON response body\n\nfor user in data:\n    print(user['name'])\n\nresponse.json() is equivalent to json.loads(response.text) but handles encoding automatically.",
+      "concept_ref": "projects/modules/03-rest-apis/01-weather-fetcher/README.md",
+      "difficulty": 1,
+      "tags": ["requests", "json", "get"]
+    },
+    {
+      "id": "m03-03",
+      "front": "How do you send data with POST, PUT, and PATCH requests?",
+      "back": "import requests\n\n# POST — send JSON body\nresponse = requests.post(\n    'https://api.example.com/users',\n    json={'name': 'Alice', 'email': 'alice@example.com'}\n)\n\n# PUT — replace entire resource\nresponse = requests.put(\n    'https://api.example.com/users/42',\n    json={'name': 'Alice', 'email': 'new@example.com'}\n)\n\n# PATCH — partial update\nresponse = requests.patch(\n    'https://api.example.com/users/42',\n    json={'email': 'new@example.com'}\n)\n\nUsing json= auto-sets Content-Type: application/json.",
+      "concept_ref": "projects/modules/03-rest-apis/02-github-stats/README.md",
+      "difficulty": 2,
+      "tags": ["requests", "post", "put", "patch"]
+    },
+    {
+      "id": "m03-04",
+      "front": "How do you pass query parameters in a GET request?",
+      "back": "Use the params argument — never build URL strings manually.\n\nresponse = requests.get(\n    'https://api.example.com/search',\n    params={'q': 'python', 'page': 2, 'per_page': 10}\n)\n\n# Actual URL:\n# https://api.example.com/search?q=python&page=2&per_page=10\n\nparams handles URL encoding automatically:\nparams={'q': 'hello world'}  →  ?q=hello+world\n\nYou can also pass a list for repeated keys:\nparams={'tag': ['python', 'api']}  →  ?tag=python&tag=api",
+      "concept_ref": "projects/modules/03-rest-apis/01-weather-fetcher/README.md",
+      "difficulty": 1,
+      "tags": ["requests", "query-params", "url"]
+    },
+    {
+      "id": "m03-05",
+      "front": "What is an API key and how do you use one securely?",
+      "back": "An API key is a secret token that identifies your application to an API.\n\nPassing it (common patterns):\n# As query parameter\nparams={'api_key': 'abc123'}\n\n# As header\nheaders={'X-API-Key': 'abc123'}\nheaders={'Authorization': 'Bearer abc123'}\n\nSecurity rules:\n1. NEVER hardcode keys in source code\n2. Use environment variables:\n   import os\n   key = os.environ['API_KEY']\n3. Add .env to .gitignore\n4. Use python-dotenv for local development:\n   from dotenv import load_dotenv\n   load_dotenv()",
+      "concept_ref": "projects/modules/03-rest-apis/01-weather-fetcher/README.md",
+      "difficulty": 2,
+      "tags": ["api-key", "security", "environment"]
+    },
+    {
+      "id": "m03-06",
+      "front": "How do you handle errors from API responses?",
+      "back": "# Method 1: raise_for_status()\ntry:\n    response = requests.get(url)\n    response.raise_for_status()\nexcept requests.HTTPError as e:\n    print(f'HTTP error: {e}')\n\n# Method 2: check status code\nif response.status_code == 404:\n    print('Resource not found')\nelif response.status_code == 429:\n    print('Rate limited, slow down')\nelif response.ok:  # True if status < 400\n    data = response.json()\n\n# Method 3: handle connection errors\ntry:\n    response = requests.get(url, timeout=10)\nexcept requests.ConnectionError:\n    print('Cannot reach server')\nexcept requests.Timeout:\n    print('Request timed out')",
+      "concept_ref": "projects/modules/03-rest-apis/03-api-client-class/README.md",
+      "difficulty": 2,
+      "tags": ["error-handling", "http", "exceptions"]
+    },
+    {
+      "id": "m03-07",
+      "front": "What is JSON and how do you work with it in Python?",
+      "back": "JSON (JavaScript Object Notation) is the standard data format for APIs.\n\nimport json\n\n# Python dict -> JSON string\ndata = {'name': 'Alice', 'scores': [95, 88]}\njson_string = json.dumps(data, indent=2)\n\n# JSON string -> Python dict\nparsed = json.loads(json_string)\n\n# JSON file I/O\nwith open('data.json', 'w') as f:\n    json.dump(data, f, indent=2)\n\nwith open('data.json') as f:\n    data = json.load(f)\n\nMapping: dict<->object, list<->array, str<->string, None<->null, True<->true",
+      "concept_ref": "projects/modules/03-rest-apis/README.md",
+      "difficulty": 1,
+      "tags": ["json", "serialization", "data"]
+    },
+    {
+      "id": "m03-08",
+      "front": "What is a REST API and what makes it RESTful?",
+      "back": "REST = Representational State Transfer. Key principles:\n\n1. Resources identified by URLs\n   /users, /users/42, /users/42/posts\n\n2. Standard HTTP methods for actions\n   GET=read, POST=create, PUT=replace, DELETE=remove\n\n3. Stateless — each request contains all info needed\n   No session state on the server between requests\n\n4. JSON for data exchange (usually)\n   Request and response bodies are JSON\n\n5. HTTP status codes for outcomes\n   200=OK, 201=Created, 404=Not Found, 500=Server Error\n\nNot RESTful: using POST for everything, putting actions in URLs (/getUser).",
+      "concept_ref": "projects/modules/03-rest-apis/README.md",
+      "difficulty": 1,
+      "tags": ["rest", "architecture", "http"]
+    },
+    {
+      "id": "m03-09",
+      "front": "How do you use requests.Session() for multiple API calls?",
+      "back": "A Session persists settings (headers, cookies, auth) across requests.\n\nsession = requests.Session()\nsession.headers.update({\n    'Authorization': 'Bearer abc123',\n    'Accept': 'application/json'\n})\n\n# All requests share the session headers\nusers = session.get('https://api.example.com/users').json()\nposts = session.get('https://api.example.com/posts').json()\n\nBenefits:\n- Connection pooling (faster for multiple requests to same host)\n- Persistent headers and cookies\n- Cleaner code (set auth once)\n\nUse as context manager:\nwith requests.Session() as s:\n    s.get(...)",
+      "concept_ref": "projects/modules/03-rest-apis/03-api-client-class/README.md",
+      "difficulty": 2,
+      "tags": ["session", "requests", "connection-pooling"]
+    },
+    {
+      "id": "m03-10",
+      "front": "What are HTTP headers and which ones matter for APIs?",
+      "back": "Headers are key-value metadata sent with HTTP requests and responses.\n\nCommon request headers:\nContent-Type: application/json    # format of body you're sending\nAccept: application/json          # format you want back\nAuthorization: Bearer <token>     # authentication\nUser-Agent: MyApp/1.0             # identify your client\n\nCommon response headers:\nContent-Type: application/json    # format of response body\nX-RateLimit-Remaining: 58        # API calls left\nX-RateLimit-Reset: 1625000000    # when limit resets (Unix timestamp)\n\nAccess headers:\nresponse.headers['Content-Type']\nresponse.headers.get('X-RateLimit-Remaining')",
+      "concept_ref": "projects/modules/03-rest-apis/02-github-stats/README.md",
+      "difficulty": 2,
+      "tags": ["headers", "http", "api"]
+    },
+    {
+      "id": "m03-11",
+      "front": "How do you handle API rate limiting?",
+      "back": "Rate limiting restricts how many requests you can make per time period.\n\nimport time\n\nresponse = requests.get(url)\n\nif response.status_code == 429:  # Too Many Requests\n    retry_after = int(response.headers.get('Retry-After', 60))\n    time.sleep(retry_after)\n    response = requests.get(url)  # retry\n\nPreventive approach:\nremaining = int(response.headers.get('X-RateLimit-Remaining', 1))\nif remaining < 5:\n    reset = int(response.headers['X-RateLimit-Reset'])\n    wait = reset - time.time()\n    if wait > 0:\n        time.sleep(wait)\n\nAlways check API docs for rate limit details.",
+      "concept_ref": "projects/modules/03-rest-apis/02-github-stats/README.md",
+      "difficulty": 3,
+      "tags": ["rate-limiting", "429", "retry"]
+    },
+    {
+      "id": "m03-12",
+      "front": "How do you handle API pagination?",
+      "back": "APIs return data in pages. Common patterns:\n\n# Offset-based\npage = 1\nall_items = []\nwhile True:\n    resp = requests.get(url, params={'page': page, 'per_page': 50})\n    items = resp.json()\n    if not items:\n        break\n    all_items.extend(items)\n    page += 1\n\n# Link header (GitHub style)\nresp = requests.get(url)\nwhile True:\n    all_items.extend(resp.json())\n    if 'next' not in resp.links:\n        break\n    resp = requests.get(resp.links['next']['url'])\n\n# Cursor-based\nparams = {'limit': 50}\nwhile True:\n    resp = requests.get(url, params=params).json()\n    all_items.extend(resp['data'])\n    if not resp.get('next_cursor'):\n        break\n    params['cursor'] = resp['next_cursor']",
+      "concept_ref": "projects/modules/03-rest-apis/04-paginated-fetcher/README.md",
+      "difficulty": 3,
+      "tags": ["pagination", "api", "iteration"]
+    },
+    {
+      "id": "m03-13",
+      "front": "How do you build a reusable API client class?",
+      "back": "class APIClient:\n    def __init__(self, base_url, api_key):\n        self.session = requests.Session()\n        self.base_url = base_url.rstrip('/')\n        self.session.headers['Authorization'] = f'Bearer {api_key}'\n\n    def _request(self, method, path, **kwargs):\n        url = f'{self.base_url}/{path.lstrip(\"/\")}'\n        response = self.session.request(method, url, **kwargs)\n        response.raise_for_status()\n        return response.json()\n\n    def get_users(self):\n        return self._request('GET', '/users')\n\n    def create_user(self, name, email):\n        return self._request('POST', '/users',\n                             json={'name': name, 'email': email})\n\nBenefits: consistent auth, error handling, and URL building.",
+      "concept_ref": "projects/modules/03-rest-apis/03-api-client-class/README.md",
+      "difficulty": 3,
+      "tags": ["class", "client", "api"]
+    },
+    {
+      "id": "m03-14",
+      "front": "What is the difference between authentication and authorization?",
+      "back": "Authentication (AuthN): WHO are you?\n  Proving your identity (login, API key, token)\n\nAuthorization (AuthZ): WHAT can you do?\n  Your permissions (read-only, admin, etc.)\n\nCommon API auth methods:\n1. API Key — simple, sent as header or query param\n2. Basic Auth — username:password, base64-encoded\n   requests.get(url, auth=('user', 'pass'))\n3. Bearer Token — JWT or OAuth token in header\n   headers={'Authorization': 'Bearer eyJ...'}\n4. OAuth 2.0 — token obtained via authorization flow\n\nAPI keys handle both at once. OAuth separates them.",
+      "concept_ref": "projects/modules/03-rest-apis/05-rest-cli-tool/README.md",
+      "difficulty": 2,
+      "tags": ["auth", "authentication", "authorization"]
+    },
+    {
+      "id": "m03-15",
+      "front": "How do you set a timeout on API requests and why?",
+      "back": "Without a timeout, requests.get() can hang forever if the server doesn't respond.\n\n# Timeout in seconds\nresponse = requests.get(url, timeout=10)\n\n# Separate connect and read timeouts\nresponse = requests.get(url, timeout=(3, 10))\n# 3 seconds to connect, 10 seconds to read\n\ntry:\n    response = requests.get(url, timeout=5)\nexcept requests.Timeout:\n    print('Server took too long to respond')\n\nGuidelines:\n- Always set a timeout in production code\n- Connect timeout: 3-5 seconds\n- Read timeout: 10-30 seconds depending on API\n- Never use timeout=None (the default!) in production",
+      "concept_ref": "projects/modules/03-rest-apis/03-api-client-class/README.md",
+      "difficulty": 2,
+      "tags": ["timeout", "requests", "reliability"]
+    }
+  ]
+}

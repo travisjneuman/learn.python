@@ -10,6 +10,8 @@ Recall these prerequisites before diving in:
 - Can you import a function from another file? (`from mymodule import my_function`)
 - Can you use `pathlib.Path` to check if a path is a file or directory?
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - project layout and import boundaries
 
@@ -76,20 +78,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Try adding support for nested packages — what flag or argument would make sense?
 2. What other metadata could the scanner generate beyond what it already does?
 3. Add a useful metric to the report output.
 
-## Break it (required)
+## Break it (required) — Core
 1. Try pointing the scanner at something unexpected — what breaks first?
 2. Can you create a situation where imports get confused?
 3. What happens when the input is not what the tool expects?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add input validation for the most obvious failure case you found.
 2. Improve how the tool handles the import issue you discovered.
 3. Make the tool resilient to permission problems.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What makes a directory a Python package (hint: `__init__.py`)?

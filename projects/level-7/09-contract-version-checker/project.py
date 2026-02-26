@@ -30,6 +30,10 @@ class ContractField:
     required: bool = True
 
 
+# WHY versioned schema contracts? -- When an upstream API changes its
+# response shape, downstream consumers break. By declaring a versioned
+# contract, you can detect breaking changes (major bump) vs safe additions
+# (minor bump) before they reach production pipelines.
 @dataclass
 class Contract:
     """A versioned schema contract."""

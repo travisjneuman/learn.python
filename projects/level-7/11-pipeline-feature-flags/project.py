@@ -23,6 +23,10 @@ from pathlib import Path
 
 # -- Data model ----------------------------------------------------------
 
+# WHY feature flags in a data pipeline? -- Flags let operators toggle
+# pipeline stages at runtime without redeploying code. The rollout_pct
+# field enables gradual rollouts (e.g. 10% of traffic uses the new stage)
+# and the requires list enforces dependency chains (flag A needs flag B).
 @dataclass
 class Flag:
     """One feature flag."""

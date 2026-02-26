@@ -62,7 +62,6 @@ This guide ensures the plan works for learners with different cognitive styles, 
 - [Automate the Boring Stuff](https://automatetheboringstuff.com/3e/)
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](45_MASTERY_TELEMETRY_AND_REMEDIATION.md) | [Home](../README.md) | [Next →](47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md) |
-|:---|:---:|---:|
+[Next: 47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md →](./47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md)

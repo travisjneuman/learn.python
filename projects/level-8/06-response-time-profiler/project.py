@@ -35,6 +35,11 @@ class TimingRecord:
     timestamp: float = field(default_factory=time.monotonic)
 
 
+# WHY percentiles (p90, p95, p99) instead of just mean? -- Averages hide
+# tail latency. If 99% of requests take 10ms but 1% take 5000ms, the mean
+# looks fine but users in that 1% have a terrible experience. P99 reveals
+# the worst-case that real users actually hit — the metric APM tools like
+# Datadog and New Relic prioritize.
 @dataclass
 class ProfileReport:
     """Statistical summary of timings for one function."""

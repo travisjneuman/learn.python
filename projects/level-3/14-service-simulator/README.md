@@ -1,6 +1,8 @@
 # Level 3 / Project 14 - Service Simulator
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - emulate service responses and failures
 
@@ -35,20 +37,28 @@ Load test: 100 requests
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--failure-rate` flag to override the default error rate.
 2. Add exponential backoff to the `retry_request` function (wait 2^attempt ms).
 3. Add a `health` subcommand that checks if the service is "healthy" (3 consecutive 200s).
 
-## Break it (required)
+## Break it (required) — Core
 1. Set `success_rate` to 0.0 — does `retry_request` exhaust all retries?
 2. Run `load` with `--count 0` — what happens with zero requests?
 3. Create a service with `--seed` and verify results are identical each run.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add validation for rate parameters (must sum to <= 1.0).
 2. Handle the zero-requests edge case in `run_load_test`.
 3. Add a `--timeout` flag that limits total retry duration.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What HTTP status codes mean 200, 429, 500, 504?

@@ -1,0 +1,126 @@
+{
+  "deck": "Module 02 — CLI Tools",
+  "description": "click, typer, rich, argparse — building command-line applications in Python",
+  "cards": [
+    {
+      "id": "m02-01",
+      "front": "What is argparse and how do you create a basic argument parser?",
+      "back": "argparse is Python's built-in library for parsing command-line arguments.\n\nimport argparse\n\nparser = argparse.ArgumentParser(description='My tool')\nparser.add_argument('filename', help='File to process')\nparser.add_argument('--verbose', '-v', action='store_true')\n\nargs = parser.parse_args()\nprint(args.filename)   # positional arg\nprint(args.verbose)    # True if --verbose passed\n\nargparse auto-generates --help output from your definitions.",
+      "concept_ref": "projects/modules/02-cli-tools/README.md",
+      "difficulty": 1,
+      "tags": ["argparse", "cli", "basics"]
+    },
+    {
+      "id": "m02-02",
+      "front": "What is the difference between positional and optional arguments in argparse?",
+      "back": "Positional arguments are required and order-dependent:\n  parser.add_argument('filename')  # required\n\nOptional arguments start with - or -- and are not required:\n  parser.add_argument('--output', '-o', default='out.txt')\n  parser.add_argument('--verbose', action='store_true')\n\nPositional: parser expects them in order.\nOptional: can appear in any order, usually have defaults.",
+      "concept_ref": "projects/modules/02-cli-tools/README.md",
+      "difficulty": 1,
+      "tags": ["argparse", "arguments", "positional", "optional"]
+    },
+    {
+      "id": "m02-03",
+      "front": "How does the click library differ from argparse?",
+      "back": "click uses decorators instead of imperative parser building.\n\nimport click\n\n@click.command()\n@click.argument('filename')\n@click.option('--verbose', '-v', is_flag=True)\ndef process(filename, verbose):\n    click.echo(f'Processing {filename}')\n\nif __name__ == '__main__':\n    process()\n\nAdvantages over argparse:\n- Composable commands via @click.group()\n- Built-in prompting, colors, progress bars\n- Automatic help generation\n- Type conversion via click.INT, click.Path, etc.",
+      "concept_ref": "projects/modules/02-cli-tools/01-arg-echo/README.md",
+      "difficulty": 1,
+      "tags": ["click", "decorators", "cli"]
+    },
+    {
+      "id": "m02-04",
+      "front": "How do you create a command group (subcommands) with click?",
+      "back": "Use @click.group() to create a parent, and @group.command() for subcommands.\n\nimport click\n\n@click.group()\ndef cli():\n    pass\n\n@cli.command()\n@click.argument('name')\ndef greet(name):\n    click.echo(f'Hello, {name}!')\n\n@cli.command()\ndef version():\n    click.echo('v1.0.0')\n\nif __name__ == '__main__':\n    cli()\n\nUsage:\n  python app.py greet Alice\n  python app.py version",
+      "concept_ref": "projects/modules/02-cli-tools/03-todo-cli/README.md",
+      "difficulty": 2,
+      "tags": ["click", "groups", "subcommands"]
+    },
+    {
+      "id": "m02-05",
+      "front": "What is typer and how does it differ from click?",
+      "back": "typer builds on click but uses Python type hints instead of decorators.\n\nimport typer\n\napp = typer.Typer()\n\n@app.command()\ndef process(filename: str, verbose: bool = False):\n    typer.echo(f'Processing {filename}')\n\nif __name__ == '__main__':\n    app()\n\nType hints become CLI arguments automatically:\n- str, int, float -> argument types\n- bool with default False -> --flag / --no-flag\n- Optional[str] = None -> optional argument\n\ntyper requires less boilerplate than click.",
+      "concept_ref": "projects/modules/02-cli-tools/02-file-renamer/README.md",
+      "difficulty": 1,
+      "tags": ["typer", "type-hints", "cli"]
+    },
+    {
+      "id": "m02-06",
+      "front": "How do you add color and styling to terminal output with rich?",
+      "back": "from rich.console import Console\n\nconsole = Console()\n\nconsole.print('Hello', style='bold green')\nconsole.print('[red]Error:[/red] file not found')\nconsole.print('[bold blue]Title[/bold blue]')\n\nrich markup tags: [color], [bold], [italic], [underline], [strike]\nNesting: [bold red]important[/bold red]\n\nrich auto-detects terminal capabilities and falls back gracefully when colors are not supported.",
+      "concept_ref": "projects/modules/02-cli-tools/04-system-info/README.md",
+      "difficulty": 1,
+      "tags": ["rich", "colors", "terminal"]
+    },
+    {
+      "id": "m02-07",
+      "front": "How do you display a table in the terminal with rich?",
+      "back": "from rich.console import Console\nfrom rich.table import Table\n\ntable = Table(title='Users')\ntable.add_column('Name', style='cyan')\ntable.add_column('Email', style='green')\ntable.add_column('Role')\n\ntable.add_row('Alice', 'alice@example.com', 'Admin')\ntable.add_row('Bob', 'bob@example.com', 'User')\n\nconsole = Console()\nconsole.print(table)\n\nTables auto-size columns, support borders, and handle Unicode.",
+      "concept_ref": "projects/modules/02-cli-tools/04-system-info/README.md",
+      "difficulty": 2,
+      "tags": ["rich", "tables", "display"]
+    },
+    {
+      "id": "m02-08",
+      "front": "How do you show a progress bar with rich?",
+      "back": "from rich.progress import track\nimport time\n\nfor item in track(range(100), description='Processing...'):\n    time.sleep(0.01)  # simulate work\n\nFor more control:\nfrom rich.progress import Progress\n\nwith Progress() as progress:\n    task = progress.add_task('Downloading', total=1000)\n    while not progress.finished:\n        progress.update(task, advance=10)\n        time.sleep(0.01)\n\nProgress bars update smoothly and show ETA automatically.",
+      "concept_ref": "projects/modules/02-cli-tools/04-system-info/README.md",
+      "difficulty": 2,
+      "tags": ["rich", "progress", "terminal"]
+    },
+    {
+      "id": "m02-09",
+      "front": "How do you validate file paths as CLI arguments?",
+      "back": "click:\n@click.argument('path', type=click.Path(exists=True))\n\nclick.Path options:\n  exists=True     # must exist\n  file_okay=True  # can be a file\n  dir_okay=False  # cannot be a directory\n  readable=True   # must be readable\n\ntyper:\ndef main(path: Path = typer.Argument(..., exists=True)):\n\nargparse:\nparser.add_argument('path', type=pathlib.Path)\n# then validate manually: if not args.path.exists(): ...\n\nclick and typer validate before your code runs.",
+      "concept_ref": "projects/modules/02-cli-tools/02-file-renamer/README.md",
+      "difficulty": 2,
+      "tags": ["click", "typer", "validation", "paths"]
+    },
+    {
+      "id": "m02-10",
+      "front": "What is sys.exit() and when should you use it in a CLI tool?",
+      "back": "sys.exit(code) terminates the program with an exit code.\n\nimport sys\n\nsys.exit(0)  # success\nsys.exit(1)  # general error\nsys.exit(2)  # usage error (bad arguments)\n\nConvention:\n  0 = success\n  1 = runtime error\n  2 = invalid usage\n\nUseful for shell scripting:\n  python check.py && echo 'OK' || echo 'FAILED'\n\nIn click/typer, raise click.Abort() or typer.Exit(code=1) instead.",
+      "concept_ref": "projects/modules/02-cli-tools/README.md",
+      "difficulty": 2,
+      "tags": ["sys-exit", "exit-codes", "cli"]
+    },
+    {
+      "id": "m02-11",
+      "front": "How do you prompt a user for input in click?",
+      "back": "# Simple text prompt\nname = click.prompt('Enter your name')\n\n# With default value\nport = click.prompt('Port', default=8080, type=int)\n\n# Password (hidden input)\npassword = click.prompt('Password', hide_input=True)\n\n# Confirmation prompt\nif click.confirm('Delete all files?'):\n    delete_files()\n\n# As a decorator\n@click.option('--name', prompt='Your name')\ndef greet(name):\n    click.echo(f'Hello {name}')\n\nPrompts are skipped when the value is passed via command-line argument.",
+      "concept_ref": "projects/modules/02-cli-tools/03-todo-cli/README.md",
+      "difficulty": 2,
+      "tags": ["click", "prompts", "input"]
+    },
+    {
+      "id": "m02-12",
+      "front": "How do you create a CLI tool that can be installed with pip?",
+      "back": "In pyproject.toml, define a console script entry point:\n\n[project.scripts]\nmytool = \"mypackage.cli:main\"\n\nThis means: when the user types 'mytool' in the terminal, run the main() function from mypackage/cli.py.\n\nAfter pip install:\n  $ mytool --help\n  Usage: mytool [OPTIONS]\n\nDuring development:\n  pip install -e .\n\nThe -e flag installs in editable mode so changes take effect immediately.",
+      "concept_ref": "projects/modules/02-cli-tools/05-mini-grep/README.md",
+      "difficulty": 3,
+      "tags": ["packaging", "entry-points", "pip"]
+    },
+    {
+      "id": "m02-13",
+      "front": "How do you handle multiple values for a single option in click?",
+      "back": "@click.option('--include', '-i', multiple=True)\ndef search(include):\n    for pattern in include:\n        print(f'Including: {pattern}')\n\nUsage:\n  python tool.py -i '*.py' -i '*.txt'\n  # include = ('*.py', '*.txt')\n\nFor a fixed number of values, use nargs:\n@click.option('--point', nargs=2, type=float)\ndef plot(point):\n    x, y = point\n\nUsage:\n  python tool.py --point 3.5 7.2",
+      "concept_ref": "projects/modules/02-cli-tools/05-mini-grep/README.md",
+      "difficulty": 2,
+      "tags": ["click", "multiple", "nargs"]
+    },
+    {
+      "id": "m02-14",
+      "front": "How do you test a CLI application?",
+      "back": "click provides CliRunner for testing:\n\nfrom click.testing import CliRunner\nfrom myapp import cli\n\ndef test_greet():\n    runner = CliRunner()\n    result = runner.invoke(cli, ['greet', 'Alice'])\n    assert result.exit_code == 0\n    assert 'Hello, Alice' in result.output\n\ndef test_missing_arg():\n    runner = CliRunner()\n    result = runner.invoke(cli, ['greet'])\n    assert result.exit_code != 0\n\ntyper has similar testing via typer.testing.CliRunner.\nCliRunner captures stdout, stderr, and exit codes.",
+      "concept_ref": "projects/modules/02-cli-tools/03-todo-cli/README.md",
+      "difficulty": 2,
+      "tags": ["testing", "click", "cli-runner"]
+    },
+    {
+      "id": "m02-15",
+      "front": "What is __main__.py and why is it used in CLI packages?",
+      "back": "__main__.py lets you run a package as a script with python -m.\n\nmypackage/\n    __init__.py\n    __main__.py  # entry point\n    cli.py\n\n# __main__.py\nfrom mypackage.cli import main\nmain()\n\nNow you can run:\n  python -m mypackage --help\n\nThis is useful because:\n- Works without pip install\n- Handles import paths correctly\n- Standard Python convention\n- Many tools use it: python -m pytest, python -m venv",
+      "concept_ref": "projects/modules/02-cli-tools/README.md",
+      "difficulty": 2,
+      "tags": ["__main__", "packages", "cli"]
+    }
+  ]
+}

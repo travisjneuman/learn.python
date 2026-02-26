@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 4 — Python in the Browser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 200px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner" role="status" aria-label="Loading Python runtime"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container" role="main">
+  <div class="header">
+    <h1 id="exerciseTitle">Exercise</h1>
+    <nav class="nav-links" role="navigation" aria-label="Exercise navigation">
+      <a href="#" id="prevLink">&larr; Prev</a>
+      <a href="index.html">All Exercises</a>
+      <a href="#" id="nextLink">Next &rarr;</a>
+    </nav>
+  </div>
+
+  <div class="description" id="description"></div>
+
+  <div class="editor-wrapper" aria-label="Python code editor">
+    <textarea id="editor" aria-label="Python code editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output" role="log" aria-live="polite">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var EXERCISES = {
+  "1": {
+    title: "Exercise 1 — Schema Validator",
+    description: "Write a function validate_schema(data, schema) that checks whether a dictionary\nhas the expected keys with the expected types.\n\nschema is a dict of {key_name: expected_type} where expected_type\nis a Python type like str, int, float, bool, list, dict.\n\nReturn {\"valid\": True, \"errors\": []} if all keys exist with correct types.\nReturn {\"valid\": False, \"errors\": [\"...\", ...]} listing each problem:\n  - Missing keys: \"missing key: <key>\"\n  - Wrong types: \"wrong type for <key>: expected <type>, got <type>\"\n\nExamples:\n  schema = {\"name\": str, \"age\": int}\n  validate_schema({\"name\": \"Alice\", \"age\": 30}, schema)\n  -> {\"valid\": True, \"errors\": []}\n\n  validate_schema({\"name\": \"Alice\"}, schema)\n  -> {\"valid\": False, \"errors\": [\"missing key: age\"]}",
+    code: 'def validate_schema(data, schema):\n    """Validate a dict against a type schema."""\n    # Your code here\n    pass\n\n\n# Try it out:\nschema = {"name": str, "age": int, "active": bool}\n\nprint(validate_schema({"name": "Alice", "age": 30, "active": True}, schema))\nprint(validate_schema({"name": "Alice"}, schema))\nprint(validate_schema({"name": 123, "age": "thirty", "active": True}, schema))\n',
+    check: 'schema = {"name": str, "age": int}\nr1 = validate_schema({"name": "Alice", "age": 30}, schema)\nassert r1["valid"] == True, f"Should be valid, got {r1}"\nassert r1["errors"] == []\n\nr2 = validate_schema({"name": "Alice"}, schema)\nassert r2["valid"] == False\nassert "missing key: age" in r2["errors"]\n\nr3 = validate_schema({"name": 123, "age": "thirty"}, schema)\nassert r3["valid"] == False\nassert len(r3["errors"]) == 2\n\nr4 = validate_schema({}, {"x": str})\nassert r4["valid"] == False\nassert "missing key: x" in r4["errors"]\nprint("All tests passed!")\n'
+  },
+  "2": {
+    title: "Exercise 2 — Data Transformer",
+    description: "Write a function transform(records, operations) that applies a pipeline\nof operations to a list of dicts.\n\noperations is a list of dicts, each with a \"type\" key:\n  {\"type\": \"filter\", \"key\": \"age\", \"min\": 18}\n    -> keep only records where record[key] >= min\n  {\"type\": \"map\", \"key\": \"name\", \"func\": \"upper\"}\n    -> apply str.upper() to the value at key\n  {\"type\": \"sort\", \"key\": \"age\", \"reverse\": False}\n    -> sort records by key\n\nApply operations in order. Return the transformed list.\n\nExample:\n  records = [{\"name\": \"alice\", \"age\": 25}, {\"name\": \"bob\", \"age\": 17}]\n  ops = [{\"type\": \"filter\", \"key\": \"age\", \"min\": 18}]\n  transform(records, ops) -> [{\"name\": \"alice\", \"age\": 25}]",
+    code: 'def transform(records, operations):\n    """Apply a pipeline of operations to records."""\n    # Your code here\n    pass\n\n\n# Try it out:\nrecords = [\n    {"name": "charlie", "age": 30},\n    {"name": "alice", "age": 25},\n    {"name": "bob", "age": 17},\n    {"name": "diana", "age": 22},\n]\n\nops = [\n    {"type": "filter", "key": "age", "min": 18},\n    {"type": "map", "key": "name", "func": "upper"},\n    {"type": "sort", "key": "age", "reverse": False},\n]\n\nresult = transform(records, ops)\nfor r in result:\n    print(r)\n',
+    check: 'data = [\n    {"name": "alice", "age": 25},\n    {"name": "bob", "age": 17},\n    {"name": "charlie", "age": 30},\n]\n\n# Filter only\nr1 = transform(data, [{"type": "filter", "key": "age", "min": 18}])\nassert len(r1) == 2, f"Expected 2 records, got {len(r1)}"\nassert all(r["age"] >= 18 for r in r1)\n\n# Map only\nr2 = transform(data, [{"type": "map", "key": "name", "func": "upper"}])\nassert r2[0]["name"] == "ALICE", f"Expected ALICE, got {r2[0][\'name\']}"\n\n# Sort only\nr3 = transform(data, [{"type": "sort", "key": "age", "reverse": True}])\nassert r3[0]["age"] == 30\nassert r3[-1]["age"] == 17\n\n# Empty operations\nassert len(transform(data, [])) == 3\n\n# Empty records\nassert transform([], [{"type": "filter", "key": "age", "min": 0}]) == []\nprint("All tests passed!")\n'
+  },
+  "3": {
+    title: "Exercise 3 — JSON Parser",
+    description: "Write a function extract_nested(data, path) that extracts a value\nfrom a nested dict/list structure using a dot-separated path.\n\nPath segments that are digits should be treated as list indices.\n\nReturn the value if found, or a default sentinel if not found.\n\nAlso write safe_extract(data, path, default=None) that wraps\nextract_nested and returns default on any error.\n\nExamples:\n  data = {\"user\": {\"name\": \"Alice\", \"scores\": [90, 85, 92]}}\n  extract_nested(data, \"user.name\")      -> \"Alice\"\n  extract_nested(data, \"user.scores.1\")  -> 85\n  safe_extract(data, \"user.missing\", default=\"N/A\") -> \"N/A\"",
+    code: 'def extract_nested(data, path):\n    """Extract a value from nested data using dot-separated path."""\n    # Your code here\n    pass\n\ndef safe_extract(data, path, default=None):\n    """Safely extract nested data, returning default on error."""\n    # Your code here\n    pass\n\n\n# Try it out:\ndata = {\n    "user": {\n        "name": "Alice",\n        "address": {"city": "Denver", "state": "CO"},\n        "scores": [90, 85, 92],\n    },\n    "active": True,\n}\n\nprint(extract_nested(data, "user.name"))\nprint(extract_nested(data, "user.address.city"))\nprint(extract_nested(data, "user.scores.2"))\nprint(safe_extract(data, "user.missing", "NOT FOUND"))\nprint(safe_extract(data, "user.scores.10", -1))\n',
+    check: 'data = {"a": {"b": {"c": 42}}, "items": [10, 20, 30]}\nassert extract_nested(data, "a.b.c") == 42, f"Got {extract_nested(data, \'a.b.c\')}"\nassert extract_nested(data, "items.0") == 10\nassert extract_nested(data, "items.2") == 30\n\nassert safe_extract(data, "a.b.c") == 42\nassert safe_extract(data, "a.x.y", "fallback") == "fallback"\nassert safe_extract(data, "items.99", -1) == -1\nassert safe_extract(data, "", "empty") == "empty"\nassert safe_extract({}, "anything", "nope") == "nope"\nprint("All tests passed!")\n'
+  },
+  "4": {
+    title: "Exercise 4 — Data Pipeline Builder",
+    description: "Write a function pipeline(data, *steps) that passes data through a series\nof transformation functions.\n\nEach step is a function that takes data and returns transformed data.\nThe output of each step becomes the input to the next.\n\nAlso write these helper functions to use as pipeline steps:\n  - load_csv(text) — parse CSV text into list of dicts (first row = headers)\n  - clean_whitespace(records) — strip whitespace from all string values\n  - convert_numbers(records) — convert string values that look numeric to int/float\n  - filter_complete(records) — remove records with any None or empty string values\n\nExample:\n  csv = \"name,age\\n Alice ,30\\nBob,\\n Charlie,25\"\n  result = pipeline(csv, load_csv, clean_whitespace, convert_numbers, filter_complete)\n  # -> [{\"name\": \"Alice\", \"age\": 30}, {\"name\": \"Charlie\", \"age\": 25}]",
+    code: 'def pipeline(data, *steps):\n    """Pass data through a series of transformation steps."""\n    # Your code here\n    pass\n\ndef load_csv(text):\n    """Parse CSV text into a list of dicts."""\n    # Your code here\n    pass\n\ndef clean_whitespace(records):\n    """Strip whitespace from all string values in records."""\n    # Your code here\n    pass\n\ndef convert_numbers(records):\n    """Convert numeric string values to int or float."""\n    # Your code here\n    pass\n\ndef filter_complete(records):\n    """Remove records that have None or empty string values."""\n    # Your code here\n    pass\n\n\n# Try it out:\ncsv_data = """name,age,score\n Alice ,30,95.5\nBob,,88\n Charlie ,25,\n Diana ,28,92.0"""\n\nresult = pipeline(csv_data, load_csv, clean_whitespace, convert_numbers, filter_complete)\nfor r in result:\n    print(r)\n',
+    check: 'csv1 = "name,age\\nAlice,30\\nBob,25"\nr1 = pipeline(csv1, load_csv)\nassert len(r1) == 2\nassert r1[0]["name"] == "Alice"\n\nr2 = pipeline([{"x": " hi "}], clean_whitespace)\nassert r2[0]["x"] == "hi"\n\nr3 = pipeline([{"a": "42", "b": "3.14", "c": "text"}], convert_numbers)\nassert r3[0]["a"] == 42\nassert r3[0]["b"] == 3.14\nassert r3[0]["c"] == "text"\n\nr4 = pipeline([{"a": "ok"}, {"a": ""}, {"a": "yes"}], filter_complete)\nassert len(r4) == 2\n\ncsv2 = "name,age\\n Alice ,30\\nBob,\\n Charlie ,25"\nfull = pipeline(csv2, load_csv, clean_whitespace, convert_numbers, filter_complete)\nassert len(full) == 2\nassert full[0]["name"] == "Alice"\nassert full[0]["age"] == 30\nassert full[1]["name"] == "Charlie"\nprint("All tests passed!")\n'
+  },
+  "5": {
+    title: "Exercise 5 — Schema Builder",
+    description: "Write a function infer_schema(records) that analyzes a list of dicts\nand returns a schema describing the data.\n\nThe schema should be a dict where each key maps to a dict:\n  {\n    \"type\": <most common Python type name as string>,\n    \"nullable\": <True if any value is None>,\n    \"unique_count\": <number of distinct non-None values>\n  }\n\nAlso write validate_records(records, schema) that checks each record\nagainst a schema (from infer_schema or manually created).\nReturn a list of error strings, or empty list if all valid.\n\nErrors: \"row <i>: <key> expected <type>, got <actual_type>\"\n(only check type, skip None values)\n\nExample:\n  records = [{\"name\": \"Alice\", \"age\": 30}, {\"name\": \"Bob\", \"age\": None}]\n  infer_schema(records)\n  -> {\"name\": {\"type\": \"str\", \"nullable\": False, \"unique_count\": 2},\n      \"age\": {\"type\": \"int\", \"nullable\": True, \"unique_count\": 1}}",
+    code: 'def infer_schema(records):\n    """Infer a schema from a list of record dicts."""\n    # Your code here\n    pass\n\ndef validate_records(records, schema):\n    """Validate records against a schema. Return list of error strings."""\n    # Your code here\n    pass\n\n\n# Try it out:\nrecords = [\n    {"name": "Alice", "age": 30, "score": 95.5},\n    {"name": "Bob", "age": 25, "score": 88.0},\n    {"name": "Charlie", "age": None, "score": 92.0},\n]\n\nschema = infer_schema(records)\nfor key, info in schema.items():\n    print(f"  {key}: {info}")\n\nprint()\nbad_records = [\n    {"name": "Alice", "age": 30, "score": 95.5},\n    {"name": 123, "age": "thirty", "score": 88.0},\n]\nerrors = validate_records(bad_records, schema)\nfor e in errors:\n    print(f"  ERROR: {e}")\n',
+    check: 'records = [\n    {"name": "Alice", "age": 30},\n    {"name": "Bob", "age": None},\n]\ns = infer_schema(records)\nassert s["name"]["type"] == "str"\nassert s["name"]["nullable"] == False\nassert s["name"]["unique_count"] == 2\nassert s["age"]["type"] == "int"\nassert s["age"]["nullable"] == True\nassert s["age"]["unique_count"] == 1\n\nerrors = validate_records(\n    [{"name": "Alice", "age": 30}, {"name": 123, "age": "x"}],\n    s\n)\nassert len(errors) == 2, f"Expected 2 errors, got {len(errors)}: {errors}"\nassert "row 1" in errors[0] or "row 1" in errors[1]\n\nassert validate_records([{"name": "OK", "age": None}], s) == []\nprint("All tests passed!")\n'
+  }
+};
+
+var params = new URLSearchParams(window.location.search);
+var exNum = params.get('ex') || window.location.hash.replace('#exercise-', '') || '1';
+var exercise = EXERCISES[exNum];
+
+document.getElementById('exerciseTitle').textContent = exercise ? exercise.title : 'Not Found';
+document.getElementById('description').textContent = exercise ? exercise.description : 'Exercise not found.';
+document.title = exercise ? exercise.title + ' - Level 4 - Python in the Browser' : 'Not Found';
+
+var exNums = Object.keys(EXERCISES);
+var currentIdx = exNums.indexOf(exNum);
+var prevLink = document.getElementById('prevLink');
+var nextLink = document.getElementById('nextLink');
+if (currentIdx > 0) { prevLink.href = 'level-4.html?ex=' + exNums[currentIdx - 1]; }
+else { prevLink.style.visibility = 'hidden'; }
+if (currentIdx < exNums.length - 1) { nextLink.href = 'level-4.html?ex=' + exNums[currentIdx + 1]; }
+else { nextLink.style.visibility = 'hidden'; }
+
+var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'python', theme: 'dracula', lineNumbers: true,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+  extraKeys: {
+    'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+    'Ctrl-Enter': function() { runCode(); },
+    'Cmd-Enter': function() { runCode(); }
+  }
+});
+var originalCode = exercise ? exercise.code : '';
+
+var storageKey = 'learn-python-l4-ex-' + exNum;
+var savedCode = localStorage.getItem(storageKey);
+if (savedCode !== null) { cmEditor.setValue(savedCode); }
+else if (exercise) { cmEditor.setValue(exercise.code); }
+
+var saveTimer = null;
+cmEditor.on('change', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(storageKey, cmEditor.getValue());
+  }, 500);
+});
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    var needsInput = code.indexOf('input(') !== -1;
+    if (needsInput) {
+      pyodideInstance.globals.set('_js_prompt', function(promptText) {
+        return prompt(promptText || 'Enter value:') || '';
+      });
+      pyodideInstance.runPython(
+        'import builtins\n_orig_input = builtins.input\n' +
+        'def _patched_input(prompt_text=""):\n' +
+        '    sys.stdout.write(str(prompt_text))\n' +
+        '    val = _js_prompt(str(prompt_text))\n' +
+        '    if hasattr(val, "to_py"): val = str(val)\n' +
+        '    sys.stdout.write(str(val) + "\\n")\n' +
+        '    return str(val)\n' +
+        'builtins.input = _patched_input\n'
+      );
+    }
+
+    pyodideInstance.runPython(code);
+
+    if (needsInput) {
+      pyodideInstance.runPython('builtins.input = _orig_input\n');
+    }
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkCode() {
+  if (!exercise || !exercise.check) return;
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + exercise.check;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkCode);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

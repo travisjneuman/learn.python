@@ -25,8 +25,10 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 logger = logging.getLogger(__name__)
 
 
-# --- Connected Clients ---
-# Each client is stored as {websocket: username}
+# WHY a global dict for connected clients? -- WebSocket connections are
+# long-lived (unlike HTTP requests that open/close). We need to track who
+# is connected so we can broadcast messages to everyone. The dict maps
+# websocket objects to usernames for O(1) lookup during send operations.
 clients: dict = {}
 
 

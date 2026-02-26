@@ -22,6 +22,12 @@ from typing import Any
 # Domain types
 # ---------------------------------------------------------------------------
 
+# WHY five phases instead of just "old → new"? -- The expand-migrate-contract
+# pattern ensures zero downtime. EXPANDING adds new schema alongside old
+# (both work). MIGRATING backfills data. CONTRACTING removes old schema.
+# At every phase, the system is fully functional — unlike "stop the world"
+# migrations. ROLLED_BACK exists because any phase can fail and must be
+# reversible without data loss.
 class MigrationPhase(Enum):
     PENDING = auto()
     EXPANDING = auto()

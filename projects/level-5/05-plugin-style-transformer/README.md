@@ -1,6 +1,8 @@
 # Level 5 / Project 05 - Plugin Style Transformer
 Home: [README](../../../README.md)
 
+**Estimated time:** 70 minutes
+
 ## Focus
 - extensible transform dispatch
 
@@ -28,22 +30,30 @@ Applied 3 plugins to 4 records
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Write a new plugin class that reverses string values and register it in the registry.
 2. Add a `--list-plugins` flag that prints all registered plugin names and exits.
 3. Add execution order tracking so each record shows which plugins were applied.
 4. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Request a plugin name that does not exist in the registry (e.g. `--plugins nonexistent`).
 2. Pass an input file where a record is missing the fields your plugins expect.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Raise a clear error listing available plugins when a requested one is not found.
 2. Make plugins skip fields that are missing rather than crashing.
 3. Add tests for unknown plugin names and missing fields.
 4. Re-run until output and tests are deterministic.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. How does the plugin registry pattern decouple new transforms from the core pipeline?

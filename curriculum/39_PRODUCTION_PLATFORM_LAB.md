@@ -32,7 +32,6 @@ Build a reusable platform skeleton that mirrors real production constraints.
 ## Optional Resources
 - [Real Python](https://realpython.com/tutorials/python/)
 
----
+## Next
 
-| [← Prev](38_SYSTEM_DESIGN_AND_RFCS.md) | [Home](../README.md) | [Next →](40_SECURITY_COMPLIANCE_HARDENING.md) |
-|:---|:---:|---:|
+[Next: 40_SECURITY_COMPLIANCE_HARDENING.md →](./40_SECURITY_COMPLIANCE_HARDENING.md)

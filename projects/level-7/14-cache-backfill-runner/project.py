@@ -43,6 +43,10 @@ class CacheStats:
 
 # -- Core logic ----------------------------------------------------------
 
+# WHY automatic backfill? -- When cache miss rate exceeds a threshold, it
+# means most requests are hitting the slow source anyway. Proactively loading
+# a batch of source data into cache reduces future misses. The threshold
+# prevents premature backfills during cold-start (when misses are expected).
 class CacheWithBackfill:
     """Simple cache that auto-backfills from a source when miss rate is high."""
 

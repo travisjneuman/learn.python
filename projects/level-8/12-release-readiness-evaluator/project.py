@@ -40,6 +40,11 @@ class CriterionCategory(Enum):
     INFRASTRUCTURE = "infrastructure"
 
 
+# WHY weighted scoring with a required flag? -- Not all release gates are
+# equal: 80% test coverage might be acceptable, but a critical security
+# vulnerability is always a blocker. Weights produce a nuanced score, while
+# required=True provides hard veto power — matching how CI/CD release gates
+# work in practice (GitHub required checks + optional quality scores).
 @dataclass
 class Criterion:
     """A single readiness criterion to evaluate."""

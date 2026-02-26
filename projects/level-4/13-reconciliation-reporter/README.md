@@ -1,6 +1,8 @@
 # Level 4 / Project 13 - Reconciliation Reporter
 Home: [README](../../../README.md)
 
+**Estimated time:** 70 minutes
+
 ## Focus
 - source vs target comparison outputs
 
@@ -35,20 +37,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--tolerance` flag for numeric fields (e.g., salary difference within 5% is still "matched").
 2. Add a `--format` flag to output the report as CSV instead of JSON.
 3. Re-run script and tests — add a test for numeric tolerance.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a key field that has duplicate values in one file — observe the "last row wins" behavior.
 2. Feed two CSVs with completely different headers and see what happens.
 3. Use an empty CSV (headers only) as one of the inputs.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle duplicate keys by reporting them as a warning instead of silently overwriting.
 2. Report header differences as part of the reconciliation.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `reconcile` use set operations (union, intersection, difference)?

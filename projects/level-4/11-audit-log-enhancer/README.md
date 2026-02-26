@@ -1,6 +1,8 @@
 # Level 4 / Project 11 - Audit Log Enhancer
 Home: [README](../../../README.md)
 
+**Estimated time:** 65 minutes
+
 ## Focus
 - rich event logging for traceability
 
@@ -32,20 +34,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--severity-filter` flag to only output entries at or above a given severity.
 2. Add a `duration_category` field: "fast" (<100ms), "normal" (<1000ms), "slow" (>=1000ms).
 3. Re-run script and tests — add a parametrized test for duration categories.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a log entry with malformed JSON and confirm it is skipped gracefully.
 2. Add entries with no `session_id` and observe how correlation IDs are assigned.
 3. Use timestamps in different timezone formats and see if duration calculation handles them.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle timezone-naive timestamps by assuming UTC.
 2. Add a count of skipped malformed lines to the summary.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is a correlation ID and why is it useful for debugging?

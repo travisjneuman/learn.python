@@ -1,0 +1,126 @@
+{
+  "deck": "Module 07 — Data Analysis",
+  "description": "pandas, matplotlib, DataFrames, Series, plotting, data cleaning, aggregation",
+  "cards": [
+    {
+      "id": "m07-01",
+      "front": "What is a pandas DataFrame and how do you create one?",
+      "back": "A DataFrame is a 2D labeled data structure — like a spreadsheet or SQL table.\n\nimport pandas as pd\n\n# From a dict of lists\ndf = pd.DataFrame({\n    'name': ['Alice', 'Bob', 'Charlie'],\n    'age': [30, 25, 35],\n    'score': [95, 88, 72]\n})\n\n# From a list of dicts\ndf = pd.DataFrame([\n    {'name': 'Alice', 'age': 30},\n    {'name': 'Bob', 'age': 25},\n])\n\n# From a CSV file\ndf = pd.read_csv('data.csv')\n\ndf.shape    # (3, 3) — rows, columns\ndf.columns  # Index(['name', 'age', 'score'])\ndf.dtypes   # data types per column",
+      "concept_ref": "projects/modules/07-data-analysis/README.md",
+      "difficulty": 1,
+      "tags": ["pandas", "dataframe", "basics"]
+    },
+    {
+      "id": "m07-02",
+      "front": "How do you select columns and rows from a DataFrame?",
+      "back": "# Select a single column (returns Series)\ndf['name']\ndf.name         # same, but fails if name matches a method\n\n# Select multiple columns (returns DataFrame)\ndf[['name', 'age']]\n\n# Select rows by position\ndf.iloc[0]       # first row\ndf.iloc[0:3]     # first 3 rows\ndf.iloc[0, 1]    # first row, second column\n\n# Select rows by label\ndf.loc[0]        # row with index 0\ndf.loc[0:2, 'name':'age']  # inclusive range\n\n# Boolean indexing\ndf[df['age'] > 25]                    # rows where age > 25\ndf[(df['age'] > 25) & (df['score'] > 80)]  # multiple conditions\n\nUse .loc for labels, .iloc for integer positions.",
+      "concept_ref": "projects/modules/07-data-analysis/01-csv-explorer/README.md",
+      "difficulty": 1,
+      "tags": ["pandas", "selection", "indexing"]
+    },
+    {
+      "id": "m07-03",
+      "front": "What is a pandas Series and how does it differ from a DataFrame?",
+      "back": "A Series is a 1D labeled array. A DataFrame is a collection of Series (one per column).\n\nimport pandas as pd\n\n# Create a Series\ns = pd.Series([10, 20, 30], index=['a', 'b', 'c'], name='values')\n\ns['a']       # 10\ns.mean()     # 20.0\ns > 15       # Series([False, True, True])\n\n# A column of a DataFrame is a Series\nages = df['age']  # Series\ntype(ages)        # <class 'pandas.core.series.Series'>\n\n# Series supports vectorized operations\nages * 2          # multiply every value by 2\nages + 1          # add 1 to every value\n\nThink: Series = single column, DataFrame = table of columns.",
+      "concept_ref": "projects/modules/07-data-analysis/01-csv-explorer/README.md",
+      "difficulty": 1,
+      "tags": ["pandas", "series", "basics"]
+    },
+    {
+      "id": "m07-04",
+      "front": "How do you handle missing data in pandas?",
+      "back": "Missing values are represented as NaN (Not a Number) or None.\n\n# Detect missing\ndf.isna()           # DataFrame of True/False\ndf['age'].isna()    # Series of True/False\ndf.isna().sum()     # count missing per column\n\n# Drop missing\ndf.dropna()                    # drop rows with any NaN\ndf.dropna(subset=['age'])      # only check 'age' column\ndf.dropna(thresh=2)            # keep rows with at least 2 non-NaN\n\n# Fill missing\ndf.fillna(0)                   # replace NaN with 0\ndf['age'].fillna(df['age'].mean())  # fill with mean\ndf.fillna(method='ffill')      # forward-fill from previous row\n\nAlways check for missing data before analysis: df.info()",
+      "concept_ref": "projects/modules/07-data-analysis/02-data-cleaner/README.md",
+      "difficulty": 2,
+      "tags": ["pandas", "missing-data", "nan"]
+    },
+    {
+      "id": "m07-05",
+      "front": "How do you group and aggregate data with groupby()?",
+      "back": "groupby() splits data into groups, applies a function, and combines results.\n\n# Group by one column\ndf.groupby('department')['salary'].mean()\n\n# Group by multiple columns\ndf.groupby(['department', 'role'])['salary'].sum()\n\n# Multiple aggregations\ndf.groupby('department').agg({\n    'salary': ['mean', 'max', 'min'],\n    'age': 'mean',\n    'name': 'count'\n})\n\n# Named aggregations (cleaner output)\ndf.groupby('department').agg(\n    avg_salary=('salary', 'mean'),\n    headcount=('name', 'count'),\n    oldest=('age', 'max')\n)\n\nThink: SQL GROUP BY + aggregate functions.",
+      "concept_ref": "projects/modules/07-data-analysis/03-sales-report/README.md",
+      "difficulty": 2,
+      "tags": ["pandas", "groupby", "aggregation"]
+    },
+    {
+      "id": "m07-06",
+      "front": "How do you create a basic plot with matplotlib?",
+      "back": "import matplotlib.pyplot as plt\n\n# Line plot\nplt.plot([1, 2, 3, 4], [10, 20, 25, 30])\nplt.xlabel('X Axis')\nplt.ylabel('Y Axis')\nplt.title('My Plot')\nplt.savefig('plot.png')  # save to file\nplt.show()               # display\n\n# From pandas (even easier)\ndf['score'].plot(kind='line')\ndf.plot(x='date', y='sales', kind='bar')\n\nCommon plot types:\n  kind='line'    — line chart\n  kind='bar'     — bar chart\n  kind='barh'    — horizontal bar\n  kind='scatter' — scatter plot\n  kind='hist'    — histogram\n  kind='box'     — box plot\n  kind='pie'     — pie chart",
+      "concept_ref": "projects/modules/07-data-analysis/04-visualizer/README.md",
+      "difficulty": 1,
+      "tags": ["matplotlib", "plotting", "visualization"]
+    },
+    {
+      "id": "m07-07",
+      "front": "How do you create subplots (multiple charts in one figure)?",
+      "back": "fig, axes = plt.subplots(2, 2, figsize=(12, 8))\n\n# Access each subplot\naxes[0, 0].plot(x, y1)\naxes[0, 0].set_title('Top Left')\n\naxes[0, 1].bar(categories, values)\naxes[0, 1].set_title('Top Right')\n\naxes[1, 0].scatter(x, y2)\naxes[1, 0].set_title('Bottom Left')\n\naxes[1, 1].hist(data, bins=20)\naxes[1, 1].set_title('Bottom Right')\n\nplt.tight_layout()  # prevent overlapping\nplt.savefig('dashboard.png', dpi=150)\n\nfigsize=(width, height) in inches.\nFor a single row: fig, (ax1, ax2) = plt.subplots(1, 2)",
+      "concept_ref": "projects/modules/07-data-analysis/04-visualizer/README.md",
+      "difficulty": 2,
+      "tags": ["matplotlib", "subplots", "layout"]
+    },
+    {
+      "id": "m07-08",
+      "front": "How do you read and write CSV and Excel files with pandas?",
+      "back": "# CSV\ndf = pd.read_csv('data.csv')\ndf = pd.read_csv('data.csv', sep=';', encoding='utf-8')\ndf.to_csv('output.csv', index=False)  # index=False omits row numbers\n\n# Excel\ndf = pd.read_excel('data.xlsx', sheet_name='Sheet1')\ndf.to_excel('output.xlsx', index=False)\n\n# Multiple sheets\nwith pd.ExcelWriter('report.xlsx') as writer:\n    sales.to_excel(writer, sheet_name='Sales')\n    costs.to_excel(writer, sheet_name='Costs')\n\n# JSON\ndf = pd.read_json('data.json')\ndf.to_json('output.json', orient='records', indent=2)\n\nCommon read_csv params: sep, header, names, usecols, dtype, parse_dates, na_values",
+      "concept_ref": "projects/modules/07-data-analysis/01-csv-explorer/README.md",
+      "difficulty": 1,
+      "tags": ["pandas", "csv", "excel", "io"]
+    },
+    {
+      "id": "m07-09",
+      "front": "How do you sort and filter data in pandas?",
+      "back": "# Sort\ndf.sort_values('age')                     # ascending\ndf.sort_values('age', ascending=False)    # descending\ndf.sort_values(['dept', 'age'])           # multi-column\n\n# Filter with boolean indexing\nyoung = df[df['age'] < 30]\nengineers = df[df['role'] == 'Engineer']\n\n# Multiple conditions (use & for AND, | for OR)\nresult = df[(df['age'] > 25) & (df['salary'] > 50000)]\n\n# isin() for multiple values\ndf[df['dept'].isin(['Sales', 'Engineering'])]\n\n# String methods\ndf[df['name'].str.contains('Ali')]\ndf[df['name'].str.startswith('A')]\n\n# query() for readable filters\ndf.query('age > 25 and salary > 50000')",
+      "concept_ref": "projects/modules/07-data-analysis/02-data-cleaner/README.md",
+      "difficulty": 2,
+      "tags": ["pandas", "sorting", "filtering"]
+    },
+    {
+      "id": "m07-10",
+      "front": "How do you add, rename, and drop columns in a DataFrame?",
+      "back": "# Add a column\ndf['bonus'] = df['salary'] * 0.1\ndf['full_name'] = df['first'] + ' ' + df['last']\n\n# Add with assign (returns new DataFrame)\ndf = df.assign(\n    bonus=lambda x: x['salary'] * 0.1,\n    tax=lambda x: x['salary'] * 0.3\n)\n\n# Rename columns\ndf = df.rename(columns={'old_name': 'new_name'})\ndf.columns = ['a', 'b', 'c']  # rename all\n\n# Drop columns\ndf = df.drop(columns=['temp', 'unused'])\ndf = df.drop('temp', axis=1)  # axis=1 for columns\n\n# Drop rows\ndf = df.drop(index=[0, 1])    # drop by index\ndf = df.drop(df[df['age'] < 0].index)  # drop by condition",
+      "concept_ref": "projects/modules/07-data-analysis/02-data-cleaner/README.md",
+      "difficulty": 2,
+      "tags": ["pandas", "columns", "transform"]
+    },
+    {
+      "id": "m07-11",
+      "front": "What does df.describe() show and how do you use it?",
+      "back": "df.describe() gives summary statistics for numeric columns.\n\ndf.describe()\n#        age    salary    score\n# count  100    100       100\n# mean   32.5   65000     78.3\n# std    8.2    15000     12.1\n# min    22     35000     45\n# 25%    26     55000     70\n# 50%    31     62000     80     <- median\n# 75%    38     75000     88\n# max    55     120000    100\n\n# Include non-numeric columns\ndf.describe(include='all')\n\n# Other quick inspection methods\ndf.info()      # column names, types, non-null counts\ndf.head(5)     # first 5 rows\ndf.tail(3)     # last 3 rows\ndf.shape       # (rows, columns)\ndf.dtypes      # data type of each column",
+      "concept_ref": "projects/modules/07-data-analysis/01-csv-explorer/README.md",
+      "difficulty": 1,
+      "tags": ["pandas", "describe", "statistics"]
+    },
+    {
+      "id": "m07-12",
+      "front": "How do you merge (join) two DataFrames?",
+      "back": "# Inner join (only matching rows)\nresult = pd.merge(orders, customers, on='customer_id')\n\n# Left join (keep all rows from left)\nresult = pd.merge(orders, customers, on='customer_id', how='left')\n\n# Join types: 'inner', 'left', 'right', 'outer'\n\n# Different column names\nresult = pd.merge(\n    orders, customers,\n    left_on='cust_id', right_on='id'\n)\n\n# Concatenate (stack vertically)\nall_data = pd.concat([df1, df2, df3], ignore_index=True)\n\n# Concatenate horizontally\ncombined = pd.concat([df1, df2], axis=1)\n\nThink of merge() as SQL JOIN, concat() as UNION ALL.",
+      "concept_ref": "projects/modules/07-data-analysis/03-sales-report/README.md",
+      "difficulty": 2,
+      "tags": ["pandas", "merge", "join"]
+    },
+    {
+      "id": "m07-13",
+      "front": "How do you apply a function to every row or column?",
+      "back": "# apply() on a column (Series)\ndf['name_upper'] = df['name'].apply(str.upper)\ndf['age_group'] = df['age'].apply(lambda x: 'young' if x < 30 else 'senior')\n\n# apply() on each row\ndef classify(row):\n    if row['score'] > 90 and row['attendance'] > 80:\n        return 'excellent'\n    return 'standard'\n\ndf['category'] = df.apply(classify, axis=1)\n\n# map() for simple value replacement\ndf['grade'] = df['score'].map({\n    'A': 4.0, 'B': 3.0, 'C': 2.0\n})\n\n# Vectorized operations are faster than apply:\ndf['doubled'] = df['value'] * 2  # better than apply(lambda x: x*2)",
+      "concept_ref": "projects/modules/07-data-analysis/03-sales-report/README.md",
+      "difficulty": 2,
+      "tags": ["pandas", "apply", "transform"]
+    },
+    {
+      "id": "m07-14",
+      "front": "How do you parse dates and work with time series in pandas?",
+      "back": "# Parse dates when reading\ndf = pd.read_csv('data.csv', parse_dates=['date'])\n\n# Convert column to datetime\ndf['date'] = pd.to_datetime(df['date'])\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\n\n# Extract components\ndf['year'] = df['date'].dt.year\ndf['month'] = df['date'].dt.month\ndf['day_of_week'] = df['date'].dt.day_name()\n\n# Set date as index for time series\ndf = df.set_index('date')\ndf['2024']                # all rows in 2024\ndf['2024-01':'2024-06']   # Jan-Jun 2024\n\n# Resample (aggregate by time period)\ndf.resample('M')['sales'].sum()   # monthly totals\ndf.resample('W')['sales'].mean()  # weekly averages",
+      "concept_ref": "projects/modules/07-data-analysis/05-trend-analyzer/README.md",
+      "difficulty": 3,
+      "tags": ["pandas", "datetime", "time-series"]
+    },
+    {
+      "id": "m07-15",
+      "front": "How do you customize a matplotlib plot (colors, labels, legends)?",
+      "back": "fig, ax = plt.subplots(figsize=(10, 6))\n\n# Plot with customization\nax.plot(x, y1, color='#2196F3', linewidth=2, label='Revenue')\nax.plot(x, y2, color='#FF5722', linestyle='--', label='Costs')\n\n# Labels and title\nax.set_xlabel('Month', fontsize=12)\nax.set_ylabel('Amount ($)', fontsize=12)\nax.set_title('Revenue vs Costs', fontsize=14, fontweight='bold')\n\n# Legend\nax.legend(loc='upper left')\n\n# Grid\nax.grid(True, alpha=0.3)\n\n# Axis limits\nax.set_xlim(0, 12)\nax.set_ylim(0, 100000)\n\n# Annotations\nax.annotate('Peak', xy=(6, 95000), fontsize=10,\n            arrowprops=dict(arrowstyle='->'))\n\nplt.tight_layout()\nplt.savefig('chart.png', dpi=150, bbox_inches='tight')",
+      "concept_ref": "projects/modules/07-data-analysis/04-visualizer/README.md",
+      "difficulty": 2,
+      "tags": ["matplotlib", "customization", "styling"]
+    }
+  ]
+}

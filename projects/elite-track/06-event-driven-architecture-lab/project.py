@@ -5,6 +5,11 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY event-driven architecture? -- EDA decouples producers from consumers:
+# services emit events without knowing who consumes them. This enables
+# independent scaling, temporal decoupling, and replay-based debugging.
+# Deterministic simulation lets learners study event ordering, delivery
+# guarantees, and eventual consistency without running Kafka.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

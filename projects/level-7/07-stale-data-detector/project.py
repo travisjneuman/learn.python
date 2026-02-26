@@ -22,6 +22,10 @@ from pathlib import Path
 
 # -- Data model ----------------------------------------------------------
 
+# WHY per-source thresholds? -- Different data sources have different
+# acceptable staleness. Order data might be fine at 5 min old, but
+# inventory data (which changes rapidly) should trigger alerts sooner.
+# Three severity tiers let operators escalate response proportionally.
 @dataclass
 class FreshnessRule:
     """Per-source freshness thresholds (seconds)."""

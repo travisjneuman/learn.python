@@ -41,8 +41,10 @@ CREATE TABLE IF NOT EXISTS idempotency_keys (
 def build_key(*parts: str) -> str:
     """Create a deterministic SHA-256 hex key from ordered string parts.
 
-    Using a separator that cannot appear in normal data (the pipe
-    character) prevents accidental collisions like
+    WHY SHA-256? -- We need a fixed-length key that is deterministic
+    (same inputs always produce the same hash) so that reprocessing
+    the same operation generates the same key and gets rejected as
+    a duplicate. The pipe separator prevents collisions like
     build_key("ab", "cd") == build_key("abc", "d").
     """
     raw = "|".join(parts)
@@ -63,8 +65,10 @@ def init_table(conn: sqlite3.Connection) -> None:
 def store_if_new(conn: sqlite3.Connection, key: str, payload: str) -> bool:
     """Attempt to insert *key*.  Return True if new, False if duplicate.
 
-    INSERT OR IGNORE silently skips when the PRIMARY KEY already exists.
-    We check rowcount to know whether the insert actually happened.
+    WHY INSERT OR IGNORE? -- This pushes duplicate detection to the
+    database layer (the PRIMARY KEY constraint), which is atomic and
+    race-condition-free. We check rowcount to know whether the insert
+    actually happened (1 = new, 0 = duplicate).
     """
     cur = conn.execute(
         "INSERT OR IGNORE INTO idempotency_keys (idem_key, payload) VALUES (?, ?)",

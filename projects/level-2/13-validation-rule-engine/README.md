@@ -1,6 +1,8 @@
 # Level 2 / Project 13 - Validation Rule Engine
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - rule evaluation and reason codes
 
@@ -30,20 +32,28 @@ Most common failures: R003: 1, R001: 1, ...
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a new rule type `"one_of"` that checks if a value is in an allowed list.
 2. Add a `--rules` flag to load rules from a separate JSON file.
 3. Add a `--strict` mode that stops validation after the first failure per record.
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass a record with a field that is an unexpected type (e.g. age as a list).
 2. Use an invalid regex pattern in a rule — does it crash?
 3. Feed an empty records array — does the pass_rate calculation divide by zero?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Guard the regex check against `re.error` exceptions.
 2. Handle division by zero in pass_rate for empty batches.
 3. Add type checking before range validation.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why are rules defined as data instead of hard-coded if/else chains?

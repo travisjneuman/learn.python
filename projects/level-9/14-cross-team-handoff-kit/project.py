@@ -25,6 +25,11 @@ from typing import Any
 
 # --- Domain types -------------------------------------------------------
 
+# WHY enumerate handoff sections? -- Each section represents a category of
+# institutional knowledge that gets lost during team transitions. Making them
+# explicit ensures completeness — the scoring system can check that every
+# section has content, flagging gaps before the handoff happens rather than
+# discovering missing knowledge during a 2 AM incident.
 class HandoffSection(Enum):
     OVERVIEW = "overview"
     ARCHITECTURE = "architecture"

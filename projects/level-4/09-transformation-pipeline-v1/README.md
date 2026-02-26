@@ -1,6 +1,8 @@
 # Level 4 / Project 09 - Transformation Pipeline V1
 Home: [README](../../../README.md)
 
+**Estimated time:** 60 minutes
+
 ## Focus
 - multi-step transform sequencing
 
@@ -34,20 +36,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `transform_rename_columns` step that accepts a rename mapping (e.g., `Name -> full_name`).
 2. Add a `--dry-run` flag that shows the step log without writing output.
 3. Re-run script and tests — add a test for the rename transform.
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass an unknown step name in `--steps` and verify it is logged as skipped.
 2. Reorder the steps (e.g., `add_row_id` before `filter_empty_rows`) and observe the difference.
 3. Feed it a CSV where all rows are empty and see what `filter_empty_rows` does.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add step ordering validation — warn if `add_row_id` runs before `filter_empty_rows`.
 2. Handle the case where an input CSV has no rows (only headers) gracefully.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why are transforms written as pure functions (no side effects)?

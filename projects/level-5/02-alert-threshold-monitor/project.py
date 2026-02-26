@@ -70,8 +70,9 @@ def evaluate_metrics(
 def apply_cooldown(alerts: list[dict], cooldown_seconds: int = 300) -> list[dict]:
     """Filter alerts to enforce a cooldown period per metric.
 
-    Only the first alert per metric within the cooldown window is kept.
-    Prevents alert storms when a metric stays above threshold.
+    WHY cooldown? -- If CPU sits at 95% for an hour, you want ONE alert,
+    not 720 (one per 5-second scrape). Cooldown deduplicates by metric
+    name so on-call engineers get signal, not noise.
     """
     last_alert: dict[str, datetime] = {}
     filtered: list[dict] = []

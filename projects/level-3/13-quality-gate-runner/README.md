@@ -1,6 +1,8 @@
 # Level 3 / Project 13 - Quality Gate Runner
 Home: [README](../../../README.md)
 
+**Estimated time:** 55 minutes
+
 ## Focus
 - simulate lint/test/build gate process
 
@@ -35,20 +37,28 @@ Pipeline: FAIL (5.2ms)
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `check_docstrings` gate that verifies all functions have docstrings.
 2. Add a `--gate` flag to run only specific gates.
 3. Add `--strict` mode where any warning is treated as a failure.
 
-## Break it (required)
+## Break it (required) — Core
 1. Run on a non-Python file — do syntax and print checks handle it?
 2. Run on a file that doesn't exist — does the pipeline still report all gates?
 3. Set `--max-lines 0` — does the size check handle the edge case?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add file type detection (skip syntax check for non-.py files).
 2. Ensure all gates handle missing files consistently.
 3. Add a `--quiet` flag that only shows failures.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What is a "quality gate" in CI/CD and how does this project simulate one?

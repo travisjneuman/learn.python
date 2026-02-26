@@ -18,7 +18,13 @@ def configure_logging() -> None:
 # ---------- plugin interface ----------
 
 class TransformPlugin:
-    """Base class for transform plugins. Subclass and implement transform()."""
+    """Base class for transform plugins. Subclass and implement transform().
+
+    WHY a base class instead of plain functions? -- The class gives each
+    plugin a name and description for discovery, and the shared interface
+    (transform method) lets the engine treat all plugins identically.
+    This is the Template Method / Strategy pattern.
+    """
     name: str = "base"
     description: str = "Base plugin"
 
@@ -59,6 +65,10 @@ class StripWhitespacePlugin(TransformPlugin):
 
 # ---------- plugin registry ----------
 
+# WHY a registry dict? -- Storing plugin classes by name lets users
+# specify transforms as strings in a config file ("strip,uppercase")
+# without knowing the Python class names. New plugins auto-register
+# by calling register_plugin at import time.
 PLUGIN_REGISTRY: dict[str, type[TransformPlugin]] = {}
 
 def register_plugin(plugin_class: type[TransformPlugin]) -> None:

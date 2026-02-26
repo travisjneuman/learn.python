@@ -2,11 +2,11 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/Projects-246-2ea44f?style=for-the-badge" alt="246 Projects">
+  <img src="https://img.shields.io/badge/Projects-251-2ea44f?style=for-the-badge" alt="251 Projects">
   <img src="https://img.shields.io/badge/Levels-13-ff6f00?style=for-the-badge" alt="13 Levels">
   <img src="https://img.shields.io/badge/Curriculum_Docs-50+-f57c00?style=for-the-badge" alt="50+ Curriculum Docs">
-  <img src="https://img.shields.io/badge/Concept_Guides-16-7c4dff?style=for-the-badge" alt="16 Concept Guides">
-  <img src="https://img.shields.io/badge/Quizzes-15-e53935?style=for-the-badge" alt="15 Quizzes">
+  <img src="https://img.shields.io/badge/Concept_Guides-35-7c4dff?style=for-the-badge" alt="35 Concept Guides">
+  <img src="https://img.shields.io/badge/Quizzes-34-e53935?style=for-the-badge" alt="34 Quizzes">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=for-the-badge" alt="Contributions Welcome">
 </p>
@@ -31,7 +31,7 @@ This is not a bootcamp — **you go at your own pace**.
 
 This is not a reference manual — **it is a complete guided path**.
 
-246 projects, not toy examples. Every document, concept guide, project, quiz, and challenge is connected through a single click chain. Start at the beginning and follow the "Next" links. That's it.
+251 projects, not toy examples. Every document, concept guide, project, quiz, and challenge is connected through a single click chain. Start at the beginning and follow the "Next" links. That's it.
 
 ---
 
@@ -84,7 +84,7 @@ The curriculum is a straight line from zero experience to production-grade engin
 | **Elite Track** | Curriculum 16–50 | Architecture, observability, resilience, security, cost modeling | 10 projects |
 | **Expansion Modules** | 12 modules | Web scraping through cloud deployment — real libraries, real tools | 56 projects |
 
-**Total: 246 projects across 13 levels and 12 technology modules.**
+**Total: 251 projects across 13 levels and 12 technology modules.**
 
 See the full [Curriculum Map](./CURRICULUM_MAP.md) for a dependency diagram and every project listed at a glance.
 
@@ -137,7 +137,7 @@ Twelve self-contained technology modules. Each one teaches a real Python library
 
 ## 📖 Concept Guides
 
-Sixteen reference documents that explain core ideas in plain language. Each one has a matching quiz.
+34 reference documents that explain core ideas in plain language. Most have matching quizzes.
 
 **Beginner**
 - [What Is a Variable](./concepts/what-is-a-variable.md) — names, values, types, reassignment
@@ -147,6 +147,9 @@ Sixteen reference documents that explain core ideas in plain language. Each one 
 - [Types and Conversions](./concepts/types-and-conversions.md) — int, str, float, bool, casting
 - [Files and Paths](./concepts/files-and-paths.md) — reading, writing, pathlib
 - [Errors and Debugging](./concepts/errors-and-debugging.md) — try/except, tracebacks, common mistakes
+- [Reading Error Messages](./concepts/reading-error-messages.md) — traceback anatomy, common errors decoded
+- [Git Basics](./concepts/git-basics.md) — commits, branches, remotes, workflow
+- [Reading Documentation](./concepts/reading-documentation.md) — navigating docs, API references, help()
 
 **Intermediate**
 - [How Imports Work](./concepts/how-imports-work.md) — modules, packages, the import system
@@ -154,11 +157,27 @@ Sixteen reference documents that explain core ideas in plain language. Each one 
 - [Classes and Objects](./concepts/classes-and-objects.md) — OOP fundamentals, methods, inheritance
 - [Decorators Explained](./concepts/decorators-explained.md) — closures, @syntax, practical patterns
 - [Virtual Environments](./concepts/virtual-environments.md) — venv, pip, dependency isolation
+- [Comprehensions Explained](./concepts/comprehensions-explained.md) — list, dict, set, generator comprehensions
+- [Args and Kwargs Explained](./concepts/args-kwargs-explained.md) — *args, **kwargs, unpacking
+- [Context Managers Explained](./concepts/context-managers-explained.md) — with statement, __enter__/__exit__
+- [Enums Explained](./concepts/enums-explained.md) — Enum, IntEnum, Flag, practical usage
+- [Regex Explained](./concepts/regex-explained.md) — patterns, groups, re module
+- [Type Hints Explained](./concepts/type-hints-explained.md) — annotations, mypy, generics
+- [Dataclasses Explained](./concepts/dataclasses-explained.md) — @dataclass, fields, post_init
+- [Match/Case Explained](./concepts/match-case-explained.md) — structural pattern matching (3.10+)
+- [Testing Strategies](./concepts/testing-strategies.md) — unit, integration, fixtures, mocking
+- [Debugging Methodology](./concepts/debugging-methodology.md) — systematic approaches, tools, techniques
+- [Jupyter Notebooks](./concepts/jupyter-notebooks.md) — cells, kernels, interactive workflows
+- [Modern Python Tooling](./concepts/modern-python-tooling.md) — ruff, uv, pyproject.toml, modern ecosystem
 
 **Advanced**
 - [HTTP Explained](./concepts/http-explained.md) — requests, responses, status codes, headers
 - [API Basics](./concepts/api-basics.md) — REST, JSON, authentication, rate limiting
 - [Async Explained](./concepts/async-explained.md) — event loops, async/await, concurrency vs parallelism
+- [Generators and Iterators](./concepts/generators-and-iterators.md) — yield, lazy evaluation, iterator protocol
+- [Collections Deep Dive](./concepts/collections-deep-dive.md) — defaultdict, Counter, deque, namedtuple
+- [Functools and Itertools](./concepts/functools-and-itertools.md) — lru_cache, partial, chain, groupby
+- [Security Basics](./concepts/security-basics.md) — input validation, secrets, common vulnerabilities
 
 See the [Concepts README](./concepts/README.md) for the full index.
 
@@ -168,7 +187,7 @@ See the [Concepts README](./concepts/README.md) for the full index.
 
 Build fluency between projects with targeted practice.
 
-### Quizzes (15)
+### Quizzes (34)
 One quiz per concept guide. Run them from the terminal:
 ```bash
 python concepts/quizzes/what-is-a-variable-quiz.py
@@ -338,12 +357,6 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CON
 | [Translations](./translations/README.md) | Community translations (Spanish, Portuguese in progress) |
 | [License](./LICENSE) | MIT License |
 
----
+## Next
 
-<table width="100%">
-<tr>
-<td align="left"></td>
-<td align="center"><a href="./README.md">Home</a></td>
-<td align="right"><a href="./START_HERE.md">Next →</a></td>
-</tr>
-</table>
+[Next: START_HERE.md →](./START_HERE.md)

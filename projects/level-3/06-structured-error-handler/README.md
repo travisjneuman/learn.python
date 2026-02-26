@@ -1,6 +1,8 @@
 # Level 3 / Project 06 - Structured Error Handler
 Home: [README](../../../README.md)
 
+**Estimated time:** 40 minutes
+
 ## Focus
 - typed errors and safe propagation
 
@@ -32,20 +34,28 @@ Error breakdown:
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `range` rule that validates numeric values (e.g., age 0-150).
 2. Add an `--exit-code` flag that returns non-zero if any record fails.
 3. Add error severity levels to the schema (warning vs error).
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass a schema file that doesn't exist — what error appears?
 2. Pass records with a field not in the schema — is it validated or ignored?
 3. Trigger an unexpected exception inside a validator — does `safe_process` catch it?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a friendly error message when schema or records file is missing.
 2. Validate the schema itself before processing (are rule names valid?).
 3. Ensure `capture_error` works for all built-in exception types.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why create a custom exception hierarchy (AppError, ValidationError, etc.)?

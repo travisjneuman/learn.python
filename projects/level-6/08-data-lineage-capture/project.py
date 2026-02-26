@@ -132,6 +132,10 @@ def step_normalize(conn: sqlite3.Connection, records: list[dict]) -> list[dict]:
             "INSERT INTO processed_data (key, value, stage) VALUES (?, ?, 'normalized')",
             (key, normalized_value),
         )
+        # WHY chain lineage via parent_id? -- Each step links back to the
+        # previous step's lineage record, forming a traceable chain. This
+        # lets you answer "where did this output row come from?" by walking
+        # the parent_id links back to the original ingestion.
         parent_chain = get_lineage_chain(conn, key)
         parent_id = parent_chain[-1]["id"] if parent_chain else None
 

@@ -60,7 +60,9 @@ def action_file_stats(input_path: Path, params: dict) -> dict:
     }
 
 
-# Registry of available actions
+# WHY a registry pattern? -- Mapping action names to functions lets users
+# define jobs in JSON config files without writing Python code. Adding a
+# new action is just writing a function and registering it here.
 ACTIONS: dict[str, Callable[..., Any]] = {
     "count_lines": action_count_lines,
     "word_frequency": action_word_frequency,

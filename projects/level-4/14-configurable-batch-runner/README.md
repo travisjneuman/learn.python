@@ -1,6 +1,8 @@
 # Level 4 / Project 14 - Configurable Batch Runner
 Home: [README](../../../README.md)
 
+**Estimated time:** 75 minutes
+
 ## Focus
 - batch jobs driven by config files
 
@@ -32,20 +34,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a new action: `search_pattern` that counts regex matches in a file.
 2. Add a `--dry-run` flag that validates the config without executing jobs.
 3. Re-run script and tests — add a test for the new action.
 
-## Break it (required)
+## Break it (required) — Core
 1. Reference a non-existent file in the config and verify the error is logged per-job.
 2. Add a job with an unknown action name and confirm it is skipped.
 3. Create a config with zero jobs and verify the runner handles it.
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add config schema validation (each job must have name, action, input).
 2. Add timing to each job result (duration_ms).
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the batch runner use an `ACTIONS` registry instead of `if/elif` chains?

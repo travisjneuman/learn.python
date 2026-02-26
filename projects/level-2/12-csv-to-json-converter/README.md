@@ -1,6 +1,8 @@
 # Level 2 / Project 12 - CSV to JSON Converter
 Home: [README](../../../README.md)
 
+**Estimated time:** 40 minutes
+
 ## Focus
 - format conversion and schema checks
 
@@ -31,20 +33,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--columns` flag to select only specific columns: `--columns name,age`.
 2. Add row-count validation — log rows with mismatched column counts.
 3. Add a `--schema` output that shows detected types per column.
 
-## Break it (required)
+## Break it (required) — Core
 1. Feed a CSV with quoted fields containing commas (e.g. `"Smith, Jr"`).
 2. Feed a file with inconsistent column counts per row.
 3. Feed a value like `"123abc"` — does type inference misfire?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add basic quoted-field handling for CSV values.
 2. Pad short rows and truncate long rows to match header length.
 3. Ensure `infer_type` only converts when the entire value is numeric.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does type inference try int before float?

@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `any()` with a generator expression? (`any(c.isupper() for c in text)`)
 - Can you read lines from a file into a list?
 
+**Estimated time:** 20 minutes
+
 ## Focus
 - rule-based scoring and condition checks
 
@@ -83,20 +85,28 @@ if not username:
 
 **The thought process:** Check one rule at a time, accumulate a score, collect reasons for failures. This is the same pattern the password strength checker uses with its multi-criteria scoring.
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a "sequential characters" penalty (e.g. "abc", "123" lose a point).
 2. Add a `--min-score` flag that only shows passwords scoring at or above the threshold.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Test an empty password (blank line) -- does `score_password()` crash or return 0?
 2. Test a password that is the string `"password"` -- does the common-password check catch it?
 3. Test a 1000-character password -- does any check break with very long input?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle empty passwords by returning a score of 0 with label "empty".
 2. Ensure the common-password list comparison is case-insensitive.
 3. Add a test for the empty-password edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `check_character_variety()` check for uppercase, lowercase, digits, and special characters separately?

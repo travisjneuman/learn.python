@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use `.strip()` and `.lower()` to clean up a string?
 - Can you check if a value is in a set? (`"yes" in {"yes", "y", "true"}`)
 
+**Estimated time:** 20 minutes
+
 ## Focus
 - boolean logic and input normalization
 
@@ -49,20 +51,28 @@ Answer 5 questions with yes or no.
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add "maybe" as a third valid answer category (accept "maybe", "perhaps", "unsure").
 2. Add a percentage bar using `#` characters next to each tally count.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Answer every question with just spaces or blank -- does `tally_answers()` crash or return zeros?
 2. Answer with "YES!!!" or "y e s" -- does `normalise_answer()` handle them?
 3. What happens if you call `tally_answers([])` with an empty list?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Handle the empty-answers case by returning a tally with all zeros.
 2. Strip punctuation from answers so "YES!!!" normalises to "yes".
 3. Add a test for the all-blank-answers edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `normalise_answer()` use `.strip().lower()` before checking membership in a set?

@@ -1,6 +1,8 @@
 # Level 2 / Project 08 - Mini Inventory Engine
 Home: [README](../../../README.md)
 
+**Estimated time:** 40 minutes
+
 ## Focus
 - stock add/remove and reorder alerts
 
@@ -33,20 +35,28 @@ Inventory (10 products):
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--remove` command: `--remove "Widget" 5` to decrease stock.
 2. Add an `--export` flag that writes current inventory to a new CSV.
 3. Add a `--category` filter to show only items in a specific category.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add an item with negative quantity — is it allowed?
 2. Remove exactly all stock of an item — does it stay at 0 or get deleted?
 3. Load a CSV with non-numeric price values — what happens?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add validation that quantity and price must be non-negative.
 2. Decide and document what happens when stock reaches 0.
 3. Handle CSV parsing errors with try/except and skip bad rows.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why is the inventory stored as a dict-of-dicts instead of a list?

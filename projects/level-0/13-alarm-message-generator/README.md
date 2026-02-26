@@ -1,6 +1,8 @@
 # Level 0 / Project 13 - Alarm Message Generator
 Home: [README](../../../README.md)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - template strings and alert text building
 
@@ -34,20 +36,28 @@ Output written to data/output.json
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--severity` filter flag that shows only alarms at or above a given severity level.
 2. Add timestamps to each alarm notification (use a hardcoded time for reproducibility).
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a line with an unknown severity like `unknown|server01|disk full` -- does `parse_alarm()` reject it?
 2. Add a line with missing fields like `critical|` -- does it crash or handle gracefully?
 3. Add a line with extra pipe characters -- does the parser split correctly?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `parse_alarm()` validates severity against the allowed list (critical, warning, info).
 2. Handle lines with fewer than 3 pipe-delimited fields by raising `ValueError`.
 3. Add a test for the unknown-severity edge case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `sort_by_severity()` use a priority dict `{"critical": 0, "warning": 1, "info": 2}` instead of alphabetical sorting?

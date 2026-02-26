@@ -23,6 +23,10 @@ from pathlib import Path
 # Schema for drift tracking
 # ---------------------------------------------------------------------------
 
+# WHY store schema snapshots? -- Database schemas change over time as
+# developers add/remove/rename columns. By capturing snapshots on each
+# run and diffing them, we detect "drift" — unexpected schema changes
+# that could break downstream queries or ETL pipelines.
 SNAPSHOTS_DDL = """\
 CREATE TABLE IF NOT EXISTS schema_snapshots (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,

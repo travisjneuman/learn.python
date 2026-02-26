@@ -96,9 +96,10 @@ def create_staging_table(conn: sqlite3.Connection) -> None:
 def load_rows(conn: sqlite3.Connection, rows: list[dict]) -> LoadResult:
     """Insert valid rows into staging_events, skip invalid ones.
 
-    We insert row-by-row (not executemany) so that one bad row does not
-    abort the entire batch.  In production you might use a savepoint per
-    row for even finer control.
+    WHY row-by-row instead of executemany? -- executemany is faster, but
+    if ANY row fails the entire batch is aborted. Row-by-row lets us
+    skip bad rows while keeping the good ones. In production you might
+    use a SAVEPOINT per row for even finer transactional control.
     """
     result = LoadResult()
 

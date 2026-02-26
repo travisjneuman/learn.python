@@ -83,8 +83,13 @@ def calculate_backoff(
     *max_delay*.  Jitter adds a small random component to prevent
     multiple clients from retrying in lockstep (thundering herd).
     """
+    # WHY exponential (2^n) instead of linear? -- Doubling the wait time
+    # gives the overloaded server progressively more breathing room.
     delay = min(base_delay * (2 ** attempt), max_delay)
     if jitter:
+        # WHY jitter? -- Without randomness, 100 clients that failed at
+        # the same moment would all retry at the exact same time (thundering
+        # herd), overwhelming the server again. Jitter spreads retries out.
         delay += delay * 0.1 * random.random()
     return delay
 

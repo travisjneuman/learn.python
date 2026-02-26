@@ -111,6 +111,10 @@ def transfer(
     to the savepoint so neither account is affected, but the outer
     transaction is still alive for other operations.
     """
+    # WHY savepoints instead of full rollback? -- A SAVEPOINT creates a
+    # nested checkpoint within a transaction. If one transfer fails, we
+    # roll back to that savepoint only, leaving other successful transfers
+    # intact. Without savepoints, ANY failure would roll back EVERYTHING.
     sp_name = f"sp_transfer_{from_id}_{to_id}"
 
     conn.execute(f"SAVEPOINT {sp_name}")

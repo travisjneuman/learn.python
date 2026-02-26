@@ -349,6 +349,22 @@ def run_review(level_filter=None):
         print(f"  Session #{state['sessions']}")
         print()
 
+        # Award XP for flashcard review
+        try:
+            import sys as _sys
+            _tools_dir = str(Path(__file__).parent.parent.parent / "tools")
+            if _tools_dir not in _sys.path:
+                _sys.path.insert(0, _tools_dir)
+            from xp_tracker import award_xp
+            from streak_tracker import record_activity
+            deck_label = f"session-{state['sessions']}"
+            xp = award_xp("flashcard_review", deck_label)
+            if xp:
+                print(f"  +{xp} XP earned!")
+            record_activity("flashcard")
+        except Exception:
+            pass
+
         remaining_due = len(due_cards) - min(len(due_cards), MAX_REVIEW_CARDS_PER_SESSION)
         remaining_new = len(new_cards) - len(new_to_add)
         if remaining_due > 0:

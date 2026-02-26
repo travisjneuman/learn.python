@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you split a string on a specific delimiter? (`"a:b:c".split(":")`)
 - Can you use `datetime.strptime()` to parse a date string?
 
+**Estimated time:** 25 minutes
+
 ## Focus
 - split and parse structured text
 
@@ -41,20 +43,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--after` flag that only shows log entries after a given timestamp.
 2. Add a "most active hour" metric that shows which hour had the most log entries.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Add a malformed line like `not a log entry at all` -- does `parse_log_line()` return `None` or crash?
 2. Add a line with an invalid timestamp like `9999-99-99 00:00:00` -- does `datetime.strptime()` fail?
 3. Use `--level CRITICAL` when no CRITICAL entries exist -- does `filter_by_level()` return an empty list?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `parse_log_line()` returns `None` for unparseable lines instead of crashing.
 2. Wrap `datetime.strptime()` in a try/except to handle invalid timestamps.
 3. Add a test for the malformed-line case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `parse_log_line()` use string splitting instead of regex for this log format?

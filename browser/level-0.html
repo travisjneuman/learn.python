@@ -114,20 +114,20 @@ body {
   <p>Loading Python runtime...</p>
 </div>
 
-<div class="container">
+<div class="container" role="main">
   <div class="header">
     <h1 id="exerciseTitle">Exercise</h1>
-    <div class="nav-links">
+    <nav class="nav-links" role="navigation" aria-label="Exercise navigation">
       <a href="#" id="prevLink">&larr; Prev</a>
       <a href="index.html">All Exercises</a>
       <a href="#" id="nextLink">Next &rarr;</a>
-    </div>
+    </nav>
   </div>
 
   <div class="description" id="description"></div>
 
-  <div class="editor-wrapper">
-    <textarea id="editor"></textarea>
+  <div class="editor-wrapper" aria-label="Python code editor">
+    <textarea id="editor" aria-label="Python code editor"></textarea>
   </div>
 
   <div class="toolbar">

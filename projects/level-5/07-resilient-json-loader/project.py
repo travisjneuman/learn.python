@@ -42,8 +42,10 @@ def read_text_safe(path: Path) -> tuple[str | None, str | None]:
         return path.read_text(encoding="utf-8"), None
     except UnicodeDecodeError:
         pass
-    # UTF-8 failed — try Latin-1 which never raises UnicodeDecodeError
-    # because it maps every byte to a character.
+    # WHY Latin-1 fallback? -- Latin-1 never raises UnicodeDecodeError
+    # because it maps every single byte (0x00-0xFF) to a character.
+    # The decoded text may contain garbled characters, but at least
+    # the file loads so the JSON parser can attempt recovery.
     try:
         text = path.read_text(encoding="latin-1")
         logging.warning("Fell back to latin-1 encoding for %s", path)
@@ -69,10 +71,11 @@ def try_load_json(path: Path) -> tuple[object | None, str | None]:
 
 # ---------- repair heuristics ----------
 
-# Common JSON mistakes that are easy to fix automatically:
-#   1. Trailing commas before ] or }
-#   2. Truncated files that end mid-value
-#   3. "JSON Lines" format (one object per line, no wrapping array)
+# WHY repair heuristics? -- In real pipelines, upstream systems often
+# produce slightly invalid JSON: editors add trailing commas, truncated
+# network transfers cut files mid-value, and some tools output JSON
+# Lines (one object per line) instead of a proper array. Fixing these
+# automatically saves hours of manual debugging.
 
 TRAILING_COMMA_PATTERNS: list[tuple[str, str]] = [
     (",]", "]"),

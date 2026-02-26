@@ -23,6 +23,11 @@ from typing import Any
 # Domain types
 # ---------------------------------------------------------------------------
 
+# WHY five distinct strategies? -- Each component's ideal modernization path
+# depends on its complexity, coupling, and business value. A high-value
+# tightly-coupled system benefits from WRAP (Strangler Fig), while a low-value
+# unused system should RETIRE. Encoding strategies as an enum forces explicit
+# choice and prevents the common trap of "rewrite everything."
 class ModernizationStrategy(Enum):
     REWRITE = auto()       # Full rewrite (highest risk, highest reward)
     REFACTOR = auto()      # Incremental improvement in place

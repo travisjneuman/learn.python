@@ -26,7 +26,12 @@ def configure_logging() -> None:
 
 
 def generate_correlation_id() -> str:
-    """Create a unique correlation ID for linking related log entries."""
+    """Create a unique correlation ID for linking related log entries.
+
+    WHY only 8 characters? -- A full UUID is 36 chars and clutters log
+    output. The first 8 hex digits give ~4 billion unique values, which
+    is more than enough for correlating entries within a single run.
+    """
     return str(uuid.uuid4())[:8]
 
 
@@ -65,7 +70,10 @@ def enrich_entry(entry: dict, correlation_id: str) -> dict:
 
     Adds: correlation_id, severity, duration_ms, enriched_at timestamp.
     """
-    enriched = dict(entry)  # shallow copy — don't mutate the original
+    # WHY shallow copy? -- We add new keys but don't modify existing values,
+    # so a shallow copy is sufficient. Mutating the original would break
+    # callers that compare before/after or need to retry enrichment.
+    enriched = dict(entry)
 
     enriched["correlation_id"] = correlation_id
     enriched["severity"] = classify_severity(entry.get("event_type", ""))
@@ -122,7 +130,9 @@ def run(input_path: Path, output_path: Path) -> dict:
     enriched = enrich_log(entries)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    # Write as JSON lines (one per line) for streaming compatibility
+    # WHY JSON lines instead of a JSON array? -- JSONL lets you append new
+    # entries without reading the entire file, and tools like jq, grep, and
+    # streaming processors can handle one line at a time.
     with output_path.open("w", encoding="utf-8") as f:
         for entry in enriched:
             f.write(json.dumps(entry) + "\n")

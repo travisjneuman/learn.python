@@ -15,7 +15,12 @@ from pathlib import Path
 # ---------- logging setup ----------
 
 def configure_logging() -> None:
-    """Set up structured logging so every validation event is traceable."""
+    """Set up structured logging so every validation event is traceable.
+
+    WHY structured format? -- The pipe-delimited layout (timestamp | level | message)
+    makes logs easy to parse with CLI tools like awk and grep, which matters
+    when debugging validation failures across thousands of records.
+    """
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
@@ -23,7 +28,9 @@ def configure_logging() -> None:
 
 # ---------- schema helpers ----------
 
-# Supported JSON-schema-like type strings mapped to Python builtins.
+# WHY a type map? -- We translate JSON schema type names ("string", "integer")
+# into Python builtins so isinstance() can check values directly. This avoids
+# scattered if/elif chains and makes adding new types a one-line change.
 TYPE_MAP: dict[str, type] = {
     "string": str,
     "integer": int,
@@ -70,6 +77,9 @@ def validate_record(record: dict, schema: dict) -> list[str]:
     2. Field values must match the declared type.
     3. Numeric fields must fall within min/max bounds (if specified).
     """
+    # WHY collect errors as strings? -- Returning a list instead of raising
+    # exceptions lets the caller decide how to handle invalid records
+    # (log them, quarantine them, fail the run, etc.).
     errors: list[str] = []
     fields_spec = schema.get("fields", {})
 
@@ -78,6 +88,8 @@ def validate_record(record: dict, schema: dict) -> list[str]:
         value = record.get(field_name)
 
         # --- required check ---
+        # WHY check both None and "not in record"? -- A field could exist
+        # with a None value, or be entirely absent; both are missing.
         if rules.get("required", False) and (value is None or field_name not in record):
             errors.append(f"missing required field '{field_name}'")
             continue  # no point checking type/range on a missing field
@@ -105,7 +117,9 @@ def validate_record(record: dict, schema: dict) -> list[str]:
                     f"field '{field_name}' value {value} > max {rules['max']}"
                 )
 
-    # Warn about unexpected extra fields (not an error, just informational).
+    # WHY flag extra fields? -- In data pipelines, unexpected columns often
+    # signal upstream schema drift. Surfacing them early prevents silent
+    # data loss or misinterpretation downstream.
     for key in record:
         if key not in fields_spec:
             errors.append(f"unexpected field '{key}'")

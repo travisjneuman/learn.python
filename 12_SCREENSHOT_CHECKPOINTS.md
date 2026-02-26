@@ -123,7 +123,6 @@ Reflection prompts:
 - [Python Tutor](https://pythontutor.com/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
----
+## Next
 
-| [← Prev](11_CHECKLISTS.md) | [Home](README.md) | [Next →](13_SAMPLE_DATABASE_SCHEMAS.md) |
-|:---|:---:|---:|
+[Next: 13_SAMPLE_DATABASE_SCHEMAS.md →](./13_SAMPLE_DATABASE_SCHEMAS.md)

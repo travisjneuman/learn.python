@@ -1,6 +1,8 @@
 # Level 0 / Project 15 - Level 0 Mini Toolkit
 Home: [README](../../../README.md)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - combine basics into one tiny utility
 
@@ -33,20 +35,28 @@ Output written to data/output.json
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a fourth tool: "reverse" that reverses the order of lines in the file.
 2. Add an `--all` flag that runs every tool and combines results into one report.
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Pass `--tool unknown_tool` -- does `run_tool()` raise `ValueError` with a helpful message?
 2. Use an empty file as input -- do all three tools handle it without crashing?
 3. Pass no `--tool` flag at all -- what is the default behaviour?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `run_tool()` raises `ValueError` listing the valid tool names.
 2. Handle empty-file input gracefully for each tool (return zero counts, empty list, unchanged string).
 3. Add a test for the unknown-tool error message.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `run_tool()` use an if/elif chain instead of a dict mapping tool names to functions?

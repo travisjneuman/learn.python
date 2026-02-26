@@ -5,6 +5,10 @@ It intentionally emphasizes explicit, testable engineering decisions.
 """
 
 
+# WHY a gateway pattern for auth? -- Centralizing authentication in a gateway
+# means individual services don't implement auth independently (where bugs hide).
+# The gateway validates tokens, enforces rate limits, and propagates identity
+# context downstream — the same pattern AWS API Gateway and Kong use.
 # Engineering note: this script is intentionally deterministic for reproducible learning drills.
 # Engineering note: input validation must fail fast with explicit errors.
 # Engineering note: transformations are kept pure to simplify testing and review.

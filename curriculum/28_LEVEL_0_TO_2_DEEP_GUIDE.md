@@ -79,7 +79,6 @@ By end of level 2:
 - [Python Tutor](https://pythontutor.com/)
 - [Exercism Python](https://exercism.org/tracks/python)
 
----
+## Next
 
-| [← Prev](27_DAY_0_TO_DAY_30_BOOTSTRAP.md) | [Home](../README.md) | [Next →](29_LEVEL_3_TO_5_DEEP_GUIDE.md) |
-|:---|:---:|---:|
+[Next: 29_LEVEL_3_TO_5_DEEP_GUIDE.md →](./29_LEVEL_3_TO_5_DEEP_GUIDE.md)

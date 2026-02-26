@@ -1,6 +1,8 @@
 # Level 1 / Project 09 - JSON Settings Loader
 Home: [README](../../../README.md)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - load config and fallback behavior
 
@@ -34,20 +36,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--validate` flag that checks whether all required keys exist without running the main logic.
 2. Add environment variable overrides (e.g. `APP_PORT=9090` overrides `"port": 8080` from the file).
 3. Re-run script and tests.
 
-## Break it (required)
+## Break it (required) — Core
 1. Use a settings file with invalid JSON (missing a closing brace) -- does `load_json()` raise `ValueError`?
 2. Use a settings file missing a required key like `"host"` -- does `validate_settings()` catch it?
 3. Use a file that exists but is completely empty -- does the loader crash or fall back to defaults?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Ensure `load_json()` wraps `json.loads()` in a try/except and raises `ValueError` with context.
 2. Handle empty files by treating them as empty dicts (fall back to all defaults).
 3. Add a test for the empty-file case.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `merge_settings()` create a new dict with `{**defaults, **overrides}` instead of modifying in place?

@@ -9,6 +9,8 @@ Recall these prerequisites before diving in:
 - Can you use a set to track items you have already seen? (`seen = set()`)
 - Can you chain string methods? (`text.strip().lower().replace(" ", "")`)
 
+**Estimated time:** 30 minutes
+
 ## Focus
 - standardize text and required fields
 
@@ -38,20 +40,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a cleaning step that normalizes phone numbers (strip dashes/parens).
 2. Write rejected records to a separate `quarantine.txt` with reasons.
 3. Add a `--dry-run` flag that reports stats without writing output.
 
-## Break it (required)
+## Break it (required) — Core
 1. Feed a file where every line is whitespace — does it crash or return empty?
 2. Use a bad regex pattern in `--filter` (e.g. `[unclosed`) — what happens?
 3. Feed records with mixed encodings — does normalise_case break?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Wrap `re.compile` in a try/except for invalid regex patterns.
 2. Add a test for all-blank input files.
 3. Handle encoding errors gracefully with a `try/except UnicodeDecodeError`.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does the pipeline run steps in a specific order (strip before dedupe)?

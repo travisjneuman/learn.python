@@ -1,6 +1,8 @@
 # Level 2 / Project 07 - List Search Benchmark
 Home: [README](../../../README.md)
 
+**Estimated time:** 35 minutes
+
 ## Focus
 - compare search approaches
 
@@ -30,20 +32,28 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. Add a `--sorted-linear` variant that searches sorted data linearly with early exit.
 2. Add a "speedup" column showing how many times faster binary is vs linear.
 3. Plot the results to a text-based bar chart (just using `#` characters).
 
-## Break it (required)
+## Break it (required) — Core
 1. Run binary search on UNSORTED data — does it still find elements?
 2. Pass a size of 0 — does the benchmark handle an empty list?
 3. Use 1 iteration — are the timings meaningful?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a guard that validates data is sorted before binary search.
 2. Handle size=0 gracefully in `generate_test_data`.
 3. Add a minimum iteration count warning.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. What does O(n) vs O(log n) mean in plain language?

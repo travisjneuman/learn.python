@@ -1,6 +1,8 @@
 # Level 4 / Project 02 - Excel Input Health Check
 Home: [README](../../../README.md)
 
+**Estimated time:** 45 minutes
+
 ## Focus
 - tabular input quality scoring
 
@@ -71,20 +73,28 @@ Before writing code, sketch your approach in `notes.md`:
 - What's the flow from input to output?
 - What could go wrong?
 
-## Alter it (required)
+---
+
+**Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
+
+## Alter it (required) — Extension
 1. What additional quality check would catch problems the current tool misses?
 2. Can you make the tool support more than one input format?
 3. Write a test to verify your new check works.
 
-## Break it (required)
+## Break it (required) — Core
 1. Create messy input data — what quality issues does the tool miss?
 2. What happens with files that use unexpected encodings?
 3. Try extreme cases (huge headers, wildly inconsistent rows) — where does it struggle?
 
-## Fix it (required)
+## Fix it (required) — Core
 1. Add a safeguard so the report stays manageable even with very messy input.
 2. Handle the encoding issue you discovered.
 3. Re-run until all tests pass.
+
+---
+
+**Checkpoint:** All modifications done, tests still pass. Good time to review your changes.
 
 ## Explain it (teach-back)
 1. Why does `detect_delimiter` use the *minimum* count across rows instead of the *average*?
