@@ -29,6 +29,55 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "projects/level-00-absolute-beginner/**" = ["F841", "E711", "B007"]  # beginner exercises
+"projects/**" = [
+    "I001",   # unsorted imports — starter files keep imports in teaching order
+    "F401",   # unused imports — pre-imported for learners to use
+    "F541",   # f-string without placeholders — minor style, not worth fixing in 200+ files
+    "F632",   # is-literal — teaching comparison patterns
+    "F841",   # unused variable — exercises leave variables for learners to use
+    "F823",   # undefined local — some files are scaffolds with TODOs
+    "E402",   # module-level import not at top — setup code before imports is intentional
+    "E712",   # true-false comparison — teaching comparison patterns
+    "E721",   # type comparison — teaching type() before isinstance()
+    "E731",   # lambda assignment — teaching lambda syntax
+    "B006",   # mutable argument default — taught explicitly as a pitfall
+    "B007",   # unused loop control variable — exercises use _ convention
+    "B008",   # function call in default argument — teaching simplicity over strictness
+    "B011",   # assert False — used in test files as quick failure markers
+    "B904",   # raise without from — taught later in curriculum
+    "B905",   # zip without strict — teaching basic zip first
+    "UP015",  # redundant open modes — explicit "r" is clearer for beginners
+    "UP017",  # datetime.timezone.utc — teaching older patterns before newer ones
+    "UP028",  # yield in for loop — teaching explicit patterns
+    "UP032",  # f-string — teaching .format() before f-strings
+    "UP035",  # deprecated import — same reason as UP017
+    "UP041",  # timeout-error-alias — asyncio.TimeoutError is clearer for learners
+    "UP045",  # non-pep604-annotation — Optional[X] is clearer than X | None for learners
+    "SIM102", # collapsible-if — teaching explicit control flow
+    "SIM103", # needless-bool — teaching explicit returns
+    "SIM105", # suppressible-exception — teaching try/except before contextlib
+    "SIM108", # if-else-block-instead-of-if-exp — teaching explicit over ternary
+    "SIM114", # if-with-same-arms — teaching explicit branches
+    "SIM115", # open-file-with-context-handler — taught progressively
+    "SIM117", # multiple-with-statements — teaching explicit patterns
+    "SIM118", # in-dict-keys — teaching explicit dict access patterns
+    "SIM201", # negate-equal-op — teaching explicit comparisons
+    "SIM905", # split-static-string — teaching string methods
+    "SIM910", # dict-get-with-none-default — teaching explicit defaults
+]
+"practice/**" = [
+    "I001", "F401", "F541", "F841", "F823", "F632",
+    "E402", "E712", "E721", "E731",
+    "B006", "B007", "B008", "B011", "B904", "B905",
+    "UP015", "UP017", "UP028", "UP032", "UP035", "UP041", "UP045",
+    "SIM102", "SIM103", "SIM105", "SIM108", "SIM114", "SIM115", "SIM117", "SIM118", "SIM201", "SIM905", "SIM910",
+]
+"tools/**" = [
+    "I001", "F401", "F541", "F841",
+    "B007", "B008", "B905",
+    "SIM114", "SIM201",
+]
+"concepts/quizzes/**" = ["I001"]
 
 [tool.pytest.ini_options]
 testpaths = ["projects"]

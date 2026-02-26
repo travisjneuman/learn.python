@@ -28,7 +28,7 @@ def test_find_duplicates_no_dupes() -> None:
     assert find_duplicates(lines) == []
 
 
-def test_build_report_counts(tmp_path: Path) -> None:
+def test_build_report_counts() -> None:
     """The report should have correct totals."""
     lines = ["x", "y", "x", "z", "y"]
     report = build_report(lines)

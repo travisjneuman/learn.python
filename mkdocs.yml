@@ -9,6 +9,7 @@ repo_name: travisjneuman/learn.python
 edit_uri: edit/main/
 
 docs_dir: .
+site_dir: _site   # CI overrides both docs_dir and site_dir (see deploy-docs.yml)
 
 theme:
   name: material
@@ -51,7 +52,6 @@ theme:
 
 plugins:
   - search
-  - social
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -112,6 +112,7 @@ exclude_docs: |
   node_modules/
   venv/
   .venv/
+  _site/
 
 nav:
   - Home: README.md

@@ -1,4 +1,4 @@
-# 🐍 Learn Python — Zero to World-Class Full-Stack Developer
+# learn.python
 
 <p align="center">
   <img src="./assets/logo.png" alt="Learn Python" width="600">
@@ -8,7 +8,6 @@
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/Projects-251-2ea44f?style=for-the-badge" alt="251 Projects">
   <img src="https://img.shields.io/badge/Levels-13-ff6f00?style=for-the-badge" alt="13 Levels">
-  <img src="https://img.shields.io/badge/Curriculum_Docs-50+-f57c00?style=for-the-badge" alt="50+ Curriculum Docs">
   <img src="https://img.shields.io/badge/Concept_Guides-35-7c4dff?style=for-the-badge" alt="35 Concept Guides">
   <img src="https://img.shields.io/badge/Quizzes-34-e53935?style=for-the-badge" alt="34 Quizzes">
   <img src="https://img.shields.io/badge/Walkthroughs-51-00bcd4?style=for-the-badge" alt="51 Walkthroughs">
@@ -24,19 +23,27 @@
   <a href="https://github.com/travisjneuman/learn.python/issues"><img src="https://img.shields.io/github/issues/travisjneuman/learn.python?style=flat-square&label=Issues" alt="Open Issues"></a>
 </p>
 
-<p align="center">
-  <strong>A complete, hands-on Python curriculum.<br>From "what is a terminal?" to deploying production applications.</strong>
-</p>
+---
+
+## I Don't Know Python. So I Built This.
+
+I'm a full-stack developer. I've spent over a decade building web applications, managing production infrastructure, and debugging systems at 3am. My tools are TypeScript, React, Node.js, and whatever else the job demands.
+
+Python wasn't one of them. I'd read about it, used it for the occasional script, but I'd never actually sat down and *learned* it. When I finally decided to, I hit the same wall everyone hits: most Python courses are either too shallow (build a calculator and call it a day) or too academic (here's a lecture on Big-O notation before you've written a for loop). Nothing matched how I actually learn — by building real things, breaking them, and understanding why they broke.
+
+So I built the curriculum I wished existed. Then I open-sourced it, because if it helps me learn Python, maybe it helps you too.
+
+**This is a complete, hands-on Python curriculum. From "what is a terminal?" to deploying production applications. 251 projects. Every learning style supported. Go at your own pace.**
 
 ---
 
 ## What Makes This Different
 
-**Every learning style is first-class.** Read concepts, build projects, watch walkthroughs, test with quizzes, review with flashcards, visualize with diagrams, or try code in the browser — all following the same sequential path. However you learn best, there is a pathway through this curriculum for you.
+**Every learning style is first-class.** Read concepts, build projects, watch walkthroughs, test with quizzes, review with flashcards, visualize with diagrams, or try code in the browser — all following the same path. However you learn best, there's a way through this curriculum for you.
 
-**You build real things.** 251 projects, not toy examples. Every project has tests, starter code, and "Alter it / Break it / Fix it" challenges that force you past copy-paste into actual understanding.
+**You build real things.** 251 projects, not toy examples. Every project has tests, starter code, and challenges that force you past copy-paste into actual understanding.
 
-**You go at your own pace.** This is not a bootcamp with deadlines. Follow the click chain, take breaks, come back. The spaced repetition system tracks what you have forgotten so you can review efficiently.
+**You go at your own pace.** This isn't a bootcamp with deadlines. Follow the click chain, take breaks, come back. The spaced repetition system tracks what you've forgotten so you can review efficiently.
 
 **Every step is connected.** Every document, concept guide, project, quiz, walkthrough, and challenge is linked through a single click chain with a "Learn Your Way" navigation table at every stop. Start at the beginning and follow the "Next" links. That's it.
 
@@ -44,7 +51,7 @@ Not sure how you learn best? Take the [Learning Style Selector](./guides/LEARNIN
 
 ---
 
-## 🔨 What You'll Build
+## What You'll Build
 
 | Domain | Examples |
 |--------|----------|
@@ -61,7 +68,7 @@ Not sure how you learn best? Take the [Learning Style Selector](./guides/LEARNIN
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 git clone https://github.com/travisjneuman/learn.python.git
@@ -78,19 +85,19 @@ Already know JavaScript, Java, C#, or Ruby? Jump to the [Fast Track](./FAST_TRAC
 
 ---
 
-## 🗺️ Curriculum Roadmap
+## Curriculum Roadmap
 
 The curriculum is a straight line from zero experience to production-grade engineering. Every stage builds on the last.
 
 | Stage | Docs | What You Learn | Projects |
 |-------|------|----------------|----------|
-| **Absolute Beginner** | 00–03 | What is a terminal, how to install Python, first commands | 15 exercises |
+| **Absolute Beginner** | 00-03 | What is a terminal, how to install Python, first commands | 15 exercises |
 | **Foundations** | 04 | Variables, loops, functions, files, errors, collections | 15 projects |
 | **Quality & Testing** | 09 | pytest, ruff, black, writing tests that catch real bugs | 15 projects |
-| **Intermediate Python** | 05–08 | Excel/CSV automation, SQL basics, data pipelines | 60 projects |
-| **Professional Practices** | 10–12 | Packages, logging, refactoring, dependency management | 45 projects |
-| **Operations & Integration** | 13–15 | Scheduling, monitoring, ETL, caching, APIs | 45 projects |
-| **Elite Track** | Curriculum 16–50 | Architecture, observability, resilience, security, cost modeling | 10 projects |
+| **Intermediate Python** | 05-08 | Excel/CSV automation, SQL basics, data pipelines | 60 projects |
+| **Professional Practices** | 10-12 | Packages, logging, refactoring, dependency management | 45 projects |
+| **Operations & Integration** | 13-15 | Scheduling, monitoring, ETL, caching, APIs | 45 projects |
+| **Elite Track** | Curriculum 16-50 | Architecture, observability, resilience, security, cost modeling | 10 projects |
 | **Expansion Modules** | 12 modules | Web scraping through cloud deployment — real libraries, real tools | 56 projects |
 
 **Total: 251 projects across 13 levels and 12 technology modules.**
@@ -99,7 +106,23 @@ See the full [Curriculum Map](./CURRICULUM_MAP.md) for a dependency diagram and 
 
 ---
 
-## 📁 Project Levels
+## Choose Your Learning Mode
+
+**Play-First (Builder)** — Open a project, tinker, break things, figure it out. Read the concept doc when you get stuck. Watch the walkthrough only if you're truly blocked. Good for people who learn by doing.
+
+**Structured (Reader)** — Read the concept doc, take the quiz, then do the projects in order. Use the checklist and mastery gates. Good for people who like clear progress markers.
+
+**Watch-First (Watcher)** — Watch the curated video for each concept, read the walkthrough to see the thinking process, then build the project. Good for people who learn by observing first.
+
+**Visual-First (Visualizer)** — Start with the Mermaid diagrams to see the big picture, read the concept guide with the diagram as your mental map, then build. Good for people who think in pictures and systems.
+
+**Hybrid (Recommended)** — Follow the structured path on weekdays. Explore expansion modules and challenges on weekends. Review flashcards daily. Mix modalities as needed.
+
+Take the [Learning Style Selector](./guides/LEARNING_STYLE_SELECTOR.md) to find your best starting approach.
+
+---
+
+## Project Levels
 
 Every level has a theme, a set of projects, and a capstone that ties everything together.
 
@@ -121,9 +144,9 @@ Every level has a theme, a set of projects, and a capstone that ties everything 
 
 ---
 
-## 🧩 Expansion Modules
+## Expansion Modules
 
-Twelve self-contained technology modules. Each one teaches a real Python library or framework through 3–5 progressive projects.
+Twelve self-contained technology modules. Each one teaches a real Python library or framework through 3-5 progressive projects.
 
 | # | Module | Projects | Prerequisite | What You Learn |
 |---|--------|----------|--------------|----------------|
@@ -140,146 +163,34 @@ Twelve self-contained technology modules. Each one teaches a real Python library
 | 11 | [Package Publishing](./projects/modules/11-package-publishing/) | 3 | Level 3 | pyproject.toml, src layout, build, TestPyPI |
 | 12 | [Cloud Deployment](./projects/modules/12-cloud-deploy/) | 3 | Module 04 + Module 09 | Railway/Render, Postgres, production checklist |
 
-**Suggested order:** Modules 01–03 and 07 after Level 2. Modules 04–06, 08, 11 after Level 3. Modules 09–10, 12 after Level 5.
+**Suggested order:** Modules 01-03 and 07 after Level 2. Modules 04-06, 08, 11 after Level 3. Modules 09-10, 12 after Level 5.
 
 ---
 
-## 📖 Concept Guides
+## Concept Guides & Practice Tools
 
-34 reference documents that explain core ideas in plain language. Most have matching quizzes.
+**35 concept guides** explain core ideas in plain language — from variables and loops through decorators, async/await, and security. Most have matching quizzes. See the [full concept index](./concepts/README.md).
 
-**Beginner**
-- [What Is a Variable](./concepts/what-is-a-variable.md) — names, values, types, reassignment
-- [How Loops Work](./concepts/how-loops-work.md) — for, while, break, continue
-- [Functions Explained](./concepts/functions-explained.md) — parameters, return values, scope
-- [Collections Explained](./concepts/collections-explained.md) — lists, dicts, sets, tuples
-- [Types and Conversions](./concepts/types-and-conversions.md) — int, str, float, bool, casting
-- [Files and Paths](./concepts/files-and-paths.md) — reading, writing, pathlib
-- [Errors and Debugging](./concepts/errors-and-debugging.md) — try/except, tracebacks, common mistakes
-- [Reading Error Messages](./concepts/reading-error-messages.md) — traceback anatomy, common errors decoded
-- [Git Basics](./concepts/git-basics.md) — commits, branches, remotes, workflow
-- [Reading Documentation](./concepts/reading-documentation.md) — navigating docs, API references, help()
-
-**Intermediate**
-- [How Imports Work](./concepts/how-imports-work.md) — modules, packages, the import system
-- [The Terminal Deeper](./concepts/the-terminal-deeper.md) — shell, PATH, environment variables
-- [Classes and Objects](./concepts/classes-and-objects.md) — OOP fundamentals, methods, inheritance
-- [Decorators Explained](./concepts/decorators-explained.md) — closures, @syntax, practical patterns
-- [Virtual Environments](./concepts/virtual-environments.md) — venv, pip, dependency isolation
-- [Comprehensions Explained](./concepts/comprehensions-explained.md) — list, dict, set, generator comprehensions
-- [Args and Kwargs Explained](./concepts/args-kwargs-explained.md) — *args, **kwargs, unpacking
-- [Context Managers Explained](./concepts/context-managers-explained.md) — with statement, __enter__/__exit__
-- [Enums Explained](./concepts/enums-explained.md) — Enum, IntEnum, Flag, practical usage
-- [Regex Explained](./concepts/regex-explained.md) — patterns, groups, re module
-- [Type Hints Explained](./concepts/type-hints-explained.md) — annotations, mypy, generics
-- [Dataclasses Explained](./concepts/dataclasses-explained.md) — @dataclass, fields, post_init
-- [Match/Case Explained](./concepts/match-case-explained.md) — structural pattern matching (3.10+)
-- [Testing Strategies](./concepts/testing-strategies.md) — unit, integration, fixtures, mocking
-- [Debugging Methodology](./concepts/debugging-methodology.md) — systematic approaches, tools, techniques
-- [Jupyter Notebooks](./concepts/jupyter-notebooks.md) — cells, kernels, interactive workflows
-- [Modern Python Tooling](./concepts/modern-python-tooling.md) — ruff, uv, pyproject.toml, modern ecosystem
-
-**Advanced**
-- [HTTP Explained](./concepts/http-explained.md) — requests, responses, status codes, headers
-- [API Basics](./concepts/api-basics.md) — REST, JSON, authentication, rate limiting
-- [Async Explained](./concepts/async-explained.md) — event loops, async/await, concurrency vs parallelism
-- [Generators and Iterators](./concepts/generators-and-iterators.md) — yield, lazy evaluation, iterator protocol
-- [Collections Deep Dive](./concepts/collections-deep-dive.md) — defaultdict, Counter, deque, namedtuple
-- [Functools and Itertools](./concepts/functools-and-itertools.md) — lru_cache, partial, chain, groupby
-- [Security Basics](./concepts/security-basics.md) — input validation, secrets, common vulnerabilities
-
-See the [Concepts README](./concepts/README.md) for the full index.
-
----
-
-## 🎯 Practice Tools
-
-Build fluency between projects with targeted practice.
-
-### Quizzes (34)
-One quiz per concept guide. Run them from the terminal:
+**34 quizzes** — one per concept guide. Run them from the terminal:
 ```bash
 python concepts/quizzes/what-is-a-variable-quiz.py
 ```
 
-### Flashcards (24 decks)
-Spaced repetition cards using a Leitner box system. Cards you get right appear less often. Cards you miss come back immediately. Decks cover all 13 levels plus 11 expansion modules.
+**24 flashcard decks** — spaced repetition using a Leitner box system. Cards you get right appear less often. Cards you miss come back immediately.
 ```bash
 python practice/flashcards/review-runner.py
 ```
 
-### Coding Challenges (30)
-Short, focused exercises — 10 to 30 minutes each. 15 beginner challenges (swap variables, FizzBuzz, palindromes) and 15 intermediate challenges (decorators, generators, async fetchers).
+**30 coding challenges** — 10 to 30 minutes each. 15 beginner, 15 intermediate.
 ```bash
 python practice/challenges/beginner/01-swap-variables.py
 ```
 
-### Diagnostic Assessments
-Gauge your current skill level and identify gaps before starting a new level.
-
-### Auto-Grader
-Automated feedback on project submissions — checks structure, tests, and code quality.
-
-### Progress Dashboard
-Track completed projects, quiz scores, and flashcard retention across the entire curriculum.
+Plus diagnostic assessments, an auto-grader, and a progress dashboard.
 
 ---
 
-## 🧭 How to Navigate
-
-Every document in this curriculum has a **Next** link at the bottom. Start at this README, click Next, and follow the chain.
-
-```
-README → START_HERE → 00_COMPUTER_LITERACY_PRIMER → 01_ROADMAP → 02_GLOSSARY
-  → 03_SETUP → 04_FOUNDATIONS → ... → projects → concepts → practice
-```
-
-You never have to figure out what comes next. Just follow the link.
-
-Within each project directory, you'll find:
-- `README.md` — what to build and why
-- `project.py` (or `exercise.py`) — starter file
-- `tests/` — tests to validate your solution (Level 0+)
-- `notes.md` — space for your own observations
-
----
-
-## 🎮 Choose Your Learning Mode
-
-**Play-First (Builder)** — Open a project, tinker, break things, figure it out. Read the concept doc when you get stuck. Watch the walkthrough only if you are truly blocked. Good for people who learn by doing.
-
-**Structured (Reader)** — Read the concept doc, take the quiz, then do the projects in order. Use the checklist and mastery gates. Good for people who like clear progress markers.
-
-**Watch-First (Watcher)** — Watch the curated video for each concept, read the walkthrough to see the thinking process, then build the project. Good for people who learn by observing first.
-
-**Visual-First (Visualizer)** — Start with the Mermaid diagrams to see the big picture, read the concept guide with the diagram as your mental map, then build. Good for people who think in pictures and systems.
-
-**Hybrid (Recommended)** — Follow the structured path on weekdays. Explore expansion modules and challenges on weekends. Review flashcards daily. Mix modalities as needed.
-
-Take the [Learning Style Selector](./guides/LEARNING_STYLE_SELECTOR.md) to find your best starting approach.
-
----
-
-## 💻 Cross-Platform Support
-
-This curriculum works on **Windows**, **macOS**, and **Linux**. The setup guide ([03_SETUP_ALL_PLATFORMS.md](./03_SETUP_ALL_PLATFORMS.md)) covers all three with step-by-step instructions.
-
-Requirements:
-- Python 3.11+
-- A terminal (any)
-- A text editor (VS Code recommended)
-
----
-
-## Path Placeholder Rule
-
-Throughout this curriculum, file paths use the `<repo-root>` placeholder to represent the root directory of this repository — wherever you cloned it on your machine. Replace `<repo-root>` with your actual path.
-
-Example: if you cloned to `~/projects/learn.python`, then `<repo-root>/projects/level-0` means `~/projects/learn.python/projects/level-0`.
-
----
-
-## 🏁 Deliverable Milestones
+## Milestones
 
 These gates mark real, demonstrable competence. Each one produces something you can show.
 
@@ -293,61 +204,17 @@ These gates mark real, demonstrable competence. Each one produces something you 
 
 ---
 
-## ✅ Repo Validation
-
-Run these commands to verify the repository structure is intact:
-
-```bash
-# Validate curriculum structure
-python scripts/validate_curriculum.py
-
-# Run project tests (example: level-0, project 01)
-cd projects/level-0/01-terminal-hello-lab
-python -m pytest tests/
-
-# Check code quality
-ruff check .
-```
-
----
-
-## 📚 Resources & Sources
-
-### Official Documentation
-- [Python Official Docs](https://docs.python.org/3/)
-- [Python Tutorial](https://docs.python.org/3/tutorial/)
-- [VS Code Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
-
-### Quality Tooling
-- [pytest](https://docs.pytest.org/) — testing framework
-- [Ruff](https://docs.astral.sh/ruff/) — fast Python linter
-- [Black](https://black.readthedocs.io/) — code formatter
-- [mypy](https://mypy.readthedocs.io/) — static type checker
-
-### Data & Automation
-- [openpyxl](https://openpyxl.readthedocs.io/) — Excel file handling
-- [pandas](https://pandas.pydata.org/docs/) — data analysis
-- [SQLAlchemy](https://docs.sqlalchemy.org/) — database ORM
-- [FastAPI](https://fastapi.tiangolo.com/) — modern web framework
-- [Django](https://docs.djangoproject.com/) — full-stack web framework
-
-### Free Practice & Learning
-- [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/) — free online book
-- [Exercism Python Track](https://exercism.org/tracks/python) — mentored exercises
-- [Python Morsels](https://www.pythonmorsels.com/) — weekly exercises
-- [Real Python](https://realpython.com/) — tutorials and guides
-
----
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome. If you find a typo, a broken link, a test that could be better, or want to add a project — open an issue or submit a pull request.
+
+If this curriculum helps you learn Python, that's already worth it. If you want to make it better for the next person, even better.
 
 Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for community standards.
 
 ---
 
-## 📋 Additional Resources
+## Additional Resources
 
 | Document | Description |
 |----------|-------------|
@@ -363,15 +230,13 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CON
 | [Workshop Kit](./WORKSHOP_KIT.md) | Run a 2-hour Python workshop at meetups and user groups |
 | [Accessibility](./ACCESSIBILITY.md) | Screen reader guidance, cognitive accessibility, accommodations |
 | [Creator Kit](./CREATOR_KIT.md) | Guide for YouTubers and bloggers creating companion content |
-| [Certification Protocol](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) | Formal completion standard with scoring rubrics and defense format |
 | [Validation](./VALIDATION.md) | What the CI checks do and how to run them locally |
-| [Tools Guide](./tools/README.md) | Documentation for all curriculum tools (grader, diagnostics, progress tracker) |
+| [Tools Guide](./tools/README.md) | Documentation for all curriculum tools |
 | [Changelog](./CHANGELOG.md) | Version history and release notes |
 | [Contributing](./CONTRIBUTING.md) | How to contribute to this project |
 | [Code of Conduct](./CODE_OF_CONDUCT.md) | Community standards |
-| [Translations](./translations/README.md) | Community translations (Spanish, Portuguese in progress) |
 | [License](./LICENSE) | MIT License |
 
 ## Next
 
-[Next: START_HERE.md →](./START_HERE.md)
+[Next: START_HERE.md ->](./START_HERE.md)

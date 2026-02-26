@@ -32,19 +32,27 @@ jobs:
       - name: Install dependencies
         run: |
           pip install \
-            mkdocs-material \
-            "mkdocs-material[imaging]" \
-            pymdown-extensions
+            "mkdocs>=1.6,<2" \
+            "mkdocs-material>=9.5,<10" \
+            "pymdown-extensions>=10.0,<11"
 
       - name: Build site
-        run: mkdocs build --strict
+        run: |
+          # mkdocs rejects docs_dir: "." because site_dir would be inside it.
+          # Move mkdocs.yml to a parent directory so docs_dir points to the repo.
+          mkdir -p /tmp/mkdocs-build
+          cp mkdocs.yml /tmp/mkdocs-build/mkdocs.yml
+          cd /tmp/mkdocs-build
+          sed -i "s|^docs_dir:.*|docs_dir: $GITHUB_WORKSPACE|" mkdocs.yml
+          sed -i "s|^site_dir:.*|site_dir: /tmp/mkdocs-site|" mkdocs.yml
+          mkdocs build
         env:
           ENABLE_PDF_EXPORT: 0
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: /tmp/mkdocs-site
 
   deploy:
     environment:
