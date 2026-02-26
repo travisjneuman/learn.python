@@ -1,56 +1,279 @@
 # Solution: Level 6 / Project 07 - SQL Summary Publisher
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP** -- Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
-> your thinking without giving away the answer.
+> If you are stuck, try the [README](./README.md) hints or re-read the
+> relevant [concept docs](../../../concepts/) first.
 
 ---
-
 
 ## Complete solution
 
 ```python
-# WHY seed_sales: [explain the design reason]
-# WHY build_summary: [explain the design reason]
-# WHY format_text_report: [explain the design reason]
-# WHY run: [explain the design reason]
-# WHY parse_args: [explain the design reason]
-# WHY main: [explain the design reason]
+"""Level 6 / Project 07 — SQL Summary Publisher.
 
-# [paste the complete working solution here]
-# Include WHY comments on every non-obvious line.
+Runs aggregate queries against a SQLite database and publishes the
+results as a formatted summary report (JSON + human-readable text).
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import sqlite3
+from dataclasses import dataclass, field
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Schema & seed
+# ---------------------------------------------------------------------------
+
+SALES_DDL = """\
+CREATE TABLE IF NOT EXISTS sales (
+    id       INTEGER PRIMARY KEY,
+    region   TEXT NOT NULL,
+    product  TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    revenue  REAL NOT NULL,
+    sale_date TEXT NOT NULL
+);
+"""
+
+
+def seed_sales(conn: sqlite3.Connection, rows: list[dict]) -> int:
+    """Insert sales rows (idempotent via IGNORE on PK).
+
+    WHY INSERT OR IGNORE? -- Autoincrement PK means re-running the
+    script with the same data would add duplicates. OR IGNORE on the
+    PK prevents that. In production you would use a business key instead.
+    """
+    conn.execute(SALES_DDL)
+    inserted = 0
+    for r in rows:
+        try:
+            conn.execute(
+                "INSERT OR IGNORE INTO sales (region, product, quantity, revenue, sale_date) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (r["region"], r["product"], int(r["quantity"]), float(r["revenue"]), r["sale_date"]),
+            )
+            inserted += 1
+        except (KeyError, ValueError) as exc:
+            logging.warning("skip bad row: %s", exc)
+    conn.commit()
+    return inserted
+
+
+# ---------------------------------------------------------------------------
+# Aggregate queries
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class SummaryReport:
+    """Structured container for all summary sections."""
+    total_sales: int = 0
+    total_revenue: float = 0.0
+    by_region: list[dict] = field(default_factory=list)
+    by_product: list[dict] = field(default_factory=list)
+    top_sale: dict = field(default_factory=dict)
+
+
+def build_summary(conn: sqlite3.Connection) -> SummaryReport:
+    """Run aggregate queries and assemble a SummaryReport.
+
+    WHY aggregate in SQL instead of Python? -- The database engine is
+    optimized for GROUP BY operations: it uses indexes, sorts in-place,
+    and never loads all rows into Python memory. For 10M rows, SQL
+    aggregation is orders of magnitude faster than a Python loop.
+    """
+    report = SummaryReport()
+
+    # WHY COALESCE? -- SUM() returns NULL when the table is empty.
+    # COALESCE replaces NULL with 0 so downstream code never has to
+    # handle None for a numeric field.
+    row = conn.execute(
+        "SELECT COUNT(*), COALESCE(SUM(revenue), 0) FROM sales"
+    ).fetchone()
+    report.total_sales = row[0]
+    report.total_revenue = round(row[1], 2)
+
+    # By region -- ORDER BY rev DESC puts highest-revenue region first
+    for r in conn.execute(
+        "SELECT region, COUNT(*) AS cnt, SUM(revenue) AS rev, AVG(revenue) AS avg_rev "
+        "FROM sales GROUP BY region ORDER BY rev DESC"
+    ).fetchall():
+        report.by_region.append({
+            "region": r[0], "count": r[1],
+            "revenue": round(r[2], 2), "avg_revenue": round(r[3], 2),
+        })
+
+    # By product
+    for r in conn.execute(
+        "SELECT product, SUM(quantity) AS qty, SUM(revenue) AS rev "
+        "FROM sales GROUP BY product ORDER BY rev DESC"
+    ).fetchall():
+        report.by_product.append({
+            "product": r[0], "quantity": r[1], "revenue": round(r[2], 2),
+        })
+
+    # WHY LIMIT 1 instead of Python max()? -- Lets the DB engine do the
+    # sort and return only the single best row. Avoids loading all rows
+    # into Python just to find the maximum.
+    top = conn.execute(
+        "SELECT region, product, revenue, sale_date FROM sales ORDER BY revenue DESC LIMIT 1"
+    ).fetchone()
+    if top:
+        report.top_sale = {
+            "region": top[0], "product": top[1],
+            "revenue": top[2], "date": top[3],
+        }
+
+    return report
+
+
+# ---------------------------------------------------------------------------
+# Formatting
+# ---------------------------------------------------------------------------
+
+
+def format_text_report(report: SummaryReport) -> str:
+    """Render the summary as a human-readable text block.
+
+    WHY dual output (JSON + text)? -- JSON feeds dashboards and
+    downstream programs; text is for humans reading terminal output
+    or email alerts. Same data, two audiences.
+    """
+    lines = [
+        "=== SALES SUMMARY REPORT ===",
+        f"Total sales: {report.total_sales}",
+        f"Total revenue: ${report.total_revenue:,.2f}",
+        "",
+        "--- By Region ---",
+    ]
+    for r in report.by_region:
+        lines.append(
+            f"  {r['region']:<12} sales={r['count']}  revenue=${r['revenue']:>10,.2f}  "
+            f"avg=${r['avg_revenue']:>8,.2f}"
+        )
+
+    lines.append("")
+    lines.append("--- By Product ---")
+    for p in report.by_product:
+        lines.append(f"  {p['product']:<12} qty={p['quantity']}  revenue=${p['revenue']:>10,.2f}")
+
+    if report.top_sale:
+        lines.append("")
+        lines.append("--- Top Sale ---")
+        lines.append(
+            f"  {report.top_sale['product']} in {report.top_sale['region']} "
+            f"— ${report.top_sale['revenue']:,.2f} on {report.top_sale['date']}"
+        )
+
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run(input_path: Path, output_path: Path, db_path: str = ":memory:") -> dict:
+    """Load sales data, build summary, write JSON + text reports."""
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input not found: {input_path}")
+
+    sales_data = json.loads(input_path.read_text(encoding="utf-8"))
+
+    conn = sqlite3.connect(db_path)
+    try:
+        inserted = seed_sales(conn, sales_data)
+        report = build_summary(conn)
+    finally:
+        conn.close()
+
+    summary_dict = {
+        "rows_loaded": inserted,
+        "total_sales": report.total_sales,
+        "total_revenue": report.total_revenue,
+        "by_region": report.by_region,
+        "by_product": report.by_product,
+        "top_sale": report.top_sale,
+    }
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(summary_dict, indent=2), encoding="utf-8")
+
+    # WHY a separate .txt file? -- JSON is for machines; plain text is
+    # for operators scanning output in a terminal or email.
+    text_path = output_path.with_suffix(".txt")
+    text_path.write_text(format_text_report(report), encoding="utf-8")
+
+    logging.info("published summary: %d sales, $%.2f revenue", report.total_sales, report.total_revenue)
+    return summary_dict
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="SQL Summary Publisher — aggregate queries to formatted reports"
+    )
+    parser.add_argument("--input", default="data/sample_input.json")
+    parser.add_argument("--output", default="data/output_summary.json")
+    parser.add_argument("--db", default=":memory:")
+    return parser.parse_args()
+
+
+def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+    args = parse_args()
+    summary = run(Path(args.input), Path(args.output), args.db)
+    print(json.dumps(summary, indent=2))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
 ## Design decisions
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| seed_sales function | [reason] | [alternative] |
-| build_summary function | [reason] | [alternative] |
-| format_text_report function | [reason] | [alternative] |
+| SQL aggregation (GROUP BY) instead of Python loops | Database engine handles sorting and grouping efficiently without loading all rows into Python memory | `collections.Counter` in Python -- works for small datasets but does not scale to millions of rows |
+| COALESCE around SUM/AVG | Prevents NULL propagation when the table is empty; downstream code always gets a number | Python `or 0` after fetchone -- more fragile, easy to forget |
+| Dual output (JSON + text) | JSON for machine consumption (dashboards, APIs); text for human-readable terminal/email output | JSON only -- requires a viewer to parse; text only -- not machine-consumable |
+| SummaryReport dataclass | Groups all report sections into one typed container; clean to pass between build and format functions | Raw dict -- no type hints, easy to misspell keys |
 
 ## Alternative approaches
 
-### Approach B: [Name]
+### Approach B: Subquery for "top sale per region"
 
 ```python
-# [Different valid approach with trade-offs explained]
+def top_sale_per_region(conn: sqlite3.Connection) -> list[dict]:
+    """Find the highest-revenue sale in each region using a subquery."""
+    rows = conn.execute(
+        "SELECT s.region, s.product, s.revenue "
+        "FROM sales s "
+        "INNER JOIN ("
+        "  SELECT region, MAX(revenue) AS max_rev FROM sales GROUP BY region"
+        ") m ON s.region = m.region AND s.revenue = m.max_rev "
+        "ORDER BY s.revenue DESC"
+    ).fetchall()
+    return [{"region": r[0], "product": r[1], "revenue": r[2]} for r in rows]
 ```
 
-**Trade-off:** [When you would prefer this approach vs the primary one]
+**Trade-off:** Subqueries enable more sophisticated analysis (top-N per group, percentiles) but are harder to read and debug. The simple `ORDER BY ... LIMIT 1` approach in the primary solution is sufficient for a single global top and much easier to understand.
 
-## What could go wrong
+## Common pitfalls
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| [bad input] | [error/behavior] | [how to handle] |
-| [edge case] | [behavior] | [how to handle] |
-
-## Key takeaways
-
-1. [Most important lesson from this project]
-2. [Second lesson]
-3. [Connection to future concepts]
+| Empty sales table | `SUM(revenue)` returns NULL; without COALESCE, the summary contains `None` and `json.dumps` may produce unexpected output | Always use `COALESCE(SUM(...), 0)` for aggregate queries |
+| Negative revenue values in input | Aggregates silently include them, producing misleading totals | Validate `revenue >= 0` during seeding or add a CHECK constraint |
+| Floating-point rounding drift | Summing many REAL values accumulates error (e.g., $1374.099999 instead of $1374.10) | `round()` all displayed values to 2 decimal places; for financial systems, store amounts as INTEGER cents |
