@@ -1,6 +1,12 @@
 # Level 2 / Project 04 - Error Safe Divider
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you write a `try/except` block that catches a specific exception type?
+- Can you explain the difference between `ValueError` and `TypeError`?
+
 ## Focus
 - exception handling and graceful failure
 
@@ -68,6 +74,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Error Safe Divider. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to understand `try/except/else/finally`. Can you explain what runs in each block with a simple example?"
+- "Can you explain the Python exception hierarchy and why catching `Exception` is different from catching `BaseException`?"
 
 ---
 

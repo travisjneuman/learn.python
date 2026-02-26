@@ -6,7 +6,6 @@ basic column statistics for numeric columns.
 Concepts: csv.DictReader, string formatting, type detection, aggregation.
 """
 
-from __future__ import annotations
 
 import argparse
 import csv

@@ -1,0 +1,37 @@
+[project]
+name = "learn-python"
+version = "1.0.0"
+description = "Comprehensive Python curriculum: zero experience to full-stack mastery"
+requires-python = ">=3.11"
+license = "MIT"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+]
+docs = [
+    "mkdocs-material>=9.5,<10",
+    "mkdocs>=1.6,<2",
+    "pymdown-extensions>=10.0,<11",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = [
+    "E501",   # line too long — handled by formatter
+    "E741",   # ambiguous variable name — curriculum uses simple names for teaching
+]
+
+[tool.ruff.lint.per-file-ignores]
+"projects/level-00-absolute-beginner/**" = ["F841", "E711", "B007"]  # beginner exercises
+
+[tool.pytest.ini_options]
+testpaths = ["projects"]
+python_files = ["test_*.py", "test_project.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

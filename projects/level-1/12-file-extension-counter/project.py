@@ -6,7 +6,6 @@ Report the distribution and optionally filter by extension.
 Concepts: pathlib.rglob, dictionaries for counting, directory traversal.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

@@ -6,7 +6,6 @@ notification messages with severity levels and timestamps.
 Concepts: f-strings, template strings, dictionaries, string formatting.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

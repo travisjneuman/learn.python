@@ -6,7 +6,6 @@ A simple implementation of the command pattern.
 Concepts: functions as values, dictionaries mapping strings to functions, *args.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

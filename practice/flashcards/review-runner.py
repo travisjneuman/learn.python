@@ -1,6 +1,21 @@
 """
 Spaced Repetition Flashcard Runner — Leitner Box System
 
+A simple flashcard reviewer using the Leitner 5-box method. Cards move up
+a box on correct answers and drop to box 1 on incorrect answers. Review
+intervals increase with each box (0, 2, 4, 8, 16 days).
+
+WHEN TO USE THIS:
+    Use this runner if you want a simple yes/no self-assessment with the
+    Leitner box model. It stores progress in .review-state.json alongside
+    the flashcard decks.
+
+SEE ALSO:
+    tools/spaced_repetition.py — Uses the SM-2 algorithm with a 0-5 quality
+    rating scale, finer-grained scheduling, and ANSI-colored output. Stores
+    progress in data/flashcard_progress.json. Prefer this for more precise
+    review scheduling.
+
 Usage:
     python practice/flashcards/review-runner.py              # review all due cards
     python practice/flashcards/review-runner.py --level 0    # review level 0 only

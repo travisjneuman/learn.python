@@ -10,6 +10,12 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=for-the-badge" alt="Contributions Welcome">
 </p>
+<p align="center">
+  <a href="https://github.com/travisjneuman/learn.python/stargazers"><img src="https://img.shields.io/github/stars/travisjneuman/learn.python?style=flat-square&label=Stars" alt="GitHub Stars"></a>
+  <a href="https://github.com/travisjneuman/learn.python/network/members"><img src="https://img.shields.io/github/forks/travisjneuman/learn.python?style=flat-square&label=Forks" alt="GitHub Forks"></a>
+  <a href="https://github.com/travisjneuman/learn.python/commits/main"><img src="https://img.shields.io/github/last-commit/travisjneuman/learn.python?style=flat-square&label=Last%20Commit" alt="Last Commit"></a>
+  <a href="https://github.com/travisjneuman/learn.python/issues"><img src="https://img.shields.io/github/issues/travisjneuman/learn.python?style=flat-square&label=Issues" alt="Open Issues"></a>
+</p>
 
 <p align="center">
   <strong>A complete, hands-on Python curriculum.<br>From "what is a terminal?" to deploying production applications.</strong>
@@ -315,9 +321,13 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines and [CODE_OF_CON
 | [FAQ](./FAQ.md) | Common questions from new learners |
 | [Curriculum Map](./CURRICULUM_MAP.md) | Visual dependency diagram and projects-at-a-glance table |
 | [Fast Track](./FAST_TRACK.md) | Accelerated path for developers who already know another language |
+| [30-Day Python Challenge](./30_DAY_PYTHON_CHALLENGE.md) | Curated 30-day subset of the curriculum with daily goals |
+| [Review Schedule](./REVIEW_SCHEDULE.md) | Spaced repetition review calendar with checkpoints per level |
 | [Career Readiness](./CAREER_READINESS.md) | Map curriculum levels to job roles, interview prep by stage |
 | [Portfolio Guide](./PORTFOLIO_GUIDE.md) | How to present your projects to employers |
-| [Teaching Guide](./TEACHING_GUIDE.md) | Classroom adaptation: semester mappings, rubrics, fork instructions |
+| [Teaching Guide](./TEACHING_GUIDE.md) | Classroom adaptation: semester mappings, rubrics, GitHub Classroom |
+| [Accessibility](./ACCESSIBILITY.md) | Screen reader guidance, cognitive accessibility, accommodations |
+| [Creator Kit](./CREATOR_KIT.md) | Guide for YouTubers and bloggers creating companion content |
 | [Certification Protocol](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) | Formal completion standard with scoring rubrics and defense format |
 | [Validation](./VALIDATION.md) | What the CI checks do and how to run them locally |
 | [Tools Guide](./tools/README.md) | Documentation for all curriculum tools (grader, diagnostics, progress tracker) |

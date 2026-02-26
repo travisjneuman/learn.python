@@ -7,7 +7,6 @@ of what would change.
 Concepts: string methods, Path manipulation, safe simulation patterns.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

@@ -1,6 +1,13 @@
 # Level 1 / Project 01 - Input Validator Lab
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you open a file and read its contents into a list of lines?
+- Can you use `if`/`elif`/`else` to check multiple conditions?
+- Can you check if a character is in a string? (`"@" in "user@example.com"`)
+
 ## Focus
 - validate required fields and safe defaults
 
@@ -32,6 +39,33 @@ pytest -q
 - `data/output.json`
 - Passing tests
 - Updated `notes.md`
+
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that validates a date string in `YYYY-MM-DD` format.
+
+**Step 1: Think about what makes a date string valid.** It has three parts separated by dashes. The year is 4 digits, the month is 1-12, the day is 1-31.
+
+```python
+def validate_date(text):
+    parts = text.strip().split("-")
+    if len(parts) != 3:
+        return {"valid": False, "reason": "must have three parts separated by -"}
+    year, month, day = parts
+    if not (year.isdigit() and month.isdigit() and day.isdigit()):
+        return {"valid": False, "reason": "year, month, day must be numbers"}
+    if not (1 <= int(month) <= 12):
+        return {"valid": False, "reason": f"month {month} is out of range 1-12"}
+    if not (1 <= int(day) <= 31):
+        return {"valid": False, "reason": f"day {day} is out of range 1-31"}
+    return {"valid": True, "reason": ""}
+```
+
+**Step 2: Test it.** `validate_date("2024-01-15")` returns valid. `validate_date("2024-13-01")` returns invalid (month 13). `validate_date("not-a-date")` returns invalid (not numbers).
+
+**The thought process:** Validate one thing at a time: format first, then types, then ranges. Return structured results (dict with valid + reason) so the caller can display useful messages. This is the same pattern the input validator project uses.
 
 ## Alter it (required)
 1. Add a new validation type: "url" that checks for `http://` or `https://` prefix and a dot in the domain.
@@ -70,6 +104,16 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Input Validator Lab. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to check if a string contains exactly one `@` symbol. I have tried `count()` but my logic is not quite right. Can you give me a hint?"
+- "Can you explain how to return structured results from a validation function, using a different example like checking phone numbers?"
 
 ---
 

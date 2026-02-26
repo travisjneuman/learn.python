@@ -12,5 +12,11 @@ practice/flashcards/.review-state.json
 # Personal learning workspace
 learning/
 
+# Flashcard progress (SM-2 engine)
+data/flashcard_progress.json
+
+# Ruff cache
+.ruff_cache/
+
 # MkDocs build output
 site/

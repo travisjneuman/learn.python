@@ -12,12 +12,17 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/07-first-file-reader
-python project.py --input data/sample_input.txt
+python project.py
 pytest -q
 ```
 
+The program asks you to enter a file path, then displays its contents with line numbers.
+
 ## Expected terminal output
 ```text
+=== File Reader ===
+Enter a file path to read (e.g. data/sample_input.txt): data/sample_input.txt
+
 === Contents of sample_input.txt ===
 
   1 | Welcome to your first file reader!
@@ -27,23 +32,23 @@ pytest -q
 === Summary ===
   Lines:      3 (2 non-empty)
   Words:      14
+  Characters: 57
 5 passed
 ```
 
 ## Expected artifacts
-- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add a `--start` and `--end` flag to display only a range of line numbers.
-2. Add a `--encoding` flag that lets the user specify the file encoding (default to `utf-8`).
+1. Ask the user for a start and end line number to display only a range of the file.
+2. After showing the summary, ask "Read another file? (y/n): " and loop if yes.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Point `--input` to a file that does not exist -- does it raise `FileNotFoundError` with a clear message?
-2. Use an empty file as input -- does `file_summary()` crash or return zero counts?
-3. Use a file with very long lines (1000+ characters) -- does line numbering still align correctly?
+1. Enter a file path that does not exist -- does it show a clear error or crash?
+2. Create an empty file and read it -- does `file_summary()` crash or return zero counts?
+3. Read a file with very long lines (1000+ characters) -- does line numbering still align correctly?
 
 ## Fix it (required)
 1. Ensure `read_file_lines()` raises `FileNotFoundError` with the path in the message.

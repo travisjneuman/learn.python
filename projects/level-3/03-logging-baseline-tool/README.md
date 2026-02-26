@@ -1,6 +1,12 @@
 # Level 3 / Project 03 - Logging Baseline Tool
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `logging.basicConfig()` to set up Python's logging module?
+- Can you explain the difference between `print()` and `logging.info()`?
+
 ## Focus
 - structured logs and run summaries
 
@@ -68,6 +74,16 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Logging Baseline Tool. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to configure Python logging with different levels (DEBUG, INFO, WARNING). Can you explain the logging level hierarchy with examples?"
+- "Can you explain the difference between `logging.getLogger(__name__)` and `logging.getLogger('myapp')`?"
 
 ---
 

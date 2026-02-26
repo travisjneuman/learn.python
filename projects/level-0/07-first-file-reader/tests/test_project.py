@@ -1,25 +1,25 @@
 """Tests for First File Reader."""
 
-from pathlib import Path
+import os
 
 import pytest
 
 from project import file_summary, format_with_line_numbers, read_file_lines
 
 
-def test_read_file_lines_basic(tmp_path: Path) -> None:
+def test_read_file_lines_basic(tmp_path) -> None:
     """Reading a simple file should return each line."""
     f = tmp_path / "test.txt"
     f.write_text("line one\nline two\nline three\n", encoding="utf-8")
-    lines = read_file_lines(f)
+    lines = read_file_lines(str(f))
     assert len(lines) == 3
     assert lines[0] == "line one"
 
 
-def test_read_file_lines_missing_raises(tmp_path: Path) -> None:
+def test_read_file_lines_missing_raises(tmp_path) -> None:
     """A missing file should raise FileNotFoundError."""
     with pytest.raises(FileNotFoundError):
-        read_file_lines(tmp_path / "nope.txt")
+        read_file_lines(str(tmp_path / "nope.txt"))
 
 
 def test_format_with_line_numbers() -> None:
@@ -35,12 +35,12 @@ def test_format_empty_file() -> None:
     assert format_with_line_numbers([]) == "(empty file)"
 
 
-def test_file_summary_counts(tmp_path: Path) -> None:
+def test_file_summary_counts(tmp_path) -> None:
     """The summary should have correct line and word counts."""
     f = tmp_path / "data.txt"
     f.write_text("hello world\ngoodbye world\n", encoding="utf-8")
-    lines = read_file_lines(f)
-    summary = file_summary(f, lines)
+    lines = read_file_lines(str(f))
+    summary = file_summary(str(f), lines)
     assert summary["lines"] == 2
     assert summary["words"] == 4
     assert summary["non_empty_lines"] == 2

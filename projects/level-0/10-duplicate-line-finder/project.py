@@ -1,19 +1,13 @@
 """Level 0 project: Duplicate Line Finder.
 
-Read a text file and find lines that appear more than once.
-Report which lines are duplicated and how many times.
+Enter lines of text and find which ones appear more than once.
+Report duplicates and their counts.
 
-Concepts: dictionaries for counting, sets for uniqueness, file I/O.
+Concepts: dictionaries for counting, sets for uniqueness, text input.
 """
 
-from __future__ import annotations
 
-import argparse
-import json
-from pathlib import Path
-
-
-def count_line_occurrences(lines: list[str]) -> dict[str, int]:
+def count_line_occurrences(lines: list) -> dict:
     """Count how many times each line appears.
 
     WHY a dict? -- A dictionary maps each unique line (the key) to its
@@ -29,7 +23,7 @@ def count_line_occurrences(lines: list[str]) -> dict[str, int]:
     return counts
 
 
-def find_duplicates(lines: list[str]) -> list[dict]:
+def find_duplicates(lines: list) -> list:
     """Find lines that appear more than once and report details.
 
     Returns a list of dicts, each containing the duplicated text,
@@ -55,21 +49,8 @@ def find_duplicates(lines: list[str]) -> list[dict]:
     return duplicates
 
 
-def load_lines(path: Path) -> list[str]:
-    """Load all lines from a file, stripping trailing whitespace.
-
-    WHY strip each line? -- Trailing spaces are invisible but would
-    make 'hello' and 'hello ' look like different lines.
-    """
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    raw = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in raw]
-
-
-def build_report(lines: list[str]) -> dict:
-    """Build a full report about duplicates in the file."""
+def build_report(lines: list) -> dict:
+    """Build a full report about duplicates in the input."""
     non_empty = [line for line in lines if line]
     duplicates = find_duplicates(non_empty)
 
@@ -81,39 +62,35 @@ def build_report(lines: list[str]) -> dict:
     }
 
 
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="Duplicate Line Finder")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-
-    lines = load_lines(Path(args.input))
-    report = build_report(lines)
-
-    print("=== Duplicate Line Report ===")
-    print(f"  Total lines: {report['total_lines']}")
-    print(f"  Unique lines: {report['unique_lines']}")
-    print(f"  Duplicated lines: {report['duplicate_count']}")
-
-    if report["duplicates"]:
-        print("\n  Duplicates found:")
-        for dup in report["duplicates"]:
-            positions = ", ".join(str(n) for n in dup["line_numbers"])
-            print(f"    '{dup['text']}' appears {dup['count']} times (lines {positions})")
-    else:
-        print("\n  No duplicates found.")
-
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(f"\n  Report written to {output_path}")
-
-
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
-    main()
+    print("=== Duplicate Line Finder ===")
+    print("Enter lines of text. Enter a blank line when done.\n")
+
+    lines = []
+    line_num = 1
+    while True:
+        line = input(f"  Line {line_num}: ")
+        if line == "":
+            break
+        lines.append(line.strip())
+        line_num += 1
+
+    if not lines:
+        print("No lines entered.")
+    else:
+        report = build_report(lines)
+
+        print(f"\n=== Duplicate Line Report ===")
+        print(f"  Total lines: {report['total_lines']}")
+        print(f"  Unique lines: {report['unique_lines']}")
+        print(f"  Duplicated lines: {report['duplicate_count']}")
+
+        if report["duplicates"]:
+            print("\n  Duplicates found:")
+            for dup in report["duplicates"]:
+                positions = ", ".join(str(n) for n in dup["line_numbers"])
+                print(f"    '{dup['text']}' appears {dup['count']} times (lines {positions})")
+        else:
+            print("\n  No duplicates found.")

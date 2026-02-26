@@ -6,15 +6,6 @@ understanding how Python sends text to your screen.
 Concepts: print(), variables, string concatenation, f-strings, escape characters.
 """
 
-from __future__ import annotations
-
-# argparse lets us accept command-line flags like --name.
-import argparse
-# json for writing structured output.
-import json
-# Path is a safer way to work with file paths than raw strings.
-from pathlib import Path
-
 
 def greet(name: str) -> str:
     """Build a personalised greeting string.
@@ -62,7 +53,7 @@ def run_hello_lab(name: str, day: int) -> dict:
     1. Print a banner to the terminal.
     2. Print a personalised greeting.
     3. Print learning-day info.
-    4. Return a summary dict for file output.
+    4. Return a summary dict.
     """
     # --- Terminal output (side effects) ---
     banner = build_banner("TERMINAL HELLO LAB")
@@ -79,33 +70,24 @@ def run_hello_lab(name: str, day: int) -> dict:
     # Escape characters demo: \n inside a string creates a new line.
     print("Fun fact: Python is named after Monty Python,\nnot the snake!")
 
-    # --- Build summary for file output ---
+    # --- Build summary ---
     summary = build_info_card(name, "Python", day)
     return summary
-
-
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="Terminal Hello Lab")
-    parser.add_argument("--name", default="Learner", help="Your name")
-    parser.add_argument("--day", type=int, default=1, help="Learning day number")
-    parser.add_argument("--output", default="data/output.json", help="Output file path")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-    summary = run_hello_lab(args.name, args.day)
-
-    # Write the summary to a JSON file so we can inspect it later.
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print(f"\nSummary written to {output_path}")
 
 
 # This guard means the code below only runs when you execute the file
 # directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
-    main()
+    # Ask the user for their name and learning day using input().
+    name = input("What is your name? ")
+    day_text = input("What day of your Python journey is it? ")
+
+    # Convert the day to an integer. input() always returns a string.
+    day = int(day_text)
+
+    summary = run_hello_lab(name, day)
+
+    # Show the summary at the end.
+    print("\n--- Your Info Card ---")
+    for key, value in summary.items():
+        print(f"  {key}: {value}")

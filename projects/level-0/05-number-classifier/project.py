@@ -1,18 +1,12 @@
 """Level 0 project: Number Classifier.
 
-Read numbers from a file and classify each one:
+Enter numbers and classify each one:
   - positive / negative / zero
   - even / odd
   - prime / composite
 
 Concepts: if/elif/else decision trees, modulo operator, loops, functions.
 """
-
-from __future__ import annotations
-
-import argparse
-import json
-from pathlib import Path
 
 
 def is_even(n: int) -> bool:
@@ -73,82 +67,39 @@ def classify_number(n: int) -> dict:
     }
 
 
-def process_file(path: Path) -> list[dict]:
-    """Read numbers from a file (one per line) and classify each."""
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
+if __name__ == "__main__":
+    print("=== Number Classifier ===")
+    print("Enter numbers one at a time. Type 'quit' to see a summary.\n")
 
-    lines = path.read_text(encoding="utf-8").splitlines()
     results = []
 
-    for line in lines:
-        stripped = line.strip()
-        if not stripped:
-            continue
+    while True:
+        text = input("Enter a number (or 'quit'): ")
+
+        if text.strip().lower() in ("quit", "exit", "q"):
+            break
 
         try:
-            n = int(stripped)
+            n = int(text)
         except ValueError:
-            results.append({"input": stripped, "error": "Not an integer"})
+            print(f"  '{text}' is not a valid integer. Try again.\n")
             continue
 
-        results.append(classify_number(n))
+        info = classify_number(n)
+        prime_label = "prime" if info["prime"] else "composite"
+        print(f"  {n} is {info['sign']}, {info['parity']}, {prime_label}")
+        results.append(info)
+        print()
 
-    return results
-
-
-def summarise(results: list[dict]) -> dict:
-    """Build a summary of all classifications.
-
-    Counts how many numbers fell into each category so the learner
-    can see the distribution at a glance.
-    """
-    valid = [r for r in results if "error" not in r]
-    return {
-        "total": len(results),
-        "valid": len(valid),
-        "errors": len(results) - len(valid),
-        "positives": sum(1 for r in valid if r["sign"] == "positive"),
-        "negatives": sum(1 for r in valid if r["sign"] == "negative"),
-        "zeros": sum(1 for r in valid if r["sign"] == "zero"),
-        "evens": sum(1 for r in valid if r["parity"] == "even"),
-        "odds": sum(1 for r in valid if r["parity"] == "odd"),
-        "primes": sum(1 for r in valid if r["prime"]),
-    }
-
-
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="Number Classifier")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-    results = process_file(Path(args.input))
-    summary = summarise(results)
-
-    # Print each classification.
-    for r in results:
-        if "error" in r:
-            print(f"  {r['input']}  =>  ERROR: {r['error']}")
-        else:
-            prime_label = "prime" if r["prime"] else "composite"
-            print(f"  {r['number']:>6}  =>  {r['sign']}, {r['parity']}, {prime_label}")
-
-    print(f"\n  Summary: {summary['primes']} primes out of {summary['valid']} valid numbers")
-
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps({"results": results, "summary": summary}, indent=2),
-        encoding="utf-8",
-    )
-    print(f"  Output written to {output_path}")
-
-
-if __name__ == "__main__":
-    main()
+    # Show summary.
+    if results:
+        primes = sum(1 for r in results if r["prime"])
+        print(f"\n=== Summary ===")
+        print(f"  Numbers classified: {len(results)}")
+        print(f"  Primes found: {primes}")
+        print(f"  Even numbers: {sum(1 for r in results if r['parity'] == 'even')}")
+        print(f"  Odd numbers: {sum(1 for r in results if r['parity'] == 'odd')}")
+    else:
+        print("\nNo numbers entered.")

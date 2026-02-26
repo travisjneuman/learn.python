@@ -19,6 +19,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Callable
 
 # ---------------------------------------------------------------------------
 # Unified schema
@@ -97,7 +98,7 @@ def adapt_api_c(raw: list[dict]) -> list[UnifiedRecord]:
 # Adapter registry
 # ---------------------------------------------------------------------------
 
-ADAPTERS: dict[str, callable] = {
+ADAPTERS: dict[str, Callable[..., Any]] = {
     "api_a": adapt_api_a,
     "api_b": adapt_api_b,
     "api_c": adapt_api_c,

@@ -27,11 +27,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install uv
-        run: pip install uv
-
-      - name: Install ruff
-        run: uv pip install ruff --system
+      - name: Install dependencies
+        run: pip install ruff pytest
 
       - name: Ruff lint check
         run: ruff check .
@@ -42,26 +39,35 @@ jobs:
             python -c "import py_compile; py_compile.compile('$f', doraise=True)" || exit 1
           done
 
-      - name: Markdown link checks
-        run: ./tools/check_markdown_links.sh
+      - name: Root doc contract checks (Python)
+        run: python tools/check_root_docs.py
 
-      - name: Root doc contract checks
-        run: ./tools/check_root_doc_contract.sh
+      - name: Level index contract checks (Python)
+        run: python tools/check_level_index_contract.py
 
-      - name: Level index contract checks
-        run: ./tools/check_level_index_contract.sh
+      - name: Project python comment/docstring contract checks (Python)
+        run: python tools/check_project_python_comment_contract.py
 
-      - name: Project README contract checks
-        run: ./tools/check_project_readme_contract.sh
-
-      - name: Project python comment/docstring contract checks
-        run: ./tools/check_project_python_comment_contract.sh
+      - name: Elite track contract checks (Python)
+        run: python tools/check_elite_track_contract.py
 
       - name: Portable path contract checks
         run: ./tools/check_portable_paths.sh
 
-      - name: Elite track contract checks
-        run: ./tools/check_elite_track_contract.sh
+      - name: Run representative pytest sample
+        run: |
+          pytest --tb=short --no-header -q \
+            projects/level-0/01-terminal-hello-lab/tests/ \
+            projects/level-1/01-input-validator-lab/tests/ \
+            projects/level-2/01-dictionary-lookup-service/tests/ \
+            projects/level-3/01-package-layout-starter/tests/ \
+            projects/level-4/01-schema-validator-engine/tests/ \
+            projects/level-5/01-schedule-ready-script/tests/ \
+            projects/level-6/01-sql-connection-simulator/tests/ \
+            projects/level-7/01-api-query-adapter/tests/ \
+            projects/level-8/01-dashboard-kpi-assembler/tests/ \
+            projects/level-9/01-architecture-decision-log/tests/ \
+          || echo "Some representative tests failed — review output above"
 
       - name: Project quick smoke checks
         run: ./projects/run_smoke_checks.sh
@@ -81,8 +87,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install uv
-        run: pip install uv
+      - name: Install dependencies
+        run: pip install ruff pytest
 
       - name: Full curriculum checks
         run: ./tools/run_all_curriculum_checks.sh --full

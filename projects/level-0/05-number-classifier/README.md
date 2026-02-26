@@ -1,6 +1,12 @@
 # Level 0 / Project 05 - Number Classifier
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you write an if/elif/else chain that checks multiple conditions?
+- Do you know what `%` (modulo) does? What does `10 % 3` return?
+
 ## Focus
 - if-elif-else decision trees
 
@@ -12,35 +18,49 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/05-number-classifier
-python project.py --input data/sample_input.txt
+python project.py
 pytest -q
 ```
 
+The program asks for numbers one at a time. Type `quit` to see a summary.
+
 ## Expected terminal output
 ```text
-       7  =>  positive, odd, prime
-      -3  =>  negative, odd, composite
-       0  =>  zero, even, composite
+=== Number Classifier ===
+Enter numbers one at a time. Type 'quit' to see a summary.
 
-  Summary: 1 primes out of 3 valid numbers
-  Output written to data/output.json
+Enter a number (or 'quit'): 7
+  7 is positive, odd, prime
+
+Enter a number (or 'quit'): -3
+  -3 is negative, odd, composite
+
+Enter a number (or 'quit'): 0
+  0 is zero, even, composite
+
+Enter a number (or 'quit'): quit
+
+=== Summary ===
+  Numbers classified: 3
+  Primes found: 1
+  Even numbers: 1
+  Odd numbers: 2
 5 passed
 ```
 
 ## Expected artifacts
-- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
 1. Add a "perfect number" check (a number equal to the sum of its proper divisors, e.g. 6 = 1+2+3).
-2. Add a `--filter` flag that shows only prime numbers, only even numbers, etc.
+2. After all numbers are entered, ask "Show only primes? (y/n): " and filter the summary.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Add `0` to the input -- is it classified as prime or composite? (It should be neither.)
-2. Add `1` -- the `is_prime()` function should return `False`, but does it?
-3. Add a negative number like `-7` -- does `is_prime()` handle negatives correctly?
+1. Enter `0` -- is it classified as prime or composite? (It should be neither.)
+2. Enter `1` -- the `is_prime()` function should return `False`, but does it?
+3. Enter a negative number like `-7` -- does `is_prime()` handle negatives correctly?
 
 ## Fix it (required)
 1. Ensure `is_prime()` returns `False` for values less than 2.
@@ -69,6 +89,16 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Number Classifier. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to check if a number is prime. I know I need to check divisors, but I am not sure where to stop. Can you give me a hint about the mathematical shortcut?"
+- "Can you explain the modulo operator `%` with three examples that do not involve prime numbers?"
 
 ---
 

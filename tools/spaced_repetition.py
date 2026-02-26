@@ -2,7 +2,19 @@
 Spaced Repetition Flashcard Engine — SM-2 Algorithm
 
 Implements the SuperMemo SM-2 algorithm for optimal review scheduling.
-Tracks card intervals in a JSON file and shows cards due for review.
+Uses a 0-5 quality rating scale for more precise interval calculations
+than the simpler Leitner box system. Includes ANSI-colored output.
+Stores progress in data/flashcard_progress.json.
+
+WHEN TO USE THIS:
+    Prefer this runner for precise, research-backed review scheduling.
+    The SM-2 algorithm adjusts intervals based on your self-rated recall
+    quality (0-5), producing more accurate spacing than Leitner boxes.
+
+SEE ALSO:
+    practice/flashcards/review-runner.py — Uses the simpler Leitner 5-box
+    model with yes/no self-assessment. Stores progress in
+    practice/flashcards/.review-state.json. Use this if you prefer simplicity.
 
 Usage:
     python tools/spaced_repetition.py                  # review due cards

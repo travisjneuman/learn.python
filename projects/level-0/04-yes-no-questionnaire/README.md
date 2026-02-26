@@ -1,6 +1,12 @@
 # Level 0 / Project 04 - Yes No Questionnaire
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `.strip()` and `.lower()` to clean up a string?
+- Can you check if a value is in a set? (`"yes" in {"yes", "y", "true"}`)
+
 ## Focus
 - boolean logic and input normalization
 
@@ -12,22 +18,32 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/04-yes-no-questionnaire
-python project.py --questions data/sample_input.txt --answers data/answers.txt
+python project.py
 pytest -q
 ```
 
+The program asks you 5 questions interactively and tallies your answers.
+
 ## Expected terminal output
 ```text
-=== Questionnaire Results ===
+=== Yes/No Questionnaire ===
+Answer 5 questions with yes or no.
+
+  1. Do you enjoy learning new things? yes
+  2. Have you used a computer before today? y
+  3. Do you like solving puzzles? yeah
+  4. Are you excited to learn Python? YES
+  5. Do you prefer working alone? no
+
+=== Results ===
   Total responses: 5
-  Yes: 3 (60%)
-  No:  1 (20%)
-  Invalid: 1
-4 passed
+  Yes: 4 (80.0%)
+  No:  1 (20.0%)
+  Invalid: 0
+5 passed
 ```
 
 ## Expected artifacts
-- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
@@ -37,13 +53,13 @@ pytest -q
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Create an answers file with only blank lines -- does `tally_answers()` crash or return zeros?
-2. Create an answers file with more answers than questions -- what happens?
-3. Use answers like "YES!!!" or "y e s" -- does `normalise_answer()` handle them?
+1. Answer every question with just spaces or blank -- does `tally_answers()` crash or return zeros?
+2. Answer with "YES!!!" or "y e s" -- does `normalise_answer()` handle them?
+3. What happens if you call `tally_answers([])` with an empty list?
 
 ## Fix it (required)
 1. Handle the empty-answers case by returning a tally with all zeros.
-2. Add bounds checking so extra answers beyond the question count are ignored.
+2. Strip punctuation from answers so "YES!!!" normalises to "yes".
 3. Add a test for the all-blank-answers edge case.
 
 ## Explain it (teach-back)
@@ -68,6 +84,16 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Files and Paths](../../../concepts/quizzes/files-and-paths-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Yes No Questionnaire. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to normalize messy input strings like 'YES', 'y', 'True' into a consistent format. Can you explain `.strip().lower()` with examples that are not about yes/no answers?"
+- "Can you explain how to calculate a percentage from a count and a total, with a simple example?"
 
 ---
 

@@ -6,10 +6,8 @@ Count entries by level and filter by severity.
 Concepts: string splitting, datetime parsing, dictionaries, filtering.
 """
 
-from __future__ import annotations
 
 import argparse
-import json
 from datetime import datetime
 from pathlib import Path
 
@@ -86,7 +84,7 @@ def process_file(path: Path) -> list[dict]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Log Line Parser")
     parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--output", default="data/report.txt")
     parser.add_argument("--level", default=None, help="Filter by log level")
     return parser.parse_args()
 
@@ -109,14 +107,33 @@ def main() -> None:
         else:
             print(f"  [{entry['level']:<7}] {entry['timestamp']} - {entry['message']}")
 
-    print(f"\n  Level counts: {counts}")
+    # Print level summary as a formatted table.
+    print(f"\n  {'Level':<10} {'Count':>6}")
+    print(f"  {'-'*10} {'-'*6}")
+    for level, count in sorted(counts.items()):
+        print(f"  {level:<10} {count:>6}")
+
     skipped = sum(1 for e in entries if "error" in e)
     if skipped:
-        print(f"  Skipped {skipped} unparseable lines")
+        print(f"\n  Skipped {skipped} unparseable lines")
 
+    # Write a plain-text report instead of JSON.
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps({"entries": entries, "counts": counts}, indent=2), encoding="utf-8")
+    report_lines = []
+    report_lines.append("LOG ANALYSIS REPORT")
+    report_lines.append("=" * 60)
+    for entry in display:
+        if "error" in entry:
+            report_lines.append(f"PARSE ERROR: {entry['error']}")
+        else:
+            report_lines.append(f"[{entry['level']:<7}] {entry['timestamp']} - {entry['message']}")
+    report_lines.append("")
+    report_lines.append("LEVEL SUMMARY")
+    report_lines.append(f"{'Level':<10} {'Count':>6}")
+    for level, count in sorted(counts.items()):
+        report_lines.append(f"{level:<10} {count:>6}")
+    output_path.write_text("\n".join(report_lines), encoding="utf-8")
 
 
 if __name__ == "__main__":

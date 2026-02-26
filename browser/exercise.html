@@ -256,8 +256,25 @@ var cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
     'Cmd-Enter': function() { runCode(); }
   }
 });
-if (exercise) { cmEditor.setValue(exercise.code); }
 var originalCode = exercise ? exercise.code : '';
+
+// localStorage persistence: restore saved code or use default.
+var storageKey = 'learn-python-ex-' + exNum;
+var savedCode = localStorage.getItem(storageKey);
+if (savedCode !== null) {
+  cmEditor.setValue(savedCode);
+} else if (exercise) {
+  cmEditor.setValue(exercise.code);
+}
+
+// Auto-save code to localStorage on changes (debounced).
+var saveTimer = null;
+cmEditor.on('change', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(storageKey, cmEditor.getValue());
+  }, 500);
+});
 
 // Output
 var outputEl = document.getElementById('output');
@@ -357,12 +374,15 @@ async function runCode() {
 
 // Events
 runBtn.addEventListener('click', runCode);
-document.getElementById('resetBtn').addEventListener('click', function() { cmEditor.setValue(originalCode); });
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
 document.getElementById('clearBtn').addEventListener('click', clearOutput);
 
 // Load Pyodide
 var s = document.createElement('script');
-s.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
 s.onload = initPyodide;
 document.head.appendChild(s);
 </script>

@@ -13,6 +13,7 @@ import json
 import logging
 from collections import Counter
 from pathlib import Path
+from typing import Any, Callable
 
 # ---------- logging ----------
 
@@ -60,7 +61,7 @@ def action_file_stats(input_path: Path, params: dict) -> dict:
 
 
 # Registry of available actions
-ACTIONS: dict[str, callable] = {
+ACTIONS: dict[str, Callable[..., Any]] = {
     "count_lines": action_count_lines,
     "word_frequency": action_word_frequency,
     "file_stats": action_file_stats,

@@ -6,7 +6,6 @@ Read contact data from a file, build structured contact cards
 Concepts: dictionaries, key-value pairs, string splitting, file I/O.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

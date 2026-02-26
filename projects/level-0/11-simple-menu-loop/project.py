@@ -7,7 +7,6 @@ file for batch/test mode, or from stdin for interactive mode.
 Concepts: while loops, if/elif/else, break, functions as menu actions.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

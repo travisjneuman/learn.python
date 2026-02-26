@@ -6,11 +6,9 @@ assign letter grades, and generate a class report.
 Concepts: csv, dictionaries, arithmetic, grade bands, sorting.
 """
 
-from __future__ import annotations
 
 import argparse
 import csv
-import json
 from pathlib import Path
 
 
@@ -100,10 +98,37 @@ def class_summary(students: list[dict]) -> dict:
     }
 
 
+def format_report(students: list[dict], summary: dict) -> str:
+    """Format the gradebook as a plain-text table report.
+
+    WHY plain text? -- A formatted table is easy to read and can be
+    pasted into emails, documents, or printed to a terminal.
+    """
+    lines = [
+        "GRADEBOOK REPORT",
+        "=" * 52,
+        f"  {'Student':<20} {'Average':>8} {'Grade':>6} {'Status':>8}",
+        f"  {'-'*20} {'-'*8} {'-'*6} {'-'*8}",
+    ]
+
+    for s in sorted(students, key=lambda x: x["average"], reverse=True):
+        status = "PASS" if s["passed"] else "FAIL"
+        lines.append(f"  {s['student']:<20} {s['average']:>8.2f} {s['letter_grade']:>6} {status:>8}")
+
+    lines.append("")
+    lines.append("-" * 52)
+    lines.append(f"  Class average: {summary['class_average']}")
+    lines.append(f"  Passed: {summary['passed']}/{summary['total_students']}")
+    lines.append(f"  Failed: {summary['failed']}/{summary['total_students']}")
+    lines.append("=" * 52)
+
+    return "\n".join(lines)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Simple Gradebook Engine")
     parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--output", default="data/report.txt")
     return parser.parse_args()
 
 
@@ -112,20 +137,13 @@ def main() -> None:
     students = load_gradebook(Path(args.input))
     summary = class_summary(students)
 
-    print("=== Gradebook Report ===\n")
-    print(f"  {'Student':<20} {'Average':>8} {'Grade':>6} {'Status':>8}")
-    print(f"  {'-'*20} {'-'*8} {'-'*6} {'-'*8}")
-
-    for s in sorted(students, key=lambda x: x["average"], reverse=True):
-        status = "PASS" if s["passed"] else "FAIL"
-        print(f"  {s['student']:<20} {s['average']:>8.2f} {s['letter_grade']:>6} {status:>8}")
-
-    print(f"\n  Class average: {summary['class_average']}")
-    print(f"  Passed: {summary['passed']}/{summary['total_students']}")
+    report = format_report(students, summary)
+    print(report)
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps({"students": students, "summary": summary}, indent=2), encoding="utf-8")
+    output_path.write_text(report, encoding="utf-8")
+    print(f"\nReport saved to {output_path}")
 
 
 if __name__ == "__main__":

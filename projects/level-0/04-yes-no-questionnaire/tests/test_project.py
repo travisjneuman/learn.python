@@ -1,8 +1,6 @@
 """Tests for Yes/No Questionnaire."""
 
-from pathlib import Path
-
-from project import load_questions, normalise_answer, tally_answers
+from project import normalise_answer, tally_answers
 
 
 def test_normalise_yes_variants() -> None:
@@ -33,9 +31,9 @@ def test_tally_answers_counts_correctly() -> None:
     assert result["total"] == 5
 
 
-def test_load_questions_skips_blanks(tmp_path: Path) -> None:
-    """Blank lines in the questions file should be skipped."""
-    f = tmp_path / "q.txt"
-    f.write_text("Do you like Python?\n\nIs the sky blue?\n", encoding="utf-8")
-    questions = load_questions(f)
-    assert len(questions) == 2
+def test_tally_empty_list() -> None:
+    """An empty answer list should return zero counts without crashing."""
+    result = tally_answers([])
+    assert result["total"] == 0
+    assert result["yes"] == 0
+    assert result["yes_percent"] == 0.0

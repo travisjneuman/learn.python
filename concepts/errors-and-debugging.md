@@ -1,5 +1,7 @@
 # Errors and Debugging
 
+> **Try This First:** Before reading, try running `print(1/0)` in Python. What happens? Read the error message -- it tells you exactly what went wrong.
+
 Errors are not failures. They are Python telling you exactly what went wrong and where. Learning to read error messages is one of the most valuable skills in programming.
 
 ## Visualize It

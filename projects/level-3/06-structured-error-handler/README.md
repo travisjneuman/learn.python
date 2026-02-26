@@ -71,5 +71,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Structured Error Handler. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to create custom exception classes. Can you show me how to define a custom exception with extra attributes, using a different domain than mine?"
+- "Can you explain when to raise an exception vs when to return an error value?"
+
+---
+
 | [← Prev](../05-refactor-monolith-drill/README.md) | [Home](../../../README.md) | [Next →](../07-batch-file-auditor/README.md) |
 |:---|:---:|---:|

@@ -6,11 +6,9 @@ averages, and produce a spending summary report.
 Concepts: csv module, dict aggregation, basic financial calculations.
 """
 
-from __future__ import annotations
 
 import argparse
 import csv
-import json
 from pathlib import Path
 
 
@@ -127,11 +125,38 @@ def format_report(
     return "\n".join(lines)
 
 
+def write_summary_csv(
+    path: Path,
+    cat_totals: dict[str, float],
+    stats: dict[str, float],
+) -> None:
+    """Write the expense summary as a CSV file.
+
+    WHY CSV? -- CSV is a universal format that can be opened in
+    spreadsheets (Excel, Google Sheets) for further analysis.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+
+        writer.writerow(["Category", "Total"])
+        for cat, total in sorted(cat_totals.items(), key=lambda x: x[1], reverse=True):
+            writer.writerow([cat, f"{total:.2f}"])
+
+        writer.writerow([])
+        writer.writerow(["Metric", "Value"])
+        writer.writerow(["Total", f"{stats['total']:.2f}"])
+        writer.writerow(["Average", f"{stats['average']:.2f}"])
+        writer.writerow(["Min", f"{stats['min']:.2f}"])
+        writer.writerow(["Max", f"{stats['max']:.2f}"])
+        writer.writerow(["Count", stats["count"]])
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Basic Expense Tracker")
     parser.add_argument("--input", default="data/sample_input.txt",
                         help="CSV file with date,category,amount,description")
-    parser.add_argument("--output", default="data/output.json")
+    parser.add_argument("--output", default="data/summary.csv")
     parser.add_argument("--top", type=int, default=3,
                         help="Number of top expenses to show")
     return parser.parse_args()
@@ -148,13 +173,8 @@ def main() -> None:
     print(format_report(cat_totals, stats, top))
 
     output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_data = {
-        "category_totals": cat_totals,
-        "stats": stats,
-        "top_expenses": top,
-    }
-    output_path.write_text(json.dumps(output_data, indent=2), encoding="utf-8")
+    write_summary_csv(output_path, cat_totals, stats)
+    print(f"\n  Summary CSV saved to {output_path}")
 
 
 if __name__ == "__main__":

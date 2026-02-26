@@ -1,6 +1,12 @@
 # Level 2 / Project 05 - Text Report Generator
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `zip()` to pair two lists together?
+- Can you group items from a list into a dictionary of lists?
+
 ## Focus
 - build readable reports from records
 
@@ -70,6 +76,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Text Report Generator. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to group records by a field value. Can you show me how to build a dictionary of lists from a flat list, using a different example like grouping students by grade?"
+- "Can you explain how `zip(headers, values)` works when the lists have different lengths?"
 
 ---
 

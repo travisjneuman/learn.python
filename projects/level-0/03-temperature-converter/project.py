@@ -1,16 +1,10 @@
 """Level 0 project: Temperature Converter.
 
-Convert temperatures between Celsius, Fahrenheit, and Kelvin.
-Reads conversion requests from a file and prints a results table.
+Convert temperatures between Celsius, Fahrenheit, and Kelvin
+using interactive input.
 
 Concepts: functions, return values, float arithmetic, rounding, if/elif/else.
 """
-
-from __future__ import annotations
-
-import argparse
-import json
-from pathlib import Path
 
 
 def celsius_to_fahrenheit(c: float) -> float:
@@ -75,77 +69,33 @@ def convert_temperature(value: float, from_unit: str, to_unit: str) -> float:
         raise ValueError(f"Unknown unit: {to_unit}")
 
 
-def process_file(path: Path) -> list[dict]:
-    """Read conversion requests from a file.
-
-    Expected format per line: VALUE FROM_UNIT TO_UNIT
-    Example: 100 C F
-    """
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    lines = path.read_text(encoding="utf-8").splitlines()
-    results = []
-
-    for line in lines:
-        stripped = line.strip()
-        if not stripped:
-            continue
-
-        parts = stripped.split()
-        if len(parts) != 3:
-            results.append({"input": stripped, "error": "Expected: VALUE FROM_UNIT TO_UNIT"})
-            continue
-
-        raw_value, from_unit, to_unit = parts
-
-        try:
-            value = float(raw_value)
-        except ValueError:
-            results.append({"input": stripped, "error": f"Not a number: {raw_value}"})
-            continue
-
-        try:
-            converted = convert_temperature(value, from_unit, to_unit)
-        except ValueError as err:
-            results.append({"input": stripped, "error": str(err)})
-            continue
-
-        results.append({
-            "input": stripped,
-            "value": value,
-            "from": from_unit.upper(),
-            "to": to_unit.upper(),
-            "result": converted,
-        })
-
-    return results
-
-
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="Temperature Converter")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-    results = process_file(Path(args.input))
-
-    for item in results:
-        if "error" in item:
-            print(f"  {item['input']}  =>  ERROR: {item['error']}")
-        else:
-            print(f"  {item['value']} {item['from']} => {item['result']} {item['to']}")
-
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
-    print(f"\n{len(results)} conversions written to {output_path}")
-
-
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
-    main()
+    print("=== Temperature Converter ===")
+    print("Supported units: C (Celsius), F (Fahrenheit), K (Kelvin)")
+    print("Type 'quit' to exit.\n")
+
+    while True:
+        value_text = input("Enter temperature value (or 'quit'): ")
+
+        if value_text.strip().lower() in ("quit", "exit", "q"):
+            print("Goodbye!")
+            break
+
+        try:
+            value = float(value_text)
+        except ValueError:
+            print(f"  '{value_text}' is not a valid number. Try again.\n")
+            continue
+
+        from_unit = input("Convert from (C/F/K): ").strip().upper()
+        to_unit = input("Convert to (C/F/K): ").strip().upper()
+
+        try:
+            result = convert_temperature(value, from_unit, to_unit)
+            print(f"  {value} {from_unit} = {result} {to_unit}")
+        except ValueError as err:
+            print(f"  ERROR: {err}")
+
+        print()

@@ -33,6 +33,42 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that validates a config file against expected keys and types.
+
+**Step 1: Define the schema as a dict.**
+
+```python
+SCHEMA = {
+    "host": {"type": "str", "required": True},
+    "port": {"type": "int", "required": True},
+    "debug": {"type": "bool", "required": False, "default": False},
+}
+```
+
+**Step 2: Write the validator.**
+
+```python
+def validate_config(config, schema):
+    errors = []
+    for key, rules in schema.items():
+        if key not in config:
+            if rules["required"]:
+                errors.append(f"Missing required field: {key}")
+            continue
+        expected_type = {"str": str, "int": int, "bool": bool}[rules["type"]]
+        if not isinstance(config[key], expected_type):
+            errors.append(f"Field '{key}' expected {rules['type']}, got {type(config[key]).__name__}")
+    return {"valid": len(errors) == 0, "errors": errors}
+```
+
+**Step 3: Test it.** Valid config passes. Missing required field fails. Wrong type fails.
+
+**The thought process:** Separate schema definition from validation logic. Check each field against its rules. Collect all errors (do not stop at the first one). This is exactly how the schema validator engine works.
+
 ## Alter it (required)
 1. Add a `"pattern"` rule to the schema (e.g., email must contain `@`) and enforce it in `validate_record`.
 2. Add a `--strict` CLI flag that treats unexpected extra fields as errors instead of warnings.
@@ -70,6 +106,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Schema Validator Engine. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to validate records against a JSON schema. Can you explain how to check if a value matches an expected type dynamically?"
+- "Can you explain the difference between collecting all validation errors vs stopping at the first one, and when each approach is better?"
 
 ---
 

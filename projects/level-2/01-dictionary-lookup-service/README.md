@@ -1,6 +1,12 @@
 # Level 2 / Project 01 - Dictionary Lookup Service
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `dict.get(key, default)` to safely look up a key that might not exist?
+- Can you write a dictionary comprehension? (`{k: v for k, v in items}`)
+
 ## Focus
 - nested lookup safety and defaults
 
@@ -28,6 +34,39 @@ pytest -q
 - JSON lookup results on stdout
 - Passing tests
 - Updated `notes.md`
+
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that looks up country codes (like "US" -> "United States") with fuzzy matching for typos.
+
+**Step 1: Build the lookup dictionary.**
+
+```python
+from difflib import get_close_matches
+
+COUNTRIES = {"us": "United States", "uk": "United Kingdom", "ca": "Canada", "de": "Germany"}
+
+def lookup_country(code):
+    code_lower = code.strip().lower()
+    if code_lower in COUNTRIES:
+        return {"found": True, "code": code_lower, "name": COUNTRIES[code_lower]}
+    # Try fuzzy matching
+    suggestions = get_close_matches(code_lower, COUNTRIES.keys(), n=3, cutoff=0.6)
+    return {"found": False, "code": code_lower, "suggestions": suggestions}
+```
+
+**Step 2: Test it.** `lookup_country("US")` returns found. `lookup_country("ux")` returns not found, but suggests "us" and "uk".
+
+**Step 3: Handle edge cases.** What if code is empty? `get_close_matches` will not crash, but we should return a clear result.
+
+```python
+if not code or not code.strip():
+    return {"found": False, "code": "", "suggestions": []}
+```
+
+**The thought process:** Normalize input first (lowercase, strip). Try exact match. If that fails, try fuzzy match. Always return a structured result. This is the same pattern the dictionary lookup project uses.
 
 ## Alter it (required)
 1. Add a `--case-sensitive` flag that disables lowercase normalisation.
@@ -66,6 +105,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Dictionary Lookup Service. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to use `difflib.get_close_matches`. Can you explain how the cutoff parameter works with a simple example?"
+- "Can you explain the difference between `str.split('=')` and `str.split('=', 1)` with examples?"
 
 ---
 

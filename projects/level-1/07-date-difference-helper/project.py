@@ -6,7 +6,6 @@ days from a date, and determine the day of the week.
 Concepts: datetime module, strptime/strftime, timedelta, date arithmetic.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

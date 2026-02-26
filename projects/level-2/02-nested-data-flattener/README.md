@@ -1,6 +1,12 @@
 # Level 2 / Project 02 - Nested Data Flattener
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `isinstance()` to check if a value is a dict or a list?
+- Can you explain what recursion is? (A function that calls itself)
+
 ## Focus
 - flatten lists/dicts to row structures
 
@@ -28,6 +34,36 @@ pytest -q
 - Flattened JSON on stdout
 - Passing tests
 - Updated `notes.md`
+
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that flattens a nested list into a single list. `[1, [2, [3, 4]], 5]` becomes `[1, 2, 3, 4, 5]`.
+
+**Step 1: Think recursively.** For each item: if it is a list, flatten it. If it is not a list, add it to the result.
+
+```python
+def flatten_list(nested):
+    result = []
+    for item in nested:
+        if isinstance(item, list):
+            result.extend(flatten_list(item))  # recurse
+        else:
+            result.append(item)
+    return result
+```
+
+**Step 2: Trace it on paper.** `flatten_list([1, [2, [3]]])`:
+- item `1`: not a list, append. result = `[1]`
+- item `[2, [3]]`: is a list, recurse:
+  - item `2`: not a list, append. result = `[2]`
+  - item `[3]`: is a list, recurse:
+    - item `3`: not a list, append. result = `[3]`
+  - extend with `[3]`. result = `[2, 3]`
+- extend with `[2, 3]`. result = `[1, 2, 3]`
+
+**The thought process:** Recursion handles arbitrary nesting depth because each level calls the same function. The dict flattener project uses the same approach but builds dot-separated keys instead of a flat list.
 
 ## Alter it (required)
 1. Add a `--max-depth` flag that stops flattening beyond N levels.
@@ -66,6 +102,16 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Nested Data Flattener. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to understand recursion. Can you trace through a recursive function call step by step, using a simple example like factorial?"
+- "Can you explain how `isinstance(value, dict)` works and when to use it instead of `type(value) == dict`?"
 
 ---
 

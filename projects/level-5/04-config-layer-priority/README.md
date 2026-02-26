@@ -72,5 +72,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Config Layer Priority. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to merge configuration from defaults, environment variables, and CLI arguments with proper precedence. Can you explain config layering with a simple example?"
+- "Can you explain how `os.environ.get()` works and when to use it vs `os.environ[]`?"
+
+---
+
 | [← Prev](../03-multi-file-etl-runner/README.md) | [Home](../../../README.md) | [Next →](../05-plugin-style-transformer/README.md) |
 |:---|:---:|---:|

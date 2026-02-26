@@ -6,7 +6,6 @@ command-line tool: word count, line duplicates, and string cleaning.
 Concepts: combining functions, argparse subcommands, code reuse.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

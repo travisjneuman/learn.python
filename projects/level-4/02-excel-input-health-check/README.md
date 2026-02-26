@@ -33,6 +33,37 @@ pytest -q
 - Passing tests
 - Updated `notes.md`
 
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that scores the quality of a list of records based on completeness.
+
+**Step 1: Define what "quality" means.** Count how many fields are empty or missing in each record.
+
+```python
+def score_completeness(records, required_fields):
+    total_checks = len(records) * len(required_fields)
+    if total_checks == 0:
+        return {"score": 1.0, "missing": []}
+
+    missing = []
+    for i, record in enumerate(records):
+        for field in required_fields:
+            value = record.get(field, "")
+            if not str(value).strip():
+                missing.append({"row": i, "field": field})
+
+    score = 1.0 - (len(missing) / total_checks)
+    return {"score": round(score, 3), "missing": missing}
+```
+
+**Step 2: Interpret the score.** 1.0 means every field is filled. 0.5 means half are missing. 0.0 means everything is empty.
+
+**Step 3: Add thresholds.** `PASS` if score >= 0.95, `WARN` if >= 0.8, `FAIL` otherwise.
+
+**The thought process:** Define measurable quality criteria. Score them numerically. Set thresholds for actionable categories. This is the same pattern the health check project uses.
+
 ## Alter it (required)
 1. Add a check for rows that contain only numeric data (possible header/data swap).
 2. Add a `--format` flag that supports both CSV and TSV input auto-detection.
@@ -69,6 +100,16 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Api Basics](../../../concepts/quizzes/api-basics-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Excel Input Health Check. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to detect whether a CSV uses commas or tabs as delimiters. Can you explain `csv.Sniffer` with a simple example?"
+- "Can you explain how to calculate a completeness score for tabular data?"
 
 ---
 

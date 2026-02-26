@@ -1,6 +1,13 @@
 # Level 3 / Project 01 - Package Layout Starter
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `try/except` to handle a `FileNotFoundError`?
+- Can you import a function from another file? (`from mymodule import my_function`)
+- Can you use `pathlib.Path` to check if a path is a file or directory?
+
 ## Focus
 - project layout and import boundaries
 
@@ -29,6 +36,36 @@ pytest -q
 - Package info JSON on stdout
 - Passing tests
 - Updated `notes.md`
+
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that scans a directory and returns a summary of file types.
+
+**Step 1: Use pathlib to iterate files.**
+
+```python
+from pathlib import Path
+from collections import Counter
+
+def scan_file_types(directory):
+    path = Path(directory)
+    if not path.is_dir():
+        raise ValueError(f"Not a directory: {directory}")
+    extensions = Counter()
+    for item in path.rglob("*"):
+        if item.is_file():
+            ext = item.suffix or "(no extension)"
+            extensions[ext] += 1
+    return dict(extensions.most_common())
+```
+
+**Step 2: Think about the structure.** `scan_file_types("my_project")` returns `{".py": 12, ".md": 3, ".txt": 1}`.
+
+**Step 3: Think about edge cases.** Empty directory returns `{}`. Non-existent directory should raise an error, not silently return empty.
+
+**The thought process:** Validate input first (is it a directory?). Use `pathlib` for cross-platform path handling. Use `Counter` for counting. This is the same approach the package layout scanner uses.
 
 ## Alter it (required)
 1. Add a `--recursive` flag to scan nested packages.
@@ -66,6 +103,16 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Package Layout Starter. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am confused about the difference between a Python module and a package. Can you explain with a simple directory structure example?"
+- "Can you explain what `__init__.py` does and why Python packages need it?"
 
 ---
 

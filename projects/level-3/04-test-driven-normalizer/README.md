@@ -1,6 +1,12 @@
 # Level 3 / Project 04 - Test Driven Normalizer
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you write a pytest test function that uses `assert`?
+- Can you explain what TDD (test-driven development) means? (Write the test first, then the code)
+
 ## Focus
 - write tests before transform logic
 
@@ -64,6 +70,16 @@ You can move on when you can:
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Test Driven Normalizer. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to write tests before writing the code. Can you explain the Red-Green-Refactor cycle of TDD with a simple example?"
+- "Can you explain how `pytest.mark.parametrize` works with a simple example that is not about data normalization?"
 
 ---
 

@@ -206,6 +206,100 @@ One file, all configuration. No more scattered config files.
 
 You do not need to adopt everything at once. Start with `uv` for package management, add `ruff` for linting, and switch to `pyproject.toml` when you create your own packages.
 
+## Python 3.11–3.14 highlights
+
+Recent Python releases have brought significant quality-of-life improvements.
+
+### Better error messages (3.11+)
+
+Python 3.11 points directly to the exact expression that caused an error:
+
+```
+Traceback (most recent call last):
+  File "example.py", line 3, in <module>
+    result = data["users"][0]["email"]
+                               ^^^^^^^
+KeyError: 'email'
+```
+
+Before 3.11, you would only get the line number — now Python underlines the exact problematic expression.
+
+### `f"{x=}"` debugging (3.8+)
+
+Add `=` inside an f-string to print both the variable name and its value:
+
+```python
+x = 42
+name = "Alice"
+items = [1, 2, 3]
+
+print(f"{x=}")            # x=42
+print(f"{name=}")         # name='Alice'
+print(f"{len(items)=}")   # len(items)=3
+```
+
+### `tomllib` — built-in TOML parser (3.11+)
+
+Read `pyproject.toml` and other TOML files without a third-party library:
+
+```python
+import tomllib
+
+with open("pyproject.toml", "rb") as f:
+    config = tomllib.load(f)
+
+print(config["project"]["name"])
+```
+
+### `StrEnum` (3.11+)
+
+Enum members that behave like strings — no need for `.value`:
+
+```python
+from enum import StrEnum
+
+class Color(StrEnum):
+    RED = "red"
+    BLUE = "blue"
+
+print(Color.RED == "red")    # True
+print(f"Color is {Color.RED}")    # "Color is red"
+```
+
+See [Enums Explained](./enums-explained.md) for more.
+
+### `pip audit` — dependency vulnerability scanning
+
+Check your installed packages for known security vulnerabilities:
+
+```bash
+pip install pip-audit
+pip audit
+```
+
+### New interactive REPL (3.13+)
+
+Python 3.13 introduces an improved REPL with:
+- Multi-line editing with proper indentation
+- Color-coded output
+- Paste mode for multi-line code blocks
+- History search with Ctrl+R
+
+### Exception groups and `except*` (3.11+)
+
+Handle multiple exceptions raised simultaneously (useful for async code):
+
+```python
+try:
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(task1())
+        tg.create_task(task2())
+except* ValueError as eg:
+    print(f"Value errors: {eg.exceptions}")
+except* TypeError as eg:
+    print(f"Type errors: {eg.exceptions}")
+```
+
 ## Common mistakes
 
 **Mixing pip and uv in the same environment:**

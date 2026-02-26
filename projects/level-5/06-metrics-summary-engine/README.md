@@ -68,5 +68,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Metrics Summary Engine. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to aggregate metrics (min, max, mean, percentiles) from a list of numeric values. Can you explain how to calculate the 95th percentile?"
+- "Can you explain the difference between mean, median, and mode with examples of when each is most useful?"
+
+---
+
 | [← Prev](../05-plugin-style-transformer/README.md) | [Home](../../../README.md) | [Next →](../07-resilient-json-loader/README.md) |
 |:---|:---:|---:|

@@ -6,7 +6,6 @@ and report type (file/dir), size, and permissions.
 Concepts: pathlib, os.path, file metadata, error handling.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

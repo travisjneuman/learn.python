@@ -1,6 +1,6 @@
 {
   "_comment": "Maps project paths to concept references for pedagogical feedback. When tests fail, the grader suggests reviewing these concepts.",
-  "projects/level-0/01-terminal-hello": {
+  "projects/level-0/01-terminal-hello-lab": {
     "concepts": ["concepts/what-is-a-variable.md"]
   },
   "projects/level-0/02-calculator-basics": {
@@ -15,19 +15,19 @@
   "projects/level-0/05-number-classifier": {
     "concepts": ["concepts/what-is-a-variable.md", "concepts/how-loops-work.md"]
   },
-  "projects/level-1/01-hello-function": {
+  "projects/level-1/01-input-validator-lab": {
     "concepts": ["concepts/functions-explained.md"]
   },
-  "projects/level-2/01-list-basics": {
+  "projects/level-2/01-dictionary-lookup-service": {
     "concepts": ["concepts/collections-explained.md"]
   },
-  "projects/level-3/01-file-reader": {
+  "projects/level-3/01-package-layout-starter": {
     "concepts": ["concepts/files-and-paths.md"]
   },
-  "projects/level-4/01-json-loader": {
+  "projects/level-4/01-schema-validator-engine": {
     "concepts": ["concepts/files-and-paths.md", "concepts/collections-explained.md"]
   },
-  "projects/level-5/01-safe-division": {
+  "projects/level-5/01-schedule-ready-script": {
     "concepts": ["concepts/errors-and-debugging.md"]
   },
   "projects/modules/01-web-scraping": {

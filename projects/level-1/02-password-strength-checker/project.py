@@ -6,7 +6,6 @@ Assign a strength rating from 'weak' to 'strong'.
 Concepts: string methods (isupper, isdigit), boolean conditions, scoring.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

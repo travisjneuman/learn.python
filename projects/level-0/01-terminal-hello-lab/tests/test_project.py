@@ -4,8 +4,6 @@ These tests verify that the greeting and banner functions
 produce correct output without needing to run the full script.
 """
 
-from pathlib import Path
-
 from project import build_banner, build_info_card, greet
 
 

@@ -71,5 +71,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Records Deduplicator. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to use a set to track items I have already seen. Can you explain why sets are faster than lists for membership checks?"
+- "Can you explain the difference between `keep='first'` and `keep='last'` deduplication strategies with a simple example?"
+
+---
+
 | [← Prev](../05-text-report-generator/README.md) | [Home](../../../README.md) | [Next →](../07-list-search-benchmark/README.md) |
 |:---|:---:|---:|

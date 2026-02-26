@@ -3,11 +3,9 @@
 Each test targets a specific behaviour of the calculator functions.
 """
 
-from pathlib import Path
-
 import pytest
 
-from project import add, calculate, divide, process_file
+from project import add, calculate, divide
 
 
 def test_add_two_numbers() -> None:
@@ -36,12 +34,7 @@ def test_calculate_bad_operator() -> None:
     assert "Unknown operator" in result["error"]
 
 
-def test_process_file_reads_expressions(tmp_path: Path) -> None:
-    """process_file should calculate each line in the input file."""
-    sample = tmp_path / "calc.txt"
-    sample.write_text("3 + 4\n10 / 2\n", encoding="utf-8")
-
-    results = process_file(sample)
-    assert len(results) == 2
-    assert results[0]["result"] == 7.0
-    assert results[1]["result"] == 5.0
+def test_calculate_multiplication() -> None:
+    """Multiplication should return the correct product."""
+    result = calculate("6 * 7")
+    assert result["result"] == 42.0

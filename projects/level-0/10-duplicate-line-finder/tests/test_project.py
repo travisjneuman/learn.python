@@ -1,7 +1,5 @@
 """Tests for Duplicate Line Finder."""
 
-from pathlib import Path
-
 from project import build_report, count_line_occurrences, find_duplicates
 
 

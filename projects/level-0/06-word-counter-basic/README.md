@@ -12,38 +12,49 @@ Use `<repo-root>` as the folder containing this repository's `README.md`.
 
 ```bash
 cd <repo-root>/projects/level-0/06-word-counter-basic
-python project.py --input data/sample_input.txt
+python project.py
 pytest -q
 ```
 
+Type or paste text, then press Enter on a blank line to see the analysis.
+
 ## Expected terminal output
 ```text
+=== Word Counter ===
+Type or paste text below. Enter a blank line when done.
+
+Python is a great language.
+Python is easy to learn.
+Python is powerful and fun.
+
 === Word Count Summary ===
   Lines:      3
-  Words:      22
-  Characters: 156
-  Unique:     17
+  Words:      16
+  Characters: 80
+  Unique:     11
 
   Top words:
-    python     3
-    language   2
+    python: 3
+    is: 3
+    a: 1
+    great: 1
+    language: 1
 5 passed
 ```
 
 ## Expected artifacts
-- `data/output.json`
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
 1. Add an "average word length" metric to `analyse_text()`.
-2. Add a `--top` flag that controls how many top words to display (default 5).
+2. Ask the user "How many top words to show? " and use that number instead of the default 5.
 3. Re-run script and tests.
 
 ## Break it (required)
-1. Use an empty file as input -- does `analyse_text()` crash on division by zero?
-2. Use a file with only punctuation like `!!! ??? ...` -- are those counted as words?
-3. Use a file with unicode characters like emojis -- does `count_characters()` count them correctly?
+1. Enter no text (just press Enter immediately) -- does `analyse_text()` crash?
+2. Enter only punctuation like `!!! ??? ...` -- are those counted as words?
+3. Enter unicode characters like emojis -- does `count_characters()` count them correctly?
 
 ## Fix it (required)
 1. Add a guard for empty text that returns zero counts without dividing.
@@ -72,6 +83,16 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Word Counter Basic. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to count word frequencies using a dictionary. Can you show me how `dict.get(key, 0)` works with a simple example that is not about words?"
+- "Can you explain the difference between `.split()` and `.split(' ')` with examples?"
 
 ---
 

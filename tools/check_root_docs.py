@@ -17,6 +17,7 @@ ROOT_DIR = Path(__file__).parent.parent
 
 ROOT_FILES = [
     "README.md",
+    "START_HERE.md",
     "00_COMPUTER_LITERACY_PRIMER.md",
     "01_ROADMAP.md",
     "02_GLOSSARY.md",
@@ -76,19 +77,21 @@ CURRICULUM_FILES = [
     ]
 ]
 
-# Next-chain mapping for root files
+# Next-chain mapping for root files.
+# Must stay in sync with MAIN_CHAIN in tools/rebuild_navigation.py (authoritative).
+# Only root-doc-to-root-doc hops are tracked here; intermediate concept/project
+# pages are validated by rebuild_navigation.py itself.
 NEXT_CHAIN = {
-    "README.md": "00_COMPUTER_LITERACY_PRIMER.md",
+    "README.md": "START_HERE.md",
     "00_COMPUTER_LITERACY_PRIMER.md": "01_ROADMAP.md",
     "01_ROADMAP.md": "02_GLOSSARY.md",
     "02_GLOSSARY.md": "03_SETUP_ALL_PLATFORMS.md",
-    "03_SETUP_ALL_PLATFORMS.md": "04_FOUNDATIONS.md",
-    "04_FOUNDATIONS.md": "09_QUALITY_TOOLING.md",
-    "09_QUALITY_TOOLING.md": "05_AUTOMATION_FILES_EXCEL.md",
-    "05_AUTOMATION_FILES_EXCEL.md": "06_SQL.md",
-    "06_SQL.md": "07_MONITORING_API_INTEGRATION.md",
-    "07_MONITORING_API_INTEGRATION.md": "08_DASHBOARDS.md",
-    "08_DASHBOARDS.md": "10_CAPSTONE_PROJECTS.md",
+    "04_FOUNDATIONS.md": "concepts/how-loops-work.md",
+    "09_QUALITY_TOOLING.md": "concepts/errors-and-debugging.md",
+    "05_AUTOMATION_FILES_EXCEL.md": "projects/level-3/README.md",
+    "06_SQL.md": "projects/level-4/README.md",
+    "07_MONITORING_API_INTEGRATION.md": "concepts/http-explained.md",
+    "08_DASHBOARDS.md": "projects/level-8/README.md",
     "10_CAPSTONE_PROJECTS.md": "11_CHECKLISTS.md",
     "11_CHECKLISTS.md": "12_SCREENSHOT_CHECKPOINTS.md",
     "12_SCREENSHOT_CHECKPOINTS.md": "13_SAMPLE_DATABASE_SCHEMAS.md",

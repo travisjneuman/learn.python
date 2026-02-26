@@ -1,5 +1,7 @@
 # Functions Explained
 
+> **Try This First:** Before reading, try writing a function that adds two numbers: `def add(a, b): return a + b`. Then call it: `print(add(3, 4))`. What does it print?
+
 A function is a reusable block of code with a name. You define it once, then call it whenever you need it.
 
 ## Visualize It

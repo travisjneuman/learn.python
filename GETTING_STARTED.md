@@ -1,5 +1,8 @@
 # How to Use This Curriculum
 
+> **Curriculum orientation.** How levels work, study modes, and time estimates.
+> If you have not installed Python yet, start with [START_HERE.md](./START_HERE.md) first.
+
 This guide walks you through how the curriculum is organized, what order to follow, and how to pace yourself.
 
 ---
@@ -62,16 +65,25 @@ There is no rush. Consistent practice matters more than speed. It is better to s
 
 ---
 
-## What to Do When You Are Stuck
+## When You Get Stuck
 
-Getting stuck is normal. Here is a process that works:
+Getting stuck is not failing -- it is learning. Every professional programmer gets stuck daily. The difference between a beginner and an expert is not that experts never get stuck. It is that experts have been stuck thousands of times and built a toolkit for getting unstuck.
+
+When you hit a wall, that uncomfortable feeling is your brain forming new connections. Research on learning consistently shows that struggling with a problem -- even unsuccessfully -- produces deeper understanding than being handed the answer. If everything feels easy, you are not learning anything new.
+
+So when you feel stuck, frustrated, or like you are "not cut out for this," recognize that feeling as evidence of growth. Take a breath, and try the process below.
+
+For more on learning effectively, see [LEARNING_HOW_TO_LEARN.md](./LEARNING_HOW_TO_LEARN.md).
+
+### A process that works
 
 1. **Read the error message.** Python error messages tell you exactly what went wrong and on which line. Read it from the bottom up.
 2. **Re-read the concept doc.** Every project links to related concept guides. Go back and re-read the relevant section.
 3. **Add `print()` statements.** Print the value of variables before the line that breaks. See what the data actually looks like.
-4. **Check the [FAQ](./FAQ.md).** Common problems and solutions are collected there.
-5. **Search the error message.** Copy the last line of the traceback and search for it online. Someone has hit the same error before.
-6. **Open an issue.** If you think the curriculum itself has a bug (broken test, missing file, unclear instructions), [open an issue](https://github.com/travisjneuman/learn.python/issues) on GitHub.
+4. **Take a break.** If you have been stuck for 20 minutes, walk away for 10 minutes. The answer often comes when you stop staring at the screen.
+5. **Check the [FAQ](./FAQ.md).** Common problems and solutions are collected there.
+6. **Search the error message.** Copy the last line of the traceback and search for it online. Someone has hit the same error before.
+7. **Open an issue.** If you think the curriculum itself has a bug (broken test, missing file, unclear instructions), [open an issue](https://github.com/travisjneuman/learn.python/issues) on GitHub.
 
 ---
 

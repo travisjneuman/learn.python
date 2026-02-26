@@ -1,6 +1,12 @@
 # Level 3 / Project 02 - CLI Arguments Workbench
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `argparse` to create a basic command-line interface with required and optional arguments?
+- Can you write a class with an `__init__` method?
+
 ## Focus
 - robust argparse patterns
 
@@ -32,6 +38,43 @@ Formula: lbs = kg * 2.20462
 - Conversion results on stdout
 - Passing tests
 - Updated `notes.md`
+
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a CLI tool that converts between file size units (bytes, KB, MB, GB).
+
+**Step 1: Set up argparse with a subcommand.**
+
+```python
+import argparse
+
+def build_parser():
+    parser = argparse.ArgumentParser(description="File size converter")
+    parser.add_argument("--json", action="store_true", help="Output as JSON")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    size_cmd = sub.add_parser("convert", help="Convert file sizes")
+    size_cmd.add_argument("value", type=float)
+    size_cmd.add_argument("--from-unit", choices=["B", "KB", "MB", "GB"], required=True)
+    size_cmd.add_argument("--to-unit", choices=["B", "KB", "MB", "GB"], required=True)
+    return parser
+```
+
+**Step 2: Write the conversion through a common unit (bytes).**
+
+```python
+MULTIPLIERS = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3}
+
+def convert_size(value, from_unit, to_unit):
+    bytes_value = value * MULTIPLIERS[from_unit]
+    return bytes_value / MULTIPLIERS[to_unit]
+```
+
+**Step 3: Wire it together.** `python tool.py convert 1 --from-unit GB --to-unit MB` outputs `1024.0`.
+
+**The thought process:** Argparse handles parsing and validation. The hub-and-spoke pattern (through bytes) handles conversion. Subcommands make the CLI extensible. This is the same approach the CLI workbench uses.
 
 ## Alter it (required)
 1. Add a `liters-to-gallons` conversion under a new `volume` subcommand.
@@ -70,6 +113,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on CLI Arguments Workbench. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to add subcommands to argparse. Can you show me a minimal example with two subcommands, using a topic different from unit conversion?"
+- "Can you explain what `add_mutually_exclusive_group` does in argparse with a simple example?"
 
 ---
 

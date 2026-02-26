@@ -6,7 +6,6 @@ Tickets containing urgent words go to high priority, etc.
 Concepts: keyword matching, dictionaries, string search, business rules.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

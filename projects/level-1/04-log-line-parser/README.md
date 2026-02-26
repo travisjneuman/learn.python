@@ -1,6 +1,12 @@
 # Level 1 / Project 04 - Log Line Parser
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you split a string on a specific delimiter? (`"a:b:c".split(":")`)
+- Can you use `datetime.strptime()` to parse a date string?
+
 ## Focus
 - split and parse structured text
 
@@ -70,6 +76,16 @@ You can move on when you can:
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Files and Paths](../../../concepts/quizzes/files-and-paths-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Log Line Parser. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to split a log line into timestamp, level, and message. The format is `[2024-01-15 10:30:00] INFO: message`. Can you give me a hint about how to extract the parts?"
+- "Can you explain `datetime.strptime()` format codes with examples that are not about log files?"
 
 ---
 

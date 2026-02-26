@@ -18,6 +18,7 @@ import logging
 import random
 import time
 from pathlib import Path
+from typing import Any, Callable
 
 
 # ---------- logging ----------
@@ -54,7 +55,7 @@ def compute_delay(
 
 
 def retry_with_backoff(
-    func: callable,
+    func: Callable[..., Any],
     max_retries: int = 3,
     base_delay: float = 1.0,
     max_delay: float = 60.0,
@@ -110,7 +111,7 @@ def retry_with_backoff(
 # ---------- test harness ----------
 
 
-def create_flaky_function(fail_count: int = 2) -> callable:
+def create_flaky_function(fail_count: int = 2) -> Callable[..., Any]:
     """Create a function that fails *fail_count* times then succeeds.
 
     Useful for testing the retry mechanism with a controlled number

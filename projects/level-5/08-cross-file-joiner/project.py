@@ -17,6 +17,7 @@ import csv
 import json
 import logging
 from pathlib import Path
+from typing import Any, Callable
 
 
 # ---------- logging ----------
@@ -136,7 +137,7 @@ def join_full(left: dict[str, dict], right: dict[str, dict]) -> list[dict]:
 
 
 # Map strategy names to functions for clean dispatch.
-JOIN_STRATEGIES: dict[str, callable] = {
+JOIN_STRATEGIES: dict[str, Callable[..., Any]] = {
     "inner": join_inner,
     "left": join_left,
     "full": join_full,

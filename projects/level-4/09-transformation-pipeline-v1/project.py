@@ -12,6 +12,7 @@ import csv
 import json
 import logging
 from pathlib import Path
+from typing import Any, Callable
 
 # ---------- logging ----------
 
@@ -83,7 +84,7 @@ def transform_coerce_numbers(records: list[dict]) -> list[dict]:
 # ---------- pipeline engine ----------
 
 # Registry of available transforms by name
-TRANSFORMS: dict[str, callable] = {
+TRANSFORMS: dict[str, Callable[..., Any]] = {
     "strip_whitespace": transform_strip_whitespace,
     "lowercase_keys": transform_lowercase_keys,
     "add_row_id": transform_add_row_id,

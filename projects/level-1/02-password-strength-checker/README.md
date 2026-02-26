@@ -1,6 +1,12 @@
 # Level 1 / Project 02 - Password Strength Checker
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use `any()` with a generator expression? (`any(c.isupper() for c in text)`)
+- Can you read lines from a file into a list?
+
 ## Focus
 - rule-based scoring and condition checks
 
@@ -32,6 +38,48 @@ pytest -q
 - `data/output.json`
 - Passing tests
 - Updated `notes.md`
+
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that scores a username's strength based on rules: length, no spaces, no special characters at the start.
+
+**Step 1: Define the rules and assign points.**
+
+```python
+def score_username(username):
+    score = 0
+    reasons = []
+
+    if len(username) >= 3:
+        score += 1
+    else:
+        reasons.append("too short (need 3+ characters)")
+
+    if " " not in username:
+        score += 1
+    else:
+        reasons.append("contains spaces")
+
+    if username[0].isalpha():
+        score += 1
+    else:
+        reasons.append("must start with a letter")
+
+    return {"score": score, "max": 3, "issues": reasons}
+```
+
+**Step 2: Test it.** `score_username("alice")` gives 3/3. `score_username("a")` gives 2/3 (too short). `score_username("1bob")` gives 2/3 (starts with number).
+
+**Step 3: Handle edge cases.** What if username is empty? `username[0]` would crash with `IndexError`. Add a guard.
+
+```python
+if not username:
+    return {"score": 0, "max": 3, "issues": ["username is empty"]}
+```
+
+**The thought process:** Check one rule at a time, accumulate a score, collect reasons for failures. This is the same pattern the password strength checker uses with its multi-criteria scoring.
 
 ## Alter it (required)
 1. Add a "sequential characters" penalty (e.g. "abc", "123" lose a point).
@@ -70,6 +118,16 @@ You can move on when you can:
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Types and Conversions](../../../concepts/types-and-conversions.md)
 - [Quiz: Functions Explained](../../../concepts/quizzes/functions-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Password Strength Checker. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to check if a string contains at least one uppercase letter. I have tried a for loop but it feels clunky. Can you give me a hint about a more Pythonic way?"
+- "Can you explain how `any()` works with generator expressions, using an example about checking a list of numbers?"
 
 ---
 

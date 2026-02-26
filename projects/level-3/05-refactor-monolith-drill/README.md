@@ -1,6 +1,12 @@
 # Level 3 / Project 05 - Refactor Monolith Drill
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you move a function from one file to another and update the import?
+- Can you explain what "separation of concerns" means?
+
 ## Focus
 - split large function into modules
 
@@ -71,6 +77,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Errors and Debugging](../../../concepts/quizzes/errors-and-debugging-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Refactor Monolith Drill. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I have a large function (100+ lines) and need to split it into smaller functions. Can you give me a strategy for deciding where to split?"
+- "Can you explain relative imports in Python packages with a simple two-file example?"
 
 ---
 

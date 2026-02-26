@@ -8,7 +8,6 @@ from earlier projects into one workflow.
 Concepts: pipeline pattern, step sequencing, combining learned skills.
 """
 
-from __future__ import annotations
 
 import argparse
 import csv

@@ -1,5 +1,7 @@
 # Collections: Lists, Dicts, Sets
 
+> **Try This First:** Before reading, try this in Python: `fruits = ['apple', 'banana']; fruits.append('cherry'); print(fruits)`. What does the list look like after `append`?
+
 Python has several ways to group multiple values together.
 
 ## Visualize It

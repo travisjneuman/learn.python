@@ -1,6 +1,12 @@
 # Level 2 / Project 03 - Data Cleaning Pipeline
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you use a set to track items you have already seen? (`seen = set()`)
+- Can you chain string methods? (`text.strip().lower().replace(" ", "")`)
+
 ## Focus
 - standardize text and required fields
 
@@ -67,6 +73,16 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [Virtual Environments](../../../concepts/virtual-environments.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Data Cleaning Pipeline. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to run cleaning steps in a specific order. Can you explain why the order matters when you strip whitespace before deduplicating?"
+- "Can you explain `re.search` vs `re.match` with a simple example?"
 
 ---
 

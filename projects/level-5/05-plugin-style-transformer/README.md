@@ -70,5 +70,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Plugin Style Transformer. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to build a plugin system where new transforms can be registered without modifying existing code. Can you explain the registry pattern with a simple example?"
+- "Can you explain how to use a dictionary to dispatch different functions based on a string key?"
+
+---
+
 | [← Prev](../04-config-layer-priority/README.md) | [Home](../../../README.md) | [Next →](../06-metrics-summary-engine/README.md) |
 |:---|:---:|---:|

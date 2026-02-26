@@ -28,6 +28,41 @@ Alert evaluation: 3 breaches found
 - Passing tests
 - Updated `notes.md`
 
+## Worked Example
+
+Here is a similar (but different) problem, solved step by step.
+
+**Problem:** Write a function that checks disk usage against thresholds and returns alerts.
+
+**Step 1: Define thresholds as config.**
+
+```python
+THRESHOLDS = {
+    "disk_usage_percent": {"warn": 80, "critical": 95},
+    "memory_usage_percent": {"warn": 70, "critical": 90},
+}
+```
+
+**Step 2: Write the evaluator.**
+
+```python
+def evaluate_metrics(current_values, thresholds):
+    alerts = []
+    for metric, value in current_values.items():
+        if metric not in thresholds:
+            continue
+        t = thresholds[metric]
+        if value >= t["critical"]:
+            alerts.append({"metric": metric, "value": value, "severity": "CRITICAL"})
+        elif value >= t["warn"]:
+            alerts.append({"metric": metric, "value": value, "severity": "WARNING"})
+    return alerts
+```
+
+**Step 3: Test it.** `evaluate_metrics({"disk_usage_percent": 96}, THRESHOLDS)` returns one CRITICAL alert. `{"disk_usage_percent": 50}` returns no alerts.
+
+**The thought process:** Check the most severe condition first (critical before warn). Skip metrics without thresholds. Return structured alerts. This is the same pattern the threshold monitor uses.
+
 ## Alter it (required)
 1. Add a `--cooldown` flag that suppresses repeated alerts for the same metric within N seconds.
 2. Add an "info" severity level for metrics that are within 10% of the warn threshold.
@@ -66,6 +101,16 @@ You can move on when you can:
 - [Errors and Debugging](../../../concepts/errors-and-debugging.md)
 - [Files and Paths](../../../concepts/files-and-paths.md)
 - [Quiz: Classes and Objects](../../../concepts/quizzes/classes-and-objects-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Alert Threshold Monitor. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to implement threshold logic with warn and critical levels. Can you explain how to structure threshold comparisons so the most severe match wins?"
+- "Can you explain what a 'cooldown' period means in alerting systems and why it is important?"
 
 ---
 

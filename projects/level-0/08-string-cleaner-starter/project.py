@@ -1,16 +1,10 @@
 """Level 0 project: String Cleaner Starter.
 
-Read messy strings from a file and apply cleaning transformations:
-strip whitespace, normalise case, remove special characters, collapse spaces.
+Type messy strings and see them cleaned: strip whitespace,
+normalise case, remove special characters, collapse spaces.
 
 Concepts: string methods (strip, lower, replace), loops, character filtering.
 """
-
-from __future__ import annotations
-
-import argparse
-import json
-from pathlib import Path
 
 
 def strip_whitespace(text: str) -> str:
@@ -73,52 +67,25 @@ def clean_string(text: str) -> str:
     return result
 
 
-def process_file(path: Path) -> list[dict]:
-    """Read lines from a file and clean each one.
-
-    Returns a list of dicts showing the before and after for each line.
-    """
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-
-    lines = path.read_text(encoding="utf-8").splitlines()
-    results = []
-
-    for line in lines:
-        if not line.strip():
-            continue
-        results.append({
-            "original": line,
-            "cleaned": clean_string(line),
-        })
-
-    return results
-
-
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="String Cleaner Starter")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-    results = process_file(Path(args.input))
-
-    print("=== String Cleaning Results ===\n")
-    for r in results:
-        print(f"  BEFORE: {r['original']!r}")
-        print(f"  AFTER:  {r['cleaned']!r}")
-        print()
-
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
-    print(f"{len(results)} lines cleaned. Output written to {output_path}")
-
-
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
-    main()
+    print("=== String Cleaner ===")
+    print("Type messy strings and see them cleaned.")
+    print("Enter a blank line to quit.\n")
+
+    count = 0
+
+    while True:
+        text = input("Enter messy text: ")
+
+        if text == "":
+            break
+
+        cleaned = clean_string(text)
+        print(f"  BEFORE: {text!r}")
+        print(f"  AFTER:  {cleaned!r}")
+        print()
+        count += 1
+
+    print(f"Cleaned {count} strings. Goodbye!")

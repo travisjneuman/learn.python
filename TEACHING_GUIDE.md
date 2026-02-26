@@ -85,7 +85,77 @@ Option B — **Branch per student:** Each student works on their own branch. You
 
 Option C — **Separate repos:** Students clone the curriculum, work locally, push to their own GitHub. You review by visiting their repos.
 
-Recommendation: Option A for small classes (under 20), Option C for larger classes.
+Option D — **GitHub Classroom** (see section below).
+
+Recommendation: Option A for small classes (under 20), Option D for classes with automated grading needs, Option C for larger classes without GitHub Classroom.
+
+---
+
+## Using GitHub Classroom
+
+GitHub Classroom automates repository creation, assignment distribution, and grading. It works well with this curriculum because every project already has tests.
+
+### Initial Setup
+
+1. Create a GitHub organization for your course (e.g., `python-fall-2026`)
+2. Go to [classroom.github.com](https://classroom.github.com) and create a classroom linked to your organization
+3. Add your student roster (manually, via CSV, or via LMS integration)
+
+### Creating Assignments From Curriculum Projects
+
+Each project directory can become a GitHub Classroom assignment:
+
+1. Fork the learn.python repository to your organization
+2. In GitHub Classroom, create a new assignment
+3. Set the template repository to your fork
+4. Under "Starter code," point to the specific project directory path
+5. Enable autograding and add a test command:
+
+```
+# For Level 0+ projects with pytest tests:
+python -m pytest tests/ -v
+
+# For Level 00 exercises (no tests):
+python exercise.py
+```
+
+### Autograding Configuration
+
+For projects with tests, add this autograding step in GitHub Classroom:
+
+| Field | Value |
+|-------|-------|
+| Test name | `pytest` |
+| Setup command | `pip install pytest` |
+| Run command | `python -m pytest tests/ -v` |
+| Timeout | 60 seconds |
+| Points | 10 (adjust as needed) |
+
+For code quality checks, add a second grading step:
+
+| Field | Value |
+|-------|-------|
+| Test name | `ruff` |
+| Setup command | `pip install ruff` |
+| Run command | `ruff check .` |
+| Timeout | 30 seconds |
+| Points | 5 |
+
+### Tracking Student Progress
+
+GitHub Classroom provides a dashboard showing:
+- Which students have accepted the assignment
+- Whether tests pass or fail
+- Most recent commit timestamp
+
+Combine this with the curriculum's built-in `PROGRESS.md` for a comprehensive view of each student's journey.
+
+### Tips for GitHub Classroom
+
+- Create one assignment per project (not per level) to get granular progress data
+- Use group assignments for the capstone projects and expansion modules
+- Set deadlines that align with your semester mapping above
+- Enable "feedback pull requests" so you can leave inline code review comments
 
 ---
 
@@ -178,6 +248,59 @@ At the end of each major section, assign a capstone that combines skills:
 | 5 | Build a monitoring tool that polls an API and logs anomalies | 2 weeks |
 | 7 | Build an ETL pipeline with caching, retry, and observability | 2 weeks |
 | 10 | Production-grade system with tests, docs, Docker, and deployment | 3 weeks |
+
+---
+
+## Group Project Ideas Using Expansion Modules
+
+The expansion modules work well as group projects because they involve multiple components that can be divided among team members.
+
+| Module | Group Size | Division of Work | Duration |
+|--------|-----------|------------------|----------|
+| **01: Web Scraping** | 2-3 | One student builds the scraper, one handles data cleaning, one writes CSV export | 2 weeks |
+| **02: CLI Tools** | 2-3 | Each student builds a different subcommand for the same CLI application | 2 weeks |
+| **03: REST APIs** | 2-3 | One student handles authentication, one builds the client, one writes retry logic | 2 weeks |
+| **04: FastAPI Web** | 3-4 | One builds endpoints, one handles auth/JWT, one writes tests, one does Pydantic models | 3 weeks |
+| **06: Databases & ORM** | 2-3 | One designs the schema, one writes queries, one handles migrations | 2 weeks |
+| **07: Data Analysis** | 3-4 | Each student analyzes a different aspect of the dataset, combine into a report | 2 weeks |
+| **09: Docker & Deployment** | 2-3 | One writes the Dockerfile, one configures docker-compose, one sets up CI/CD | 2 weeks |
+| **10: Django Full-Stack** | 4-5 | Models, views, templates, API (DRF), and tests split across the team | 4 weeks |
+
+### Group Project Guidelines (Give to Students)
+
+1. **Use git branches.** Each team member works on their own branch. Merge to main via pull requests reviewed by another team member.
+2. **Write tests for your component.** If you build the scraper, write tests for the scraper. Your teammates depend on your code working.
+3. **Document interfaces.** If another team member's code calls your function, write a clear docstring explaining inputs and outputs.
+4. **Present together.** Each member explains their component. The team demonstrates the integrated system.
+
+---
+
+## Tracking Student Progress
+
+### Using PROGRESS.md
+
+Each student maintains a `PROGRESS.md` file in their fork. This file tracks completed projects, quiz scores, and current position. Have students commit updates to this file after each session.
+
+### Progress Check Schedule
+
+| Week | Check | What to Look For |
+|------|-------|------------------|
+| 3 | First check | All Level 00 exercises done, at least 3 Level 0 projects started |
+| 5 | Gate A | Level 0 complete, first passing test confirmed |
+| 8 | Midterm | Levels 0-1 complete, midterm project submitted |
+| 10 | Gate B | Level 2 complete, data cleaning pipeline works |
+| 14 | Pre-final | Levels 0-4 complete, expansion module started |
+| 16 | Final | Capstone submitted and defended |
+
+### Handling Different Skill Levels
+
+| Student Profile | Adaptation |
+|-----------------|------------|
+| Complete beginner (never typed code) | Let them spend 2 weeks on Level 00 instead of 1. Pair with a patient partner. |
+| Knows another language | Point them to [Fast Track](./FAST_TRACK.md). They can skip Level 00 and start at Level 0. |
+| Advanced student (already knows Python) | Assign expansion modules as primary work. Have them mentor beginners. |
+| Struggling student | Reduce project count per level (do 8 of 15 instead of all 15). Focus on understanding, not completion. |
+| Student with accessibility needs | See [Accessibility Guide](./ACCESSIBILITY.md). Provide extra time and alternative assessment options. |
 
 ---
 

@@ -3,28 +3,21 @@
 Read a text file and display its contents with line numbers,
 plus a summary of line count, word count, and file size.
 
-Concepts: file I/O, Path objects, encoding, error handling.
+Concepts: file I/O, open(), encoding, error handling.
 """
 
-from __future__ import annotations
 
-import argparse
-import json
-from pathlib import Path
-
-
-def read_file_lines(path: Path) -> list[str]:
+def read_file_lines(filepath: str) -> list:
     """Read a file and return all lines (preserving blank lines).
 
     WHY not strip blank lines? -- In a file reader we want to show
     the file exactly as it is, including empty lines.
     """
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {path}")
-    return path.read_text(encoding="utf-8").splitlines()
+    with open(filepath, encoding="utf-8") as f:
+        return f.read().splitlines()
 
 
-def format_with_line_numbers(lines: list[str]) -> str:
+def format_with_line_numbers(lines: list) -> str:
     """Add line numbers to each line for display.
 
     WHY right-justify the number? -- When files have more than 9 lines,
@@ -45,62 +38,47 @@ def format_with_line_numbers(lines: list[str]) -> str:
     return "\n".join(numbered)
 
 
-def file_summary(path: Path, lines: list[str]) -> dict:
+def file_summary(filepath: str, lines: list) -> dict:
     """Build a summary dict with stats about the file.
 
-    Includes the file name, line count, word count, character count,
-    and file size in bytes.
+    Includes the file name, line count, word count, and character count.
     """
     text = "\n".join(lines)
     word_count = len(text.split())
 
-    # .stat().st_size gives the file size in bytes on disk.
-    size_bytes = path.stat().st_size
+    # Extract just the file name from the path.
+    # We split on both / and \ to handle any operating system.
+    name = filepath.replace("\\", "/").split("/")[-1]
 
     return {
-        "file_name": path.name,
+        "file_name": name,
         "lines": len(lines),
         "words": word_count,
         "characters": len(text),
-        "size_bytes": size_bytes,
         "non_empty_lines": sum(1 for line in lines if line.strip()),
     }
 
 
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="First File Reader")
-    parser.add_argument("--input", default="data/sample_input.txt",
-                        help="Path to the file to read")
-    parser.add_argument("--output", default="data/output.json",
-                        help="Path for the JSON summary")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-
-    input_path = Path(args.input)
-    lines = read_file_lines(input_path)
-
-    # Display file contents with line numbers.
-    print(f"=== Contents of {input_path.name} ===\n")
-    print(format_with_line_numbers(lines))
-
-    # Display and save the summary.
-    summary = file_summary(input_path, lines)
-    print(f"\n=== Summary ===")
-    print(f"  Lines:      {summary['lines']} ({summary['non_empty_lines']} non-empty)")
-    print(f"  Words:      {summary['words']}")
-    print(f"  Characters: {summary['characters']}")
-    print(f"  File size:  {summary['size_bytes']} bytes")
-
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print(f"\n  Summary written to {output_path}")
-
-
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
-    main()
+    print("=== File Reader ===")
+    filepath = input("Enter a file path to read (e.g. data/sample_input.txt): ")
+
+    try:
+        lines = read_file_lines(filepath)
+    except FileNotFoundError:
+        print(f"  File not found: {filepath}")
+        print("  Make sure the file exists and the path is correct.")
+    else:
+        # Display file contents with line numbers.
+        name = filepath.replace("\\", "/").split("/")[-1]
+        print(f"\n=== Contents of {name} ===\n")
+        print(format_with_line_numbers(lines))
+
+        # Display the summary.
+        summary = file_summary(filepath, lines)
+        print(f"\n=== Summary ===")
+        print(f"  Lines:      {summary['lines']} ({summary['non_empty_lines']} non-empty)")
+        print(f"  Words:      {summary['words']}")
+        print(f"  Characters: {summary['characters']}")

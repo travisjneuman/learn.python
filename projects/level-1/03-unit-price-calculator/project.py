@@ -6,7 +6,6 @@ Find the best deal by calculating price-per-unit for each product.
 Concepts: csv module, float arithmetic, rounding, sorting, file I/O.
 """
 
-from __future__ import annotations
 
 import argparse
 import csv

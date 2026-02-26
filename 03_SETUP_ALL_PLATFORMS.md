@@ -31,6 +31,8 @@ Important:
 
 ### Step 1 - Install Python
 
+We recommend **Python 3.13+** for the best experience. Python 3.13 has dramatically better error messages that explain what went wrong in plain English, making debugging much easier for beginners.
+
 #### Windows 11
 1. Download Python from [Python releases for Windows](https://www.python.org/downloads/windows/).
 2. Run installer.
@@ -108,11 +110,18 @@ Expected output:
 ### Step 2 - Install editor and tooling
 
 #### Desktop (Windows/macOS/Linux)
+
+**Option A (recommended): VS Code**
+
 Install VS Code, then add these extensions:
 - [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 - [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
 - [Black Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
 - [Ruff](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
+
+**Option B (absolute beginners): Thonny**
+
+[Thonny](https://thonny.org/) is a Python IDE designed specifically for beginners. It comes with Python built in (no separate install needed), has a simple interface, and includes a debugger that lets you step through code line by line. If VS Code feels overwhelming, start with Thonny and switch to VS Code later.
 
 #### Mobile (Android/iOS)
 - Use built-in editor in your Python app.
@@ -352,6 +361,7 @@ You pass setup when you can:
 - [pytest getting started](https://docs.pytest.org/en/stable/getting-started.html)
 
 ## Optional Resources
+- [Thonny](https://thonny.org/) (beginner-friendly Python IDE)
 - [Termux docs](https://termux.dev/en/)
 - [Pyto](https://pyto.app/)
 - [Pythonista](https://www.omz-software.com/pythonista/)

@@ -6,7 +6,6 @@ and zip codes using string methods (no regex at this level).
 Concepts: string methods (find, count, isdigit), validation patterns, re basics.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

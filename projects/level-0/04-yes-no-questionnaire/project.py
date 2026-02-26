@@ -1,16 +1,10 @@
 """Level 0 project: Yes/No Questionnaire.
 
-Read questions from a file, present them one at a time, tally
-yes/no/invalid answers, and write a results summary.
+Present questions one at a time, collect yes/no answers,
+tally the results, and show a summary.
 
 Concepts: boolean logic, input normalisation, counters, lists, dicts.
 """
-
-from __future__ import annotations
-
-import argparse
-import json
-from pathlib import Path
 
 
 def normalise_answer(raw: str) -> str:
@@ -31,20 +25,7 @@ def normalise_answer(raw: str) -> str:
     return "invalid"
 
 
-def load_questions(path: Path) -> list[str]:
-    """Load questions from a text file (one per line).
-
-    Blank lines are skipped so extra whitespace in the file
-    does not create empty questions.
-    """
-    if not path.exists():
-        raise FileNotFoundError(f"Questions file not found: {path}")
-
-    lines = path.read_text(encoding="utf-8").splitlines()
-    return [line.strip() for line in lines if line.strip()]
-
-
-def tally_answers(answers: list[str]) -> dict:
+def tally_answers(answers: list) -> dict:
     """Count how many yes, no, and invalid answers were given.
 
     WHY return a dict? -- Dicts let us label each count with a
@@ -70,65 +51,31 @@ def tally_answers(answers: list[str]) -> dict:
     return counts
 
 
-def run_questionnaire(questions: list[str], answers: list[str]) -> dict:
-    """Pair each question with its answer and build a full report.
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
+if __name__ == "__main__":
+    # Define some questions directly in the program.
+    questions = [
+        "Do you enjoy learning new things?",
+        "Have you used a computer before today?",
+        "Do you like solving puzzles?",
+        "Are you excited to learn Python?",
+        "Do you prefer working alone?",
+    ]
 
-    Returns a dict with the question-answer pairs and the tally.
-    """
-    pairs = []
-    for i, question in enumerate(questions):
-        raw_answer = answers[i] if i < len(answers) else ""
-        pairs.append({
-            "question": question,
-            "raw_answer": raw_answer,
-            "normalised": normalise_answer(raw_answer),
-        })
+    print("=== Yes/No Questionnaire ===")
+    print(f"Answer {len(questions)} questions with yes or no.\n")
 
+    answers = []
+    for i, question in enumerate(questions, start=1):
+        answer = input(f"  {i}. {question} ")
+        answers.append(answer)
+
+    # Show results.
     tally = tally_answers(answers)
-    return {"responses": pairs, "tally": tally}
 
-
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="Yes/No Questionnaire")
-    parser.add_argument("--questions", default="data/sample_input.txt",
-                        help="File with questions (one per line)")
-    parser.add_argument("--answers", default="data/answers.txt",
-                        help="File with answers (one per line)")
-    parser.add_argument("--output", default="data/output.json")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-
-    questions = load_questions(Path(args.questions))
-    # Try to load pre-written answers; if no file, use empty list.
-    answers_path = Path(args.answers)
-    if answers_path.exists():
-        answers = [line.strip() for line in
-                   answers_path.read_text(encoding="utf-8").splitlines()
-                   if line.strip()]
-    else:
-        answers = []
-
-    report = run_questionnaire(questions, answers)
-
-    # Print the tally to the terminal.
-    tally = report["tally"]
-    print("=== Questionnaire Results ===")
+    print("\n=== Results ===")
     print(f"  Total responses: {tally['total']}")
     print(f"  Yes: {tally['yes']} ({tally['yes_percent']}%)")
     print(f"  No:  {tally['no']} ({tally['no_percent']}%)")
     print(f"  Invalid: {tally['invalid']}")
-
-    # Write full report to JSON.
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(f"\nFull report written to {output_path}")
-
-
-if __name__ == "__main__":
-    main()

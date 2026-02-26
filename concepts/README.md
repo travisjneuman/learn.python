@@ -21,18 +21,40 @@ Plain-language explanations of Python concepts. Use these when you need to under
 - [Virtual Environments](./virtual-environments.md) — venv, pip, requirements.txt
 - [The Terminal — Going Deeper](./the-terminal-deeper.md) — pipes, redirects, env vars
 
+## Intermediate+ Concepts (after Level 2)
+
+- [Comprehensions Explained](./comprehensions-explained.md) — list/dict/set comprehensions, generator expressions, walrus operator
+- [*args and **kwargs Explained](./args-kwargs-explained.md) — `*args`, `**kwargs`, unpacking, positional-only, keyword-only
+- [Generators and Iterators](./generators-and-iterators.md) — `yield`, lazy evaluation, generator pipelines
+- [Context Managers Explained](./context-managers-explained.md) — `with` statement, `__enter__`/`__exit__`, `contextlib`
+- [Enums Explained](./enums-explained.md) — `Enum`, `IntEnum`, `StrEnum`, `auto()`, pattern matching
+- [Collections Deep Dive](./collections-deep-dive.md) — `Counter`, `defaultdict`, `namedtuple`, `deque`, `ChainMap`
+- [functools and itertools](./functools-and-itertools.md) — `partial`, `lru_cache`, `reduce`, `chain`, `groupby`, `product`
+- [Regex Explained](./regex-explained.md) — `re` module, patterns, groups, `match` vs `search` vs `findall`
+
 ## Advanced Concepts (after Level 3)
 
 - [HTTP Explained](./http-explained.md) — requests, responses, status codes, headers
 - [API Basics](./api-basics.md) — REST, JSON, endpoints, authentication
 - [Async Explained](./async-explained.md) — async/await, event loops, concurrency
 
+## Testing & Debugging
+
+- [Testing Strategies](./testing-strategies.md) — test pyramid, TDD, mocking, fixtures, `pytest-cov`
+- [Debugging Methodology](./debugging-methodology.md) — Reproduce→Isolate→Hypothesize→Test→Fix→Verify→Prevent, `breakpoint()`, `pdb`
+
+## Developer Skills
+
+- [Reading Documentation](./reading-documentation.md) — navigating docs.python.org, reading function signatures
+- [Git Basics](./git-basics.md) — init, add, commit, branch, merge, remote, push, pull, `.gitignore`
+- [Security Basics](./security-basics.md) — OWASP Top 10, SQL injection, XSS, secrets management, `pip audit`
+
 ## Modern Python (Level 1+)
 
 - [Type Hints Explained](./type-hints-explained.md) — annotations, Optional, Union, Protocol
 - [Dataclasses Explained](./dataclasses-explained.md) — @dataclass, fields, frozen, the easy way to create classes
 - [Match/Case Explained](./match-case-explained.md) — structural pattern matching (Python 3.10+)
-- [Modern Python Tooling](./modern-python-tooling.md) — uv, ruff, pyproject.toml
+- [Modern Python Tooling](./modern-python-tooling.md) — uv, ruff, pyproject.toml, Python 3.11–3.14 highlights
 
 ## How to use these
 

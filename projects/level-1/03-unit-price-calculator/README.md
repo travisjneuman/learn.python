@@ -1,6 +1,12 @@
 # Level 1 / Project 03 - Unit Price Calculator
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you open and read a CSV file using Python's `csv` module?
+- Can you sort a list using `sorted()` with a `key` argument?
+
 ## Focus
 - math accuracy and formatting
 
@@ -69,6 +75,16 @@ You can move on when you can:
 - [How Loops Work](../../../concepts/how-loops-work.md)
 - [The Terminal Deeper](../../../concepts/the-terminal-deeper.md)
 - [Quiz: Functions Explained](../../../concepts/quizzes/functions-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Unit Price Calculator. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to sort a list of dictionaries by one of the values. Can you show me how `sorted()` with a `key` function works, using a different example?"
+- "Can you explain `csv.DictReader` with a simple example that is not about prices?"
 
 ---
 

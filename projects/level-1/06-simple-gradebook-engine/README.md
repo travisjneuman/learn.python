@@ -72,5 +72,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Simple Gradebook Engine. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to assign letter grades based on score ranges. Can you show me how to map numeric ranges to categories using if/elif, with a different example like age groups?"
+- "Can you explain how to calculate an average from a list of numbers in Python?"
+
+---
+
 | [← Prev](../05-csv-first-reader/README.md) | [Home](../../../README.md) | [Next →](../07-date-difference-helper/README.md) |
 |:---|:---:|---:|

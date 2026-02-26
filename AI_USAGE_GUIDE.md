@@ -83,6 +83,61 @@ You focus on architecture, design, and decisions. AI handles routine implementat
 
 **Never submit AI-generated work as your own understanding.** If a project asks you to explain your approach in `notes.md`, write it in your own words. The notes are for you, not for a grade.
 
+## AI Limitations: What AI Gets Wrong
+
+AI tools are powerful, but they have real limitations that you need to understand before relying on them.
+
+**Hallucinations.** AI sometimes generates code that looks correct but is completely wrong. It might invent function names that do not exist, reference libraries that were never real, or describe behavior that a function does not actually have. This is called "hallucination" and it happens more often than you might expect.
+
+**Deprecated APIs.** AI training data has a cutoff date. It may suggest using functions, libraries, or syntax that were valid two years ago but have since been removed or replaced. Always check that imports actually work and that the API you are calling still exists.
+
+**Subtle bugs.** AI-generated code often works for the "happy path" but fails on edge cases. Off-by-one errors, missing null checks, incorrect exception handling -- these are common in AI output. The code runs, passes a basic test, and breaks in production.
+
+**Confident wrongness.** AI does not say "I am not sure." It presents incorrect information with the same confidence as correct information. You cannot tell from the tone whether the answer is right. You must verify.
+
+**What to do about it:**
+- Always run AI-generated code before trusting it
+- Write tests for AI code, especially edge cases
+- If AI suggests an import or function you have not seen before, verify it exists
+- When AI explains a concept, cross-check with official documentation
+- Treat AI output as a first draft that needs review, not a finished product
+
+## Structured Pair Programming Protocol (Levels 7-8)
+
+At Levels 7-8, you can use AI as a pair programming partner. Follow this five-step protocol to keep yourself in the driver's seat:
+
+### 1. Describe
+
+Tell the AI what you are building and why, without showing any code yet.
+
+> "I need a function that reads a CSV file, groups rows by the 'category' column, and returns a dict where keys are categories and values are lists of rows."
+
+### 2. Propose
+
+Ask the AI to outline an approach (not write code). Evaluate the approach.
+
+> "What approach would you suggest for this? What data structures would you use?"
+
+### 3. Evaluate
+
+Discuss trade-offs. Ask about alternatives. Make the design decision yourself.
+
+> "You suggested using defaultdict. What would be different if I used setdefault instead? Which is more readable?"
+
+### 4. Implement
+
+Write the code yourself based on the approach you chose. If you get stuck on a specific part, ask for help with that part only.
+
+> "I am implementing the grouping logic. How do I iterate over csv.DictReader rows while keeping the header?"
+
+### 5. Review
+
+Share your finished code and ask for a review.
+
+> "Here is my implementation. What would you improve? Are there edge cases I missed?"
+
+**The key discipline:** You make every decision. AI provides information and feedback. If you find yourself copying large blocks of AI code, you have switched from pair programming to dictation. Stop and go back to step 1.
+
 ## Quick Reference
 
 | Level | AI Allowed For | AI Not Allowed For |

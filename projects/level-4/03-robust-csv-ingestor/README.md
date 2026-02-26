@@ -75,5 +75,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Robust CSV Ingestor. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to handle malformed CSV rows without crashing. Can you explain strategies for recovering from bad rows in a data pipeline?"
+- "Can you explain the difference between skipping bad rows, quarantining them, and fixing them automatically?"
+
+---
+
 | [← Prev](../02-excel-input-health-check/README.md) | [Home](../../../README.md) | [Next →](../04-data-contract-enforcer/README.md) |
 |:---|:---:|---:|

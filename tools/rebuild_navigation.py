@@ -281,6 +281,56 @@ ELITE_PROJECTS = [
     "09-open-source-maintainer-simulator", "10-staff-engineer-capstone",
 ]
 
+# Module name -> list of project slugs
+MODULE_PROJECTS = {
+    "01-web-scraping": [
+        "01-fetch-a-webpage", "02-parse-html", "03-extract-structured-data",
+        "04-multi-page-scraper", "05-save-to-csv",
+    ],
+    "02-cli-tools": [
+        "01-click-basics", "02-multi-command-cli", "03-interactive-prompts",
+        "04-file-processor-cli", "05-typer-migration",
+    ],
+    "03-rest-apis": [
+        "01-first-api-call", "02-query-parameters", "03-post-and-auth",
+        "04-error-handling", "05-api-client-class",
+    ],
+    "04-fastapi-web": [
+        "01-hello-fastapi", "02-crud-api", "03-database-backed",
+        "04-authentication", "05-full-app",
+    ],
+    "05-async-python": [
+        "01-async-basics", "02-concurrent-requests", "03-async-file-processing",
+        "04-producer-consumer", "05-async-web-server",
+    ],
+    "06-databases-orm": [
+        "01-sqlite-basics", "02-sqlalchemy-models", "03-crud-operations",
+        "04-migrations-alembic", "05-query-optimization",
+    ],
+    "07-data-analysis": [
+        "01-pandas-basics", "02-filtering-grouping", "03-data-cleaning",
+        "04-visualization", "05-analysis-report",
+    ],
+    "08-testing-advanced": [
+        "01-parametrize", "02-mocking", "03-fixtures-advanced",
+        "04-property-based", "05-integration-testing",
+    ],
+    "09-docker-deployment": [
+        "01-first-dockerfile", "02-multi-stage-build", "03-docker-compose",
+        "04-ci-github-actions", "05-production-config",
+    ],
+    "10-django-fullstack": [
+        "01-django-setup", "02-views-templates", "03-forms-auth",
+        "04-rest-framework", "05-complete-app",
+    ],
+    "11-package-publishing": [
+        "01-package-structure", "02-build-and-test", "03-publish-to-pypi",
+    ],
+    "12-cloud-deploy": [
+        "01-deploy-to-railway", "02-deploy-with-database", "03-production-checklist",
+    ],
+}
+
 
 def main():
     # =================================================================
@@ -344,12 +394,32 @@ def main():
             next_f = f"projects/elite-track/{ELITE_PROJECTS[i+1]}/README.md"
         update_file(filepath, prev_f, next_f)
 
+    # =================================================================
+    # 5. MODULE INTERNAL CHAINS
+    # =================================================================
+    for module_name, projects in MODULE_PROJECTS.items():
+        print(f"\n=== MODULE {module_name} INTERNAL CHAIN ===")
+        module_readme = f"projects/modules/{module_name}/README.md"
+        for i, proj in enumerate(projects):
+            filepath = f"projects/modules/{module_name}/{proj}/README.md"
+            if i == 0:
+                prev_f = module_readme
+            else:
+                prev_f = f"projects/modules/{module_name}/{projects[i-1]}/README.md"
+            if i == len(projects) - 1:
+                next_f = module_readme
+            else:
+                next_f = f"projects/modules/{module_name}/{projects[i+1]}/README.md"
+            update_file(filepath, prev_f, next_f)
+
     print("\n=== DONE ===")
     print(f"Main chain: {len(MAIN_CHAIN)} files")
     print(f"Level-00: {len(LEVEL_00_PROJECTS)} projects")
     for k, v in LEVEL_PROJECTS.items():
         print(f"Level-{k}: {len(v)} projects")
     print(f"Elite: {len(ELITE_PROJECTS)} projects")
+    for k, v in MODULE_PROJECTS.items():
+        print(f"Module {k}: {len(v)} projects")
 
 
 if __name__ == "__main__":

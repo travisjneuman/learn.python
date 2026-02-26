@@ -1,6 +1,12 @@
 # Level 1 / Project 05 - CSV First Reader
 Home: [README](../../../README.md)
 
+## Before You Start
+
+Recall these prerequisites before diving in:
+- Can you open a file and read its contents line by line?
+- Can you use a dictionary to store key-value pairs?
+
 ## Focus
 - read csv rows into dictionaries
 
@@ -71,6 +77,16 @@ You can move on when you can:
 - [Functions Explained](../../../concepts/functions-explained.md)
 - [How Imports Work](../../../concepts/how-imports-work.md)
 - [Quiz: Collections Explained](../../../concepts/quizzes/collections-explained-quiz.py)
+
+---
+
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on CSV First Reader. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to format a table with aligned columns. Can you explain how Python string formatting with `:>10` or `:<20` works?"
+- "Can you explain the difference between `csv.reader` and `csv.DictReader` with a simple example?"
 
 ---
 

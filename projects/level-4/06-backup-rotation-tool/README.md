@@ -74,5 +74,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Backup Rotation Tool. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to implement a retention policy that keeps daily backups for 7 days and weekly for 4 weeks. Can you explain the logic for deciding which files to keep vs delete?"
+- "Can you explain how to sort files by modification time using `pathlib` and `os.stat`?"
+
+---
+
 | [← Prev](../05-path-safe-file-mover/README.md) | [Home](../../../README.md) | [Next →](../07-duplicate-record-investigator/README.md) |
 |:---|:---:|---:|

@@ -1,5 +1,7 @@
 # How Loops Work
 
+> **Try This First:** Before reading, open Python and type `for i in range(5): print(i)`. Watch what happens. How many numbers print? Does it start at 0 or 1?
+
 A loop repeats code. Instead of writing the same thing 100 times, you write it once and let the loop handle repetition.
 
 ## Visualize It
@@ -57,6 +59,33 @@ The loop checks the condition (`count <= 5`) before each repetition. When it bec
 | You know how many times to repeat | You do not know when to stop |
 | You are going through a list | You are waiting for a condition |
 | `for item in my_list:` | `while not done:` |
+
+## The walrus operator `:=` in loops (Python 3.8+)
+
+The walrus operator lets you assign a value and use it in the same expression. This is especially useful in `while` loops:
+
+```python
+# Without walrus — must call input() in two places:
+line = input("Enter text (or 'quit'): ")
+while line != "quit":
+    print(f"You said: {line}")
+    line = input("Enter text (or 'quit'): ")
+
+# With walrus — cleaner:
+while (line := input("Enter text (or 'quit'): ")) != "quit":
+    print(f"You said: {line}")
+```
+
+Reading a file in chunks:
+
+```python
+# Read a large file 8KB at a time:
+with open("big_file.txt") as f:
+    while chunk := f.read(8192):
+        process(chunk)
+```
+
+The walrus operator assigns the result of the right side to the variable and returns it, so the `while` condition can test the value in the same line.
 
 ## Common mistakes
 

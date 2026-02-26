@@ -6,7 +6,6 @@ and validate that required keys are present.
 Concepts: json module, dictionary merging, default values, validation.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

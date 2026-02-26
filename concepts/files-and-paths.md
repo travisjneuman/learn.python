@@ -1,5 +1,7 @@
 # Files and Paths
 
+> **Try This First:** Before reading, try this in Python: `open('test.txt', 'w').write('hello')` then `print(open('test.txt').read())`. You just wrote to a file and read it back.
+
 Programs read data from files and write results to files. Understanding how to work with files and their locations (paths) is essential.
 
 ## Visualize It

@@ -75,5 +75,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Path Safe File Mover. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to prevent file name collisions when moving files. Can you explain strategies for handling duplicate file names?"
+- "Can you explain the difference between `shutil.move()` and `Path.rename()` and when to use each?"
+
+---
+
 | [← Prev](../04-data-contract-enforcer/README.md) | [Home](../../../README.md) | [Next →](../06-backup-rotation-tool/README.md) |
 |:---|:---:|---:|

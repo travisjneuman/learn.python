@@ -6,7 +6,6 @@ statistics: min, max, average, and a simple text histogram.
 Concepts: loops, accumulation, min/max, integer division, string * repeat.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

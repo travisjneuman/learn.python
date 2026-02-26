@@ -73,5 +73,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Data Contract Enforcer. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to detect when a data file's structure changes unexpectedly. Can you explain what 'schema drift' means with a practical example?"
+- "Can you explain how to compare two schemas and identify the differences?"
+
+---
+
 | [← Prev](../03-robust-csv-ingestor/README.md) | [Home](../../../README.md) | [Next →](../05-path-safe-file-mover/README.md) |
 |:---|:---:|---:|

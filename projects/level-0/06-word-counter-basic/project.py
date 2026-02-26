@@ -1,16 +1,10 @@
 """Level 0 project: Word Counter Basic.
 
-Read a text file and count words, lines, and characters.
-Also find the most frequent words.
+Type or paste text, then see word count, line count, character count,
+and the most frequent words.
 
-Concepts: string splitting, counting with dicts, sorting, file I/O.
+Concepts: string splitting, counting with dicts, sorting, text analysis.
 """
-
-from __future__ import annotations
-
-import argparse
-import json
-from pathlib import Path
 
 
 def count_words(text: str) -> int:
@@ -39,7 +33,7 @@ def count_characters(text: str) -> int:
     return len(text)
 
 
-def word_frequencies(text: str) -> dict[str, int]:
+def word_frequencies(text: str) -> dict:
     """Build a dictionary mapping each word to its frequency.
 
     WHY lowercase? -- So "The" and "the" count as the same word.
@@ -58,7 +52,7 @@ def word_frequencies(text: str) -> dict[str, int]:
     return freq
 
 
-def top_words(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+def top_words(freq: dict, n: int = 5) -> list:
     """Return the top-n most frequent words as (word, count) pairs.
 
     WHY sorted with key? -- sorted() can sort by any criterion.
@@ -84,39 +78,30 @@ def analyse_text(text: str) -> dict:
     }
 
 
-def parse_args() -> argparse.Namespace:
-    """Define command-line options."""
-    parser = argparse.ArgumentParser(description="Word Counter Basic")
-    parser.add_argument("--input", default="data/sample_input.txt")
-    parser.add_argument("--output", default="data/output.json")
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Program entry point."""
-    args = parse_args()
-
-    input_path = Path(args.input)
-    if not input_path.exists():
-        raise FileNotFoundError(f"Input file not found: {input_path}")
-
-    text = input_path.read_text(encoding="utf-8")
-    summary = analyse_text(text)
-
-    print("=== Word Count Summary ===")
-    print(f"  Lines:      {summary['lines']}")
-    print(f"  Words:      {summary['words']}")
-    print(f"  Characters: {summary['characters']}")
-    print(f"  Unique:     {summary['unique_words']}")
-    print("\n  Top words:")
-    for entry in summary["top_words"]:
-        print(f"    {entry['word']}: {entry['count']}")
-
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print(f"\n  Output written to {output_path}")
-
-
+# This guard means the code below only runs when you execute the file
+# directly (python project.py), NOT when another file imports it.
 if __name__ == "__main__":
-    main()
+    print("=== Word Counter ===")
+    print("Type or paste text below. Enter a blank line when done.\n")
+
+    lines = []
+    while True:
+        line = input()
+        if line == "":
+            break
+        lines.append(line)
+
+    if not lines:
+        print("No text entered.")
+    else:
+        text = "\n".join(lines)
+        summary = analyse_text(text)
+
+        print("\n=== Word Count Summary ===")
+        print(f"  Lines:      {summary['lines']}")
+        print(f"  Words:      {summary['words']}")
+        print(f"  Characters: {summary['characters']}")
+        print(f"  Unique:     {summary['unique_words']}")
+        print("\n  Top words:")
+        for entry in summary["top_words"]:
+            print(f"    {entry['word']}: {entry['count']}")

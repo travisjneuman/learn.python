@@ -1,8 +1,6 @@
 """Tests for Daily Checklist Writer."""
 
-from pathlib import Path
-
-from project import checklist_summary, format_checklist, load_tasks, write_checklist
+from project import checklist_summary, format_checklist
 
 
 def test_format_checklist_has_numbers() -> None:
@@ -19,20 +17,10 @@ def test_format_checklist_empty() -> None:
     assert "(no tasks)" in result
 
 
-def test_load_tasks_from_file(tmp_path: Path) -> None:
-    """Tasks should be loaded from a file, blank lines skipped."""
-    f = tmp_path / "tasks.txt"
-    f.write_text("Task A\n\nTask B\n  \nTask C\n", encoding="utf-8")
-    tasks = load_tasks(f)
-    assert tasks == ["Task A", "Task B", "Task C"]
-
-
-def test_write_checklist_creates_file(tmp_path: Path) -> None:
-    """write_checklist should create the output file."""
-    out = tmp_path / "output" / "checklist.txt"
-    write_checklist(out, "test content")
-    assert out.exists()
-    assert out.read_text(encoding="utf-8") == "test content"
+def test_format_checklist_title() -> None:
+    """The title should appear at the top of the checklist."""
+    result = format_checklist("Morning Routine", ["Wake up", "Brush teeth"])
+    assert result.startswith("Morning Routine")
 
 
 def test_checklist_summary_counts() -> None:

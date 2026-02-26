@@ -70,5 +70,15 @@ You can move on when you can:
 
 ---
 
+## Stuck? Ask AI
+
+If you are stuck after trying for 20 minutes, use one of these prompts:
+
+- "I am working on Multi File ETL Runner. I got this error: [paste error]. Can you explain what this error means without giving me the fix?"
+- "I am trying to process multiple files in a specific order. Can you explain the Extract-Transform-Load (ETL) pattern with a simple example?"
+- "Can you explain how to use `pathlib.Path.glob()` to find files matching a pattern?"
+
+---
+
 | [← Prev](../02-alert-threshold-monitor/README.md) | [Home](../../../README.md) | [Next →](../04-config-layer-priority/README.md) |
 |:---|:---:|---:|

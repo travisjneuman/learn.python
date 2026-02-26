@@ -221,7 +221,14 @@ def main() -> None:
 
     if args.value:
         val = inventory_value(inventory)
-        print(json.dumps(val, indent=2))
+        print("=== Inventory Value Report ===")
+        print(f"  {'Category':<20} {'Value':>12}")
+        print(f"  {'-'*20} {'-'*12}")
+        for cat, amount in sorted(val.get("by_category", {}).items(),
+                                   key=lambda x: x[1], reverse=True):
+            print(f"  {cat:<20} ${amount:>10.2f}")
+        print(f"  {'-'*20} {'-'*12}")
+        print(f"  {'TOTAL':<20} ${val.get('total', 0):>10.2f}")
         return
 
     # Default: show full inventory.

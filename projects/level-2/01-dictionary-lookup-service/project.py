@@ -150,7 +150,9 @@ def main() -> None:
 
     if args.stats:
         stats = dictionary_stats(dictionary)
-        print(json.dumps(stats, indent=2))
+        print(f"=== Dictionary Statistics ===")
+        for key, value in stats.items():
+            print(f"  {key}: {value}")
         return
 
     if args.lookup:
@@ -160,7 +162,18 @@ def main() -> None:
         samples = list(dictionary.keys())[:3] + ["nonexistent"]
         results = batch_lookup(dictionary, samples)
 
-    print(json.dumps(results, indent=2))
+    # Format results as a readable table.
+    print(f"=== Lookup Results ===\n")
+    print(f"  {'Term':<20} {'Found':>6}  {'Definition / Suggestions'}")
+    print(f"  {'-'*20} {'-'*6}  {'-'*30}")
+    for r in results:
+        term = r["term"]
+        if r["found"]:
+            print(f"  {term:<20} {'yes':>6}  {r['definition']}")
+        else:
+            suggestions = ", ".join(r.get("suggestions", []))
+            hint = f"Did you mean: {suggestions}" if suggestions else "(no matches)"
+            print(f"  {term:<20} {'no':>6}  {hint}")
 
 
 if __name__ == "__main__":
