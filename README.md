@@ -1,6 +1,10 @@
 # 🐍 Learn Python — Zero to World-Class Full-Stack Developer
 
 <p align="center">
+  <img src="./assets/logo.png" alt="Learn Python" width="600">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/Projects-251-2ea44f?style=for-the-badge" alt="251 Projects">
   <img src="https://img.shields.io/badge/Levels-13-ff6f00?style=for-the-badge" alt="13 Levels">
