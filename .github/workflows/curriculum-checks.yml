@@ -57,6 +57,9 @@ jobs:
       - name: Portable path contract checks
         run: python tools/check_portable_paths.py
 
+      - name: Modality hub link validation
+        run: python tools/check_modality_hubs.py
+
       - name: Run representative pytest sample
         run: |
           pytest --tb=short --no-header -q \

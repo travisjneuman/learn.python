@@ -32,6 +32,7 @@ class PlanInput:
     experience: str
     goal: str
     stuck_area: str
+    learning_style: str
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,6 +46,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--goal", choices=["automation", "full_stack", "elite"], required=True)
     parser.add_argument("--stuck-area", default="none")
+    parser.add_argument(
+        "--learning-style",
+        choices=["reader", "builder", "watcher", "visualizer"],
+        default="builder",
+        help="Preferred learning modality (default: builder)",
+    )
     parser.add_argument("--output", default="")
     return parser.parse_args()
 
@@ -60,6 +67,7 @@ def build_profile(args: argparse.Namespace) -> PlanInput:
         experience=args.experience,
         goal=args.goal,
         stuck_area=args.stuck_area,
+        learning_style=args.learning_style,
     )
 
 
@@ -122,6 +130,33 @@ def recommend_priority_chain(goal: str) -> list[str]:
     ]
 
 
+def recommend_style_approach(learning_style: str) -> list[str]:
+    """Return modality-weighted advice based on learning style preference."""
+    approaches: dict[str, list[str]] = {
+        "reader": [
+            "At each step: read the concept guide first, then take the quiz.",
+            "Do the project after reading, with the concept doc open for reference.",
+            "Use flashcards for spaced repetition review.",
+        ],
+        "builder": [
+            "At each step: start the project immediately.",
+            "If stuck after 20 minutes, read the WALKTHROUGH.md (not the solution).",
+            "After completing the project, skim the concept doc to fill gaps.",
+        ],
+        "watcher": [
+            "At each step: watch the curated video first (concepts/videos/).",
+            "Then read the WALKTHROUGH.md to see the thinking process in text.",
+            "Build the project yourself, then compare with SOLUTION.md.",
+        ],
+        "visualizer": [
+            "At each step: open the Mermaid diagrams first (concepts/diagrams/).",
+            "Read the concept guide with the diagram as your mental map.",
+            "Do the project, referring back to the diagram when stuck.",
+        ],
+    }
+    return approaches.get(learning_style, approaches["builder"])
+
+
 def remediation_actions(stuck_area: str) -> list[str]:
     """Map stuck area to concrete recovery actions."""
     key = stuck_area.lower().strip()
@@ -178,6 +213,12 @@ def render_markdown(profile: PlanInput) -> str:
     lines.append("## If blocked")
     for action in actions:
         lines.append(f"- {action}")
+    lines.append("")
+    lines.append("## Learning style approach")
+    lines.append(f"- Preferred style: {profile.learning_style}")
+    style_advice = recommend_style_approach(profile.learning_style)
+    for advice in style_advice:
+        lines.append(f"- {advice}")
     lines.append("")
     lines.append("## Execution rules")
     lines.append("- Do not skip break/fix drills.")

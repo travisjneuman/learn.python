@@ -29,13 +29,15 @@
 
 ## What Makes This Different
 
-This is not a video course — **you build real things**.
+**Every learning style is first-class.** Read concepts, build projects, watch walkthroughs, test with quizzes, review with flashcards, visualize with diagrams, or try code in the browser — all following the same sequential path. However you learn best, there is a pathway through this curriculum for you.
 
-This is not a bootcamp — **you go at your own pace**.
+**You build real things.** 251 projects, not toy examples. Every project has tests, starter code, and "Alter it / Break it / Fix it" challenges that force you past copy-paste into actual understanding.
 
-This is not a reference manual — **it is a complete guided path**.
+**You go at your own pace.** This is not a bootcamp with deadlines. Follow the click chain, take breaks, come back. The spaced repetition system tracks what you have forgotten so you can review efficiently.
 
-251 projects, not toy examples. Every document, concept guide, project, quiz, and challenge is connected through a single click chain. Start at the beginning and follow the "Next" links. That's it.
+**Every step is connected.** Every document, concept guide, project, quiz, walkthrough, and challenge is linked through a single click chain with a "Learn Your Way" navigation table at every stop. Start at the beginning and follow the "Next" links. That's it.
+
+Not sure how you learn best? Take the [Learning Style Selector](./guides/LEARNING_STYLE_SELECTOR.md) quiz to get a personalized path through the material.
 
 ---
 
@@ -241,11 +243,17 @@ Within each project directory, you'll find:
 
 ## 🎮 Choose Your Learning Mode
 
-**Play-First** — Open a project, tinker, break things, figure it out. Read the concept doc when you get stuck. Good for people who learn by doing.
+**Play-First (Builder)** — Open a project, tinker, break things, figure it out. Read the concept doc when you get stuck. Watch the walkthrough only if you are truly blocked. Good for people who learn by doing.
 
-**Structured** — Read the concept doc, take the quiz, then do the projects in order. Use the checklist and mastery gates. Good for people who like clear progress markers.
+**Structured (Reader)** — Read the concept doc, take the quiz, then do the projects in order. Use the checklist and mastery gates. Good for people who like clear progress markers.
 
-**Hybrid (Recommended)** — Follow the structured path on weekdays. Explore expansion modules and challenges on weekends. Review flashcards daily.
+**Watch-First (Watcher)** — Watch the curated video for each concept, read the walkthrough to see the thinking process, then build the project. Good for people who learn by observing first.
+
+**Visual-First (Visualizer)** — Start with the Mermaid diagrams to see the big picture, read the concept guide with the diagram as your mental map, then build. Good for people who think in pictures and systems.
+
+**Hybrid (Recommended)** — Follow the structured path on weekdays. Explore expansion modules and challenges on weekends. Review flashcards daily. Mix modalities as needed.
+
+Take the [Learning Style Selector](./guides/LEARNING_STYLE_SELECTOR.md) to find your best starting approach.
 
 ---
 

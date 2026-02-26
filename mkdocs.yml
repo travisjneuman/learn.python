@@ -91,9 +91,12 @@ not_in_nav: |
   ENHANCEMENT_ROADMAP.md
   _audit_*.md
   _audits/**
+  _templates/**
   learning/**
   tools/**
   projects/**/notes.md
+  projects/**/WALKTHROUGH.md
+  projects/**/SOLUTION.md
   **/__pycache__/**
   .github/**
   translations/**
@@ -244,6 +247,11 @@ nav:
       - Capstone Projects: projects/capstones/README.md
       - Flashcards:
           - practice/flashcards/README.md
+  - Learn Your Way:
+      - Learning Style Selector: guides/LEARNING_STYLE_SELECTOR.md
+      - Video Index: guides/VIDEO_INDEX.md
+      - Diagram Index: guides/DIAGRAM_INDEX.md
+      - Walkthrough Index: guides/WALKTHROUGH_INDEX.md
   - Guides:
       - AI Usage Guide: AI_USAGE_GUIDE.md
       - Accessibility: ACCESSIBILITY.md
