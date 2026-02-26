@@ -8,7 +8,7 @@ HTTP (HyperText Transfer Protocol) is how browsers and apps talk to servers. Eve
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/http-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/http-explained.md) | [Quiz](quizzes/http-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/http-explained.md) |
 
 <!-- modality-hub-end -->
 

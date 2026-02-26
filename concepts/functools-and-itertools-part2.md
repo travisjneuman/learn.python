@@ -2,6 +2,16 @@
 
 [← Part 1: functools](./functools-and-itertools-part1.md) · [Back to Overview](./functools-and-itertools.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 The `itertools` module gives you building blocks for efficient iteration. These tools let you chain sequences, generate combinations, group data, and work with infinite iterators — all lazily and memory-efficiently.

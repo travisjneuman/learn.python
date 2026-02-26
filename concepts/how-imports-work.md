@@ -8,7 +8,7 @@ When your Python file needs code from another file or library, you use `import`.
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/how-imports-work-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/how-imports-work.md) | [Quiz](quizzes/how-imports-work-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/how-imports-work.md) |
 
 <!-- modality-hub-end -->
 

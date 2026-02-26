@@ -8,7 +8,7 @@ These two standard library modules are Python's power tools for working with fun
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/functools-and-itertools-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/functools-and-itertools.md) | [Quiz](quizzes/functools-and-itertools-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/functools-and-itertools.md) |
 
 <!-- modality-hub-end -->
 

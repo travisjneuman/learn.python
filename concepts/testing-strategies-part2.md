@@ -2,6 +2,16 @@
 
 [← Part 1: Unit Testing](./testing-strategies-part1.md) · [Back to Overview](./testing-strategies.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 This part covers mocking, parametrized tests, code coverage, and common testing mistakes — the tools and techniques that take your test suite from basic to professional.

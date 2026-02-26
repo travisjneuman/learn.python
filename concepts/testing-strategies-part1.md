@@ -2,6 +2,16 @@
 
 [← Back to Overview](./testing-strategies.md) · [Part 2: Advanced Testing →](./testing-strategies-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 Testing is how you prove your code works — and keep it working as you make changes. A good test suite catches bugs before users do, gives you confidence to refactor, and serves as living documentation of how your code should behave.

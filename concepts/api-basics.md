@@ -8,7 +8,7 @@ An **API** (Application Programming Interface) is a way for programs to talk to 
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/api-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/api-basics.md) | [Quiz](quizzes/api-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/api-basics.md) |
 
 <!-- modality-hub-end -->
 

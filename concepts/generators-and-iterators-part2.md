@@ -2,6 +2,16 @@
 
 [← Part 1: Iterators](./generators-and-iterators-part1.md) · [Back to Overview](./generators-and-iterators.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 A **generator** is a function that produces values one at a time using `yield` instead of `return`. Generators are the easy way to create iterators — they handle the protocol automatically and let you write lazy, memory-efficient code.

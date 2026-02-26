@@ -2,6 +2,16 @@
 
 [← Part 1: defaultdict, Counter, OrderedDict](./collections-deep-dive-part1.md) · [Back to Overview](./collections-deep-dive.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 This part covers the remaining `collections` types: `deque` for fast double-ended operations, `namedtuple` for lightweight immutable records, and `ChainMap` for layered dict lookups.

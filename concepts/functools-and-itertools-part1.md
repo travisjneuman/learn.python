@@ -2,6 +2,16 @@
 
 [← Back to Overview](./functools-and-itertools.md) · [Part 2: itertools →](./functools-and-itertools-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 The `functools` module gives you tools to transform and optimize functions. These solve problems you will hit repeatedly: caching expensive computations, pre-filling arguments, folding sequences, and preserving metadata in decorators.

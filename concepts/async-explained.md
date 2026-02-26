@@ -8,7 +8,7 @@ Async lets your program do other work while waiting for slow operations (network
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/async-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/async-explained.md) | [Quiz](quizzes/async-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/async-explained.md) |
 
 <!-- modality-hub-end -->
 

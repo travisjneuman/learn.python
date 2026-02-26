@@ -2,6 +2,16 @@
 
 [← Back to Overview](./modern-python-tooling.md) · [Part 2: pyproject.toml and Ecosystem →](./modern-python-tooling-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 The Python ecosystem has modernized significantly. This part covers **uv** and **ruff** — the two tools that replace most of the older pip/venv/black/flake8 toolchain.

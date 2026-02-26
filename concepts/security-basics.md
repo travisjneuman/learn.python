@@ -8,7 +8,7 @@ Security is about protecting your application and its users from attacks. Even a
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/security-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/security-basics.md) | [Quiz](quizzes/security-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/security-basics.md) |
 
 <!-- modality-hub-end -->
 

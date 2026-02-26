@@ -8,7 +8,7 @@ A **dataclass** is the easy way to create a class that holds data. Instead of wr
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/dataclasses-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/dataclasses-explained.md) | [Quiz](quizzes/dataclasses-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/dataclasses-explained.md) |
 
 <!-- modality-hub-end -->
 

@@ -2,6 +2,16 @@
 
 [← Back to Overview](./debugging-methodology.md) · [Part 2: Tools and Techniques →](./debugging-methodology-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 Debugging is the systematic process of finding and fixing bugs. It is not about staring at code until you see the problem — it is a repeatable method that works on any bug, in any language. The best debuggers are not the smartest programmers; they are the most methodical.

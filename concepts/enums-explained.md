@@ -8,7 +8,7 @@ An enum (enumeration) is a set of named constants. Instead of scattering magic s
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/enums-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/enums-explained.md) | [Quiz](quizzes/enums-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/enums-explained.md) |
 
 <!-- modality-hub-end -->
 

@@ -8,7 +8,7 @@
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/args-kwargs-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/args-kwargs-explained.md) | [Quiz](quizzes/args-kwargs-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/args-kwargs-explained.md) |
 
 <!-- modality-hub-end -->
 

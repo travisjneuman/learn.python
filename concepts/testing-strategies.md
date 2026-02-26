@@ -8,7 +8,7 @@ Testing is how you prove your code works — and keep it working as you make cha
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/testing-strategies-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/testing-strategies.md) | [Quiz](quizzes/testing-strategies-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/testing-strategies.md) |
 
 <!-- modality-hub-end -->
 

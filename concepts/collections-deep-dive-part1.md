@@ -2,6 +2,16 @@
 
 [← Back to Overview](./collections-deep-dive.md) · [Part 2: deque, namedtuple, ChainMap →](./collections-deep-dive-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 Python's `collections` module provides specialized container types that go beyond the built-in `list`, `dict`, and `set`. This part covers the three dict-like types: `Counter`, `defaultdict`, and `OrderedDict`.

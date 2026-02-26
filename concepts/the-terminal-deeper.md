@@ -8,7 +8,7 @@ This builds on [00_COMPUTER_LITERACY_PRIMER.md](../00_COMPUTER_LITERACY_PRIMER.m
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/the-terminal-deeper-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/the-terminal-deeper.md) | [Quiz](quizzes/the-terminal-deeper-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/the-terminal-deeper.md) |
 
 <!-- modality-hub-end -->
 

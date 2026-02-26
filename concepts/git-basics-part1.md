@@ -2,6 +2,16 @@
 
 [← Back to Overview](./git-basics.md) · [Part 2: Remote Git →](./git-basics-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 Git is a version control system — it tracks every change you make to your code, lets you undo mistakes, and makes it possible for multiple people to work on the same project. This part covers everything you need to work with git locally: init, add, commit, branch, and merge.

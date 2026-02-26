@@ -8,7 +8,7 @@ A regular expression (regex) is a pattern that describes text. It lets you searc
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/regex-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/regex-explained.md) | [Quiz](quizzes/regex-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/regex-explained.md) |
 
 <!-- modality-hub-end -->
 

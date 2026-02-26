@@ -2,6 +2,16 @@
 
 [← Back to Overview](./generators-and-iterators.md) · [Part 2: Generators →](./generators-and-iterators-part2.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 An **iterator** is any object that produces a sequence of values, one at a time. Iterators are the foundation of Python's `for` loop and underpin how generators, file objects, and many built-in functions work.

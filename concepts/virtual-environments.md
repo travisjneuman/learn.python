@@ -8,7 +8,7 @@ A virtual environment is an isolated Python installation. Each project gets its 
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/virtual-environments-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/virtual-environments.md) | [Quiz](quizzes/virtual-environments-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/virtual-environments.md) |
 
 <!-- modality-hub-end -->
 

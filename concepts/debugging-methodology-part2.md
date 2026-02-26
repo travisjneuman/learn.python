@@ -2,6 +2,16 @@
 
 [← Part 1: Approach and Mental Models](./debugging-methodology-part1.md) · [Back to Overview](./debugging-methodology.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 This part covers the practical debugging tools available in Python: print debugging, the built-in debugger (`pdb`/`breakpoint`), and third-party tools like `icecream` and `snoop`.

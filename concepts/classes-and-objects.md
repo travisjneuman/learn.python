@@ -8,7 +8,7 @@
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/classes-and-objects-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/classes-and-objects.md) | [Quiz](quizzes/classes-and-objects-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/classes-and-objects.md) |
 
 <!-- modality-hub-end -->
 

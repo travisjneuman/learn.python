@@ -8,7 +8,7 @@ A context manager is something that sets up a resource when you enter a block an
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/context-managers-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/context-managers-explained.md) | [Quiz](quizzes/context-managers-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/context-managers-explained.md) |
 
 <!-- modality-hub-end -->
 

@@ -8,7 +8,7 @@
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/decorators-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/decorators-explained.md) | [Quiz](quizzes/decorators-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/decorators-explained.md) |
 
 <!-- modality-hub-end -->
 

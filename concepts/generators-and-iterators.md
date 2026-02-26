@@ -8,7 +8,7 @@ A generator is a function that produces values one at a time instead of building
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/generators-and-iterators-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/generators-and-iterators.md) | [Quiz](quizzes/generators-and-iterators-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/generators-and-iterators.md) |
 
 <!-- modality-hub-end -->
 

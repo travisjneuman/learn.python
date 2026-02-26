@@ -2,6 +2,16 @@
 
 [← Part 1: Local Git](./git-basics-part1.md) · [Back to Overview](./git-basics.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 This part covers working with remote repositories on GitHub: pushing, pulling, cloning, the pull request workflow, and resolving merge conflicts.

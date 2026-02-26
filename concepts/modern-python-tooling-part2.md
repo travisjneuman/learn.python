@@ -2,6 +2,16 @@
 
 [← Part 1: uv and ruff](./modern-python-tooling-part1.md) · [Back to Overview](./modern-python-tooling.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | — | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 This part covers the modern config file (`pyproject.toml`), the old-to-new toolchain mapping, and quality-of-life improvements in recent Python releases.

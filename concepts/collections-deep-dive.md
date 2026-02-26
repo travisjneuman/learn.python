@@ -8,7 +8,7 @@ Python's `collections` module provides specialized container types that go beyon
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/collections-deep-dive-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/collections-deep-dive.md) | [Quiz](quizzes/collections-deep-dive-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/collections-deep-dive.md) |
 
 <!-- modality-hub-end -->
 

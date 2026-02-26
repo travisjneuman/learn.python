@@ -8,7 +8,7 @@
 
 | Read | Build | Watch | Test | Review | Visualize | Try |
 |:---: | :---: | :---: | :---: | :---: | :---: | :---:|
-| — | **This project** | — | — | [Flashcards](../../../../practice/flashcards/README.md) | — | — |
+| — | **This project** | [Walkthrough](./WALKTHROUGH.md) | — | [Flashcards](../../../../practice/flashcards/README.md) | — | — |
 
 <!-- modality-hub-end -->
 

@@ -8,7 +8,7 @@ Type hints tell Python (and your editor) what kind of data a variable or functio
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/type-hints-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/type-hints-explained.md) | [Quiz](quizzes/type-hints-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/type-hints-explained.md) |
 
 <!-- modality-hub-end -->
 

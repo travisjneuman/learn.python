@@ -8,7 +8,7 @@ A comprehension is a one-line way to build a list, dictionary, or set from anoth
 
 | Read | Build | Watch | Test | Review | Visualize |
 |:---: | :---: | :---: | :---: | :---: | :---:|
-| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/comprehensions-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+| **You are here** | [Projects](#practice) | [Videos](videos/comprehensions-explained.md) | [Quiz](quizzes/comprehensions-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/comprehensions-explained.md) |
 
 <!-- modality-hub-end -->
 
