@@ -47,17 +47,37 @@ Each walkthrough covers: understanding the problem, planning before code, buildi
 | 06 Records Deduplicator | [Walkthrough](../projects/level-2/06-records-deduplicator/WALKTHROUGH.md) | Data deduplication |
 | 15 Level 2 Mini Capstone | [Walkthrough](../projects/level-2/15-level2-mini-capstone/WALKTHROUGH.md) | Combining level 2 skills |
 
-## Levels 3-5
+## Level 3
 
-*Coming soon — walkthroughs for intermediate projects.*
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Package Layout Starter | [Walkthrough](../projects/level-3/01-package-layout-starter/WALKTHROUGH.md) | Package structure |
+| 08 Template-Driven Reporter | [Walkthrough](../projects/level-3/08-template-driven-reporter/WALKTHROUGH.md) | Template rendering |
+| 15 Level 3 Mini Capstone | [Walkthrough](../projects/level-3/15-level3-mini-capstone/WALKTHROUGH.md) | Combining level 3 skills |
+
+## Level 4
+
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Schema Validator Engine | [Walkthrough](../projects/level-4/01-schema-validator-engine/WALKTHROUGH.md) | Schema validation |
+| 07 Duplicate Record Investigator | [Walkthrough](../projects/level-4/07-duplicate-record-investigator/WALKTHROUGH.md) | Record investigation |
+| 15 Level 4 Mini Capstone | [Walkthrough](../projects/level-4/15-level4-mini-capstone/WALKTHROUGH.md) | Combining level 4 skills |
+
+## Level 5
+
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Schedule-Ready Script | [Walkthrough](../projects/level-5/01-schedule-ready-script/WALKTHROUGH.md) | Scheduling patterns |
+| 08 Cross-File Joiner | [Walkthrough](../projects/level-5/08-cross-file-joiner/WALKTHROUGH.md) | Multi-file operations |
+| 15 Level 5 Mini Capstone | [Walkthrough](../projects/level-5/15-level5-mini-capstone/WALKTHROUGH.md) | Combining level 5 skills |
 
 ## Levels 6-10
 
-*Coming soon — walkthroughs for advanced projects.*
+*In progress — walkthroughs being created for advanced projects.*
 
 ## Elite Track
 
-*Coming soon — walkthroughs for elite engineering projects.*
+*In progress — walkthroughs being created for elite engineering projects.*
 
 ## Expansion Modules
 

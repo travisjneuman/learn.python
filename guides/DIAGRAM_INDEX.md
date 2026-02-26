@@ -23,23 +23,31 @@ Each diagram page includes: an overview map, step-by-step execution flow, decisi
 
 | Concept | Diagram Page | Diagram Types |
 |---------|-------------|---------------|
-| Imports | [Diagrams](../concepts/diagrams/how-imports-work.md) | Import resolution, package structure |
-| Classes & Objects | [Diagrams](../concepts/diagrams/classes-and-objects.md) | Class hierarchy, MRO, composition |
-| Decorators | [Diagrams](../concepts/diagrams/decorators-explained.md) | Decorator call chain, wrapper flow |
-| Virtual Environments | [Diagrams](../concepts/diagrams/virtual-environments.md) | Venv isolation, package resolution |
-| Comprehensions | [Diagrams](../concepts/diagrams/comprehensions-explained.md) | Data transformation flow |
-| Type Hints | [Diagrams](../concepts/diagrams/type-hints-explained.md) | Type annotation decision tree |
-| Dataclasses | [Diagrams](../concepts/diagrams/dataclasses-explained.md) | Dataclass vs dict vs namedtuple |
+| Imports | [Diagrams](../concepts/diagrams/how-imports-work.md) | Import resolution flowchart, sys.path search order |
+| Classes & Objects | [Diagrams](../concepts/diagrams/classes-and-objects.md) | Instantiation sequence, inheritance hierarchy, MRO |
+| Decorators | [Diagrams](../concepts/diagrams/decorators-explained.md) | Call chain flowchart, stacking order, wrapping |
+| Virtual Environments | [Diagrams](../concepts/diagrams/virtual-environments.md) | Creation lifecycle, package isolation |
+| Comprehensions | [Diagrams](../concepts/diagrams/comprehensions-explained.md) | Data flow pipeline, comprehension vs loop |
+| Args & Kwargs | [Diagrams](../concepts/diagrams/args-kwargs-explained.md) | Argument matching flow, unpacking |
+| Context Managers | [Diagrams](../concepts/diagrams/context-managers-explained.md) | Enter/exit lifecycle, with statement flow |
+| Enums | [Diagrams](../concepts/diagrams/enums-explained.md) | Value mapping, flag composition |
+| Type Hints | [Diagrams](../concepts/diagrams/type-hints-explained.md) | Type annotation hierarchy, generics flow |
+| Dataclasses | [Diagrams](../concepts/diagrams/dataclasses-explained.md) | Auto-generation flow, frozen vs mutable |
 
 ## Advanced Concepts
 
 | Concept | Diagram Page | Diagram Types |
 |---------|-------------|---------------|
-| HTTP | [Diagrams](../concepts/diagrams/http-explained.md) | Request/response sequence, status code flow |
-| APIs | [Diagrams](../concepts/diagrams/api-basics.md) | REST flow, authentication sequence |
-| Async/Await | [Diagrams](../concepts/diagrams/async-explained.md) | Event loop, async state machine |
-| Generators | [Diagrams](../concepts/diagrams/generators-and-iterators.md) | Iterator protocol, yield flow |
-| Collections Deep Dive | [Diagrams](../concepts/diagrams/collections-deep-dive.md) | Specialized collection selection |
+| HTTP | [Diagrams](../concepts/diagrams/http-explained.md) | Request/response sequence, status codes |
+| APIs | [Diagrams](../concepts/diagrams/api-basics.md) | REST architecture, CRUD mapping, auth flow |
+| Async/Await | [Diagrams](../concepts/diagrams/async-explained.md) | Event loop state machine, task lifecycle |
+| Testing Strategies | [Diagrams](../concepts/diagrams/testing-strategies.md) | Testing pyramid, TDD cycle |
+| Generators & Iterators | [Diagrams](../concepts/diagrams/generators-and-iterators.md) | Iterator protocol, yield flow |
+| Collections Deep Dive | [Diagrams](../concepts/diagrams/collections-deep-dive.md) | Collection decision tree, performance |
+| Functools & Itertools | [Diagrams](../concepts/diagrams/functools-and-itertools.md) | Decorator chain, lru_cache flow |
+| Terminal Deeper | [Diagrams](../concepts/diagrams/the-terminal-deeper.md) | Shell pipeline, I/O flow |
+| Regex | [Diagrams](../concepts/diagrams/regex-explained.md) | Matching flow, pattern decision tree |
+| Security Basics | [Diagrams](../concepts/diagrams/security-basics.md) | OWASP overview, sanitization flow |
 
 ---
 
