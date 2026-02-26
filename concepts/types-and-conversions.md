@@ -2,6 +2,16 @@
 
 Every value in Python has a type. The type determines what you can do with it.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/types-and-conversions.md) | [Quiz](quizzes/types-and-conversions-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/types-and-conversions.md) |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how type conversions change values and what happens when they fail:

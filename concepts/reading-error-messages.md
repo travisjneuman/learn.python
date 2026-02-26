@@ -2,6 +2,16 @@
 
 Error messages are Python's way of telling you exactly what went wrong and where. This guide teaches you how to decode them.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/reading-error-messages.md) | [Quiz](quizzes/reading-error-messages-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/reading-error-messages.md) |
+
+<!-- modality-hub-end -->
+
 ## Anatomy of a traceback
 
 ```

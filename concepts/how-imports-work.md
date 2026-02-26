@@ -2,6 +2,16 @@
 
 When your Python file needs code from another file or library, you use `import`.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/how-imports-work-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how Python searches for and loads modules when you import:

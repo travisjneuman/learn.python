@@ -2,6 +2,16 @@
 
 A context manager is something that sets up a resource when you enter a block and cleans it up when you leave — even if an error occurs. The `with` statement is how you use them. If you have ever written `with open("file.txt") as f:`, you have already used one.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/context-managers-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Resources like files, database connections, and network sockets need to be properly closed when you are done with them. Forgetting to close a file can corrupt data. Forgetting to close a database connection can exhaust the connection pool and crash your server. Context managers make cleanup automatic — you cannot forget.

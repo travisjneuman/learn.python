@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, open Python and type `x = 5` then `print(x)`. Now type `x = "hello"` then `print(x)`. Notice how `x` changed? That is what a variable does.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/what-is-a-variable.md) | [Quiz](quizzes/what-is-a-variable-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/what-is-a-variable.md) |
+
+<!-- modality-hub-end -->
+
 A variable is a name that holds a value. You create it by writing a name, then `=`, then the value.
 
 ```python

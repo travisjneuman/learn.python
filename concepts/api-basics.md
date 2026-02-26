@@ -2,6 +2,16 @@
 
 An **API** (Application Programming Interface) is a way for programs to talk to each other. When people say "API" in web development, they usually mean a web API — a server that accepts HTTP requests and returns data (usually JSON).
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/api-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how Python works with JSON data, the format APIs use to communicate:

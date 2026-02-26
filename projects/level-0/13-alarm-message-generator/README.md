@@ -1,6 +1,16 @@
 # Level 0 / Project 13 - Alarm Message Generator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/errors-and-debugging.md) | **This project** | — | [Quiz](../../../concepts/quizzes/errors-and-debugging-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | [Diagram](../../../concepts/diagrams/errors-and-debugging.md) | [Browser](../../../browser/level-0.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 30 minutes
 
 ## Focus

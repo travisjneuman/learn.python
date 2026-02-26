@@ -1,6 +1,16 @@
 # Level 10 / Project 05 - Compliance Evidence Builder
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | — | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Observer pattern for pluggable evidence collectors
 - Control framework mapping with coverage assessment

@@ -2,6 +2,16 @@
 
 Git is a version control system — it tracks every change you make to your code, lets you undo mistakes, and makes it possible for multiple people to work on the same project without overwriting each other's work. Every professional developer uses git daily.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/git-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Without version control, you end up with folders named `project_final`, `project_final_v2`, `project_ACTUALLY_final`. Git replaces all of that with a clean history of changes. It also makes it safe to experiment — you can always go back to a working version.

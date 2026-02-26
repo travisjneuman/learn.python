@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, open Python and type `for i in range(5): print(i)`. Watch what happens. How many numbers print? Does it start at 0 or 1?
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/how-loops-work.md) | [Quiz](quizzes/how-loops-work-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/how-loops-work.md) |
+
+<!-- modality-hub-end -->
+
 A loop repeats code. Instead of writing the same thing 100 times, you write it once and let the loop handle repetition.
 
 ## Visualize It

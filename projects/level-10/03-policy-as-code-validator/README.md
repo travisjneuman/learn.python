@@ -1,6 +1,16 @@
 # Level 10 / Project 03 - Policy As Code Validator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | — | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Chain of Responsibility pattern for composable policy rules
 - Protocol-based rule interface for extensibility

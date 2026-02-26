@@ -1,0 +1,71 @@
+# Solution: Level 10 / Project 05 - Compliance Evidence Builder
+
+> **STOP** — Have you attempted this project yourself first?
+>
+> Learning happens in the struggle, not in reading answers.
+> Spend at least 20 minutes trying before reading this solution.
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> your thinking without giving away the answer.
+
+---
+
+
+## Complete solution
+
+```python
+# WHY build_demo_package: [explain the design reason]
+# WHY main: [explain the design reason]
+# WHY content_hash: [explain the design reason]
+# WHY collector_name: [explain the design reason]
+# WHY collect: [explain the design reason]
+# WHY __init__: [explain the design reason]
+# WHY collector_name: [explain the design reason]
+# WHY collect: [explain the design reason]
+# WHY __init__: [explain the design reason]
+# WHY collector_name: [explain the design reason]
+# WHY collect: [explain the design reason]
+# WHY __init__: [explain the design reason]
+# WHY collector_name: [explain the design reason]
+# WHY collect: [explain the design reason]
+# WHY __init__: [explain the design reason]
+# WHY register_collector: [explain the design reason]
+# WHY collect_all: [explain the design reason]
+# WHY evidence_count: [explain the design reason]
+# WHY all_evidence: [explain the design reason]
+# WHY assess_controls: [explain the design reason]
+# WHY generate_report: [explain the design reason]
+
+# [paste the complete working solution here]
+# Include WHY comments on every non-obvious line.
+```
+
+## Design decisions
+
+| Decision | Why | Alternative considered |
+|----------|-----|----------------------|
+| build_demo_package function | [reason] | [alternative] |
+| main function | [reason] | [alternative] |
+| content_hash function | [reason] | [alternative] |
+
+## Alternative approaches
+
+### Approach B: [Name]
+
+```python
+# [Different valid approach with trade-offs explained]
+```
+
+**Trade-off:** [When you would prefer this approach vs the primary one]
+
+## What could go wrong
+
+| Scenario | What happens | Prevention |
+|----------|-------------|------------|
+| [bad input] | [error/behavior] | [how to handle] |
+| [edge case] | [behavior] | [how to handle] |
+
+## Key takeaways
+
+1. [Most important lesson from this project]
+2. [Second lesson]
+3. [Connection to future concepts]

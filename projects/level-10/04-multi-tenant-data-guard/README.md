@@ -1,6 +1,16 @@
 # Level 10 / Project 04 - Multi Tenant Data Guard
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | — | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Proxy pattern for transparent tenant isolation
 - Role-based access control (RBAC) with permission matrix

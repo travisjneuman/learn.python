@@ -1,6 +1,16 @@
 # Level 10 / Project 02 - Autonomous Run Orchestrator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | — | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - DAG-based dependency resolution via topological sort
 - Command pattern for self-contained workflow steps

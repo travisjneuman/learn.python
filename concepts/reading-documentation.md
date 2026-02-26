@@ -2,6 +2,16 @@
 
 Learning to read documentation is one of the most valuable skills a programmer can develop. The official Python docs at docs.python.org are comprehensive but can be intimidating at first. This page teaches you how to navigate them efficiently so you can answer your own questions faster.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/reading-documentation-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 No one memorizes every function in Python. Even experienced developers look things up constantly. The difference between a beginner and an expert is often just speed at finding answers in the docs. Learning to read documentation makes you self-sufficient — you stop needing to search for tutorials and Stack Overflow answers for every question.

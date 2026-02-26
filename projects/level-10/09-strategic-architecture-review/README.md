@@ -1,6 +1,16 @@
 # Level 10 / Project 09 - Strategic Architecture Review
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | — | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Architecture fitness functions as executable constraints
 - System model with service dependencies

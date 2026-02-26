@@ -11,6 +11,16 @@ Recall these prerequisites before diving in:
 
 **Estimated time:** 15 minutes
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/errors-and-debugging.md) | **This project** | [Walkthrough](./WALKTHROUGH.md) | [Quiz](../../../concepts/quizzes/errors-and-debugging-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | [Diagram](../../../concepts/diagrams/errors-and-debugging.md) | [Browser](../../../browser/level-0.html) |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - print output, variables, and command execution basics
 

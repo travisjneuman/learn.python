@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, try this in Python: `class Dog: pass` then `my_dog = Dog()` then `print(type(my_dog))`. You just created a class and made an object from it.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/classes-and-objects-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 A **class** is a blueprint for creating things. An **object** is a thing created from that blueprint.
 
 ## Visualize It

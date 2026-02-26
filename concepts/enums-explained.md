@@ -2,6 +2,16 @@
 
 An enum (enumeration) is a set of named constants. Instead of scattering magic strings like `"active"`, `"inactive"`, `"pending"` throughout your code, you define them once in an enum and get autocomplete, typo protection, and clear documentation for free.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/enums-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Magic strings and magic numbers are a top source of bugs. If you mistype `"actve"` instead of `"active"`, Python will not catch it — your code will silently do the wrong thing. Enums make invalid values impossible: `Status.ACTVE` raises an `AttributeError` immediately.

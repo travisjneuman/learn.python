@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, try writing a function that adds two numbers: `def add(a, b): return a + b`. Then call it: `print(add(3, 4))`. What does it print?
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/functions-explained.md) | [Quiz](quizzes/functions-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/functions-explained.md) |
+
+<!-- modality-hub-end -->
+
 A function is a reusable block of code with a name. You define it once, then call it whenever you need it.
 
 ## Visualize It

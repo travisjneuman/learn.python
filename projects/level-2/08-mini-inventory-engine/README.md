@@ -1,6 +1,16 @@
 # Level 2 / Project 08 - Mini Inventory Engine
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/collections-explained.md) | **This project** | — | [Quiz](../../../concepts/quizzes/collections-explained-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | [Diagram](../../../concepts/diagrams/collections-explained.md) | [Browser](../../../browser/level-2.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 40 minutes
 
 ## Focus

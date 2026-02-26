@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, try this in Python: `fruits = ['apple', 'banana']; fruits.append('cherry'); print(fruits)`. What does the list look like after `append`?
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/collections-explained.md) | [Quiz](quizzes/collections-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/collections-explained.md) |
+
+<!-- modality-hub-end -->
+
 Python has several ways to group multiple values together.
 
 ## Visualize It

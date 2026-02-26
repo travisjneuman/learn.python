@@ -2,6 +2,16 @@
 
 Python's `collections` module provides specialized container types that go beyond the built-in `list`, `dict`, and `set`. They solve common patterns like counting items, creating lightweight objects, and handling missing dictionary keys — all with less code and better performance than rolling your own solution.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/collections-deep-dive-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Every program needs to store and organize data. The built-in types handle most cases, but they have gaps. Need to count how often each word appears? `Counter`. Need a dict that automatically handles missing keys? `defaultdict`. Need a lightweight immutable object with named fields? `namedtuple`. Learning these tools saves you from writing (and debugging) boilerplate code.

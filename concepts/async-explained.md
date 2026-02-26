@@ -2,6 +2,16 @@
 
 Async lets your program do other work while waiting for slow operations (network requests, file reads, database queries).
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/async-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how `async` and `await` allow coroutines to run concurrently:

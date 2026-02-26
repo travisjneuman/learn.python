@@ -2,6 +2,16 @@
 
 Python 3.10 introduced **structural pattern matching** — the `match`/`case` statement. It is like `if`/`elif`, but designed for matching the shape and content of data.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/match-case-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Basic syntax
 
 ```python

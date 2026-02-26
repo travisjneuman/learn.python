@@ -11,6 +11,16 @@ Recall these prerequisites before diving in:
 
 **Estimated time:** 30 minutes
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/collections-explained.md) | **This project** | [Walkthrough](./WALKTHROUGH.md) | [Quiz](../../../concepts/quizzes/collections-explained-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | [Diagram](../../../concepts/diagrams/collections-explained.md) | [Browser](../../../browser/level-2.html) |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - nested lookup safety and defaults
 

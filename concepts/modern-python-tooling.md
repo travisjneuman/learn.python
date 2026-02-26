@@ -2,6 +2,16 @@
 
 The Python ecosystem has modernized significantly. This page covers **uv**, **ruff**, and the shift away from the older pip/venv/black/flake8 toolchain.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/modern-python-tooling-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## uv — the fast Python package manager
 
 **uv** is a single tool that replaces pip, venv, pip-tools, and pyenv. It is written in Rust, and it is extremely fast — often 10-100x faster than pip.

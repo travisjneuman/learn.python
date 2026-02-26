@@ -2,6 +2,16 @@
 
 Security is about protecting your application and its users from attacks. Even a small Python script can be vulnerable if it handles user input, connects to a database, or stores passwords. This page covers the most common attacks and how to prevent them.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/security-basics-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 A single security vulnerability can expose every user's data, destroy trust, and create legal liability. The good news: most attacks exploit a small set of well-known mistakes. Learn these patterns and you will avoid the vast majority of real-world vulnerabilities.

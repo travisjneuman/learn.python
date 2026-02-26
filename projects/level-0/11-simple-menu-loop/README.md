@@ -1,6 +1,16 @@
 # Level 0 / Project 11 - Simple Menu Loop
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/errors-and-debugging.md) | **This project** | — | [Quiz](../../../concepts/quizzes/errors-and-debugging-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | [Diagram](../../../concepts/diagrams/errors-and-debugging.md) | [Browser](../../../browser/level-0.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 25 minutes
 
 ## Focus

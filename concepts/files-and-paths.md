@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, try this in Python: `open('test.txt', 'w').write('hello')` then `print(open('test.txt').read())`. You just wrote to a file and read it back.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/files-and-paths.md) | [Quiz](quizzes/files-and-paths-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/files-and-paths.md) |
+
+<!-- modality-hub-end -->
+
 Programs read data from files and write results to files. Understanding how to work with files and their locations (paths) is essential.
 
 ## Visualize It

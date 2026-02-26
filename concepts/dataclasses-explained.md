@@ -2,6 +2,16 @@
 
 A **dataclass** is the easy way to create a class that holds data. Instead of writing `__init__`, `__repr__`, and `__eq__` yourself, Python generates them for you.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/dataclasses-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## The problem dataclasses solve
 
 Here is a plain class that stores a person's information:

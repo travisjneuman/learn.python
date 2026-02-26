@@ -2,6 +2,16 @@
 
 Testing is how you prove your code works — and keep it working as you make changes. A good test suite catches bugs before users do, gives you confidence to refactor, and serves as living documentation of how your code should behave.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/testing-strategies-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Without tests, every change is a gamble. You fix one bug and introduce two more. With tests, you can change code boldly — if something breaks, a test will tell you immediately. Professional codebases have hundreds or thousands of tests that run automatically on every commit.

@@ -2,6 +2,16 @@
 
 Debugging is the systematic process of finding and fixing bugs. It is not about staring at code until you see the problem — it is a repeatable method that works on any bug, in any language. The best debuggers are not the smartest programmers; they are the most methodical.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/debugging-methodology-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 You will spend more time debugging than writing new code. A systematic approach turns frustrating hours of "why does this not work?" into a predictable process. The method described here — Reproduce, Isolate, Hypothesize, Test, Fix, Verify, Prevent — works for everything from a typo to a race condition.

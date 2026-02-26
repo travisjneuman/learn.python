@@ -11,6 +11,16 @@ Recall these prerequisites before diving in:
 
 **Estimated time:** 20 minutes
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/errors-and-debugging.md) | **This project** | — | [Quiz](../../../concepts/quizzes/errors-and-debugging-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | [Diagram](../../../concepts/diagrams/errors-and-debugging.md) | [Browser](../../../browser/level-0.html) |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - if-elif-else decision trees
 

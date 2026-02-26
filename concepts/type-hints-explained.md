@@ -2,6 +2,16 @@
 
 Type hints tell Python (and your editor) what kind of data a variable or function expects. They do not change how your code runs — Python ignores them at runtime. But they help you catch mistakes before you run anything.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/type-hints-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why type hints matter
 
 Without type hints, you have to remember what every function expects:

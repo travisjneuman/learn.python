@@ -1,6 +1,16 @@
 # Level 1 / Project 10 - Ticket Priority Router
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | — | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-1.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 35 minutes
 
 ## Focus

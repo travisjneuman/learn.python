@@ -2,6 +2,16 @@
 
 `*args` and `**kwargs` let a function accept any number of arguments. `*args` collects extra positional arguments into a tuple. `**kwargs` collects extra keyword arguments into a dictionary. Together, they make functions flexible without requiring a fixed parameter list.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/args-kwargs-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 You will see `*args` and `**kwargs` in almost every Python library. Understanding them is essential for writing decorators, creating wrapper functions, and understanding how frameworks like Flask and pytest work under the hood. They also appear in function signatures on docs.python.org — you need to read them confidently.

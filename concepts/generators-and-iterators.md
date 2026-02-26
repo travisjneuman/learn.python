@@ -2,6 +2,16 @@
 
 A generator is a function that produces values one at a time instead of building an entire list in memory. It uses `yield` instead of `return`. This is how Python handles large datasets without running out of memory.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/generators-and-iterators-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Imagine you need to process a 10 GB log file. Loading it all into a list would crash your program. A generator reads one line at a time, using almost no memory. Generators are the foundation of lazy evaluation in Python — computing values only when they are needed.

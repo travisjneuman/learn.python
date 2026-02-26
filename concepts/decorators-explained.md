@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, define a simple function: `def greet(): return "hello"`. Now try adding `@property` to a class method. What changes? Decorators modify how functions behave.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/decorators-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 A decorator is a function that wraps another function to add extra behavior. The `@` symbol is shorthand for applying a decorator.
 
 ## Visualize It

@@ -2,6 +2,16 @@
 
 > **Try This First:** Before reading, try running `print(1/0)` in Python. What happens? Read the error message -- it tells you exactly what went wrong.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | [Videos](videos/errors-and-debugging.md) | [Quiz](quizzes/errors-and-debugging-quiz.py) | [Flashcards](../practice/flashcards/README.md) | [Diagrams](diagrams/errors-and-debugging.md) |
+
+<!-- modality-hub-end -->
+
 Errors are not failures. They are Python telling you exactly what went wrong and where. Learning to read error messages is one of the most valuable skills in programming.
 
 ## Visualize It

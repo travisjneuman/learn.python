@@ -2,6 +2,16 @@
 
 Jupyter notebooks let you mix code, text, and visualizations in a single document. They're the standard tool for data exploration, prototyping, and sharing analysis — widely used in data science, machine learning, and scientific computing.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/jupyter-notebooks-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ---
 
 ## Why Jupyter Matters

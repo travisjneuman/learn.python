@@ -2,6 +2,16 @@
 
 HTTP (HyperText Transfer Protocol) is how browsers and apps talk to servers. Every time you visit a website or call an API, you're using HTTP.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/http-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how Python builds and parses JSON, the data format used by most APIs:

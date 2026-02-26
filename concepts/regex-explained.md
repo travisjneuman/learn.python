@@ -2,6 +2,16 @@
 
 A regular expression (regex) is a pattern that describes text. It lets you search for, match, and extract specific patterns from strings — like finding all email addresses in a document or validating that a phone number has the right format. Python's `re` module provides regex support.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/regex-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 String methods like `.find()` and `.startswith()` work for simple cases, but they fall apart when patterns are complex. "Find every word that starts with a capital letter and ends with a number" is one line of regex but dozens of lines of string manipulation. Regex is a universal skill — the same patterns work in Python, JavaScript, SQL, and most editors.

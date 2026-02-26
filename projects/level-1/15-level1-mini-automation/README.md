@@ -1,6 +1,16 @@
 # Level 1 / Project 15 - Level 1 Mini Automation
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| [Concept](../../../concepts/how-imports-work.md) | **This project** | [Walkthrough](./WALKTHROUGH.md) | [Quiz](../../../concepts/quizzes/how-imports-work-quiz.py) | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-1.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 40 minutes
 
 ## Focus

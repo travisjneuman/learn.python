@@ -2,6 +2,16 @@
 
 This builds on [00_COMPUTER_LITERACY_PRIMER.md](../00_COMPUTER_LITERACY_PRIMER.md). Here we cover pipes, redirects, environment variables, and other terminal skills you need for real development.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/the-terminal-deeper-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how Python interacts with the operating system via `os` and `sys`:

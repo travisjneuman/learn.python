@@ -2,6 +2,16 @@
 
 These two standard library modules are Python's power tools for working with functions and sequences. `functools` gives you tools to transform and optimize functions. `itertools` gives you building blocks for efficient iteration. Together they let you write elegant, memory-efficient code.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/functools-and-itertools-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 These modules solve problems you will hit repeatedly: caching expensive computations, chaining sequences, grouping data, generating combinations, and more. Knowing them saves you from reinventing the wheel and produces code that is both faster and more readable.

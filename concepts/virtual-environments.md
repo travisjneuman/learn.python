@@ -2,6 +2,16 @@
 
 A virtual environment is an isolated Python installation. Each project gets its own set of packages, so they don't conflict with each other.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/virtual-environments-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Visualize It
 
 See how Python finds packages via `sys.path` — the key to understanding environments:

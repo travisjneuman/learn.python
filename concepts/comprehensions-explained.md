@@ -2,6 +2,16 @@
 
 A comprehension is a one-line way to build a list, dictionary, or set from another sequence. Instead of writing a loop that appends to a list, you describe what you want in a single expression. Comprehensions are one of Python's most distinctive features.
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize |
+|:---: | :---: | :---: | :---: | :---: | :---:|
+| **You are here** | [Projects](#practice) | — | [Quiz](quizzes/comprehensions-explained-quiz.py) | [Flashcards](../practice/flashcards/README.md) | — |
+
+<!-- modality-hub-end -->
+
 ## Why This Matters
 
 Comprehensions make your code shorter, faster, and more readable — once you learn the pattern. They show up everywhere in Python: filtering data, transforming lists, building dictionaries from pairs, and more. Understanding them is essential from Level 2 onward.
