@@ -1,51 +1,24 @@
-# Walkthrough: Dictionary Lookup Service
+# Dictionary Lookup Service — Step-by-Step Walkthrough
 
-> This guide walks through the **thinking process** for building this project.
-> It does NOT give you the complete solution. For that, see [SOLUTION.md](./SOLUTION.md).
+[<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 
-## Before reading this
+## Before You Start
 
-**Try the project yourself first.** Spend at least 20 minutes.
-If you have not tried yet, close this file and open the [project README](./README.md).
+Read the [project README](./README.md) first. Try to solve it on your own before following this guide. Spend at least 20 minutes attempting it independently.
 
----
+## Thinking Process
 
-## Understanding the problem
+When you see "dictionary lookup service," your first question should be: where does the data come from, and what format is it in? The data lives in a text file with one `key=value` pair per line. So the first job is parsing that file into a Python dict. Think about what could go wrong at this stage -- definitions that contain `=` signs, duplicate keys, and inconsistent capitalization.
 
-You need to build a dictionary lookup tool that loads `key=value` pairs from a file, looks up terms (case-insensitively), and suggests close matches when a term is not found. It also provides statistics about the dictionary. Think of it like a simplified spell-check-enabled glossary.
+Next, think about what happens when someone searches for a term that does not exist. You could just say "not found," but a better experience is to suggest close matches. This is where the `difflib` module comes in -- it can find strings that are similar to the search term. Think of it like a spell checker: you type "pythn" and it says "did you mean python?"
 
-The dictionary file looks like:
+Finally, consider normalization. If the dictionary has "Python" and the user searches for "python," should that match? Almost certainly yes. Normalizing to lowercase at both load time and search time solves this cleanly.
 
-```
-python=A high-level programming language
-javascript=A language for web development
-html=HyperText Markup Language
-```
+## Step 1: Load the Dictionary File
 
-## Planning before code
+**What to do:** Write a function that reads a text file and builds a Python dict from `key=value` lines.
 
-```mermaid
-flowchart TD
-    A[Load dictionary file] --> B[load_dictionary: parse key=value lines into dict]
-    B --> C{User action?}
-    C -->|--lookup term| D[lookup: exact match or fuzzy suggestions]
-    C -->|--stats| E[dictionary_stats: count entries, analyse keys]
-    C -->|batch lookup| F[batch_lookup: look up many terms]
-    D --> G[Print structured result]
-    F --> G
-    E --> G
-```
-
-Four functions to build:
-
-1. **load_dictionary()** -- parse a file of `key=value` lines into a Python dict
-2. **lookup()** -- search for a term with fuzzy matching fallback
-3. **batch_lookup()** -- look up multiple terms at once
-4. **dictionary_stats()** -- compute summary statistics about the dictionary
-
-## Step 1: Loading the dictionary
-
-The file has one entry per line in `key=value` format. Parse it into a Python dictionary using a dict comprehension:
+**Why:** Everything else depends on having the data in a Python dict. Get this right first, and the rest flows naturally.
 
 ```python
 def load_dictionary(path: Path) -> dict[str, str]:
@@ -62,17 +35,17 @@ def load_dictionary(path: Path) -> dict[str, str]:
 
 Three details to notice:
 
-- **`line.split("=", 1)`** splits on the **first** `=` only. This is critical because definitions might contain `=` signs (like `formula=E=mc2`). Without `maxsplit=1`, that would break into three parts.
-- **`.lower()` on keys** makes lookups case-insensitive. "Python", "python", and "PYTHON" all map to the same entry.
-- **`if "=" in line`** skips lines that do not have an `=`, like blank lines or comments.
+- **`line.split("=", 1)`** splits on the **first** `=` only. This is critical because definitions might contain `=` signs (like `formula=E=mc2`). Without the `1`, that would break into three parts.
+- **`.lower()` on keys** makes lookups case-insensitive.
+- **`if "=" in line`** skips blank lines and comments.
 
-### Predict before you scroll
+**Predict:** If the file has two lines with the same key (e.g., `python=...` appears twice), which definition ends up in the dict? The first one or the last one?
 
-If the file has two lines with the same key (e.g., `python=...` appears twice), which definition ends up in the dictionary? The first one or the last one?
+## Step 2: Look Up a Single Term
 
-## Step 2: Looking up a term
+**What to do:** Write a `lookup()` function that searches the dictionary for a term and returns a structured result dict.
 
-The lookup function has two paths: exact match (the happy path) and fuzzy match (the fallback).
+**Why:** Returning a structured dict (not just a string) means the caller can programmatically check `result["found"]` and decide what to do. This is better than returning `None` or raising an exception for missing terms.
 
 ```python
 import difflib
@@ -100,17 +73,15 @@ def lookup(dictionary: dict[str, str], term: str) -> dict:
         }
 ```
 
-The function uses `try/except KeyError` instead of `if term in dictionary`. Both work, but `try/except` is considered more "Pythonic" when you expect the key to exist most of the time. This is the **EAFP** pattern (Easier to Ask Forgiveness than Permission).
+The function uses `try/except KeyError` instead of `if term in dictionary`. Both work, but `try/except` is considered more Pythonic when you expect the key to usually exist (the "happy path" is fast). This is the **EAFP** pattern (Easier to Ask Forgiveness than Permission).
 
-**`difflib.get_close_matches`** uses sequence matching to find similar strings. The `cutoff=0.6` means a match must be at least 60% similar. The `n=3` limits results to the three best matches.
+**Predict:** If the dictionary contains "python" and the user searches for "pythn" (a typo), will `get_close_matches` find it? What if they search for "xyz"?
 
-### Predict before you scroll
+## Step 3: Batch Lookup with Enumerate
 
-If the dictionary contains "python" and the user searches for "pythn" (a typo), will `get_close_matches` find it? What if they search for "xyz"?
+**What to do:** Write a `batch_lookup()` function that processes a list of terms and tracks their original position using `enumerate()`.
 
-## Step 3: Batch lookup
-
-Looking up multiple terms is a thin wrapper around `lookup()`:
+**Why:** When looking up multiple terms, the caller needs to know which result corresponds to which input. `enumerate` gives you the index alongside each item -- this is cleaner than manually tracking a counter variable.
 
 ```python
 def batch_lookup(dictionary: dict[str, str], terms: list[str]) -> list[dict]:
@@ -122,11 +93,13 @@ def batch_lookup(dictionary: dict[str, str], terms: list[str]) -> list[dict]:
     return results
 ```
 
-`enumerate()` provides both the index and the value. Adding the index to each result lets the caller track which position each term was in.
+**Predict:** If you pass `["Python", "PYTHON", "python"]`, how many unique lookups effectively happen? Are all three results identical?
 
-## Step 4: Dictionary statistics
+## Step 4: Compute Dictionary Statistics
 
-This function demonstrates **set operations** and **sorting with a key function**:
+**What to do:** Write a `dictionary_stats()` function that uses sets and `sorted()` with a key function.
+
+**Why:** This step practices two important patterns: set comprehensions (for unique first letters) and sorting with a custom key function (sorting terms by definition length, not alphabetically).
 
 ```python
 def dictionary_stats(dictionary: dict[str, str]) -> dict:
@@ -146,34 +119,62 @@ def dictionary_stats(dictionary: dict[str, str]) -> dict:
     }
 ```
 
-The set comprehension `{k[0] for k in dictionary if k}` extracts the first character of every key. Since it is a set, duplicates are automatically removed.
+The set comprehension `{k[0] for k in dictionary if k}` extracts the first character of every key. Since it is a set, duplicates are automatically removed. The `if k` guard prevents a crash on empty-string keys.
 
-`sorted(..., key=lambda k: len(dictionary[k]))` sorts keys by the length of their definitions. The `lambda` is an inline function that tells `sorted()` what value to compare.
+**Predict:** What does `sorted(first_letters)` do that the set alone does not? (Hint: sets have no guaranteed order.)
 
-## Common mistakes
+## Step 5: Wire Up the CLI
 
-| Mistake | Why it happens | How to fix |
-|---------|---------------|------------|
+**What to do:** Use `argparse` to create `--dict`, `--lookup`, and `--stats` command-line options, then call your functions from `main()`.
+
+**Why:** A CLI makes your tool usable from the terminal. `argparse` handles parsing, validation, and help text so you do not have to write that boilerplate yourself.
+
+```python
+def main() -> None:
+    args = parse_args()
+    dictionary = load_dictionary(Path(args.dict))
+
+    if args.stats:
+        stats = dictionary_stats(dictionary)
+        for key, value in stats.items():
+            print(f"  {key}: {value}")
+        return
+
+    if args.lookup:
+        results = batch_lookup(dictionary, args.lookup)
+    else:
+        samples = list(dictionary.keys())[:3] + ["nonexistent"]
+        results = batch_lookup(dictionary, samples)
+
+    for r in results:
+        term = r["term"]
+        if r["found"]:
+            print(f"  {term}: {r['definition']}")
+        else:
+            print(f"  {term}: not found — suggestions: {r['suggestions']}")
+```
+
+**Predict:** What happens if the user runs the script with no `--lookup` and no `--stats`? Trace through the code to find out.
+
+## Common Mistakes
+
+| Mistake | Why It Happens | Fix |
+|---------|---------------|-----|
 | `line.split("=")` breaks definitions containing `=` | Default split divides on every `=` | Use `split("=", 1)` to split on first `=` only |
-| Lookup is case-sensitive | Forgetting to normalise | `.lower()` both the keys (at load time) and the search term |
+| Lookup is case-sensitive | Forgetting to normalize | `.lower()` both the keys (at load time) and the search term |
+| `dictionary[term]` crashes on missing key | Using direct access without handling | Either use `try/except KeyError` or `dictionary.get(term)` |
 | `get_close_matches` returns nothing useful | Cutoff is too high for the input | Lower the cutoff (try 0.5) or check that the dictionary has enough entries |
-| `dictionary[term]` crashes on missing key | Using direct access without checking | Either use `try/except KeyError` or `dictionary.get(term)` |
 
-## Testing your solution
-
-Run the tests from the project directory:
+## Testing Your Solution
 
 ```bash
 pytest -q
 ```
 
-The nine tests check:
-- Dictionary loading parses entries correctly
-- Exact lookups return the definition
-- Missing keys return `found: False` with suggestions
-- Batch lookup processes multiple terms
-- Stats compute correct totals and first letters
-- Edge cases: empty terms, duplicate keys, `=` in definitions
+Expected output:
+```text
+9 passed
+```
 
 You can also test from the command line:
 
@@ -182,7 +183,8 @@ python project.py --dict data/sample_input.txt --lookup python java haskell
 python project.py --dict data/sample_input.txt --stats
 ```
 
-## What to explore next
+## What You Learned
 
-1. Add a `--add` option that appends a new `key=value` line to the dictionary file
-2. Implement a reverse lookup: given a word that appears in any definition, find which terms contain it
+- **Dict comprehensions** build dictionaries in a single expression, which is more readable than a loop when the logic is straightforward.
+- **`try/except KeyError` vs `dict.get()`** are two ways to handle missing keys -- `try/except` is better when you expect the key to usually exist (the happy path is fast), while `.get()` is better when missing keys are common.
+- **`difflib.get_close_matches`** provides fuzzy string matching using sequence similarity -- it compares character patterns, not meanings, so "pythn" matches "python" but "snake" does not.

@@ -1,58 +1,52 @@
-# Walkthrough: Records Deduplicator
+# Records Deduplicator — Step-by-Step Walkthrough
 
-> This guide walks through the **thinking process** for building this project.
-> It does NOT give you the complete solution. For that, see [SOLUTION.md](./SOLUTION.md).
+[<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 
-## Before reading this
+## Before You Start
 
-**Try the project yourself first.** Spend at least 20 minutes.
-If you have not tried yet, close this file and open the [project README](./README.md).
+Read the [project README](./README.md) first. Try to solve it on your own before following this guide. Spend at least 20 minutes attempting it independently.
 
----
+## Thinking Process
 
-## Understanding the problem
+Deduplication is one of the most common tasks in data processing. Before writing any code, ask yourself: what makes two records "the same"? It is not always every field -- maybe two customer records have the same email but different phone numbers. The user should be able to choose which fields define uniqueness.
 
-You need to build a tool that removes duplicate records from CSV data. The user specifies which columns to use as the "key" for detecting duplicates, and whether to keep the first or last occurrence. The tool also supports grouping duplicates so the user can inspect them.
+Next, think about the data structure you need. You are going to iterate through records and ask "have I seen this combination of fields before?" That is a membership question, and Python sets answer membership questions in O(1) time -- constant time regardless of how many items are in the set. A list would require scanning every previous item, which gets slower as the data grows.
 
-The sample input looks like:
+Finally, consider the "keep" strategy. If you keep the first occurrence, you skip later duplicates. If you keep the last, you need to replace what you stored earlier. These two strategies require slightly different logic, so plan for both before coding.
 
-```
-name, email, department
-Alice Johnson, alice@example.com, Engineering
-Bob Smith, bob@example.com, Marketing
-alice johnson, ALICE@EXAMPLE.COM, Sales
-Bob Smith, bob@example.com, Marketing
-```
+## Step 1: Parse the CSV into Records
 
-Notice that "Alice Johnson" and "alice johnson" are duplicates (different case, same person), and "Bob Smith" appears twice with identical data.
+**What to do:** Write a function that reads a CSV file and returns a list of header names plus a list of dicts (one per row).
 
-## Planning before code
+**Why:** Everything downstream needs structured data. Converting CSV rows into dicts lets you access fields by name (`record["email"]`) instead of by position (`row[2]`), which is less error-prone.
 
-```mermaid
-flowchart TD
-    A[Parse CSV file] --> B[parse_csv_records: headers + list of dicts]
-    B --> C{Mode?}
-    C -->|--show-groups| D[find_duplicate_groups: group records by dedup key]
-    C -->|default| E[deduplicate: remove duplicates]
-    E --> F{--keep first or last?}
-    F -->|first| G[Keep first occurrence]
-    F -->|last| H[Keep last occurrence]
-    D --> I[Print results]
-    G --> I
-    H --> I
+```python
+def parse_csv_records(path: Path) -> tuple[list[str], list[dict[str, str]]]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    lines = [line.strip() for line in lines if line.strip()]
+
+    if not lines:
+        return [], []
+
+    headers = [h.strip() for h in lines[0].split(",")]
+    records = []
+    for line in lines[1:]:
+        values = [v.strip() for v in line.split(",")]
+        while len(values) < len(headers):
+            values.append("")
+        record = dict(zip(headers, values))
+        records.append(record)
+
+    return headers, records
 ```
 
-Five functions to build:
+**Predict:** What does `dict(zip(headers, values))` produce if `headers = ["name", "email"]` and `values = ["Alice", "alice@example.com"]`? What if there are more headers than values -- why does the `while` padding matter?
 
-1. **parse_csv_records()** -- read CSV into headers and record dicts
-2. **make_dedup_key()** -- build a normalised key from specified fields
-3. **deduplicate()** -- remove duplicates, keeping first or last
-4. **find_duplicate_groups()** -- group records that share a key
-5. **CLI + output** -- parse arguments and display results
+## Step 2: Build the Dedup Key
 
-## Step 1: Understanding deduplication keys
+**What to do:** Write a function that creates a unique string from the fields that define "sameness."
 
-The core idea is simple: two records are "duplicates" if they have the same values in the key fields. To detect this, combine the key field values into a single string:
+**Why:** To check if two records are duplicates, you need a single comparable value. By joining the normalized field values with a separator, you get a string that uniquely represents the combination of those fields.
 
 ```python
 def make_dedup_key(record: dict[str, str], key_fields: list[str]) -> str:
@@ -63,77 +57,64 @@ def make_dedup_key(record: dict[str, str], key_fields: list[str]) -> str:
     return "|".join(parts)
 ```
 
-If the key fields are `["name", "email"]`, then Alice's record produces the key `"alice johnson|alice@example.com"`. Normalising with `.strip().lower()` ensures that `"Alice Johnson"` and `"alice johnson"` produce the same key.
+The `|` separator is critical. Without it, a record with name `"ab"` and email `"cd"` would have the same key as one with name `"a"` and email `"bcd"` (both would be `"abcd"`). The separator keeps field boundaries clear.
 
-The `|` separator prevents false matches: without it, a record with name `"ab"` and email `"cd"` would have the same key as one with name `"a"` and email `"bcd"` (both would be `"abcd"`).
+**Predict:** If you use `--keys email` instead of `--keys name email`, would records with `alice@example.com` and `ALICE@EXAMPLE.COM` still be detected as duplicates?
 
-### Predict before you scroll
+## Step 3: Deduplicate with "Keep First"
 
-If you use `--keys email` instead of `--keys name email`, would Alice's two records (with `alice@example.com` and `ALICE@EXAMPLE.COM`) still be detected as duplicates? Why or why not?
+**What to do:** Write the core `deduplicate()` function using a set to track seen keys.
 
-## Step 2: The deduplication logic
-
-The heart of the project. Use a **set** to track which keys you have already seen:
+**Why:** This is where the set's O(1) lookup shines. For each record, you check `if dedup_key in seen` -- this is instant, no matter how large the dataset.
 
 ```python
 def deduplicate(records, key_fields, keep="first"):
     seen: set[str] = set()
+    key_to_record: dict[str, dict] = {}
     unique: list[dict] = []
     duplicates: list[dict] = []
 
     for idx, record in enumerate(records):
         dedup_key = make_dedup_key(record, key_fields)
+        record_with_meta = {**record, "_original_index": idx, "_dedup_key": dedup_key}
 
         if dedup_key in seen:
-            # This is a duplicate
-            duplicates.append(record)
+            if keep == "first":
+                duplicates.append(record_with_meta)
         else:
-            # First time seeing this key
             seen.add(dedup_key)
-            unique.append(record)
-
-    return {"unique": unique, "duplicates": duplicates}
+            key_to_record[dedup_key] = record_with_meta
+            if keep == "first":
+                unique.append(record_with_meta)
 ```
 
-This is the `keep="first"` logic. When you encounter a key you have already seen, the current record goes to the `duplicates` list. The first occurrence stays in `unique`.
+**Predict:** What changes for `keep="last"` mode? Think about it: you want to keep the last occurrence of each key instead of the first. How would you modify the logic?
 
-```mermaid
-flowchart LR
-    A["Record 1: Alice\n(key: alice|alice@...)"] -->|"seen? No"| B["unique: [Alice]"]
-    C["Record 2: Bob\n(key: bob|bob@...)"] -->|"seen? No"| D["unique: [Alice, Bob]"]
-    E["Record 3: alice\n(key: alice|alice@...)"] -->|"seen? Yes"| F["duplicates: [alice]"]
-    G["Record 4: Bob\n(key: bob|bob@...)"] -->|"seen? Yes"| H["duplicates: [alice, Bob]"]
-```
+## Step 4: Handle "Keep Last" Mode
 
-**Why a set instead of a list?** Checking `if key in some_set` is O(1) -- constant time regardless of how many items are in the set. Checking `if key in some_list` is O(n) -- it gets slower as the list grows. For large datasets, this difference matters enormously.
+**What to do:** Extend the dedup logic so that when `keep="last"`, later records replace earlier ones.
 
-### Predict before you scroll
-
-What changes for `keep="last"` mode? Think about it: you want to keep the **last** occurrence of each key instead of the first. How would you modify the logic?
-
-## Step 3: The "keep last" variant
-
-For `keep="last"`, you need a different strategy. You cannot just skip later records -- you need to **replace** earlier ones:
+**Why:** In "last" mode, when a duplicate arrives, the previously stored record becomes the duplicate and the new one takes its place. At the end, you sort by original index to restore file order.
 
 ```python
-if keep == "last":
-    key_to_record: dict[str, dict] = {}
-    for idx, record in enumerate(records):
-        dedup_key = make_dedup_key(record, key_fields)
-        if dedup_key in key_to_record:
-            # Move the old record to duplicates
-            duplicates.append(key_to_record[dedup_key])
-        key_to_record[dedup_key] = record  # always overwrite with latest
+if dedup_key in seen:
+    if keep == "last":
+        old = key_to_record[dedup_key]
+        duplicates.append(old)
+        key_to_record[dedup_key] = record_with_meta
 
-    # Sort by original index to maintain stable order
+# After the loop, for "last" mode:
+if keep == "last":
     unique = sorted(key_to_record.values(), key=lambda r: r["_original_index"])
 ```
 
-The dictionary `key_to_record` always holds the most recent record for each key. When a new duplicate arrives, the old one gets moved to the `duplicates` list.
+**Predict:** Why do we need to sort by `_original_index` at the end? What would the order be without sorting?
 
-## Step 4: Grouping duplicates
+## Step 5: Group Duplicates for Analysis
 
-Sometimes you just want to see which records are duplicates without removing them:
+**What to do:** Write a `find_duplicate_groups()` function that groups all records sharing the same dedup key, then filters to only groups with more than one member.
+
+**Why:** Sometimes you want to see which records are duplicates of each other, not just get the deduplicated list. This is useful for data auditing -- before deleting duplicates, you want to inspect them.
 
 ```python
 def find_duplicate_groups(records, key_fields):
@@ -142,36 +123,33 @@ def find_duplicate_groups(records, key_fields):
         key = make_dedup_key(record, key_fields)
         groups.setdefault(key, []).append(record)
 
+    # Dict comprehension: keep only groups with actual duplicates
     return {k: v for k, v in groups.items() if len(v) > 1}
 ```
 
 `dict.setdefault(key, [])` is a useful pattern: if the key exists, return its value; if not, set it to `[]` and return that. This avoids the `if key not in groups: groups[key] = []` boilerplate.
 
-The dict comprehension at the end filters to only groups with more than one record -- those are the actual duplicates.
+**Predict:** What would the output look like for a dataset where every record is unique? What about a dataset where every record is identical?
 
-## Common mistakes
+## Common Mistakes
 
-| Mistake | Why it happens | How to fix |
-|---------|---------------|------------|
+| Mistake | Why It Happens | Fix |
+|---------|---------------|-----|
 | Using a list instead of a set for `seen` | Works but is slow for large data | Sets have O(1) lookup; lists have O(n) |
-| Forgetting to normalise keys | "Alice" and "alice" are treated as different | `.strip().lower()` in `make_dedup_key()` |
-| No separator between key parts | `"ab" + "cd"` and `"a" + "bcd"` both produce `"abcd"` | Join with `"|"` to keep fields distinct |
-| `keep="last"` loses original order | Records come out in dict insertion order, not file order | Track original index and sort at the end |
+| Forgetting to normalize case | "Alice" and "alice" are treated as different | `.strip().lower()` in `make_dedup_key()` |
+| No separator between key parts | `"ab" + "cd"` and `"a" + "bcd"` both produce `"abcd"` | Join with `"\|"` to keep fields distinct |
+| `keep="last"` loses original order | Records come out in dict insertion order, not file order | Track `_original_index` and sort at the end |
 
-## Testing your solution
-
-Run the tests from the project directory:
+## Testing Your Solution
 
 ```bash
 pytest -q
 ```
 
-The nine tests verify:
-- Dedup key generation normalises correctly
-- `keep="first"` keeps the first occurrence
-- `keep="last"` keeps the last occurrence
-- Duplicate groups are identified correctly
-- Edge cases: empty input, all duplicates, single key field
+Expected output:
+```text
+9 passed
+```
 
 Test from the command line with different modes:
 
@@ -181,7 +159,8 @@ python project.py data/sample_input.txt --keys email --keep last
 python project.py data/sample_input.txt --keys email --show-groups
 ```
 
-## What to explore next
+## What You Learned
 
-1. Add a `--output` flag that writes unique records to a new CSV file
-2. Add a count column showing how many times each duplicate key appeared in the original data
+- **Sets provide O(1) membership testing**, making them the right choice any time you need to ask "have I seen this before?" across a large dataset.
+- **Composite keys** (joining multiple fields with a separator) let you define uniqueness across any combination of columns, not just a single field.
+- **The `keep="first"` vs `keep="last"` pattern** appears everywhere in data processing -- pandas has the same concept in `DataFrame.drop_duplicates(keep=...)`.

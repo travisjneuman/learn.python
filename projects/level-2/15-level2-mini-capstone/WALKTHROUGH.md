@@ -1,54 +1,24 @@
-# Walkthrough: Level 2 Mini Capstone -- Data Pipeline
+# Level 2 Mini Capstone: Data Pipeline — Step-by-Step Walkthrough
 
-> This guide walks through the **thinking process** for building this project.
-> It does NOT give you the complete solution. For that, see [SOLUTION.md](./SOLUTION.md).
+[<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 
-## Before reading this
+## Before You Start
 
-**Try the project yourself first.** Spend at least 20 minutes.
-If you have not tried yet, close this file and open the [project README](./README.md).
+Read the [project README](./README.md) first. Try to solve it on your own before following this guide. This capstone ties together everything from Level 2, so spend at least 30 minutes attempting it independently.
 
----
+## Thinking Process
 
-## Understanding the problem
+A data pipeline is a sequence of steps where each step takes input from the previous one. Before writing any code, sketch the five stages on paper: Load -> Clean -> Validate -> Analyse -> Report. Each stage is a separate function. This matters because if validation changes, you only edit the validation function -- everything else stays untouched.
 
-This capstone combines skills from all of Level 2 into a single end-to-end data pipeline. You load CSV data, clean it, validate records against rules, detect anomalies using z-scores, and generate a formatted report. It is a realistic pipeline that mirrors how data is processed in production systems.
+Ask yourself: what does each stage receive, and what does it produce? `load_csv` receives a file path and produces raw records. `clean_records` receives raw records and produces cleaned records. `validate_batch` receives cleaned records and splits them into valid and invalid. Draw this data flow on paper before coding -- the implementation becomes a matter of filling in each box.
 
-The sample input is a CSV with employee data:
+The capstone also asks you to think about failure modes. What if there are zero records? What if every record is invalid? What if there is no numeric column for anomaly detection? These are not exotic edge cases -- they happen every day in real data pipelines. Planning for them up front is what separates a script that works from one that works reliably.
 
-```
-name,email,age,salary
-Alice Johnson,alice@example.com,30,85000
-Bob Smith,bob@example.com,25,72000
-,bad-email,-5,50000
-Kate Bishop,kate@example.com,24,2000000
-```
+## Step 1: Load and Parse the CSV
 
-Some records are invalid (missing name, bad email, negative age) and one has an anomalous salary.
+**What to do:** Write a function that reads a CSV file, skips comment lines (starting with `#`), and returns headers plus a list of record dicts.
 
-## Planning before code
-
-```mermaid
-flowchart LR
-    A["Stage 1\nLoad CSV"] --> B["Stage 2\nClean"]
-    B --> C["Stage 3\nValidate"]
-    C --> D["Stage 4\nAnalyse\n(anomalies)"]
-    D --> E["Stage 5\nReport"]
-```
-
-Five pipeline stages, each a separate function:
-
-1. **load_csv()** -- parse CSV into headers and record dicts
-2. **clean_records()** -- strip whitespace, normalise emails
-3. **validate_batch()** -- check required fields, email format, numeric ranges
-4. **detect_anomalies()** -- find outliers using z-score
-5. **generate_report()** -- format everything into a human-readable report
-
-Plus an orchestrator: `run_pipeline()`.
-
-## Step 1: Load and parse
-
-This is the same CSV loading pattern you have used before, but with one addition -- skipping comment lines:
+**Why:** This is the foundation of the pipeline. Every other stage depends on getting structured data out of the file.
 
 ```python
 def load_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
@@ -69,11 +39,13 @@ def load_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
     return headers, records
 ```
 
-The `while len(values) < len(headers)` padding ensures that rows with fewer values than headers do not crash `zip()`.
+**Predict:** What happens when the file has only a header row and no data rows? Trace through the code -- what do `headers` and `records` look like?
 
-## Step 2: Clean records
+## Step 2: Clean the Records
 
-Cleaning is a separate stage because raw data is messy. The cleaner strips whitespace and normalises email fields to lowercase:
+**What to do:** Write a cleaning function that strips whitespace and normalizes emails to lowercase.
+
+**Why:** Raw data is messy. Cleaning is always the second step because validation (Step 3) should operate on normalized data, not raw data. If you validate first, you might reject `" alice@EXAMPLE.com "` even though it is a perfectly valid email after cleaning.
 
 ```python
 def clean_record(record: dict[str, str]) -> dict[str, str]:
@@ -84,15 +56,18 @@ def clean_record(record: dict[str, str]) -> dict[str, str]:
             value = value.lower()
         cleaned[key] = value
     return cleaned
+
+def clean_records(records):
+    return [clean_record(r) for r in records]
 ```
 
-### Predict before you scroll
+**Predict:** Why lowercase only email fields and not everything? What would happen if you lowercased the "name" field?
 
-Why lowercase only email fields and not everything? Think about what would happen if you lowercased the "name" field -- would "Alice Johnson" becoming "alice johnson" be a problem?
+## Step 3: Validate Against Rules
 
-## Step 3: Validate against rules
+**What to do:** Write a validation function that checks required fields, email format, and numeric ranges against a configurable rules dictionary.
 
-Validation is the most complex stage. It checks each record against a set of rules:
+**Why:** Separating rules from logic means you can change what gets validated (e.g., add a new required field) without modifying the validation code itself. The rules dict acts as configuration.
 
 ```python
 DEFAULT_RULES = {
@@ -103,18 +78,9 @@ DEFAULT_RULES = {
         "salary": {"min": 0, "max": 1000000},
     },
 }
-```
 
-The validator checks three types of rules:
-
-1. **Required fields** -- is the field present and non-empty?
-2. **Email format** -- does it match a basic email pattern?
-3. **Numeric ranges** -- is the value within acceptable bounds?
-
-```python
-def validate_record(record: dict[str, str], rules: dict) -> dict:
-    errors: list[str] = []
-
+def validate_record(record, rules):
+    errors = []
     for field in rules.get("required", []):
         if not record.get(field, "").strip():
             errors.append(f"Missing required field: {field}")
@@ -137,25 +103,24 @@ def validate_record(record: dict[str, str], rules: dict) -> dict:
     return {"valid": len(errors) == 0, "errors": errors}
 ```
 
-The same **accumulate errors** pattern from the Input Validator Lab. Each check adds to the `errors` list. A record is valid only if the list is empty.
+Notice the **accumulate errors** pattern: each check adds to the `errors` list. A record is valid only if the list is empty. This gives the user all the problems at once, rather than fixing one and discovering the next.
 
-### Predict before you scroll
+**Predict:** Looking at a record like `,bad-email,-5,50000` -- how many errors will it accumulate? Name each one.
 
-Looking at the sample data, which records will fail validation and why? The record `,bad-email,-5,50000` has three problems -- can you name them all?
+## Step 4: Detect Anomalies with Z-Scores
 
-## Step 4: Anomaly detection with z-scores
+**What to do:** Write a function that finds outliers in a numeric field using z-scores (how many standard deviations a value is from the mean).
 
-This is the most mathematically interesting stage. A **z-score** measures how far a value is from the average, in units of standard deviation:
-
-```
-z = (value - mean) / standard_deviation
-```
-
-A z-score of 2.0 means the value is 2 standard deviations above the mean. Values with |z| > threshold (default 2.0) are flagged as anomalies.
+**Why:** Anomaly detection catches data that is technically valid (passes all rules) but is statistically unusual. A salary of 999999 might pass the range check but still be an outlier worth flagging.
 
 ```python
 def detect_anomalies(records, field, threshold=2.0):
-    values = [float(r.get(field, "")) for r in records if can_parse_float(r.get(field, ""))]
+    values = []
+    for r in records:
+        try:
+            values.append(float(r.get(field, "")))
+        except (ValueError, TypeError):
+            pass
 
     if len(values) < 2:
         return []
@@ -165,36 +130,18 @@ def detect_anomalies(records, field, threshold=2.0):
     sd = math.sqrt(variance) if variance > 0 else 0
 
     if sd == 0:
-        return []  # all values are identical, no anomalies possible
-
-    anomalies = []
-    for idx, record in enumerate(records):
-        try:
-            val = float(record.get(field, ""))
-            z = (val - avg) / sd
-            if abs(z) > threshold:
-                anomalies.append({"index": idx, "value": val, "z_score": round(z, 3)})
-        except (ValueError, TypeError):
-            pass
-
-    return anomalies
+        return []  # All values identical -- no anomalies possible
 ```
 
-```mermaid
-flowchart TD
-    A["Salaries: 85k, 72k, 88k, 78k, 92k, 115k, 98k, 91k"] --> B["Mean: ~89.9k"]
-    B --> C["Std Dev: ~12.6k"]
-    C --> D["z-score for 85k:\n(85k - 89.9k) / 12.6k = -0.39\nNormal"]
-    C --> E["z-score for 115k:\n(115k - 89.9k) / 12.6k = 1.99\nBorderline"]
-```
+A **z-score** measures how far a value is from the average: `z = (value - mean) / standard_deviation`. Values with `|z| > threshold` (default 2.0) are flagged.
 
-### Predict before you scroll
+**Predict:** If all salaries are exactly the same (e.g., 50000), what is the standard deviation? What does the function return, and why is that the correct behavior?
 
-If Kate Bishop's salary is 2,000,000 but the average is around 90,000, what would her z-score be approximately? Would she be flagged as an anomaly?
+## Step 5: Generate the Report
 
-## Step 5: Generate the report
+**What to do:** Write a function that assembles the results from all stages into a formatted text report.
 
-The report function assembles all the results into a formatted text output:
+**Why:** The report is the human-readable output that makes the pipeline useful. It summarizes what the pipeline found at every stage.
 
 ```python
 def generate_report(total, valid, invalid, anomalies, numeric_field):
@@ -202,20 +149,22 @@ def generate_report(total, valid, invalid, anomalies, numeric_field):
         "=" * 60,
         "  DATA PIPELINE REPORT",
         "=" * 60,
-        "",
         f"Records loaded:    {total}",
         f"Records valid:     {len(valid)}",
         f"Records invalid:   {len(invalid)}",
         f"Anomalies found:   {len(anomalies)}",
+        f"Pass rate:         {round(len(valid) / total * 100, 1) if total else 0}%",
     ]
-    # ... add sections for failures, anomalies, statistics
+    return "\n".join(lines)
 ```
 
-Notice the pass rate calculation guards against division by zero: `round(len(valid) / total * 100, 1) if total else 0`. Without the `if total` guard, an empty file would crash.
+**Predict:** What happens if `total` is 0? Why is the `if total else 0` guard necessary in the pass rate calculation?
 
-## The orchestrator
+## Step 6: Wire the Pipeline Together
 
-`run_pipeline()` connects all five stages:
+**What to do:** Write a `run_pipeline()` function that calls each stage in order, passing outputs to inputs.
+
+**Why:** This orchestrator function is the backbone. Notice how each stage is a clean function call -- no global state, no side effects between stages.
 
 ```python
 def run_pipeline(input_path, rules, numeric_field, anomaly_threshold=2.0):
@@ -224,44 +173,33 @@ def run_pipeline(input_path, rules, numeric_field, anomaly_threshold=2.0):
     valid, invalid = validate_batch(cleaned, rules)
     anomalies = detect_anomalies(valid, numeric_field, threshold=anomaly_threshold)
     report = generate_report(len(raw_records), valid, invalid, anomalies, numeric_field)
-
-    return {
-        "total": len(raw_records),
-        "valid_count": len(valid),
-        "invalid_count": len(invalid),
-        "anomaly_count": len(anomalies),
-        "report": report,
-        # ... plus the actual record lists
-    }
+    return {"report": report, "valid_records": valid, ...}
 ```
 
-Notice that anomaly detection runs on **valid** records only -- invalid records were already filtered out. This prevents bad data from skewing the statistics.
+Notice that anomaly detection runs on **valid** records only. Invalid records were already filtered out. This prevents bad data from skewing the statistics.
 
-## Common mistakes
+**Predict:** What would go wrong if you ran anomaly detection on all records, including invalid ones?
 
-| Mistake | Why it happens | How to fix |
-|---------|---------------|------------|
-| Anomaly detection crashes on non-numeric data | Trying `float()` on text values | Wrap in `try/except`, skip non-parseable values |
-| Pass rate division by zero | Total records is 0 (empty file) | Guard with `if total else 0` |
+## Common Mistakes
+
+| Mistake | Why It Happens | Fix |
+|---------|---------------|-----|
+| Division by zero in pass rate | Zero records loaded from an empty file | Guard with `if total else 0` |
+| Anomaly detection crashes on non-numeric fields | `float()` on text values | Wrap in `try/except`, skip non-parseable values |
 | Standard deviation is 0 | All values are identical | Check `if sd == 0` and return no anomalies |
-| Validation misses multiple errors per record | Returning after first error | Accumulate all errors in a list, check the list at the end |
-| Cleaning stage changes data semantics | Lowercasing names, not just emails | Only normalise fields where case does not matter |
+| Validating before cleaning | Running stages out of order | Always clean first, then validate |
+| One giant function | Tempting to write all logic in `main()` | Separate stages make testing and debugging possible |
 
-## Testing your solution
-
-Run the tests from the project directory:
+## Testing Your Solution
 
 ```bash
 pytest -q
 ```
 
-The ten tests verify:
-- CSV loading and parsing
-- Cleaning normalises emails
-- Validation catches missing fields, bad emails, out-of-range values
-- Anomaly detection flags outliers correctly
-- The full pipeline chains all stages together
-- Edge cases: empty files, no numeric columns, all records invalid
+Expected output:
+```text
+10 passed
+```
 
 Test with different options:
 
@@ -271,7 +209,8 @@ python project.py data/sample_input.txt --numeric-field salary --threshold 2.0
 python project.py data/sample_input.txt --json
 ```
 
-## What to explore next
+## What You Learned
 
-1. Add a `--rules` flag that loads validation rules from a separate JSON file instead of using the defaults
-2. Add deduplication as a pipeline stage between cleaning and validation -- combine this capstone with the Records Deduplicator project
+- **Pipeline architecture** (Load -> Clean -> Validate -> Analyse -> Report) is the standard pattern for data processing. Each stage has a single responsibility.
+- **Separating rules from logic** (the `rules` dict vs the `validate_record` function) means you can add new validation checks without touching the code that applies them.
+- **Z-score anomaly detection** is a simple but effective way to find outliers: any value more than 2 standard deviations from the mean is flagged. This technique is used in monitoring, fraud detection, and quality control.
