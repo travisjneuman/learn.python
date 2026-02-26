@@ -1,6 +1,16 @@
 # Level 5 / Project 03 - Multi File ETL Runner
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-5.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 65 minutes
 
 ## Focus

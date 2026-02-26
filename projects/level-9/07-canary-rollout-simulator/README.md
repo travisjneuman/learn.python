@@ -1,6 +1,16 @@
 # Level 9 / Project 07 - Canary Rollout Simulator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - State machine for deployment stages (canary, promoted, rolled back)
 - Statistical comparison: canary error rate vs baseline

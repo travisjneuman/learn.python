@@ -1,6 +1,16 @@
 # Level 8 / Project 13 - SLA Breach Detector
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - SLA definitions with target values and measurement windows
 - Time-window aggregation for SLA compliance calculation

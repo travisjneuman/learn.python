@@ -2,6 +2,16 @@
 
 ## Brief
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 Build a system that watches a directory for new files and processes them according to configurable rules. Think of it as a personal automation engine: files arrive, rules fire, actions happen.
 
 ## Requirements

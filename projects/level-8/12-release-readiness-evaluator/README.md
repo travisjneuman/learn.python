@@ -1,6 +1,16 @@
 # Level 8 / Project 12 - Release Readiness Evaluator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Weighted scoring with configurable criteria and weights
 - Strategy pattern for pluggable evaluation functions

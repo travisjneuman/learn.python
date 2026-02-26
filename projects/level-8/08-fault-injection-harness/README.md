@@ -1,6 +1,16 @@
 # Level 8 / Project 08 - Fault Injection Harness
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Configurable fault injection with decorator and context manager APIs
 - Fault types: exception, delay, timeout, data corruption

@@ -1,6 +1,16 @@
 # Level 5 / Project 08 - Cross File Joiner
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-5.html) |
+
+<!-- modality-hub-end -->
+
 > **Quick Recall:** This project uses dictionary lookups to match records across files. Before starting, make sure you can: build a dictionary from CSV rows using one column as the key, then look up values by that key (Level 1, Project 05 - CSV First Reader).
 
 **Estimated time:** 75 minutes

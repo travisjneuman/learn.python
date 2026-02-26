@@ -11,6 +11,16 @@ Recall these prerequisites before diving in:
 
 **Estimated time:** 35 minutes
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-3.html) |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - structured logs and run summaries
 

@@ -2,6 +2,16 @@
 
 ## Brief
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 Build a tool that pulls data from 2-3 public APIs, normalizes the results into a common format, and presents a unified dashboard or report.
 
 ## Requirements

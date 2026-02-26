@@ -1,6 +1,16 @@
 # Level 3 / Project 06 - Structured Error Handler
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-3.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 40 minutes
 
 ## Focus

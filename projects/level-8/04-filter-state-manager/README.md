@@ -1,6 +1,16 @@
 # Level 8 / Project 04 - Filter State Manager
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Immutable filter state with `frozen=True` dataclasses
 - Command pattern for undo/redo state transitions

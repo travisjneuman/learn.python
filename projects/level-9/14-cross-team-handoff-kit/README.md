@@ -1,6 +1,16 @@
 # Level 9 / Project 14 - Cross Team Handoff Kit
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Builder pattern for multi-section document construction
 - Completeness scoring heuristics for handoff quality

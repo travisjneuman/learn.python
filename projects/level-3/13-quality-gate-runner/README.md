@@ -1,6 +1,16 @@
 # Level 3 / Project 13 - Quality Gate Runner
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-3.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 55 minutes
 
 ## Focus

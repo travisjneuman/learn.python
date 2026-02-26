@@ -12,6 +12,16 @@ Recall these prerequisites before diving in:
 
 **Estimated time:** 30 minutes
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-3.html) |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - project layout and import boundaries
 

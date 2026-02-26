@@ -275,8 +275,8 @@ def main() -> int:
             if re.match(r"level-", level_dir.name):
                 print(f"\n=== {level_dir.name.upper()} ===")
                 total += process_level(level_dir, dry_run=args.dry_run)
-            elif level_dir.name == "elite-track":
-                print(f"\n=== ELITE TRACK ===")
+            elif level_dir.name in ("elite-track", "capstones"):
+                print(f"\n=== {level_dir.name.upper()} ===")
                 total += process_level(level_dir, dry_run=args.dry_run)
             elif level_dir.name == "modules":
                 for module_dir in sorted(level_dir.iterdir()):

@@ -1,6 +1,16 @@
 # Level 8 / Project 06 - Response Time Profiler
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Context managers and decorators for timing code blocks
 - Percentile calculation (p50, p90, p95, p99) with linear interpolation

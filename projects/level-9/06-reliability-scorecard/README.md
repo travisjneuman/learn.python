@@ -1,6 +1,16 @@
 # Level 9 / Project 06 - Reliability Scorecard
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Weighted multi-criteria scoring across reliability dimensions
 - Score normalization to a 0-100 scale for different metric types

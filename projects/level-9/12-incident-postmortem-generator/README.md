@@ -1,6 +1,16 @@
 # Level 9 / Project 12 - Incident Postmortem Generator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Builder pattern for structured document assembly
 - Blameless postmortem structure: summary, timeline, root cause, actions

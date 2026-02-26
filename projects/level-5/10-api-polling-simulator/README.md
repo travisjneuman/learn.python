@@ -1,6 +1,16 @@
 # Level 5 / Project 10 - API Polling Simulator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-5.html) |
+
+<!-- modality-hub-end -->
+
 > **Quick Recall:** This project uses rule-based scoring to decide when to retry or back off. Before starting, make sure you can: write a function that evaluates multiple conditions and returns a score or category based on thresholds (Level 1, Project 02 - Password Strength Checker).
 
 **Estimated time:** 80 minutes

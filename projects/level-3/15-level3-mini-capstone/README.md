@@ -1,6 +1,16 @@
 # Level 3 / Project 15 - Level 3 Mini Capstone
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-3.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 60 minutes
 
 ## Focus

@@ -1,6 +1,16 @@
 # Level 8 / Project 03 - Pagination Stress Lab
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Offset-based and cursor-based pagination strategies
 - Edge case handling: empty pages, beyond-range, partial last page

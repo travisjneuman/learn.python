@@ -1,6 +1,16 @@
 # Level 8 / Project 15 - Level 8 Mini Capstone
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Integration of multiple observability subsystems into one platform
 - Service registration with health tracking and metric collection

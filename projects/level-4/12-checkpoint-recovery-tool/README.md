@@ -1,6 +1,16 @@
 # Level 4 / Project 12 - Checkpoint Recovery Tool
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-4.html) |
+
+<!-- modality-hub-end -->
+
 **Estimated time:** 70 minutes
 
 ## Focus

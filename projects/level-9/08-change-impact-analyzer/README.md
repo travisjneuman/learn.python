@@ -1,6 +1,16 @@
 # Level 9 / Project 08 - Change Impact Analyzer
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - BFS graph traversal for impact propagation through service dependencies
 - Risk scoring with weighted factors (change type, service tier, dependency depth)

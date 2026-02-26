@@ -1,6 +1,16 @@
 # Level 9 / Project 13 - Platform Cost Estimator
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Strategy pattern for cloud pricing models (on-demand, reserved, spot)
 - Tiered pricing calculation with volume discounts

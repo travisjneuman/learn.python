@@ -1,6 +1,16 @@
 # Level 5 / Project 09 - Template Report Renderer
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | [Browser](../../../browser/level-5.html) |
+
+<!-- modality-hub-end -->
+
 > **Quick Recall:** This project uses string parsing and pattern matching to find placeholders in text. Before starting, make sure you can: split a string on a delimiter and use `str.replace()` to substitute values into a template string (Level 1, Project 04 - Log Line Parser).
 
 **Estimated time:** 75 minutes

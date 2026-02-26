@@ -1,6 +1,16 @@
 # Level 9 / Project 10 - Data Governance Enforcer
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Data classification taxonomy: public, internal, confidential, restricted
 - Retention policy enforcement with min/max retention periods

@@ -1,6 +1,16 @@
 # Level 8 / Project 10 - Dependency Timeout Matrix
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Per-dependency timeout configuration with `concurrent.futures`
 - Matrix-style testing across multiple timeout values

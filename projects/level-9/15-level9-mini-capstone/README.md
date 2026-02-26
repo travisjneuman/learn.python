@@ -1,6 +1,16 @@
 # Level 9 / Project 15 - Level 9 Mini Capstone
 Home: [README](../../../README.md)
 
+<!-- modality-hub-start -->
+
+### Learn Your Way
+
+| Read | Build | Watch | Test | Review | Visualize | Try |
+|:---: | :---: | :---: | :---: | :---: | :---: | :---:|
+| — | **This project** | — | — | [Flashcards](../../../practice/flashcards/README.md) | — | — |
+
+<!-- modality-hub-end -->
+
 ## Focus
 - Facade pattern unifying multiple subsystems (SLOs, costs, reliability, governance)
 - Composition over inheritance for subsystem integration
