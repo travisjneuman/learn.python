@@ -49,6 +49,23 @@ All videos are freely available on YouTube. No accounts or payments required.
 | Security Basics | [Videos](../concepts/videos/security-basics.md) | — |
 | Debugging Methodology | [Videos](../concepts/videos/debugging-methodology.md) | — |
 
+## Expansion Modules
+
+| Module | Video Page | Primary Creator |
+|--------|-----------|-----------------|
+| Web Scraping | [Videos](../concepts/videos/web-scraping.md) | — |
+| CLI Tools | [Videos](../concepts/videos/cli-tools.md) | — |
+| REST API Clients | [Videos](../concepts/videos/rest-apis-client.md) | — |
+| FastAPI | [Videos](../concepts/videos/fastapi.md) | — |
+| Async Python | [Videos](../concepts/videos/async-python.md) | — |
+| Databases & ORM | [Videos](../concepts/videos/databases-orm.md) | — |
+| Data Analysis | [Videos](../concepts/videos/data-analysis.md) | — |
+| Advanced Testing | [Videos](../concepts/videos/testing-advanced.md) | — |
+| Docker & Deployment | [Videos](../concepts/videos/docker-deployment.md) | — |
+| Django Full-Stack | [Videos](../concepts/videos/django-fullstack.md) | — |
+| Package Publishing | [Videos](../concepts/videos/package-publishing.md) | — |
+| Cloud Deploy | [Videos](../concepts/videos/cloud-deploy.md) | — |
+
 ---
 
 ## Recommended YouTube Channels

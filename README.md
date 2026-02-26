@@ -11,6 +11,9 @@
   <img src="https://img.shields.io/badge/Curriculum_Docs-50+-f57c00?style=for-the-badge" alt="50+ Curriculum Docs">
   <img src="https://img.shields.io/badge/Concept_Guides-35-7c4dff?style=for-the-badge" alt="35 Concept Guides">
   <img src="https://img.shields.io/badge/Quizzes-34-e53935?style=for-the-badge" alt="34 Quizzes">
+  <img src="https://img.shields.io/badge/Walkthroughs-51-00bcd4?style=for-the-badge" alt="51 Walkthroughs">
+  <img src="https://img.shields.io/badge/Diagrams-36-ff9800?style=for-the-badge" alt="36 Diagrams">
+  <img src="https://img.shields.io/badge/Video_Guides-40-c62828?style=for-the-badge" alt="40 Video Guides">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=for-the-badge" alt="Contributions Welcome">
 </p>
@@ -199,8 +202,8 @@ One quiz per concept guide. Run them from the terminal:
 python concepts/quizzes/what-is-a-variable-quiz.py
 ```
 
-### Flashcards (16 decks)
-Spaced repetition cards using a Leitner box system. Cards you get right appear less often. Cards you miss come back immediately. Decks cover all 13 levels plus 4 expansion modules.
+### Flashcards (24 decks)
+Spaced repetition cards using a Leitner box system. Cards you get right appear less often. Cards you miss come back immediately. Decks cover all 13 levels plus 11 expansion modules.
 ```bash
 python practice/flashcards/review-runner.py
 ```

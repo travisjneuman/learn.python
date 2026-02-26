@@ -49,6 +49,19 @@ Each diagram page includes: an overview map, step-by-step execution flow, decisi
 | Regex | [Diagrams](../concepts/diagrams/regex-explained.md) | Matching flow, pattern decision tree |
 | Security Basics | [Diagrams](../concepts/diagrams/security-basics.md) | OWASP overview, sanitization flow |
 
+## Module Architecture
+
+| Module | Diagram Page | Diagram Types |
+|--------|-------------|---------------|
+| FastAPI | [Diagrams](../concepts/diagrams/fastapi-request-lifecycle.md) | Request lifecycle, dependency injection flow |
+| Django | [Diagrams](../concepts/diagrams/django-mtv-pattern.md) | MTV pattern, URL routing, ORM flow |
+| Docker | [Diagrams](../concepts/diagrams/docker-architecture.md) | Container lifecycle, compose services, networking |
+| Async Event Loop | [Diagrams](../concepts/diagrams/async-event-loop.md) | Event loop states, task scheduling, gather vs wait |
+| SQLAlchemy ORM | [Diagrams](../concepts/diagrams/sqlalchemy-orm-mapping.md) | Engine/Session/Model mapping, query execution |
+| Web Scraping | [Diagrams](../concepts/diagrams/web-scraping-pipeline.md) | Fetch/parse/extract pipeline, rate limiting |
+| CI/CD | [Diagrams](../concepts/diagrams/ci-cd-pipeline.md) | Push/lint/test/build/deploy stages |
+| Cloud Deployment | [Diagrams](../concepts/diagrams/cloud-deployment-topology.md) | Local/staging/production topology |
+
 ---
 
 ## How to Read Mermaid Diagrams

@@ -71,17 +71,70 @@ Each walkthrough covers: understanding the problem, planning before code, buildi
 | 08 Cross-File Joiner | [Walkthrough](../projects/level-5/08-cross-file-joiner/WALKTHROUGH.md) | Multi-file operations |
 | 15 Level 5 Mini Capstone | [Walkthrough](../projects/level-5/15-level5-mini-capstone/WALKTHROUGH.md) | Combining level 5 skills |
 
-## Levels 6-10
+## Level 6
 
-*In progress — walkthroughs being created for advanced projects.*
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 SQL Connection Simulator | [Walkthrough](../projects/level-6/01-sql-connection-simulator/WALKTHROUGH.md) | SQL patterns |
+| 08 Data Lineage Capture | [Walkthrough](../projects/level-6/08-data-lineage-capture/WALKTHROUGH.md) | Data lineage tracking |
+| 15 Level 6 Mini Capstone | [Walkthrough](../projects/level-6/15-level6-mini-capstone/WALKTHROUGH.md) | Combining level 6 skills |
+
+## Level 7
+
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 API Query Adapter | [Walkthrough](../projects/level-7/01-api-query-adapter/WALKTHROUGH.md) | API integration |
+| 08 Ingestion Observability Kit | [Walkthrough](../projects/level-7/08-ingestion-observability-kit/WALKTHROUGH.md) | Observability patterns |
+| 15 Level 7 Mini Capstone | [Walkthrough](../projects/level-7/15-level7-mini-capstone/WALKTHROUGH.md) | Combining level 7 skills |
+
+## Level 8
+
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Dashboard KPI Assembler | [Walkthrough](../projects/level-8/01-dashboard-kpi-assembler/WALKTHROUGH.md) | KPI dashboards |
+| 08 Fault Injection Harness | [Walkthrough](../projects/level-8/08-fault-injection-harness/WALKTHROUGH.md) | Chaos engineering |
+| 15 Level 8 Mini Capstone | [Walkthrough](../projects/level-8/15-level8-mini-capstone/WALKTHROUGH.md) | Combining level 8 skills |
+
+## Level 9
+
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Architecture Decision Log | [Walkthrough](../projects/level-9/01-architecture-decision-log/WALKTHROUGH.md) | Architecture decisions |
+| 07 Canary Rollout Simulator | [Walkthrough](../projects/level-9/07-canary-rollout-simulator/WALKTHROUGH.md) | Deployment strategies |
+| 15 Level 9 Mini Capstone | [Walkthrough](../projects/level-9/15-level9-mini-capstone/WALKTHROUGH.md) | Combining level 9 skills |
+
+## Level 10
+
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Enterprise Python Blueprint | [Walkthrough](../projects/level-10/01-enterprise-python-blueprint/WALKTHROUGH.md) | Enterprise patterns |
+| 08 Zero-Downtime Migration Lab | [Walkthrough](../projects/level-10/08-zero-downtime-migration-lab/WALKTHROUGH.md) | Migration strategies |
+| 15 Level 10 Grand Capstone | [Walkthrough](../projects/level-10/15-level10-grand-capstone/WALKTHROUGH.md) | Combining all skills |
 
 ## Elite Track
 
-*In progress — walkthroughs being created for elite engineering projects.*
+| Project | Walkthrough | Focus |
+|---------|------------|-------|
+| 01 Algorithms & Complexity Lab | [Walkthrough](../projects/elite-track/01-algorithms-complexity-lab/WALKTHROUGH.md) | Algorithm analysis |
+| 05 Performance Profiler Workbench | [Walkthrough](../projects/elite-track/05-performance-profiler-workbench/WALKTHROUGH.md) | Performance profiling |
+| 10 Staff Engineer Capstone | [Walkthrough](../projects/elite-track/10-staff-engineer-capstone/WALKTHROUGH.md) | Staff-level engineering |
 
 ## Expansion Modules
 
-*Coming soon — walkthroughs for the first project in each module.*
+| Module | Walkthrough | Focus |
+|--------|------------|-------|
+| 01 Web Scraping | [Walkthrough](../projects/modules/01-web-scraping/01-fetch-a-webpage/WALKTHROUGH.md) | requests, BeautifulSoup |
+| 02 CLI Tools | [Walkthrough](../projects/modules/02-cli-tools/01-click-basics/WALKTHROUGH.md) | click, typer |
+| 03 REST APIs | [Walkthrough](../projects/modules/03-rest-apis/01-first-api-call/WALKTHROUGH.md) | API consumption |
+| 04 FastAPI | [Walkthrough](../projects/modules/04-fastapi-web/01-hello-fastapi/WALKTHROUGH.md) | FastAPI basics |
+| 05 Async Python | [Walkthrough](../projects/modules/05-async-python/01-async-basics/WALKTHROUGH.md) | asyncio fundamentals |
+| 06 Databases & ORM | [Walkthrough](../projects/modules/06-databases-orm/01-sqlite-basics/WALKTHROUGH.md) | SQLite, SQLAlchemy |
+| 07 Data Analysis | [Walkthrough](../projects/modules/07-data-analysis/01-pandas-basics/WALKTHROUGH.md) | pandas basics |
+| 08 Advanced Testing | [Walkthrough](../projects/modules/08-testing-advanced/01-parametrize/WALKTHROUGH.md) | pytest parametrize |
+| 09 Docker | [Walkthrough](../projects/modules/09-docker-deployment/01-first-dockerfile/WALKTHROUGH.md) | Dockerfile basics |
+| 10 Django | [Walkthrough](../projects/modules/10-django-fullstack/01-django-setup/WALKTHROUGH.md) | Django setup |
+| 11 Package Publishing | [Walkthrough](../projects/modules/11-package-publishing/01-package-structure/WALKTHROUGH.md) | pyproject.toml |
+| 12 Cloud Deploy | [Walkthrough](../projects/modules/12-cloud-deploy/01-deploy-to-railway/WALKTHROUGH.md) | Railway deployment |
 
 ---
 
