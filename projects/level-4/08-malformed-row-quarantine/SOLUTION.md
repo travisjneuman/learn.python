@@ -1,6 +1,6 @@
 # Malformed Row Quarantine — Annotated Solution
 
-> **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
+> **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
 ---
 

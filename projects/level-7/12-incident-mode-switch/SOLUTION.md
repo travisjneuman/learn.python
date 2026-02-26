@@ -6,8 +6,7 @@
 > attempting this project before looking here.
 >
 > - Re-read the [README](./README.md) for requirements
-> - Try the [WALKTHROUGH](./WALKTHROUGH.md) for guided hints without spoilers
-
+> 
 ---
 
 ## Complete solution

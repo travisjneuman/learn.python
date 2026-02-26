@@ -4,7 +4,7 @@
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first -- it guides
+> If you are stuck, try first -- it guides
 > your thinking without giving away the answer.
 >
 > [Back to project README](./README.md)
