@@ -20,6 +20,24 @@ age = 30
 is_student = True
 ```
 
+## Embedding variables in strings (f-strings)
+
+You can put variables directly inside a string by placing an `f` before the opening quote, then wrapping any variable name in curly braces `{}` where you want its value to appear. This is the most common and readable way to format strings in modern Python.
+
+```python
+name = "Alice"
+age = 30
+greeting = f"Hello, {name}! You are {age} years old."
+print(greeting)  # Output: Hello, Alice! You are 30 years old.
+```
+
+The `f` tells Python: *"treat anything in curly braces as a variable, not plain text."* Without the `f`, `{name}` is just printed as the literal characters `{name}`.
+
+```python
+print(f"Hello, {name}")   # Output: Hello, Alice   ✅
+print("Hello, {name}")    # Output: Hello, {name}  ❌ (missing f)
+```
+
 ## Visualize It
 
 See how Python stores variables in memory step by step:
