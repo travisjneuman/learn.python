@@ -7,7 +7,7 @@ Concepts: file I/O, open(), encoding, error handling.
 """
 
 
-def read_file_lines(filepath: str) -> list:
+def read_file_lines(filepath: str) -> list[str]:
     """Read a file and return all lines (preserving blank lines).
 
     WHY not strip blank lines? -- In a file reader we want to show
@@ -17,7 +17,7 @@ def read_file_lines(filepath: str) -> list:
         return f.read().splitlines()
 
 
-def format_with_line_numbers(lines: list) -> str:
+def format_with_line_numbers(lines: list[str]) -> str:
     """Add line numbers to each line for display.
 
     WHY right-justify the number? -- When files have more than 9 lines,
@@ -38,7 +38,7 @@ def format_with_line_numbers(lines: list) -> str:
     return "\n".join(numbered)
 
 
-def file_summary(filepath: str, lines: list) -> dict:
+def file_summary(filepath: str, lines: list[str]) -> dict[str, str | int]:
     """Build a summary dict with stats about the file.
 
     Includes the file name, line count, word count, and character count.

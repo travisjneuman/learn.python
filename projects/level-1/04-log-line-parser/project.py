@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-def parse_log_line(line: str) -> dict:
+def parse_log_line(line: str) -> dict[str, str]:
     """Parse a single log line into its components.
 
     Expected format: 2024-01-15 09:30:00 [INFO] Server started
@@ -51,7 +51,7 @@ def parse_log_line(line: str) -> dict:
     }
 
 
-def count_by_level(entries: list[dict]) -> dict[str, int]:
+def count_by_level(entries: list[dict[str, str]]) -> dict[str, int]:
     """Count log entries by their level.
 
     WHY count by level? -- In operations, knowing how many errors
@@ -66,13 +66,13 @@ def count_by_level(entries: list[dict]) -> dict[str, int]:
     return counts
 
 
-def filter_by_level(entries: list[dict], level: str) -> list[dict]:
+def filter_by_level(entries: list[dict[str, str]], level: str) -> list[dict[str, str]]:
     """Return only entries matching the specified level."""
     level = level.upper()
     return [e for e in entries if e.get("level") == level]
 
 
-def process_file(path: Path) -> list[dict]:
+def process_file(path: Path) -> list[dict[str, str]]:
     """Read a log file and parse each line."""
     if not path.exists():
         raise FileNotFoundError(f"Log file not found: {path}")

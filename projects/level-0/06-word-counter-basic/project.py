@@ -33,7 +33,7 @@ def count_characters(text: str) -> int:
     return len(text)
 
 
-def word_frequencies(text: str) -> dict:
+def word_frequencies(text: str) -> dict[str, int]:
     """Build a dictionary mapping each word to its frequency.
 
     WHY lowercase? -- So "The" and "the" count as the same word.
@@ -52,7 +52,7 @@ def word_frequencies(text: str) -> dict:
     return freq
 
 
-def top_words(freq: dict, n: int = 5) -> list:
+def top_words(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
     """Return the top-n most frequent words as (word, count) pairs.
 
     WHY sorted with key? -- sorted() can sort by any criterion.
@@ -64,7 +64,7 @@ def top_words(freq: dict, n: int = 5) -> list:
     return items[:n]
 
 
-def analyse_text(text: str) -> dict:
+def analyse_text(text: str) -> dict[str, int | list[dict[str, str | int]]]:
     """Run all analyses and return a summary dict."""
     freq = word_frequencies(text)
     top = top_words(freq, 5)

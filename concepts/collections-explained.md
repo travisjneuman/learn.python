@@ -54,6 +54,42 @@ colors.add("yellow")
 
 Use sets when: you need unique values or want to check membership quickly.
 
+### Set operations — comparing groups
+
+Sets really shine when you want to compare two groups. Imagine you are planning a party and have two guest lists:
+
+```python
+friday_guests = {"Alice", "Bob", "Charlie", "Diana"}
+saturday_guests = {"Charlie", "Diana", "Eve", "Frank"}
+
+# Union — everyone invited to at least one party
+all_guests = friday_guests | saturday_guests
+print(all_guests)
+# {"Alice", "Bob", "Charlie", "Diana", "Eve", "Frank"}
+
+# Intersection — people coming to BOTH parties
+both_days = friday_guests & saturday_guests
+print(both_days)
+# {"Charlie", "Diana"}
+
+# Difference — people only coming Friday (not Saturday)
+friday_only = friday_guests - saturday_guests
+print(friday_only)
+# {"Alice", "Bob"}
+
+# Difference the other way — people only coming Saturday
+saturday_only = saturday_guests - friday_guests
+print(saturday_only)
+# {"Eve", "Frank"}
+```
+
+Think of it this way:
+- `|` (union) means "combine everything"
+- `&` (intersection) means "only what overlaps"
+- `-` (difference) means "what is in the first group but not the second"
+
+These three operations cover most real-world "compare two groups" problems — finding shared friends, overlapping skills on a resume, or items on one shopping list that are missing from another.
+
 ## Tuples — ordered, unchangeable
 
 ```python

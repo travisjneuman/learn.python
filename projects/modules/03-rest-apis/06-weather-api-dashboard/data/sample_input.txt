@@ -1,0 +1,33 @@
+# Sample inputs for the Weather API Dashboard
+#
+# You can use either a city preset name or raw lat/lon coordinates.
+# Try these commands one at a time:
+
+# --- City presets ---
+new-york
+london
+tokyo
+sydney
+paris
+cairo
+sao-paulo
+mumbai
+
+# --- Raw coordinates ---
+# New York City
+40.7128 -74.0060
+
+# Los Angeles
+34.0522 -118.2437
+
+# Berlin
+52.5200 13.4050
+
+# Cape Town
+-33.9249 18.4241
+
+# Reykjavik (high latitude)
+64.1466 -21.9426
+
+# Singapore (near equator)
+1.3521 103.8198

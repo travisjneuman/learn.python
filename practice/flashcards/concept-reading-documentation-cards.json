@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Reading Documentation",
+  "description": "Navigating Python docs, reading function signatures, help(), and finding what you need",
+  "cards": [
+    {
+      "id": "c-docs-01",
+      "front": "Which section of docs.python.org will you use most?",
+      "back": "The Library Reference — it documents every module in the standard library.\n\nOther sections:\n- Tutorial: learning a topic for the first time\n- Language Reference: how syntax works\n- HOWTOs: practical guides\n- FAQ: common questions\n\nBookmark the Library Reference.",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 1,
+      "tags": ["docs", "navigation"]
+    },
+    {
+      "id": "c-docs-02",
+      "front": "How do you read a function signature like str.split(sep=None, maxsplit=-1)?",
+      "back": "str — the type this method belongs to\n.split — the method name\nsep=None — first param, defaults to None (split on whitespace)\nmaxsplit=-1 — second param, defaults to -1 (no limit)\n\n\"hello world\".split()        # [\"hello\", \"world\"]\n\"a-b-c\".split(\"-\")          # [\"a\", \"b\", \"c\"]\n\"a-b-c\".split(\"-\", 1)       # [\"a\", \"b-c\"]",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 2,
+      "tags": ["signatures", "parameters"]
+    },
+    {
+      "id": "c-docs-03",
+      "front": "How do you use help() in the Python REPL?",
+      "back": "help(str.split)   # help on a specific method\nhelp(json)        # help on a module\nhelp(list)        # help on a type\ndir(str)          # list all methods on str\n\nhelp() shows the docstring — the same text as the official docs, right in your terminal.",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 1,
+      "tags": ["help", "REPL"]
+    },
+    {
+      "id": "c-docs-04",
+      "front": "What do common type annotations in docs mean?",
+      "back": "str — a string\nint — an integer\nbool — True or False\nNone — no value returned\nlist[str] — list of strings\ndict[str, int] — dict with string keys, int values\nstr | None — a string or None\nIterable[int] — anything yielding ints\nCallable[[int], str] — function taking int, returning str",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 2,
+      "tags": ["type-annotations", "docs"]
+    },
+    {
+      "id": "c-docs-05",
+      "front": "What are 4 strategies for finding what you need in the docs?",
+      "back": "1. Search docs.python.org — use the search bar\n2. Google \"python\" + your question\n3. Module Index — alphabetical list of all standard library modules\n4. Start from what you know:\n   s = \"hello\"\n   dir(s)           # list all methods\n   help(s.replace)  # read about one",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 1,
+      "tags": ["search", "strategies"]
+    },
+    {
+      "id": "c-docs-06",
+      "front": "What common mistake do beginners make with documentation?",
+      "back": "Only reading tutorials, never the reference.\n\nTutorials teach concepts but are incomplete.\nThe reference docs are the authoritative, complete source.\n\nAlso: skipping the Parameters section (it tells you what each argument does, types, and defaults) and the Raises section (what errors to handle).",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 2,
+      "tags": ["mistakes", "reading"]
+    },
+    {
+      "id": "c-docs-07",
+      "front": "Where do you find docs for third-party packages?",
+      "back": "Third-party packages have their own doc sites:\n\nrequests — docs.python-requests.org\nFlask — flask.palletsprojects.com\nFastAPI — fastapi.tiangolo.com\npytest — docs.pytest.org\npandas — pandas.pydata.org\n\nWhen docs are lacking, check the project's GitHub README and examples/.",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 1,
+      "tags": ["third-party", "docs"]
+    },
+    {
+      "id": "c-docs-08",
+      "front": "What does the * in a function signature mean?",
+      "back": "Everything after * is keyword-only — must be passed by name.\n\njson.loads(s: str | bytes, *, cls=None, ...)\n\nThe * means cls, and everything after, cannot be positional.\n\nYou must write: json.loads(text, cls=MyDecoder)\nNot: json.loads(text, MyDecoder)",
+      "concept_ref": "concepts/reading-documentation.md",
+      "difficulty": 2,
+      "tags": ["keyword-only", "signatures"]
+    }
+  ]
+}

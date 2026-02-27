@@ -7,7 +7,7 @@ Concepts: writing files, string formatting, lists, loops, open().
 """
 
 
-def format_checklist(title: str, tasks: list) -> str:
+def format_checklist(title: str, tasks: list[str]) -> str:
     """Format tasks into a printable checklist with checkboxes.
 
     WHY number the tasks? -- Numbering makes it easy to refer to
@@ -28,7 +28,7 @@ def format_checklist(title: str, tasks: list) -> str:
     return "\n".join(lines)
 
 
-def checklist_summary(tasks: list) -> dict:
+def checklist_summary(tasks: list[str]) -> dict[str, int | list[str]]:
     """Build a summary of the checklist."""
     return {
         "total_tasks": len(tasks),

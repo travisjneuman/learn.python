@@ -1,3 +1,4 @@
+"""Learn to write and run a Python script that executes multiple commands in sequence."""
 # ============================================================
 # Exercise 03: Your First Script
 # ============================================================

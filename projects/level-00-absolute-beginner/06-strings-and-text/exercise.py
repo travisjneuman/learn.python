@@ -1,3 +1,4 @@
+"""Learn to create, combine, format, and manipulate text strings."""
 # ============================================================
 # Exercise 06: Strings and Text
 # ============================================================

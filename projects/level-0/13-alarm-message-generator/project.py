@@ -22,7 +22,7 @@ SEVERITY_ICONS = {
 SEVERITY_ORDER = {"critical": 0, "warning": 1, "info": 2}
 
 
-def parse_alarm(line: str) -> dict:
+def parse_alarm(line: str) -> dict[str, str]:
     """Parse an alarm definition line.
 
     Expected format: SEVERITY | SOURCE | MESSAGE
@@ -51,7 +51,7 @@ def parse_alarm(line: str) -> dict:
     }
 
 
-def format_alarm(alarm: dict, timestamp: str = "2024-01-15 09:30:00") -> str:
+def format_alarm(alarm: dict[str, str], timestamp: str = "2024-01-15 09:30:00") -> str:
     """Format an alarm dict into a human-readable notification.
 
     WHY a timestamp parameter? -- In real systems the timestamp comes
@@ -73,7 +73,7 @@ def format_alarm(alarm: dict, timestamp: str = "2024-01-15 09:30:00") -> str:
     )
 
 
-def process_alarms(lines: list[str]) -> list[dict]:
+def process_alarms(lines: list[str]) -> list[dict[str, str]]:
     """Parse all alarm lines and return structured data."""
     alarms = []
     for line in lines:
@@ -84,13 +84,13 @@ def process_alarms(lines: list[str]) -> list[dict]:
     return alarms
 
 
-def sort_by_severity(alarms: list[dict]) -> list[dict]:
+def sort_by_severity(alarms: list[dict[str, str]]) -> list[dict[str, str]]:
     """Sort alarms so critical ones appear first.
 
     WHY sort? -- In operations, the most urgent alarms should be
     seen first.  We use SEVERITY_ORDER to define the priority.
     """
-    def severity_key(alarm: dict) -> int:
+    def severity_key(alarm: dict[str, str]) -> int:
         if "error" in alarm:
             return 99  # Errors go last.
         return SEVERITY_ORDER.get(alarm["severity"], 50)
@@ -98,7 +98,7 @@ def sort_by_severity(alarms: list[dict]) -> list[dict]:
     return sorted(alarms, key=severity_key)
 
 
-def alarm_summary(alarms: list[dict]) -> dict:
+def alarm_summary(alarms: list[dict[str, str]]) -> dict[str, int | dict[str, int]]:
     """Build a summary counting alarms by severity."""
     valid = [a for a in alarms if "error" not in a]
     counts = {"critical": 0, "warning": 0, "info": 0}

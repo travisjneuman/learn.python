@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — *args and **kwargs Explained",
+  "description": "Variable arguments, unpacking, positional-only, keyword-only, and parameter order",
+  "cards": [
+    {
+      "id": "c-args-01",
+      "front": "What do *args and **kwargs do?",
+      "back": "*args collects extra positional arguments into a TUPLE.\n**kwargs collects extra keyword arguments into a DICT.\n\ndef func(*args, **kwargs):\n    print(args)    # (1, 2, 3)\n    print(kwargs)  # {'name': 'Alice'}\n\nfunc(1, 2, 3, name=\"Alice\")\n\nThe * and ** are what matter — the names are conventions.",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 1,
+      "tags": ["args", "kwargs"]
+    },
+    {
+      "id": "c-args-02",
+      "front": "How do you unpack a list or dict into function arguments?",
+      "back": "Use * to unpack sequences, ** to unpack dicts.\n\ndef add(a, b, c): return a + b + c\n\nnums = [1, 2, 3]\nadd(*nums)  # same as add(1, 2, 3) -> 6\n\nparams = {\"a\": 10, \"b\": 20, \"c\": 30}\nadd(**params)  # same as add(a=10, b=20, c=30) -> 60",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 2,
+      "tags": ["unpacking", "star"]
+    },
+    {
+      "id": "c-args-03",
+      "front": "What is the required parameter order in a function definition?",
+      "back": "1. Positional-only (before /)\n2. Regular parameters\n3. *args\n4. Keyword-only (after * or *args)\n5. **kwargs\n\ndef example(pos_only, /, normal, *args, kw_only, **kwargs):\n    pass",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 3,
+      "tags": ["parameter-order"]
+    },
+    {
+      "id": "c-args-04",
+      "front": "What does a bare * in the parameter list mean?",
+      "back": "Everything after * must be passed by keyword.\n\ndef connect(host, port, *, timeout=30, retries=3):\n    ...\n\nconnect(\"localhost\", 8080)             # OK\nconnect(\"localhost\", 8080, timeout=10) # OK\nconnect(\"localhost\", 8080, 10)         # TypeError!",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 2,
+      "tags": ["keyword-only", "star"]
+    },
+    {
+      "id": "c-args-05",
+      "front": "What does / mean in a function signature?",
+      "back": "Everything before / must be passed by position, not by name.\n\ndef greet(name, /, greeting=\"Hello\"):\n    return f\"{greeting}, {name}!\"\n\ngreet(\"Alice\")                    # OK\ngreet(\"Alice\", greeting=\"Hi\")    # OK\ngreet(name=\"Alice\")              # TypeError!\n\nPython 3.8+. Used in built-ins like len().",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 3,
+      "tags": ["positional-only", "slash"]
+    },
+    {
+      "id": "c-args-06",
+      "front": "Why is *args/**kwargs essential for decorators?",
+      "back": "It lets the wrapper accept any arguments the wrapped function takes.\n\ndef log_call(func):\n    def wrapper(*args, **kwargs):\n        print(f\"Calling {func.__name__}\")\n        return func(*args, **kwargs)  # forward all args\n    return wrapper\n\nWithout *args/**kwargs, the decorator would only work with specific signatures.",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 2,
+      "tags": ["decorators", "forwarding"]
+    },
+    {
+      "id": "c-args-07",
+      "front": "How do you merge dictionaries with **?",
+      "back": "defaults = {\"color\": \"blue\", \"size\": \"medium\"}\nuser = {\"color\": \"red\", \"font\": \"Arial\"}\n\nmerged = {**defaults, **user}\n# {\"color\": \"red\", \"size\": \"medium\", \"font\": \"Arial\"}\n\nLater values override earlier ones.\nIn Python 3.9+, you can also use: defaults | user",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 2,
+      "tags": ["dict-merge", "unpacking"]
+    },
+    {
+      "id": "c-args-08",
+      "front": "What error do you get if you forget to unpack?",
+      "back": "TypeError — the sequence is passed as a single argument.\n\ndef add(a, b): return a + b\n\nargs = (1, 2)\nadd(args)    # TypeError: expected 2 args, got 1 (tuple)\nadd(*args)   # 3 — correctly unpacked\n\nForget * and the entire tuple/list becomes one argument.",
+      "concept_ref": "concepts/args-kwargs-explained.md",
+      "difficulty": 2,
+      "tags": ["unpacking", "error"]
+    }
+  ]
+}

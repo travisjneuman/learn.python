@@ -1,3 +1,4 @@
+"""Learn to store and retrieve labeled data using key-value pairs in dictionaries."""
 # ============================================================
 # Exercise 12: Dictionaries
 # ============================================================

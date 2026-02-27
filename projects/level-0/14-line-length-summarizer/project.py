@@ -21,7 +21,7 @@ def measure_lines(lines: list[str]) -> list[int]:
     return [len(line) for line in lines]
 
 
-def compute_stats(lengths: list[int]) -> dict:
+def compute_stats(lengths: list[int]) -> dict[str, int | float]:
     """Compute min, max, and average line length.
 
     WHY guard against empty lists? -- If the file is empty, calling
@@ -63,7 +63,7 @@ def build_histogram(lengths: list[int], bar_char: str = "#", scale: int = 2) -> 
     return "\n".join(lines)
 
 
-def categorise_lengths(lengths: list[int]) -> dict:
+def categorise_lengths(lengths: list[int]) -> dict[str, int]:
     """Group lines into short (< 40), medium (40-80), and long (> 80).
 
     WHY categories? -- Raw numbers are harder to scan than categories.

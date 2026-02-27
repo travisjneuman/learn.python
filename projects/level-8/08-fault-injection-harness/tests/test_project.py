@@ -43,6 +43,7 @@ class TestFaultInjector:
             injector.check_and_inject("target_fn")
         assert injector.stats.faults_triggered == 1
 
+    @pytest.mark.slow
     def test_delay_injection(self) -> None:
         injector = FaultInjector(seed=0)
         injector.add_rule(FaultConfig(
@@ -103,6 +104,7 @@ class TestInjectDecorator:
 
 # --- Scoped rules -------------------------------------------------------
 
+@pytest.mark.slow
 class TestScopedRules:
     def test_rules_removed_after_scope(self) -> None:
         injector = FaultInjector(seed=0)

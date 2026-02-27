@@ -80,6 +80,7 @@ class TestPipeline:
         assert result.staged == 1
 
 
+@pytest.mark.integration
 class TestEndToEnd:
     def test_full_run(self, tmp_path) -> None:
         records = GOOD_RECORDS + BAD_RECORDS

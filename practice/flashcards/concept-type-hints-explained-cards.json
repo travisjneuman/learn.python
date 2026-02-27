@@ -1,0 +1,86 @@
+{
+  "deck": "Concept — Type Hints Explained",
+  "description": "Type annotations, Optional, Union, TypeVar, Protocol, and running mypy",
+  "cards": [
+    {
+      "id": "c-hint-01",
+      "front": "What are type hints and do they affect how Python runs?",
+      "back": "Type hints tell Python (and your editor) what types a variable or function expects.\n\ndef greet(name: str, times: int) -> None:\n    ...\n\nThey do NOT change runtime behavior. Python ignores them when running.\nThey are checked by external tools (mypy) and your editor.",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 1,
+      "tags": ["type-hints", "basics"]
+    },
+    {
+      "id": "c-hint-02",
+      "front": "How do you annotate function parameters and return types?",
+      "back": "Use : after parameters and -> before the colon.\n\ndef add(a: int, b: int) -> int:\n    return a + b\n\ndef say_hello(name: str) -> None:\n    print(f\"Hello, {name}\")\n\n-> int means returns an integer. -> None means returns nothing.",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 1,
+      "tags": ["type-hints", "functions"]
+    },
+    {
+      "id": "c-hint-03",
+      "front": "How do you annotate collection types?",
+      "back": "Use brackets to specify element types:\n\nnames: list[str] = [\"Alice\", \"Bob\"]\nscores: dict[str, int] = {\"Alice\": 95}\nunique_ids: set[int] = {1, 2, 3}\npoint: tuple[float, float] = (3.14, 2.71)\n\nlist[str] means \"a list of strings.\"",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 2,
+      "tags": ["type-hints", "collections"]
+    },
+    {
+      "id": "c-hint-04",
+      "front": "How do you annotate a value that might be None?",
+      "back": "Python 3.10+: use | None\ndef find(id: int) -> dict | None:\n    ...\n\nOlder Python: use Optional\nfrom typing import Optional\ndef find(id: int) -> Optional[dict]:\n    ...\n\nBoth mean: returns a dict OR None.",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 2,
+      "tags": ["Optional", "None"]
+    },
+    {
+      "id": "c-hint-05",
+      "front": "What is a Union type?",
+      "back": "A value that can be one of several types.\n\n# Python 3.10+:\ndef display(value: str | int | float) -> str:\n    return str(value)\n\n# Older Python:\nfrom typing import Union\ndef display(value: Union[str, int, float]) -> str:\n    return str(value)",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 2,
+      "tags": ["Union", "type-hints"]
+    },
+    {
+      "id": "c-hint-06",
+      "front": "What is a type alias?",
+      "back": "A shortcut for a complex type, so you do not repeat it everywhere.\n\nStudentScores = dict[str, list[int]]\n\ndef get_top(scores: StudentScores) -> list[str]:\n    return [name for name, vals in scores.items() if max(vals) > 90]\n\nMakes code more readable when types are long.",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 2,
+      "tags": ["type-alias", "readability"]
+    },
+    {
+      "id": "c-hint-07",
+      "front": "What is Protocol (structural typing)?",
+      "back": "Protocol defines what methods an object must have, without inheritance.\n\nfrom typing import Protocol\n\nclass Drawable(Protocol):\n    def draw(self) -> str: ...\n\nAny class with a draw() -> str method satisfies Drawable.\nNo need to inherit from Drawable — just implement the method.\nThis is called \"duck typing with type safety.\"",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 3,
+      "tags": ["Protocol", "structural-typing"]
+    },
+    {
+      "id": "c-hint-08",
+      "front": "How do you run a type checker?",
+      "back": "pip install mypy\nmypy my_script.py\n\nmypy checks type annotations and reports mismatches:\n  error: Argument 1 has incompatible type \"str\"; expected \"int\"\n\nVS Code with Pylance checks types automatically as you type.",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 1,
+      "tags": ["mypy", "tooling"]
+    },
+    {
+      "id": "c-hint-09",
+      "front": "Why is list[str] better than just list as a type hint?",
+      "back": "list alone says \"a list\" but not of what. Not helpful.\nlist[str] says \"a list of strings.\" Much more informative.\n\ndef process(items: list):       # A list of what?\ndef process(items: list[str]):  # A list of strings.\n\nAlways specify element types for collections.",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 2,
+      "tags": ["type-hints", "specificity"]
+    },
+    {
+      "id": "c-hint-10",
+      "front": "What is the common mistake with Optional types and None?",
+      "back": "Forgetting that the value might be None and calling methods on it.\n\ndef find(name: str) -> str | None:\n    ...\n\nresult = find(\"Alice\")\nresult.upper()  # Bug! result might be None\n\n# Fix — check first:\nif result is not None:\n    print(result.upper())",
+      "concept_ref": "concepts/type-hints-explained.md",
+      "difficulty": 2,
+      "tags": ["Optional", "None-safety"]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+"""Learn to create, access, modify, and iterate over ordered collections using lists."""
 # ============================================================
 # Exercise 09: Lists
 # ============================================================

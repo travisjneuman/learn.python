@@ -22,6 +22,7 @@ Practice small data pipelines with dictionaries, validation, and transformations
 - [13-validation-rule-engine](./13-validation-rule-engine/README.md) - Validation Rule Engine
 - [14-anomaly-flagger](./14-anomaly-flagger/README.md) - Anomaly Flagger
 - [15-level2-mini-capstone](./15-level2-mini-capstone/README.md) - Level 2 Mini Capstone
+- [16-markdown-to-html-converter](./16-markdown-to-html-converter/README.md) - Markdown to HTML Converter
 
 ## Level workflow
 1. Run all 15 projects once.

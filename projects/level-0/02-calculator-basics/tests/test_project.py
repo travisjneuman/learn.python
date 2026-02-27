@@ -38,3 +38,25 @@ def test_calculate_multiplication() -> None:
     """Multiplication should return the correct product."""
     result = calculate("6 * 7")
     assert result["result"] == 42.0
+
+
+def test_calculate_non_numeric_input() -> None:
+    """Non-numeric input like 'abc' should return an error dict, not crash.
+
+    When the user types words instead of numbers, float() raises ValueError.
+    The calculate function catches this and returns a dict with an 'error' key
+    describing the problem.
+    """
+    result = calculate("abc + 5")
+    assert "error" in result
+    assert "Invalid numbers" in result["error"]
+
+    # Both operands non-numeric.
+    result = calculate("foo * bar")
+    assert "error" in result
+    assert "Invalid numbers" in result["error"]
+
+    # Second operand non-numeric.
+    result = calculate("10 / xyz")
+    assert "error" in result
+    assert "Invalid numbers" in result["error"]

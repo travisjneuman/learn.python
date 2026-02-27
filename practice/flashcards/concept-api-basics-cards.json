@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — API Basics",
+  "description": "REST APIs, making requests, building APIs with FastAPI, authentication, and error handling",
+  "cards": [
+    {
+      "id": "c-api-01",
+      "front": "What is a REST API?",
+      "back": "A web API following REST conventions:\n\nGET /users        — list all users\nGET /users/42     — get user 42\nPOST /users       — create a user\nPUT /users/42     — replace user 42\nDELETE /users/42  — delete user 42\n\nThe URL is the resource. The HTTP method is the action.",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 1,
+      "tags": ["REST", "conventions"]
+    },
+    {
+      "id": "c-api-02",
+      "front": "How do you make a GET request and parse the JSON response?",
+      "back": "import requests\n\nresponse = requests.get(\"https://api.example.com/posts/1\")\npost = response.json()    # parse JSON to dict\nprint(post[\"title\"])\nprint(response.status_code)  # 200",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 1,
+      "tags": ["GET", "requests"]
+    },
+    {
+      "id": "c-api-03",
+      "front": "How do you create a simple API with FastAPI?",
+      "back": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/hello/{name}\")\ndef hello(name: str):\n    return {\"message\": f\"Hello, {name}!\"}\n\nRun: uvicorn app:app\nVisit: http://localhost:8000/hello/Alice\nDocs: http://localhost:8000/docs (auto-generated!)",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 2,
+      "tags": ["FastAPI", "building"]
+    },
+    {
+      "id": "c-api-04",
+      "front": "What are the two main API authentication methods?",
+      "back": "API Key — a secret string in the header:\nheaders={\"X-API-Key\": \"your-key\"}\n\nBearer Token (JWT) — a token from logging in:\nheaders={\"Authorization\": \"Bearer eyJ...\"}\n\nNever hardcode keys in source code. Use environment variables.",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 2,
+      "tags": ["authentication", "API-key", "JWT"]
+    },
+    {
+      "id": "c-api-05",
+      "front": "How should you handle API errors?",
+      "back": "# BAD — crashes if API is down:\ndata = requests.get(url).json()\n\n# GOOD — check response first:\nresponse = requests.get(url, timeout=10)\nresponse.raise_for_status()  # raises on 4xx/5xx\ndata = response.json()\n\nAlways: set timeout, check status, handle exceptions.",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 2,
+      "tags": ["error-handling", "reliability"]
+    },
+    {
+      "id": "c-api-06",
+      "front": "Why should you use a base URL variable instead of hardcoding?",
+      "back": "# BAD — hard to change:\nrequests.get(\"https://api.example.com/v2/users\")\nrequests.get(\"https://api.example.com/v2/posts\")\n\n# GOOD — one place to change:\nBASE_URL = \"https://api.example.com/v2\"\nrequests.get(f\"{BASE_URL}/users\")\nrequests.get(f\"{BASE_URL}/posts\")\n\nEasier to switch between dev/staging/production.",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 1,
+      "tags": ["base-url", "configuration"]
+    },
+    {
+      "id": "c-api-07",
+      "front": "What are good free APIs for practice?",
+      "back": "JSONPlaceholder (jsonplaceholder.typicode.com) — fake posts, users\nOpen Meteo (open-meteo.com) — weather data\nPokeAPI (pokeapi.co) — Pokemon data\nREST Countries (restcountries.com) — country info\n\nAll free, no API key needed, safe to practice with.",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 1,
+      "tags": ["practice", "public-apis"]
+    },
+    {
+      "id": "c-api-08",
+      "front": "How do you send data with a POST request?",
+      "back": "import requests\n\nnew_post = {\n    \"title\": \"My Post\",\n    \"body\": \"Content here\",\n    \"userId\": 1\n}\n\nresponse = requests.post(\n    \"https://api.example.com/posts\",\n    json=new_post  # auto-serializes to JSON\n)\nprint(response.status_code)  # 201 Created",
+      "concept_ref": "concepts/api-basics.md",
+      "difficulty": 1,
+      "tags": ["POST", "sending-data"]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+"""Learn to perform arithmetic operations and understand integer vs float division."""
 # ============================================================
 # Exercise 05: Numbers and Math
 # ============================================================

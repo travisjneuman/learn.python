@@ -90,6 +90,7 @@ def test_format_runbook() -> None:
     assert "events" in text
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "runbooks": [

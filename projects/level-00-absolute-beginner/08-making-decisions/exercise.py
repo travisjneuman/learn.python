@@ -1,3 +1,4 @@
+"""Learn to control program flow using if, elif, and else conditional statements."""
 # ============================================================
 # Exercise 08: Making Decisions (if / else)
 # ============================================================

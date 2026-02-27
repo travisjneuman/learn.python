@@ -137,6 +137,7 @@ class TestArchitectureFitness:
 # Full platform assessment
 # ---------------------------------------------------------------------------
 
+@pytest.mark.integration
 class TestEnterprisePlatform:
     def test_healthy_assessment(self, platform: EnterprisePlatform,
                                  good_context: dict[str, Any],

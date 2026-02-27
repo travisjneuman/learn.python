@@ -90,6 +90,7 @@ class TestGapDetection:
         assert len(gaps) == 2
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "range_start": "2025-01-01T00:00",

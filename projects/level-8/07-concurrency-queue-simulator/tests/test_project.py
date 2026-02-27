@@ -92,6 +92,8 @@ class TestConsumer:
 
 # --- Full simulation ----------------------------------------------------
 
+@pytest.mark.slow
+@pytest.mark.integration
 class TestSimulation:
     def test_all_items_processed(self) -> None:
         result = run_simulation(

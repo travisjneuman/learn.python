@@ -74,6 +74,7 @@ class TestBatch:
         assert get_balance(conn, 2) == pytest.approx(65.0)
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     data = {
         "accounts": [

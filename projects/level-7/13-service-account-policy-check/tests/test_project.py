@@ -90,6 +90,7 @@ class TestComplianceSummary:
         assert s["non_compliant"] == 0
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "now": 1_700_100_000,

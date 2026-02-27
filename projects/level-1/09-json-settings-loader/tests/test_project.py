@@ -22,6 +22,16 @@ def test_load_json_invalid(tmp_path: Path) -> None:
         load_json(f)
 
 
+def test_load_json_malformed_shows_location(tmp_path: Path) -> None:
+    """Malformed JSON error message includes line number and position."""
+    # Trailing comma after "port" makes this invalid JSON.
+    bad_content = '{\n  "debug": true,\n  "port": 9090,\n}'
+    f = tmp_path / "malformed.json"
+    f.write_text(bad_content, encoding="utf-8")
+    with pytest.raises(ValueError, match=r"line \d+, position \d+"):
+        load_json(f)
+
+
 def test_merge_settings_overrides() -> None:
     defaults = {"a": 1, "b": 2}
     overrides = {"b": 99, "c": 3}

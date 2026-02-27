@@ -33,3 +33,25 @@ def test_unknown_unit_raises() -> None:
     """An unsupported unit letter should raise ValueError."""
     with pytest.raises(ValueError, match="Unknown unit"):
         convert_temperature(100, "X", "C")
+
+
+def test_freezing_point_boundary() -> None:
+    """0 C (freezing point of water) converts to 32 F and 273.15 K."""
+    assert convert_temperature(0, "C", "F") == 32.0
+    assert convert_temperature(0, "C", "K") == 273.15
+
+
+def test_boiling_point_boundary() -> None:
+    """100 C (boiling point of water) converts to 212 F and 373.15 K."""
+    assert convert_temperature(100, "C", "F") == 212.0
+    assert convert_temperature(100, "C", "K") == 373.15
+
+
+def test_absolute_zero_boundary() -> None:
+    """Absolute zero (-273.15 C) converts to -459.67 F and 0 K.
+
+    This is the lowest possible temperature.  The Kelvin value must be
+    exactly 0 (within floating-point rounding).
+    """
+    assert convert_temperature(-273.15, "C", "K") == 0.0
+    assert convert_temperature(-273.15, "C", "F") == -459.67

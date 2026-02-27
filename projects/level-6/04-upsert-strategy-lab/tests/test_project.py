@@ -94,6 +94,7 @@ class TestUpsertReplace:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     csv_content = "sku,name,price,stock\nA1,Alpha,1.00,10\nA1,Alpha v2,2.00,20\n"
     inp = tmp_path / "input.csv"

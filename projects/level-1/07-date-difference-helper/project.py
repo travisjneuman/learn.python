@@ -59,7 +59,7 @@ def day_of_week(date_str: str) -> str:
     return d.strftime("%A")
 
 
-def process_commands(lines: list[str]) -> list[dict]:
+def process_commands(lines: list[str]) -> list[dict[str, str | int]]:
     """Process date commands from a list of strings.
 
     Supported commands:

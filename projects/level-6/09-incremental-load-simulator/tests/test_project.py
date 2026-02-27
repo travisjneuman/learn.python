@@ -78,6 +78,7 @@ class TestIncrementalLoad:
         assert stats.loaded == batch_size
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     inp = tmp_path / "events.json"
     inp.write_text(json.dumps(BATCH_1), encoding="utf-8")

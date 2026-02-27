@@ -81,6 +81,7 @@ class TestReconciliation:
         assert r["mismatched"] == 1
 
 
+@pytest.mark.integration
 class TestPipeline:
     def test_full_pipeline(self) -> None:
         config = {
@@ -114,6 +115,7 @@ class TestPipeline:
         assert "validate" not in result["stages_run"]
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "now": 1000,

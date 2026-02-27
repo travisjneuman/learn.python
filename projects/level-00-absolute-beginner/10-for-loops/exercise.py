@@ -1,3 +1,4 @@
+"""Learn to repeat actions over sequences and ranges using for loops."""
 # ============================================================
 # Exercise 10: For Loops
 # ============================================================

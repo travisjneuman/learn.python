@@ -89,6 +89,7 @@ class TestRetry:
         assert stats["unresolved"] == 1
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     records = [
         {"name": "alpha", "value": 100},

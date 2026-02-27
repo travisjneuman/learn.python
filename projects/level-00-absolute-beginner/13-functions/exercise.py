@@ -1,3 +1,4 @@
+"""Learn to define reusable blocks of code with parameters and return values."""
 # ============================================================
 # Exercise 13: Functions
 # ============================================================

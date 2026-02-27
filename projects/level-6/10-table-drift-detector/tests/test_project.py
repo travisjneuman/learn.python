@@ -91,6 +91,7 @@ class TestDriftDetection:
         assert report.type_changes[0]["old_type"] == old_type
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "tables": [

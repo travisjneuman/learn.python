@@ -84,6 +84,7 @@ class TestDecoratorTracking:
 
 # --- Context manager ----------------------------------------------------
 
+@pytest.mark.slow
 class TestContextManager:
     def test_measure_context(self, profiler: ResponseTimeProfiler) -> None:
         with profiler.measure("block"):

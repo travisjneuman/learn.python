@@ -33,7 +33,7 @@ def divide(a: float, b: float) -> float:
     return a / b
 
 
-def calculate(expression: str) -> dict:
+def calculate(expression: str) -> dict[str, str | float]:
     """Parse a simple expression like '10 + 5' and return the result.
 
     WHY split on spaces? -- We expect the format 'number operator number'.

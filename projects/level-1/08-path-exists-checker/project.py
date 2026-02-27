@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 
-def check_path(path_str: str) -> dict:
+def check_path(path_str: str) -> dict[str, str | bool | int]:
     """Check a single path and return its metadata.
 
     WHY pathlib? -- Path objects provide clean methods like .exists(),
@@ -64,12 +64,12 @@ def format_size(size_bytes: int) -> str:
     return f"{size:.1f} TB"
 
 
-def process_paths(path_list: list[str]) -> list[dict]:
+def process_paths(path_list: list[str]) -> list[dict[str, str | bool | int]]:
     """Check each path and return results."""
     return [check_path(p) for p in path_list if p.strip()]
 
 
-def summary(results: list[dict]) -> dict:
+def summary(results: list[dict[str, str | bool | int]]) -> dict[str, int]:
     """Build a summary of path check results."""
     existing = [r for r in results if r["exists"]]
     missing = [r for r in results if not r["exists"]]

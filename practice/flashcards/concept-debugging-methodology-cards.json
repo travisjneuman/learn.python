@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Debugging Methodology",
+  "description": "The 7-step debugging method, breakpoint(), pdb, icecream, and systematic debugging",
+  "cards": [
+    {
+      "id": "c-dbg-01",
+      "front": "What are the 7 steps of systematic debugging?",
+      "back": "1. Reproduce — make the bug happen reliably\n2. Isolate — narrow down where the bug is\n3. Hypothesize — form a specific theory\n4. Test — verify your theory with experiments\n5. Fix — make the minimum change\n6. Verify — confirm the fix with the same steps\n7. Prevent — write a test that catches this bug",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["debugging", "method"]
+    },
+    {
+      "id": "c-dbg-02",
+      "front": "What is the binary search method for finding bugs?",
+      "back": "Add a print halfway through the code.\nIs the data correct at that point?\n- YES: bug is in the second half\n- NO: bug is in the first half\nRepeat until you find the exact line.\n\nThis works for programs of any size and quickly narrows down 500 lines to 1.",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["binary-search", "isolation"]
+    },
+    {
+      "id": "c-dbg-03",
+      "front": "How does breakpoint() work?",
+      "back": "Drops into an interactive debugger when execution reaches that line.\n\ndef process(items):\n    for item in items:\n        breakpoint()    # pauses here\n        result = transform(item)\n\nCommands:\nn — next line\ns — step into function\nc — continue to next breakpoint\np variable — print value\nq — quit debugger",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["breakpoint", "pdb"]
+    },
+    {
+      "id": "c-dbg-04",
+      "front": "What is icecream and why use it instead of print()?",
+      "back": "A library that auto-prints variable names and values.\n\npip install icecream\nfrom icecream import ic\n\nx = 42\nic(x)        # ic| x: 42\nic(x * 2)    # ic| x * 2: 84\n\nNo more writing print(f\"x={x}\"). ic() does it automatically.\nic.disable() turns off all debug output at once.",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["icecream", "debugging"]
+    },
+    {
+      "id": "c-dbg-05",
+      "front": "Why should you NOT change code randomly when debugging?",
+      "back": "Random changes waste time and can introduce new bugs.\n\nAlways:\n1. Form a hypothesis first (\"I think X is None because...\")\n2. Test it with the smallest experiment (print the value)\n3. Only then change code based on evidence\n\nMethodical debugging is faster than guessing, even if it feels slower.",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["methodology", "anti-patterns"]
+    },
+    {
+      "id": "c-dbg-06",
+      "front": "How do you debug a TypeError quickly?",
+      "back": "Print the types of all arguments:\n\nprint(f\"DEBUG: {type(x)=}, {type(y)=}\")\n\nTypeError usually means you passed the wrong type.\nThe f\"{type(x)=}\" syntax shows both the expression and its value.",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["TypeError", "debugging"]
+    },
+    {
+      "id": "c-dbg-07",
+      "front": "What is step 7 (Prevent) and why does it matter?",
+      "back": "After fixing a bug, write a test that catches it:\n\ndef test_missing_email_field():\n    user_data = {\"name\": \"Alice\"}  # no email key\n    result = process_user(user_data)\n    assert result.email == \"no-email@example.com\"\n\nThis prevents the same bug from coming back.\nAsk: why did this happen? Could it happen elsewhere?",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["prevention", "testing"]
+    },
+    {
+      "id": "c-dbg-08",
+      "front": "What is the snoop decorator?",
+      "back": "Traces every line of a function as it executes, showing variable values.\n\nimport snoop\n\n@snoop\ndef process(items):\n    total = 0\n    for item in items:\n        total += item\n    return total\n\nOutput shows each line number, code, and all variable changes.\nGreat when breakpoint() is too manual.",
+      "concept_ref": "concepts/debugging-methodology.md",
+      "difficulty": 2,
+      "tags": ["snoop", "tracing"]
+    }
+  ]
+}

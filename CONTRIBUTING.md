@@ -10,13 +10,31 @@ Use the [issue templates](https://github.com/travisjneuman/learn.python/issues/n
 - **Feature requests** — new projects, modules, or curriculum improvements
 - **Curriculum feedback** — unclear explanations, typos, suggested rewrites
 
+## Development Setup
+
+After cloning or forking, install the pre-commit hooks so that linting and formatting run automatically on every commit:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+This adds a Git hook that runs [ruff](https://docs.astral.sh/ruff/) (lint + format) before each commit. If ruff finds fixable issues it will apply the fixes automatically — just re-stage the changed files and commit again.
+
+You can also run the hooks manually against all files at any time:
+
+```bash
+pre-commit run --all-files
+```
+
 ## How to Submit a Pull Request
 
 1. Fork the repository
 2. Create a branch from `main` (`git checkout -b your-branch-name`)
-3. Make your changes
-4. Run tests if applicable (`python -m pytest`)
-5. Open a pull request against `main`
+3. Install pre-commit hooks (see **Development Setup** above)
+4. Make your changes
+5. Run tests if applicable (`python -m pytest`)
+6. Open a pull request against `main`
 
 Keep pull requests focused. One fix or one feature per PR is easier to review than a grab bag of changes.
 
@@ -27,7 +45,7 @@ This is an educational repository. Writing style matters as much as code style.
 - **Plain language first.** Explain concepts the way you would to a friend who has never coded.
 - **Hands-on before theory.** Show the code, then explain why it works.
 - **No jargon without explanation.** If you use a technical term, define it on first use.
-- **Python code** should pass `ruff check` and `black --check`.
+- **Python code** should pass `ruff check` and `ruff format --check`. (If you installed the pre-commit hooks, this happens automatically.)
 
 ## Project Structure Conventions
 

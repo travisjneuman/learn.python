@@ -1,3 +1,4 @@
+"""Learn to store values in variables and use them in expressions and print statements."""
 # ============================================================
 # Exercise 04: Variables
 # ============================================================

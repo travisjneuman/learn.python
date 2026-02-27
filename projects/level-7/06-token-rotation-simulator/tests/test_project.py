@@ -55,6 +55,7 @@ class TestTokenManager:
         assert len(mgr.audit_log) >= 3  # generate, revoke, generate, rotate
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {"ttl_seconds": 3600, "operations": ["generate", "rotate"]}
     inp = tmp_path / "config.json"

@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Async Explained",
+  "description": "async/await, the event loop, gather(), create_task(), and when to use async",
+  "cards": [
+    {
+      "id": "c-async-01",
+      "front": "What problem does async solve?",
+      "back": "Synchronous code waits for each operation one at a time:\nfetch(url1)  # 1 sec\nfetch(url2)  # 1 sec\nfetch(url3)  # 1 sec — total: 3 seconds\n\nAsync runs them concurrently:\nawait asyncio.gather(fetch(url1), fetch(url2), fetch(url3))\n# total: ~1 second — all three run at the same time",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 1,
+      "tags": ["async", "concurrency"]
+    },
+    {
+      "id": "c-async-02",
+      "front": "What are the key async vocabulary terms?",
+      "back": "Coroutine — a function defined with async def (can pause and resume)\nawait — pause current coroutine until the awaited operation finishes\nEvent loop — the engine that runs coroutines (decides which runs next)\nConcurrent — multiple tasks making progress at the same time\n\nasync def greet(): ...\nresult = await greet()",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["terminology", "coroutine"]
+    },
+    {
+      "id": "c-async-03",
+      "front": "What is the difference between asyncio.sleep() and time.sleep()?",
+      "back": "time.sleep(5) — blocks EVERYTHING. No other coroutine can run.\nasyncio.sleep(5) — pauses only this coroutine. Others continue.\n\nAnalogy:\ntime.sleep = chef standing in front of oven doing nothing\nasyncio.sleep = chef setting timer and working on other dishes",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["sleep", "blocking"]
+    },
+    {
+      "id": "c-async-04",
+      "front": "What is the difference between gather() and create_task()?",
+      "back": "gather() — start all at once, wait for ALL to finish:\nresults = await asyncio.gather(a(), b(), c())\n\ncreate_task() — start in background, get result later:\ntask = asyncio.create_task(a())\n# ... do other work ...\nresult = await task",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["gather", "create_task"]
+    },
+    {
+      "id": "c-async-05",
+      "front": "What happens if you forget to await a coroutine?",
+      "back": "You get the coroutine object, not the result.\n\nresult = some_async_function()       # coroutine object!\nresult = await some_async_function() # actual result\n\nPython will usually warn: \"coroutine was never awaited.\"\nThis is one of the most common async mistakes.",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["await", "mistakes"]
+    },
+    {
+      "id": "c-async-06",
+      "front": "When should you NOT use async?",
+      "back": "Bad fit for async:\n- CPU-heavy work (math, image processing) — use multiprocessing\n- Simple scripts that do one thing at a time\n- When you do not need concurrency\n\nGood fit:\n- Many HTTP requests\n- Web servers (FastAPI)\n- Chat apps, WebSockets\n- Scraping multiple pages",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["when-to-use", "limitations"]
+    },
+    {
+      "id": "c-async-07",
+      "front": "How do you run async code?",
+      "back": "import asyncio\n\nasync def main():\n    await asyncio.gather(\n        greet(\"Alice\", 2),\n        greet(\"Bob\", 1),\n    )\n\nasyncio.run(main())  # entry point — starts the event loop\n\nNOTE: do not call asyncio.run() inside async code.\nInside async code, just use await.",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["asyncio.run", "entry-point"]
+    },
+    {
+      "id": "c-async-08",
+      "front": "How does the event loop work (simplified)?",
+      "back": "1. Give the event loop coroutines to run\n2. It starts running the first one\n3. When it hits await, the loop pauses it and runs another\n4. When the awaited operation finishes, the loop resumes it\n5. Continue until all coroutines are done\n\nLike a chef cooking multiple dishes — while one is in the oven, work on another.",
+      "concept_ref": "concepts/async-explained.md",
+      "difficulty": 2,
+      "tags": ["event-loop", "mental-model"]
+    }
+  ]
+}

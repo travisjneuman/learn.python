@@ -1,3 +1,4 @@
+"""Learn to combine variables, functions, files, and loops into a complete program."""
 # ============================================================
 # Exercise 15: Putting It Together
 # ============================================================

@@ -38,7 +38,7 @@ def classify_ticket(text: str) -> str:
     return "low"  # Default priority if no keywords match.
 
 
-def route_ticket(ticket_id: int, text: str) -> dict:
+def route_ticket(ticket_id: int, text: str) -> dict[str, int | str]:
     """Build a routed ticket record."""
     priority = classify_ticket(text)
     return {
@@ -48,7 +48,7 @@ def route_ticket(ticket_id: int, text: str) -> dict:
     }
 
 
-def process_tickets(lines: list[str]) -> list[dict]:
+def process_tickets(lines: list[str]) -> list[dict[str, int | str]]:
     """Process a list of ticket descriptions."""
     tickets = []
     for i, line in enumerate(lines, start=1):
@@ -59,7 +59,7 @@ def process_tickets(lines: list[str]) -> list[dict]:
     return tickets
 
 
-def group_by_priority(tickets: list[dict]) -> dict[str, list[dict]]:
+def group_by_priority(tickets: list[dict[str, int | str]]) -> dict[str, list[dict[str, int | str]]]:
     """Group tickets into priority queues.
 
     WHY group? -- Operations teams work through tickets by priority.

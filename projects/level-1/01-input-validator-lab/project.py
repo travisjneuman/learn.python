@@ -13,7 +13,7 @@ import re
 from pathlib import Path
 
 
-def validate_email(email: str) -> dict:
+def validate_email(email: str) -> dict[str, str | bool | list[str]]:
     """Check whether a string looks like a valid email address.
 
     Rules:
@@ -42,7 +42,7 @@ def validate_email(email: str) -> dict:
     return {"value": email, "type": "email", "valid": len(errors) == 0, "errors": errors}
 
 
-def validate_phone(phone: str) -> dict:
+def validate_phone(phone: str) -> dict[str, str | bool | list[str]]:
     """Check whether a string looks like a US phone number.
 
     Accepts: 555-123-4567, 5551234567, (555) 123-4567
@@ -62,7 +62,7 @@ def validate_phone(phone: str) -> dict:
     return {"value": phone, "type": "phone", "valid": len(errors) == 0, "errors": errors}
 
 
-def validate_zip_code(zipcode: str) -> dict:
+def validate_zip_code(zipcode: str) -> dict[str, str | bool | list[str]]:
     """Check whether a string looks like a US zip code.
 
     Accepts: 12345 or 12345-6789
@@ -78,7 +78,7 @@ def validate_zip_code(zipcode: str) -> dict:
     return {"value": zipcode, "type": "zip", "valid": len(errors) == 0, "errors": errors}
 
 
-def validate_input(line: str) -> dict:
+def validate_input(line: str) -> dict[str, str | bool | list[str]]:
     """Parse a line like 'email: user@example.com' and validate it.
 
     WHY a dispatcher? -- The line tells us which validator to use.
@@ -103,7 +103,7 @@ def validate_input(line: str) -> dict:
     return validators[input_type](value)
 
 
-def process_file(path: Path) -> list[dict]:
+def process_file(path: Path) -> list[dict[str, str | bool | list[str]]]:
     """Read input lines and validate each one."""
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")

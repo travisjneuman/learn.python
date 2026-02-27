@@ -3,7 +3,7 @@ Quiz: Errors and Debugging
 Review: concepts/errors-and-debugging.md
 """
 
-from _quiz_helpers import normalize_answer
+from _quiz_helpers import normalize_answer, ask_true_false, ask_code_completion
 
 
 def run_quiz():
@@ -14,10 +14,10 @@ def run_quiz():
     print()
 
     score = 0
-    total = 7
+    total = 9
 
     # Question 1
-    print("Question 1/7: When reading a Python error message (traceback),")
+    print("Question 1/9: When reading a Python error message (traceback),")
     print("where should you look first?")
     print()
     print("  a) The very top line")
@@ -37,7 +37,7 @@ def run_quiz():
     print()
 
     # Question 2
-    print("Question 2/7: What error do you get if you use a variable")
+    print("Question 2/9: What error do you get if you use a variable")
     print("that has not been created yet?")
     print()
     print("  a) SyntaxError")
@@ -56,7 +56,7 @@ def run_quiz():
     print()
 
     # Question 3
-    print("Question 3/7: What error does this code produce?")
+    print("Question 3/9: What error does this code produce?")
     print()
     print('  age = 30')
     print('  print("I am " + age)')
@@ -77,7 +77,7 @@ def run_quiz():
     print()
 
     # Question 4
-    print("Question 4/7: What error does int('hello') produce?")
+    print("Question 4/9: What error does int('hello') produce?")
     print()
     print("  a) TypeError")
     print("  b) NameError")
@@ -95,7 +95,7 @@ def run_quiz():
     print()
 
     # Question 5
-    print("Question 5/7: What is the simplest debugging technique?")
+    print("Question 5/9: What is the simplest debugging technique?")
     print()
     print("  a) Using a professional debugger")
     print("  b) Rewriting the code from scratch")
@@ -114,7 +114,7 @@ def run_quiz():
     print()
 
     # Question 6
-    print("Question 6/7: What is wrong with this code?")
+    print("Question 6/9: What is wrong with this code?")
     print()
     print("  if x > 5")
     print('      print("big")')
@@ -135,7 +135,7 @@ def run_quiz():
     print()
 
     # Question 7
-    print("Question 7/7: What error occurs here?")
+    print("Question 7/9: What error occurs here?")
     print()
     print("  my_list = [10, 20, 30]")
     print("  print(my_list[5])")
@@ -154,6 +154,35 @@ def run_quiz():
         print("Incorrect. The answer is c) IndexError.")
         print("The list has 3 items (indexes 0-2). Index 5 is out of range.")
     print()
+
+    # Question 8 — true/false
+    if ask_true_false(
+        question_num=8,
+        total=total,
+        statement="A SyntaxError means your code ran but produced the wrong result.",
+        correct=False,
+        explanation_correct="SyntaxError means Python could not even parse your code. It never runs.",
+        explanation_incorrect="SyntaxError happens before your code runs. Python cannot understand the structure, so it stops immediately.",
+    ):
+        score += 1
+
+    # Question 9 — code completion
+    if ask_code_completion(
+        question_num=9,
+        total=total,
+        prompt="Complete the try/except block to catch a ValueError:",
+        code_lines=[
+            "try:",
+            '    number = int(input("Enter a number: "))',
+            "____ ValueError:",
+            '    print("That is not a valid number.")',
+        ],
+        correct_answers=["except"],
+        explanation_correct="except catches the specified error type so the program can handle it gracefully.",
+        explanation_incorrect="The except keyword follows a try block to catch specific error types.",
+        case_sensitive=True,
+    ):
+        score += 1
 
     # Final score
     print("=" * 60)

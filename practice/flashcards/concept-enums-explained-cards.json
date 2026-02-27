@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Enums Explained",
+  "description": "Enum, IntEnum, StrEnum, auto(), pattern matching with enums, and iteration",
+  "cards": [
+    {
+      "id": "c-enum-01",
+      "front": "What is an enum and why use it?",
+      "back": "A set of named constants. Replaces magic strings and numbers.\n\nfrom enum import Enum\n\nclass Color(Enum):\n    RED = \"red\"\n    GREEN = \"green\"\n    BLUE = \"blue\"\n\nBenefits: autocomplete, typo protection, clear documentation.\nColor.REED raises AttributeError immediately. \"reed\" would silently fail.",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 1,
+      "tags": ["enum", "constants"]
+    },
+    {
+      "id": "c-enum-02",
+      "front": "What is the difference between Enum, IntEnum, and StrEnum?",
+      "back": "Enum: members are NOT equal to their values\n  Color.RED == \"red\"  # False\n\nIntEnum: members behave like integers\n  Priority.HIGH == 3  # True\n  Priority.HIGH > Priority.LOW  # True\n\nStrEnum (3.11+): members behave like strings\n  Status.ACTIVE == \"active\"  # True\n  f\"{Status.ACTIVE}\"  # \"active\"",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 2,
+      "tags": ["IntEnum", "StrEnum"]
+    },
+    {
+      "id": "c-enum-03",
+      "front": "What does auto() do?",
+      "back": "Automatically assigns incrementing integer values starting from 1.\n\nfrom enum import Enum, auto\n\nclass Direction(Enum):\n    NORTH = auto()  # 1\n    SOUTH = auto()  # 2\n    EAST = auto()   # 3\n    WEST = auto()   # 4\n\nUseful when the specific value does not matter — only the name.",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 1,
+      "tags": ["auto", "values"]
+    },
+    {
+      "id": "c-enum-04",
+      "front": "How do you iterate over an enum?",
+      "back": "Enums are iterable:\n\nfor season in Season:\n    print(f\"{season.name} = {season.value}\")\n\nAll values: [s.value for s in Season]\nAll names: [s.name for s in Season]\n\n.name gives the string name (\"SPRING\")\n.value gives the assigned value (1 or \"spring\")",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 1,
+      "tags": ["iteration", "name-value"]
+    },
+    {
+      "id": "c-enum-05",
+      "front": "How do you look up an enum member by name or value?",
+      "back": "By name: Color[\"RED\"]     # Color.RED\nBy value: Color(\"red\")    # Color.RED\n\nCheck membership:\n\"RED\" in Color.__members__  # True\n\nLookup by value raises ValueError if not found:\nColor(\"purple\")  # ValueError!",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 2,
+      "tags": ["lookup", "access"]
+    },
+    {
+      "id": "c-enum-06",
+      "front": "Why does Color.RED == \"red\" return False with regular Enum?",
+      "back": "Regular Enum members are NOT equal to their values.\n\nColor.RED == \"red\"        # False\nColor.RED.value == \"red\"  # True\nColor.RED is Color.RED    # True\n\nThis is by design — enums are distinct types.\nUse StrEnum if you need value comparisons to work naturally.",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 2,
+      "tags": ["comparison", "gotcha"]
+    },
+    {
+      "id": "c-enum-07",
+      "front": "How do enums work with match/case?",
+      "back": "Enums pair naturally with pattern matching:\n\ndef handle(cmd: Command) -> str:\n    match cmd:\n        case Command.START:  return \"Starting...\"\n        case Command.STOP:   return \"Stopping...\"\n        case Command.PAUSE:  return \"Pausing...\"\n\nUse dotted names (Command.START) not bare names in patterns.",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 2,
+      "tags": ["match-case", "pattern"]
+    },
+    {
+      "id": "c-enum-08",
+      "front": "Can you modify enum members after creation?",
+      "back": "No. Enums are immutable.\n\nColor.RED = \"crimson\"  # AttributeError!\n\nEnum members are singletons:\nColor(\"red\") is Color.RED  # True — same object\n\nYou cannot create new members or change existing ones at runtime.",
+      "concept_ref": "concepts/enums-explained.md",
+      "difficulty": 2,
+      "tags": ["immutable", "singleton"]
+    }
+  ]
+}

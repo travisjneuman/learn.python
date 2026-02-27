@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Security Basics",
+  "description": "SQL injection, XSS, password hashing, secrets management, input validation",
+  "cards": [
+    {
+      "id": "c-sec-01",
+      "front": "What is SQL injection and how do you prevent it?",
+      "back": "An attacker puts SQL code into user input to manipulate your database.\n\n# VULNERABLE:\nquery = \"SELECT * FROM users WHERE name = '\" + username + \"'\"\n\n# SAFE — parameterized query:\ncursor.execute(\"SELECT * FROM users WHERE name = ?\", (username,))\n\nThe ? placeholder treats input as DATA, not as SQL code. This is the #1 security rule.",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 2,
+      "tags": ["sql-injection", "parameterized"]
+    },
+    {
+      "id": "c-sec-02",
+      "front": "How should you store passwords?",
+      "back": "NEVER store plain text. Always hash with bcrypt or argon2.\n\nimport bcrypt\n\n# When creating a user:\nhashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())\n\n# When checking:\nif bcrypt.checkpw(password.encode(), stored_hash):\n    print(\"Login successful\")\n\nHashing is one-way — you cannot recover the original password.",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 2,
+      "tags": ["passwords", "hashing"]
+    },
+    {
+      "id": "c-sec-03",
+      "front": "Where should you store API keys and secrets?",
+      "back": "In environment variables, NEVER in source code.\n\nimport os\nAPI_KEY = os.environ[\"API_KEY\"]\n\nFor local development, use a .env file:\nAPI_KEY=your-key-here\n\nfrom dotenv import load_dotenv\nload_dotenv()  # loads .env into os.environ\n\nAdd .env to .gitignore BEFORE your first commit.",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 1,
+      "tags": ["secrets", "env-vars"]
+    },
+    {
+      "id": "c-sec-04",
+      "front": "What is path traversal and how do you prevent it?",
+      "back": "An attacker uses ../../../ to access files outside the intended directory.\n\n# VULNERABLE:\nfilename = input(\"Which file? \")\nopen(filename)  # ../../etc/passwd!\n\n# SAFE:\nbase_dir = Path(\"/app/uploads\").resolve()\nrequested = (base_dir / filename).resolve()\nif not requested.is_relative_to(base_dir):\n    raise ValueError(\"Path traversal detected\")",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 2,
+      "tags": ["path-traversal", "validation"]
+    },
+    {
+      "id": "c-sec-05",
+      "front": "Why is client-side validation not enough?",
+      "back": "Client-side validation (JavaScript in browser) provides ZERO security.\nAn attacker can bypass it completely by sending requests directly.\n\nAlways validate on the server:\n- Check types and ranges\n- Sanitize strings\n- Use Pydantic models for automatic validation\n\nClient-side validation is for UX. Server-side is for security.",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 2,
+      "tags": ["validation", "server-side"]
+    },
+    {
+      "id": "c-sec-06",
+      "front": "How do you check for vulnerabilities in your dependencies?",
+      "back": "pip install pip-audit\npip audit\n\nThis scans installed packages for known security vulnerabilities.\n\nAlso:\n- Pin exact versions in production: requests==2.31.0\n- Keep dependencies updated regularly\n- Review what you install — fewer packages = fewer risks",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 2,
+      "tags": ["pip-audit", "dependencies"]
+    },
+    {
+      "id": "c-sec-07",
+      "front": "What should your .gitignore include for security?",
+      "back": ".env\n*.pem\n*.key\ncredentials.json\n\nAnd general safety:\n__pycache__/\n.venv/\n\nIf you accidentally commit a secret, it lives in git history FOREVER.\nYou must rotate (change) exposed credentials immediately.",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 1,
+      "tags": ["gitignore", "secrets"]
+    },
+    {
+      "id": "c-sec-08",
+      "front": "What common mistake do developers make with logging?",
+      "back": "Logging sensitive data.\n\n# BAD:\nlogger.info(\"Login: user=%s, password=%s\", username, password)\n\n# GOOD:\nlogger.info(\"Login attempt: user=%s\", username)\n\nNever log passwords, API keys, tokens, or personal data.\nLogs are often stored in plain text and shared across teams.",
+      "concept_ref": "concepts/security-basics.md",
+      "difficulty": 2,
+      "tags": ["logging", "sensitive-data"]
+    }
+  ]
+}

@@ -35,7 +35,7 @@ def check_length(password: str) -> int:
     return 0
 
 
-def check_character_variety(password: str) -> dict:
+def check_character_variety(password: str) -> dict[str, bool]:
     """Check which character classes are present.
 
     Returns a dict of booleans so the caller can see exactly
@@ -73,7 +73,7 @@ def check_common(password: str) -> bool:
     return password.lower() in COMMON_PASSWORDS
 
 
-def score_password(password: str) -> dict:
+def score_password(password: str) -> dict[str, str | int | bool | dict[str, bool]]:
     """Calculate a full strength assessment for a password.
 
     Scoring:
@@ -112,7 +112,7 @@ def score_password(password: str) -> dict:
     }
 
 
-def process_file(path: Path) -> list[dict]:
+def process_file(path: Path) -> list[dict[str, str | int | bool | dict[str, bool]]]:
     """Read passwords from a file (one per line) and score each."""
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")

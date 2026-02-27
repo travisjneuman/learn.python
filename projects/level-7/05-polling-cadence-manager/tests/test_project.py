@@ -50,6 +50,7 @@ class TestSimulation:
         assert state.changes_detected == 0
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {"snapshots": ["a", "a", "b", "b"], "config": {"min_interval": 1}}
     inp = tmp_path / "config.json"

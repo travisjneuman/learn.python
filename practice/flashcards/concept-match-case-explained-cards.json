@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Match/Case Explained",
+  "description": "Structural pattern matching, pattern types, guards, and common pitfalls",
+  "cards": [
+    {
+      "id": "c-match-01",
+      "front": "What is match/case and when was it introduced?",
+      "back": "Structural pattern matching, introduced in Python 3.10.\nLike if/elif but designed for matching the shape and content of data.\n\nmatch command:\n    case \"quit\":\n        print(\"Goodbye!\")\n    case \"help\":\n        print(\"Help!\")\n    case _:\n        print(\"Unknown\")\n\nRequires Python 3.10+. On older versions, it is a SyntaxError.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 1,
+      "tags": ["match-case", "pattern-matching"]
+    },
+    {
+      "id": "c-match-02",
+      "front": "What does the _ wildcard pattern do?",
+      "back": "Matches anything — it is the default/else case.\n\nmatch value:\n    case 1: print(\"one\")\n    case 2: print(\"two\")\n    case _: print(\"something else\")\n\nWithout case _, if no pattern matches, nothing happens silently.\nAlways include case _ unless you intentionally want to skip unmatched values.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 1,
+      "tags": ["wildcard", "default"]
+    },
+    {
+      "id": "c-match-03",
+      "front": "How do capture patterns work in match/case?",
+      "back": "Bare variable names capture the matched value.\n\nmatch point:\n    case (0, 0):     print(\"Origin\")\n    case (x, 0):     print(f\"X-axis at {x}\")  # captures first element\n    case (0, y):     print(f\"Y-axis at {y}\")  # captures second element\n    case (x, y):     print(f\"Point ({x}, {y})\")\n\nCapture variables bind to the matched values for use in the case body.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 2,
+      "tags": ["capture", "patterns"]
+    },
+    {
+      "id": "c-match-04",
+      "front": "How do you match dictionaries with match/case?",
+      "back": "Use mapping patterns to match dictionary keys:\n\nmatch event:\n    case {\"type\": \"click\", \"x\": x, \"y\": y}:\n        print(f\"Click at ({x}, {y})\")\n    case {\"type\": \"keypress\", \"key\": key}:\n        print(f\"Key: {key}\")\n    case _:\n        print(\"Unknown event\")\n\nMatches on key names and captures values into variables.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 2,
+      "tags": ["mapping", "dicts"]
+    },
+    {
+      "id": "c-match-05",
+      "front": "What are OR patterns and guard clauses in match/case?",
+      "back": "OR pattern — match any of several options with |:\ncase \"active\" | \"enabled\" | \"on\":\n    return \"Running\"\n\nGuard clause — add conditions with if:\ncase n if n < 0:\n    return \"Negative\"\ncase n if n < 100:\n    return \"Normal\"\n\nThe guard is checked after the pattern matches.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 2,
+      "tags": ["OR-pattern", "guard"]
+    },
+    {
+      "id": "c-match-06",
+      "front": "What is the dangerous mistake with variable names in case patterns?",
+      "back": "Bare names are CAPTURE variables, not references to existing values.\n\nSTATUS_OK = 200\nmatch code:\n    case STATUS_OK:  # WRONG! Captures code into STATUS_OK\n        print(\"OK\")\n\n# This always matches because it captures any value!\n\n# FIX: use literals\n    case 200:\n        print(\"OK\")\n\nUse literal values or dotted names (e.g., HttpStatus.OK) in patterns.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 3,
+      "tags": ["capture", "gotcha"]
+    },
+    {
+      "id": "c-match-07",
+      "front": "How do sequence patterns with *rest work?",
+      "back": "Match lists/tuples by shape and capture the rest with *.\n\nmatch parts:\n    case [\"quit\"]:\n        return \"Exiting\"\n    case [\"greet\", name]:\n        return f\"Hello, {name}!\"\n    case [\"add\", *numbers]:\n        return sum(int(n) for n in numbers)\n    case []:\n        return \"Empty\"\n\n*numbers captures the remaining elements as a list.",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 2,
+      "tags": ["sequence", "star"]
+    },
+    {
+      "id": "c-match-08",
+      "front": "When should you use match/case vs if/elif?",
+      "back": "Good for match/case:\n- Parsing commands/messages with varying structure\n- Handling different shapes of data (API responses)\n- Replacing complex isinstance chains\n- State machines and event handling\n\nOverkill (use if/elif instead):\n- Simple value comparisons (if x == 1)\n- Only 2-3 branches\n- Python version < 3.10",
+      "concept_ref": "concepts/match-case-explained.md",
+      "difficulty": 2,
+      "tags": ["match-case", "when-to-use"]
+    }
+  ]
+}

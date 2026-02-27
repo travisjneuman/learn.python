@@ -7,7 +7,7 @@ Concepts: dictionaries for counting, sets for uniqueness, text input.
 """
 
 
-def count_line_occurrences(lines: list) -> dict:
+def count_line_occurrences(lines: list[str]) -> dict[str, int]:
     """Count how many times each line appears.
 
     WHY a dict? -- A dictionary maps each unique line (the key) to its
@@ -23,7 +23,7 @@ def count_line_occurrences(lines: list) -> dict:
     return counts
 
 
-def find_duplicates(lines: list) -> list:
+def find_duplicates(lines: list[str]) -> list[dict[str, str | int | list[int]]]:
     """Find lines that appear more than once and report details.
 
     Returns a list of dicts, each containing the duplicated text,
@@ -49,7 +49,7 @@ def find_duplicates(lines: list) -> list:
     return duplicates
 
 
-def build_report(lines: list) -> dict:
+def build_report(lines: list[str]) -> dict[str, int | list[dict[str, str | int | list[int]]]]:
     """Build a full report about duplicates in the input."""
     non_empty = [line for line in lines if line]
     duplicates = find_duplicates(non_empty)

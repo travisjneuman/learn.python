@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Context Managers Explained",
+  "description": "The with statement, __enter__/__exit__, contextlib, and real-world patterns",
+  "cards": [
+    {
+      "id": "c-ctx-01",
+      "front": "What is a context manager and why use it?",
+      "back": "Something that sets up a resource on enter and cleans it up on exit.\n\nwith open(\"data.txt\") as f:\n    content = f.read()\n# f.close() happens automatically, even if an error occurred\n\nGuarantees cleanup of files, database connections, locks, etc.",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 1,
+      "tags": ["context-manager", "with"]
+    },
+    {
+      "id": "c-ctx-02",
+      "front": "What are __enter__ and __exit__ methods?",
+      "back": "__enter__: called when entering the with block — returns the as variable\n__exit__: called when leaving — ALWAYS runs, even on error\n\nclass ManagedFile:\n    def __enter__(self):\n        self.file = open(self.filename)\n        return self.file\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        self.file.close()\n        return False  # do not suppress exceptions",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 2,
+      "tags": ["dunder", "protocol"]
+    },
+    {
+      "id": "c-ctx-03",
+      "front": "How does @contextmanager make writing context managers easier?",
+      "back": "from contextlib import contextmanager\n\n@contextmanager\ndef managed_file(name):\n    f = open(name)\n    try:\n        yield f       # value for the as variable\n    finally:\n        f.close()     # cleanup — always runs\n\nBefore yield = setup (__enter__)\nyield = the as value\nAfter yield = cleanup (__exit__)",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 2,
+      "tags": ["contextlib", "generator"]
+    },
+    {
+      "id": "c-ctx-04",
+      "front": "How do you use a context manager for database transactions?",
+      "back": "@contextmanager\ndef get_db(path):\n    conn = sqlite3.connect(path)\n    try:\n        yield conn\n        conn.commit()      # commit on success\n    except Exception:\n        conn.rollback()    # rollback on error\n        raise\n    finally:\n        conn.close()       # always close\n\nAutomatic commit/rollback/close with no chance of forgetting.",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 2,
+      "tags": ["database", "transactions"]
+    },
+    {
+      "id": "c-ctx-05",
+      "front": "What is contextlib.suppress and when do you use it?",
+      "back": "Silently catches specific exceptions.\n\nfrom contextlib import suppress\n\nwith suppress(FileNotFoundError):\n    os.remove(\"temp.txt\")\n# If file does not exist, no error\n\nCleaner than:\ntry:\n    os.remove(\"temp.txt\")\nexcept FileNotFoundError:\n    pass",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 2,
+      "tags": ["suppress", "contextlib"]
+    },
+    {
+      "id": "c-ctx-06",
+      "front": "Can you combine multiple context managers?",
+      "back": "Yes, several ways:\n\n# Nested:\nwith open(\"in.txt\") as src:\n    with open(\"out.txt\", \"w\") as dst:\n        dst.write(src.read())\n\n# Combined (one line):\nwith open(\"in.txt\") as src, open(\"out.txt\", \"w\") as dst:\n    dst.write(src.read())\n\n# Parenthesized (Python 3.10+):\nwith (\n    open(\"in.txt\") as src,\n    open(\"out.txt\", \"w\") as dst,\n):",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 2,
+      "tags": ["nesting", "combining"]
+    },
+    {
+      "id": "c-ctx-07",
+      "front": "What happens if __exit__ returns True?",
+      "back": "The exception is SUPPRESSED (swallowed silently). Almost always wrong.\n\ndef __exit__(self, exc_type, exc_val, exc_tb):\n    self.cleanup()\n    return True    # DANGER: swallows ALL exceptions!\n\nAlways return False unless you have a very specific reason to suppress.\nReturning False (or None) lets exceptions propagate normally.",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 3,
+      "tags": ["exception-suppression", "pitfall"]
+    },
+    {
+      "id": "c-ctx-08",
+      "front": "How do you create a timing context manager?",
+      "back": "@contextmanager\ndef timer(label):\n    start = time.time()\n    yield\n    elapsed = time.time() - start\n    print(f\"{label}: {elapsed:.2f}s\")\n\nwith timer(\"data processing\"):\n    total = sum(range(10_000_000))\n# Prints: data processing: 0.23s\n\nNote: yield with no value — the as variable is not needed.",
+      "concept_ref": "concepts/context-managers-explained.md",
+      "difficulty": 2,
+      "tags": ["timer", "example"]
+    }
+  ]
+}

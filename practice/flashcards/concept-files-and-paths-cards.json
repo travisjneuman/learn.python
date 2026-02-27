@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Files and Paths",
+  "description": "Reading/writing files, pathlib, file modes, relative vs absolute paths",
+  "cards": [
+    {
+      "id": "c-file-01",
+      "front": "What is the with statement and why use it for files?",
+      "back": "with guarantees the file is closed when the block ends, even if an error occurs.\n\nwith open(\"data.txt\") as f:\n    contents = f.read()\n# f is automatically closed here\n\nWithout with, you must manually call f.close() and risk forgetting.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "with"]
+    },
+    {
+      "id": "c-file-02",
+      "front": "What are the file modes \"r\", \"w\", and \"a\"?",
+      "back": "\"r\" — read (default). File must exist.\n\"w\" — write. Creates new file or OVERWRITES existing.\n\"a\" — append. Adds to end of existing file.\n\nwith open(\"out.txt\", \"w\") as f:\n    f.write(\"Hello!\")\n\nBe careful with \"w\" — it erases existing content!",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "modes"]
+    },
+    {
+      "id": "c-file-03",
+      "front": "What is pathlib and why is it better than string paths?",
+      "back": "pathlib provides an object-oriented API for file paths.\n\nfrom pathlib import Path\np = Path(\"data/sample.txt\")\np.exists()    # check if file exists\np.name        # \"sample.txt\"\np.stem        # \"sample\"\np.suffix      # \".txt\"\np.parent      # Path(\"data\")\np.read_text() # read entire file\n\nWorks cross-platform. No manual path string joining.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["pathlib", "paths"]
+    },
+    {
+      "id": "c-file-04",
+      "front": "What is the difference between relative and absolute paths?",
+      "back": "Absolute: full address from root\n  /Users/alice/projects/data.txt\n  C:\\Users\\alice\\projects\\data.txt\n\nRelative: address from current directory\n  data.txt\n  ../other_folder/file.txt\n\n.. means \"go up one folder.\"",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["paths", "relative", "absolute"]
+    },
+    {
+      "id": "c-file-05",
+      "front": "How do you read a file line by line?",
+      "back": "with open(\"data.txt\") as f:\n    for line in f:\n        line = line.strip()  # remove newline\n        print(line)\n\nThe for loop reads one line at a time — memory efficient.\nAlways .strip() to remove trailing newline characters.",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "reading"]
+    },
+    {
+      "id": "c-file-06",
+      "front": "What is a common Windows path mistake in Python?",
+      "back": "Backslash is an escape character. \\n becomes a newline.\n\n# WRONG:\npath = \"C:\\Users\\alice\\new_file.txt\"  # \\n is newline!\n\n# FIX 1: Escaped backslashes\npath = \"C:\\\\Users\\\\alice\\\\new_file.txt\"\n\n# FIX 2: Raw string\npath = r\"C:\\Users\\alice\\new_file.txt\"\n\n# FIX 3: Forward slashes (always work)\npath = Path(\"C:/Users/alice/new_file.txt\")",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 2,
+      "tags": ["windows", "paths", "escape"]
+    },
+    {
+      "id": "c-file-07",
+      "front": "What error do you get if a file does not exist and how do you fix it?",
+      "back": "FileNotFoundError if the file is not at the given path.\n\nFixes:\n1. Check the filename for typos\n2. Make sure you are in the right directory\n3. Use Path.exists() to check first:\n\nfrom pathlib import Path\nif Path(\"data.txt\").exists():\n    contents = Path(\"data.txt\").read_text()",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["errors", "files"]
+    },
+    {
+      "id": "c-file-08",
+      "front": "Why should you always strip() lines when reading a file?",
+      "back": "Each line from a file includes a trailing newline character (\\n).\n\nfor line in open(\"data.txt\"):\n    print(line)  # Double-spaced! Each line has \\n + print adds \\n\n\nFix:\n    print(line.strip())  # Removes leading/trailing whitespace and \\n",
+      "concept_ref": "concepts/files-and-paths.md",
+      "difficulty": 1,
+      "tags": ["files", "strip", "newlines"]
+    }
+  ]
+}

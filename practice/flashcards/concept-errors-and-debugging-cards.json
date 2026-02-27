@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Errors and Debugging",
+  "description": "Error types, reading tracebacks, debugging strategies, top beginner mistakes",
+  "cards": [
+    {
+      "id": "c-err-01",
+      "front": "How do you read a Python traceback?",
+      "back": "Read bottom to top:\n1. LAST LINE — error type and message (the answer)\n2. Line above — file, line number, and code that broke\n3. Higher lines — the call chain showing how you got there\n\nThe last line tells you WHAT happened.\nThe frames above tell you WHERE and HOW.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["traceback", "debugging"]
+    },
+    {
+      "id": "c-err-02",
+      "front": "What are the 5 most common Python error types for beginners?",
+      "back": "1. IndentationError — wrong spacing\n2. NameError — typo or undefined variable\n3. SyntaxError — missing colon, unmatched brackets\n4. TypeError — wrong type (e.g., str + int)\n5. ValueError — right type, wrong value (e.g., int(\"hello\"))\n\nLearning to recognize these saves hours.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["errors", "types"]
+    },
+    {
+      "id": "c-err-03",
+      "front": "What is the simplest debugging technique?",
+      "back": "Print debugging — add print() calls to see values.\n\ndata = load_file(\"input.txt\")\nprint(\"data is:\", data)\nprint(\"type is:\", type(data))\nprint(\"length is:\", len(data))\n\nPrint the value, its type, and its length to understand what you are working with.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["debugging", "print"]
+    },
+    {
+      "id": "c-err-04",
+      "front": "What does TypeError: can only concatenate str (not 'int') to str mean?",
+      "back": "You tried to add a string and an integer with +.\n\nage = 25\n\"I am \" + age  # TypeError!\n\nFixes:\n1. str(age): \"I am \" + str(25)\n2. f-string: f\"I am {age}\" (recommended)\n3. Comma: print(\"I am\", age)",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["TypeError", "strings"]
+    },
+    {
+      "id": "c-err-05",
+      "front": "What does SyntaxError: expected ':' mean?",
+      "back": "You forgot the colon at the end of an if, for, while, or def line.\n\n# WRONG:\nif x > 5\n    print(\"big\")\n\n# FIXED:\nif x > 5:\n    print(\"big\")\n\nThe colon tells Python that an indented block follows.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["SyntaxError", "colon"]
+    },
+    {
+      "id": "c-err-06",
+      "front": "What does NameError: name 'x' is not defined mean?",
+      "back": "Python does not recognize the name. Common causes:\n1. Typo: mesage instead of message\n2. Used before defined: print(x) before x = 5\n3. Forgot an import: using math.sqrt without import math\n\nPython is case-sensitive: name, Name, and NAME are all different.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["NameError", "typos"]
+    },
+    {
+      "id": "c-err-07",
+      "front": "What is a 5-step debugging strategy?",
+      "back": "1. Read the error message — it tells you what happened\n2. Look at the line number — go to that line\n3. Check spelling — typos cause NameError\n4. Print things — add print() before the error line\n5. Simplify — remove code until you find the smallest version that breaks",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 2,
+      "tags": ["debugging", "strategy"]
+    },
+    {
+      "id": "c-err-08",
+      "front": "What does IndentationError mean and how do you fix it?",
+      "back": "Code inside if/for/while/def is not properly indented.\n\n# WRONG:\nif True:\nprint(\"hello\")    # Not indented!\n\n# FIXED:\nif True:\n    print(\"hello\")  # 4 spaces\n\nAlways use 4 spaces (not tabs). Set your editor to insert spaces when you press Tab.",
+      "concept_ref": "concepts/errors-and-debugging.md",
+      "difficulty": 1,
+      "tags": ["IndentationError", "spacing"]
+    }
+  ]
+}

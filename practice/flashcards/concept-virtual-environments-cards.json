@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Virtual Environments",
+  "description": "Why venvs matter, creating/activating them, installing packages, and pip freeze",
+  "cards": [
+    {
+      "id": "c-venv-01",
+      "front": "Why do you need virtual environments?",
+      "back": "To isolate packages per project. Without them:\n\nProject A needs requests 2.28\nProject B needs requests 2.31\nInstalling one breaks the other!\n\nWith virtual environments, each project gets its own private set of packages.",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 1,
+      "tags": ["venv", "isolation"]
+    },
+    {
+      "id": "c-venv-02",
+      "front": "How do you create and activate a virtual environment?",
+      "back": "python -m venv .venv   # create\n\n# Activate:\n# macOS/Linux: source .venv/bin/activate\n# Windows CMD: .venv\\Scripts\\activate\n# Windows PowerShell: .venv\\Scripts\\Activate.ps1\n# Git Bash: source .venv/Scripts/activate\n\nYou will see (.venv) in your terminal prompt when active.",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 1,
+      "tags": ["venv", "activation"]
+    },
+    {
+      "id": "c-venv-03",
+      "front": "How do you install packages and save dependencies?",
+      "back": "pip install requests flask pytest  # install packages\npip freeze > requirements.txt     # save to file\npip install -r requirements.txt   # restore from file\n\nrequirements.txt locks exact versions so others get the same packages.",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 1,
+      "tags": ["pip", "requirements"]
+    },
+    {
+      "id": "c-venv-04",
+      "front": "What happens if you forget to activate the virtual environment?",
+      "back": "You use the system Python instead of the project's Python.\n\npip install requests  # installs to system, not .venv!\npython script.py      # might use wrong Python version!\n\nAlways check for (.venv) in your prompt.\nOr check: which python (macOS/Linux) or where python (Windows).",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 2,
+      "tags": ["activation", "mistakes"]
+    },
+    {
+      "id": "c-venv-05",
+      "front": "Should you commit .venv/ to git?",
+      "back": "NEVER. Add .venv/ to .gitignore.\n\n.venv/ contains platform-specific binaries that do not work on other machines.\n\nInstead, commit requirements.txt so others can recreate the environment:\n\npython -m venv .venv\nsource .venv/bin/activate\npip install -r requirements.txt",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 1,
+      "tags": ["gitignore", "venv"]
+    },
+    {
+      "id": "c-venv-06",
+      "front": "How do you deactivate a virtual environment?",
+      "back": "Simply type: deactivate\n\nThe (.venv) prefix disappears from your prompt.\nYou are back to using system Python.\n\nYou do not need to deactivate before closing the terminal.\nDeactivate when switching between projects.",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 1,
+      "tags": ["deactivate", "venv"]
+    },
+    {
+      "id": "c-venv-07",
+      "front": "What is the difference between pip and uv for virtual environments?",
+      "back": "Traditional:\npython -m venv .venv   # create\npip install X          # install\npip freeze             # list packages\n\nModern (uv):\nuv venv                # create (faster)\nuv pip install X       # install (10-100x faster)\nuv pip freeze          # list packages\n\nSame workflow, just replace commands. Both use .venv/.",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 2,
+      "tags": ["uv", "pip", "comparison"]
+    },
+    {
+      "id": "c-venv-08",
+      "front": "What is the standard name and location for a virtual environment?",
+      "back": ".venv in the project root directory.\n\nmy_project/\n    .venv/         # virtual environment (gitignored)\n    requirements.txt\n    main.py\n\nThe dot prefix makes it hidden on macOS/Linux.\nAlternative name: venv (without the dot). Both work.",
+      "concept_ref": "concepts/virtual-environments.md",
+      "difficulty": 1,
+      "tags": ["naming", "location"]
+    }
+  ]
+}

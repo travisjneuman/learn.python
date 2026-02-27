@@ -98,6 +98,143 @@ if True:
     print("hello") # Fixed — 4 spaces of indentation
 ```
 
+## Top 5 beginner mistakes
+
+These five mistakes account for the vast majority of errors new programmers hit. Learning to spot them quickly will save you hours of frustration.
+
+### 1. IndentationError — your code is not lined up
+
+Python uses indentation (spaces at the start of a line) to know which code belongs inside an `if`, `for`, or function. If the spacing is off, Python refuses to run your code at all.
+
+**The error message:**
+```
+IndentationError: expected an indented block after 'if' statement on line 1
+```
+
+**Broken code:**
+```python
+if temperature > 100:
+print("Too hot!")        # Not indented — Python does not know this belongs to the if
+```
+
+**The fix:**
+```python
+if temperature > 100:
+    print("Too hot!")    # 4 spaces in — now Python knows this is inside the if
+```
+
+**Why it happens:** Unlike most languages, Python does not use curly braces `{}` to group code. It uses indentation instead. Every line inside an `if`, `for`, `while`, or `def` must be indented by the same amount (use 4 spaces — not tabs).
+
+---
+
+### 2. NameError — Python does not recognize a name
+
+This usually means you misspelled a variable name, or you tried to use a variable before creating it.
+
+**The error message:**
+```
+NameError: name 'mesage' is not defined
+```
+
+**Broken code:**
+```python
+message = "Hello there"
+print(mesage)            # Typo! "mesage" instead of "message"
+```
+
+**The fix:**
+```python
+message = "Hello there"
+print(message)           # Spelling matches — Python finds the variable
+```
+
+**Why it happens:** Python is case-sensitive and spelling-sensitive. `message`, `Message`, and `mesage` are three completely different names. Python only knows about names you have already created on a previous line.
+
+---
+
+### 3. SyntaxError — missing colon after if/for/while/def
+
+Every `if`, `elif`, `else`, `for`, `while`, and `def` line must end with a colon `:`. Forget it, and Python cannot understand your code.
+
+**The error message:**
+```
+SyntaxError: expected ':'
+```
+
+**Broken code:**
+```python
+for name in guest_list
+    print(name)
+```
+
+**The fix:**
+```python
+for name in guest_list:   # Colon at the end
+    print(name)
+```
+
+**Why it happens:** The colon tells Python "the next indented block belongs to this statement." Without it, Python sees an incomplete line and does not know what you meant. This is easy to forget because colons do not exist in everyday writing the same way.
+
+---
+
+### 4. SyntaxError — mismatched parentheses or brackets
+
+Every opening `(`, `[`, or `{` needs a matching closing `)`, `]`, or `}`. Miss one and Python gets confused, sometimes pointing to a line that looks perfectly fine.
+
+**The error message:**
+```
+SyntaxError: unexpected EOF while parsing
+```
+
+**Broken code:**
+```python
+scores = [90, 85, 77, 92
+print(scores)            # Python is still looking for the closing ]
+```
+
+**The fix:**
+```python
+scores = [90, 85, 77, 92]
+print(scores)            # Now the list is properly closed
+```
+
+**Why it happens:** Python reads your code from top to bottom. When it sees `[`, it expects everything until `]` to be part of the list. Without the closing bracket, it keeps reading into the next line and gets confused. The error message often points to a different line than where the real problem is, so check the lines *above* where Python complains.
+
+**Tip:** Most code editors highlight matching brackets. If you place your cursor next to a `(` and its partner does not light up, that is your clue.
+
+---
+
+### 5. TypeError — forgetting to convert types
+
+Python will not automatically turn a number into a string or vice versa. If you try to combine them, you get a `TypeError`.
+
+**The error message:**
+```
+TypeError: can only concatenate str (not "int") to str
+```
+
+**Broken code:**
+```python
+age = 25
+print("I am " + age + " years old")   # Cannot glue a string and an integer
+```
+
+**The fix (three ways):**
+```python
+age = 25
+
+# Option 1 — convert with str()
+print("I am " + str(age) + " years old")
+
+# Option 2 — f-string (recommended, cleanest)
+print(f"I am {age} years old")
+
+# Option 3 — comma in print (adds spaces automatically)
+print("I am", age, "years old")
+```
+
+**Why it happens:** Python keeps types strict on purpose. A number `25` and the text `"25"` look the same to us, but Python stores them differently. Requiring you to convert explicitly prevents subtle bugs — for example, `"2" + "5"` gives `"25"` (text joined together), while `2 + 5` gives `7` (math). Python wants you to be clear about which one you mean.
+
 ## Practice
 
 - [Level 00 / 08 Making Decisions](../projects/level-00-absolute-beginner/08-making-decisions/)

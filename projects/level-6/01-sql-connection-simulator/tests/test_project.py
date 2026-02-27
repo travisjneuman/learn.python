@@ -119,6 +119,7 @@ def test_run_demo_queries_inserts_all_labels(pool: ConnectionPool) -> None:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     input_file = tmp_path / "input.txt"
     input_file.write_text("event_a\nevent_b\n", encoding="utf-8")

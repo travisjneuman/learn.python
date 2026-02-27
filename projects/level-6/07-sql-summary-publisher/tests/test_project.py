@@ -83,6 +83,7 @@ class TestFormatText:
         assert "$100.00" in text
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     inp = tmp_path / "sales.json"
     inp.write_text(json.dumps(SAMPLE_SALES), encoding="utf-8")

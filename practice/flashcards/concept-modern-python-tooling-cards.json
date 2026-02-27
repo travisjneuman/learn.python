@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Modern Python Tooling",
+  "description": "uv, ruff, pyproject.toml, modern toolchain, Python 3.11-3.14 highlights",
+  "cards": [
+    {
+      "id": "c-tool-01",
+      "front": "What is uv and what does it replace?",
+      "back": "uv is a fast Python package manager written in Rust.\nIt replaces:\n- pip (package install)\n- python -m venv (virtual environments)\n- pyenv (Python version management)\n- pip-tools (lock files)\n\nuv venv          # create environment\nuv pip install X  # install packages\n\n10-100x faster than pip.",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 1,
+      "tags": ["uv", "package-manager"]
+    },
+    {
+      "id": "c-tool-02",
+      "front": "What is ruff and what does it replace?",
+      "back": "ruff is a fast linter and formatter written in Rust.\nIt replaces:\n- flake8 (linting) -> ruff check\n- black (formatting) -> ruff format\n- isort (import sorting) -> ruff check --select I\n\nruff check .        # find problems\nruff check . --fix  # auto-fix\nruff format .       # format code",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 1,
+      "tags": ["ruff", "linter", "formatter"]
+    },
+    {
+      "id": "c-tool-03",
+      "front": "What is pyproject.toml?",
+      "back": "The modern Python config file. Replaces setup.py, setup.cfg, and scattered config files.\n\n[project]\nname = \"my-project\"\nversion = \"0.1.0\"\ndependencies = [\"requests>=2.31\"]\n\n[tool.ruff]\nline-length = 88\n\n[tool.pytest.ini_options]\ntestpaths = [\"tests\"]\n\nOne file, all configuration.",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 2,
+      "tags": ["pyproject", "config"]
+    },
+    {
+      "id": "c-tool-04",
+      "front": "What improved in Python 3.11 error messages?",
+      "back": "Python 3.11 points to the EXACT expression that caused the error.\n\nresult = data[\"users\"][0][\"email\"]\n                          ^^^^^^^\nKeyError: 'email'\n\nBefore 3.11: only the line number. Now Python underlines the exact problematic part.",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 1,
+      "tags": ["python-3.11", "errors"]
+    },
+    {
+      "id": "c-tool-05",
+      "front": "What does f\"{x=}\" do in an f-string?",
+      "back": "Prints both the variable name and its value. Great for debugging.\n\nx = 42\nname = \"Alice\"\nitems = [1, 2, 3]\n\nprint(f\"{x=}\")            # x=42\nprint(f\"{name=}\")         # name='Alice'\nprint(f\"{len(items)=}\")   # len(items)=3\n\nAvailable since Python 3.8.",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 1,
+      "tags": ["f-string", "debugging"]
+    },
+    {
+      "id": "c-tool-06",
+      "front": "What is the old-to-new Python toolchain mapping?",
+      "back": "pip -> uv pip\npython -m venv -> uv venv\npyenv -> uv python\npip-tools -> uv lock\nflake8 -> ruff check\nblack -> ruff format\nisort -> ruff check --select I\nsetup.py -> pyproject.toml\n\nYou do not need to adopt everything at once. Start with uv + ruff.",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 2,
+      "tags": ["toolchain", "migration"]
+    },
+    {
+      "id": "c-tool-07",
+      "front": "What is tomllib and when was it added?",
+      "back": "A built-in TOML parser added in Python 3.11.\n\nimport tomllib\n\nwith open(\"pyproject.toml\", \"rb\") as f:\n    config = tomllib.load(f)\n\nprint(config[\"project\"][\"name\"])\n\nNo third-party library needed. Note: read in binary mode (\"rb\").",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 2,
+      "tags": ["tomllib", "python-3.11"]
+    },
+    {
+      "id": "c-tool-08",
+      "front": "What common mistake happens when mixing pip and uv?",
+      "back": "Both write to the same .venv/, which causes confusion about what is installed.\n\nPick one and stick with it for each project.\n\nAlso: always check for (.venv) in your terminal prompt.\nIf it is missing, you are using system Python, not your virtual environment.",
+      "concept_ref": "concepts/modern-python-tooling.md",
+      "difficulty": 2,
+      "tags": ["uv", "pip", "mistakes"]
+    }
+  ]
+}

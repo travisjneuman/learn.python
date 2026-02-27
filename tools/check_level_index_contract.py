@@ -63,10 +63,17 @@ def check() -> bool:
             content,
             re.MULTILINE,
         )
-        if len(project_links) != 15:
+        # Count actual project directories to validate against
+        actual_dirs = sorted(
+            d.name
+            for d in (PROJECTS_DIR / f"level-{level}").iterdir()
+            if d.is_dir() and re.match(r"\d{2}-", d.name)
+        )
+        expected_count = len(actual_dirs)
+        if len(project_links) != expected_count:
             print(
                 f"bad project link count in projects/level-{level}/README.md: "
-                f"expected 15, got {len(project_links)}"
+                f"expected {expected_count}, got {len(project_links)}"
             )
             fail = True
 

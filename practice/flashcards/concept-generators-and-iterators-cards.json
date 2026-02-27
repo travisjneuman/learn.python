@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Generators and Iterators",
+  "description": "The iterator protocol, yield, generator expressions, pipelines, yield from, and send()",
+  "cards": [
+    {
+      "id": "c-gen-01",
+      "front": "What is the iterator protocol?",
+      "back": "An iterator implements two methods:\n__iter__() — returns the iterator object itself\n__next__() — returns the next value, or raises StopIteration\n\nnumbers = [10, 20, 30]\nit = iter(numbers)\nnext(it)    # 10\nnext(it)    # 20\nnext(it)    # 30\nnext(it)    # StopIteration!\n\nA for loop does this behind the scenes: calls iter(), then next() repeatedly.",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 1,
+      "tags": ["iterator", "protocol"]
+    },
+    {
+      "id": "c-gen-02",
+      "front": "Why do iterators matter for memory efficiency?",
+      "back": "import sys\n\n# List: stores ALL values at once\nbig_list = [i for i in range(1_000_000)]\nsys.getsizeof(big_list)    # ~8 MB\n\n# Generator: computes one value at a time\nbig_gen = (i for i in range(1_000_000))\nsys.getsizeof(big_gen)     # ~200 bytes\n\nIterators are essential for large files, streaming data, and infinite sequences.",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 1,
+      "tags": ["memory", "efficiency"]
+    },
+    {
+      "id": "c-gen-03",
+      "front": "What is a generator function and how does yield work?",
+      "back": "A generator function uses yield instead of return. It pauses and resumes.\n\ndef count_up(n):\n    i = 1\n    while i <= n:\n        yield i     # Pause here, produce a value\n        i += 1      # Resume here on next call\n\nfor num in count_up(3):\n    print(num)      # 1, 2, 3\n\nCalling the function returns a generator object — nothing runs until you iterate.",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 1,
+      "tags": ["yield", "generator-function"]
+    },
+    {
+      "id": "c-gen-04",
+      "front": "What is the difference between a list comprehension and a generator expression?",
+      "back": "List comprehension — builds entire list in memory:\nsquares_list = [x**2 for x in range(1_000_000)]   # ~8 MB\n\nGenerator expression — computes one at a time:\nsquares_gen = (x**2 for x in range(1_000_000))     # ~100 bytes\n\nOnly difference in syntax: [] vs ()\n\nUse generators when you iterate once and don't need indexing.\nCommon pattern: sum(x**2 for x in range(100))",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 1,
+      "tags": ["comprehension", "generator-expression"]
+    },
+    {
+      "id": "c-gen-05",
+      "front": "How do you build a generator pipeline?",
+      "back": "Chain generators together — each pulls one value at a time:\n\ndef read_lines(path):\n    with open(path) as f:\n        for line in f:\n            yield line.strip()\n\ndef filter_errors(lines):\n    for line in lines:\n        if \"ERROR\" in line:\n            yield line\n\ndef extract_timestamp(lines):\n    for line in lines:\n        yield line.split(\" \")[0]\n\nlines = read_lines(\"server.log\")\nerrors = filter_errors(lines)\ntimestamps = extract_timestamp(errors)\n\nThe file is never fully loaded into memory.",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 2,
+      "tags": ["pipeline", "chaining"]
+    },
+    {
+      "id": "c-gen-06",
+      "front": "What does 'yield from' do?",
+      "back": "Delegates to another generator — yields all its values:\n\ndef count_up(n):\n    for i in range(1, n + 1):\n        yield i\n\ndef count_down(n):\n    for i in range(n, 0, -1):\n        yield i\n\ndef up_and_down(n):\n    yield from count_up(n)\n    yield from count_down(n)\n\nlist(up_and_down(3))    # [1, 2, 3, 3, 2, 1]\n\nWithout yield from, you'd need: for x in count_up(n): yield x",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 2,
+      "tags": ["yield-from", "delegation"]
+    },
+    {
+      "id": "c-gen-07",
+      "front": "What happens if you try to use an iterator twice?",
+      "back": "Iterators are exhausted after one pass — you get nothing the second time.\n\ngen = (x**2 for x in range(5))\nprint(list(gen))    # [0, 1, 4, 9, 16]\nprint(list(gen))    # [] — empty! Already exhausted.\n\nIf you need multiple passes, either:\n- Use a list instead\n- Recreate the generator\n\nAlso: you cannot index a generator.\ngen[3]  # TypeError: not subscriptable\nUse itertools.islice instead.",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 2,
+      "tags": ["exhaustion", "mistakes"]
+    },
+    {
+      "id": "c-gen-08",
+      "front": "What does send() do with generators?",
+      "back": "Generators can receive values, not just produce them.\n\ndef running_average():\n    total = 0\n    count = 0\n    average = None\n    while True:\n        value = yield average    # Receive value, send back average\n        total += value\n        count += 1\n        average = total / count\n\navg = running_average()\nnext(avg)              # Prime the generator\navg.send(10)           # 10.0\navg.send(20)           # 15.0\navg.send(30)           # 20.0\n\nThis is advanced — it powers frameworks like asyncio under the hood.",
+      "concept_ref": "concepts/generators-and-iterators.md",
+      "difficulty": 3,
+      "tags": ["send", "two-way"]
+    }
+  ]
+}

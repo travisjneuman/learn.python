@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Collections: Lists, Dicts, Sets",
+  "description": "Lists, dictionaries, sets, tuples, when to use each, and set operations",
+  "cards": [
+    {
+      "id": "c-coll-01",
+      "front": "What are the 4 main collection types in Python?",
+      "back": "List  [1, 2, 3]  — ordered, changeable, allows duplicates\nDict  {\"a\": 1}   — key-value pairs, ordered (3.7+), changeable\nSet   {1, 2, 3}  — unordered, no duplicates\nTuple (1, 2, 3)  — ordered, unchangeable\n\nUse the right one for the job.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["collections", "overview"]
+    },
+    {
+      "id": "c-coll-02",
+      "front": "How do set operations work? What are |, &, and -?",
+      "back": "| (union) — combine all items from both sets\n& (intersection) — only items in both sets\n- (difference) — items in first but not second\n\na = {1, 2, 3}\nb = {2, 3, 4}\na | b  # {1, 2, 3, 4}\na & b  # {2, 3}\na - b  # {1}",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["sets", "operations"]
+    },
+    {
+      "id": "c-coll-03",
+      "front": "What is the difference between {} and set()?",
+      "back": "Empty {} creates a dict, NOT a set.\n\nempty_dict = {}     # dict\nempty_set = set()   # set\n\nNon-empty sets use {}: colors = {\"red\", \"blue\"}\nBut empty set must be set() since {} is already taken by dict.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["sets", "dicts", "syntax"]
+    },
+    {
+      "id": "c-coll-04",
+      "front": "How do you safely access a dictionary key that might not exist?",
+      "back": "Use .get() instead of direct bracket access.\n\nperson = {\"name\": \"Alice\"}\n\nperson[\"email\"]        # KeyError!\nperson.get(\"email\")    # None (no error)\nperson.get(\"email\", \"N/A\")  # \"N/A\" (default value)\n\nOr check first: if \"email\" in person:",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["dicts", "safe-access"]
+    },
+    {
+      "id": "c-coll-05",
+      "front": "When should you use a tuple instead of a list?",
+      "back": "Use tuples for fixed groups of values that should not change.\n\npoint = (3, 5)       # x, y coordinate\nrgb = (255, 0, 128)  # color values\n\nTuples are immutable — cannot be modified after creation.\nThis makes them safe as dictionary keys and set members.\nLists are for collections that grow, shrink, or change.",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["tuples", "immutable"]
+    },
+    {
+      "id": "c-coll-06",
+      "front": "How do you add and access items in a list?",
+      "back": "fruits = [\"apple\", \"banana\"]\nfruits.append(\"cherry\")    # add to end\nfruits[0]                  # \"apple\" (first item)\nfruits[-1]                 # \"cherry\" (last item)\nlen(fruits)                # 3\n\"banana\" in fruits         # True",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 1,
+      "tags": ["lists", "methods"]
+    },
+    {
+      "id": "c-coll-07",
+      "front": "Why should you not modify a list while iterating over it?",
+      "back": "Removing items during iteration causes skipped elements.\n\n# WRONG — unpredictable:\nfor item in items:\n    items.remove(item)\n\n# RIGHT — build a new list:\nitems = [x for x in items if x != \"remove_me\"]\n\nOr iterate over a copy: for item in items[:]:",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["lists", "iteration"]
+    },
+    {
+      "id": "c-coll-08",
+      "front": "When should you use a set?",
+      "back": "When you need unique values or fast membership testing.\n\nids = {101, 102, 103, 101}  # duplicates removed: {101, 102, 103}\n\n103 in ids  # True — O(1) lookup, very fast\n103 in [101, 102, 103]  # True but slower — O(n)\n\nAlso great for comparing groups (union, intersection, difference).",
+      "concept_ref": "concepts/collections-explained.md",
+      "difficulty": 2,
+      "tags": ["sets", "performance"]
+    }
+  ]
+}

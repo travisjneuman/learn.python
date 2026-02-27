@@ -71,6 +71,7 @@ class TestFlagManager:
         assert result["b"] is False
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "flags": [

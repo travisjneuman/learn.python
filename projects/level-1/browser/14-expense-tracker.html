@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Expense Tracker — Level 1 Browser Exercise</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 260px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container" role="main">
+  <div class="header">
+    <h1>Basic Expense Tracker</h1>
+    <nav class="nav-links" role="navigation" aria-label="Exercise navigation">
+      <a href="09-json-settings.html">&larr; Prev</a>
+      <a href="../../../browser/index.html">All Exercises</a>
+      <span style="color: var(--text-dim);">Last exercise</span>
+    </nav>
+  </div>
+
+  <div class="description" id="description">Level 1 / Project 14 — Basic Expense Tracker
+
+Parse expense records, group by category, compute totals, and find the biggest spenders.
+
+Browser adaptation: Instead of reading a CSV file, you will work with a list of
+expense dicts directly. The real project uses csv.DictReader, but here we provide
+the data as Python dicts so you can focus on the aggregation logic.
+
+1. parse_expense(row)
+   - row is a dict: {"date": "...", "category": "...", "amount": "...", "description": "..."}
+   - Validate that all 4 required fields exist and are non-empty
+   - Convert amount to float; reject negative amounts (raise ValueError)
+   - Normalise category to lowercase
+   - Return: {"date": str, "category": str (lowercase), "amount": float, "description": str}
+
+2. total_by_category(expenses)
+   - Sum amounts per category
+   - Return a dict: {"food": 28.50, "transport": 35.00, ...}
+
+3. overall_stats(expenses)
+   - Compute total, average, min, max, and count across all expenses
+   - Return: {"total": float, "average": float, "min": float, "max": float, "count": int}
+   - Empty list returns: {"total": 0.0, "average": 0.0, "min": 0.0, "max": 0.0, "count": 0}
+
+4. top_expenses(expenses, n=3)
+   - Return the N largest expenses sorted by amount (descending)
+
+Examples:
+  parse_expense({"date": "2024-01-15", "category": "Food", "amount": "12.50", "description": "Lunch"})
+  -> {"date": "2024-01-15", "category": "food", "amount": 12.5, "description": "Lunch"}
+
+  total_by_category([{"category": "food", "amount": 10}, {"category": "food", "amount": 8}])
+  -> {"food": 18.0}</div>
+
+  <div class="editor-wrapper" aria-label="Python code editor">
+    <textarea id="editor" aria-label="Python code editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var originalCode = 'def parse_expense(row):\n    """Parse a single expense row dict into a structured record.\n\n    Required fields: date, category, amount, description.\n    - All fields must be non-empty strings.\n    - amount must convert to a non-negative float.\n    - category is normalised to lowercase.\n    Raise ValueError for missing fields or negative amounts.\n    """\n    required = ["date", "category", "amount", "description"]\n    for key in required:\n        if key not in row or not row[key].strip():\n            raise ValueError(f"Missing required field: {key}")\n\n    amount = float(row["amount"])\n    # TODO: reject negative amounts\n\n    return {\n        "date": row["date"].strip(),\n        "category": row["category"].strip().lower(),\n        "amount": round(amount, 2),\n        "description": row["description"].strip(),\n    }\n\n\ndef total_by_category(expenses):\n    """Sum expenses per category.\n\n    Return a dict mapping category name -> total amount.\n    """\n    totals = {}\n    # TODO: loop through expenses, accumulate totals per category\n    # Hint: use dict.get(key, 0) to handle missing keys\n    return totals\n\n\ndef overall_stats(expenses):\n    """Compute total, average, min, max across all expenses.\n\n    Return a dict with: total, average, min, max, count.\n    Empty list returns all zeros.\n    """\n    if not expenses:\n        return {"total": 0.0, "average": 0.0, "min": 0.0, "max": 0.0, "count": 0}\n\n    amounts = [exp["amount"] for exp in expenses]\n    # TODO: compute and return the stats dict\n    pass\n\n\ndef top_expenses(expenses, n=3):\n    """Return the N largest expenses, sorted by amount descending.\n\n    Hint: use sorted() with key=lambda and reverse=True.\n    """\n    # Your code here\n    pass\n\n\n# --- Try it out ---\n# Sample expense data (simulating what csv.DictReader would produce).\nraw_rows = [\n    {"date": "2024-01-15", "category": "Food", "amount": "12.50", "description": "Lunch at cafe"},\n    {"date": "2024-01-16", "category": "Transport", "amount": "35.00", "description": "Monthly bus pass"},\n    {"date": "2024-01-17", "category": "Food", "amount": "8.75", "description": "Groceries"},\n    {"date": "2024-01-18", "category": "Entertainment", "amount": "15.00", "description": "Movie ticket"},\n    {"date": "2024-01-19", "category": "Food", "amount": "22.00", "description": "Dinner out"},\n    {"date": "2024-01-20", "category": "Transport", "amount": "5.50", "description": "Taxi ride"},\n]\n\n# Parse all rows.\nexpenses = [parse_expense(row) for row in raw_rows]\n\n# Category totals.\ncat_totals = total_by_category(expenses)\nprint("=== Expense Report ===\\n")\nprint("  By Category:")\nfor cat, total in sorted(cat_totals.items(), key=lambda x: x[1], reverse=True):\n    print(f"    {cat:<20} ${total:>10.2f}")\n\n# Overall stats.\nstats = overall_stats(expenses)\nprint(f"\\n  Total:   ${stats[\'total\']:>10.2f}")\nprint(f"  Average: ${stats[\'average\']:>10.2f}")\nprint(f"  Min:     ${stats[\'min\']:>10.2f}")\nprint(f"  Max:     ${stats[\'max\']:>10.2f}")\nprint(f"  Count:   {stats[\'count\']}")\n\n# Top expenses.\ntop = top_expenses(expenses, n=3)\nprint(f"\\n  Top 3 Expenses:")\nfor exp in top:\n    print(f"    ${exp[\'amount\']:>8.2f}  {exp[\'category\']:<15} {exp[\'description\']}")\n';
+
+var checkCode_str = '# --- Tests ---\n# parse_expense\nrow1 = {"date": "2024-01-15", "category": "Food", "amount": "12.50", "description": "Lunch"}\nexp = parse_expense(row1)\nassert exp["category"] == "food", f"Category should be lowercase, got {exp[\'category\']}"\nassert exp["amount"] == 12.50, f"Amount should be 12.50, got {exp[\'amount\']}"\n\n# Missing field\ntry:\n    parse_expense({"date": "2024-01-15", "category": "", "amount": "10", "description": "X"})\n    assert False, "Should raise ValueError for empty category"\nexcept ValueError:\n    pass\n\n# Negative amount\ntry:\n    parse_expense({"date": "2024-01-15", "category": "Food", "amount": "-5", "description": "Refund"})\n    assert False, "Should raise ValueError for negative amount"\nexcept ValueError:\n    pass\n\n# total_by_category\nexpenses_tc = [\n    {"category": "food", "amount": 10.0},\n    {"category": "transport", "amount": 5.0},\n    {"category": "food", "amount": 8.0},\n]\ntotals = total_by_category(expenses_tc)\nassert totals["food"] == 18.0, f"food total should be 18.0, got {totals.get(\'food\')}"\nassert totals["transport"] == 5.0, f"transport total should be 5.0"\n\n# overall_stats\nexpenses_os = [{"amount": 10.0}, {"amount": 20.0}, {"amount": 30.0}]\nstats = overall_stats(expenses_os)\nassert stats["total"] == 60.0, f"total should be 60.0, got {stats[\'total\']}"\nassert stats["average"] == 20.0, f"average should be 20.0"\nassert stats["min"] == 10.0, f"min should be 10.0"\nassert stats["max"] == 30.0, f"max should be 30.0"\nassert stats["count"] == 3\n\n# Empty list\nempty = overall_stats([])\nassert empty["total"] == 0.0, "Empty total should be 0.0"\nassert empty["count"] == 0, "Empty count should be 0"\n\n# top_expenses\nexpenses_te = [\n    {"amount": 5.0, "description": "small"},\n    {"amount": 50.0, "description": "big"},\n    {"amount": 25.0, "description": "medium"},\n]\ntop = top_expenses(expenses_te, n=2)\nassert len(top) == 2, f"Should return 2 items, got {len(top)}"\nassert top[0]["amount"] == 50.0, f"First should be 50.0, got {top[0][\'amount\']}"\nassert top[1]["amount"] == 25.0, f"Second should be 25.0"\n\nprint("All tests passed!")\n';
+
+var storageKey = 'learn-python-l1-browser-14';
+var cmEditor;
+
+function initEditor() {
+  cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+    mode: 'python', theme: 'dracula', lineNumbers: true,
+    indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+    extraKeys: {
+      'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+      'Ctrl-Enter': function() { runCode(); },
+      'Cmd-Enter': function() { runCode(); }
+    }
+  });
+
+  var savedCode = localStorage.getItem(storageKey);
+  if (savedCode !== null) { cmEditor.setValue(savedCode); }
+  else { cmEditor.setValue(originalCode); }
+
+  var saveTimer = null;
+  cmEditor.on('change', function() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function() {
+      localStorage.setItem(storageKey, cmEditor.getValue());
+    }, 500);
+  });
+}
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    pyodideInstance.runPython(code);
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkSolution() {
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + checkCode_str;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+initEditor();
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkSolution);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

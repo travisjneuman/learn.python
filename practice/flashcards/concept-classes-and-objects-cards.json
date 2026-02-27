@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Classes and Objects",
+  "description": "Classes, __init__, self, methods, dunder methods, inheritance, and when to use classes",
+  "cards": [
+    {
+      "id": "c-cls-01",
+      "front": "What is a class and what is an object?",
+      "back": "A class is a blueprint. An object is a thing created from that blueprint.\n\nclass Dog:\n    def __init__(self, name):\n        self.name = name\n\nrex = Dog(\"Rex\")    # rex is an object (instance)\nspot = Dog(\"Spot\")  # spot is another instance\n\nOne blueprint, unlimited objects.",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 1,
+      "tags": ["classes", "objects"]
+    },
+    {
+      "id": "c-cls-02",
+      "front": "What is self and why is it the first parameter of every method?",
+      "back": "self is the object itself. Python passes it automatically.\n\nmy_dog.learn_trick(\"sit\")\n# Python translates to: Dog.learn_trick(my_dog, \"sit\")\n# self = my_dog\n\nEvery method's first parameter must be self.\nYou never pass it explicitly — Python does it for you.",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["self", "methods"]
+    },
+    {
+      "id": "c-cls-03",
+      "front": "What is __init__ and when does it run?",
+      "back": "__init__ is the constructor. It runs when you create a new object.\n\nclass BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\nacc = BankAccount(\"Alice\", 100)  # __init__ runs here\n\nUse it to set up the initial state of the object.",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 1,
+      "tags": ["__init__", "constructor"]
+    },
+    {
+      "id": "c-cls-04",
+      "front": "What are dunder methods __str__, __repr__, and __eq__?",
+      "back": "__str__: called by print() and str() — human-readable\n__repr__: called in console and debugger — unambiguous\n__eq__: called by == operator\n\nclass Point:\n    def __str__(self): return f\"({self.x}, {self.y})\"\n    def __repr__(self): return f\"Point(x={self.x}, y={self.y})\"\n    def __eq__(self, other): return self.x == other.x and self.y == other.y",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["dunder", "special-methods"]
+    },
+    {
+      "id": "c-cls-05",
+      "front": "How does inheritance work?",
+      "back": "A child class inherits from a parent and can override methods.\n\nclass Animal:\n    def speak(self): return \"...\"\n\nclass Cat(Animal):\n    def speak(self): return \"Meow!\"\n\nclass Dog(Animal):\n    def speak(self): return \"Woof!\"\n\nCat and Dog inherit from Animal but customize speak().",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["inheritance", "override"]
+    },
+    {
+      "id": "c-cls-06",
+      "front": "What error do you get if you forget self in a method?",
+      "back": "TypeError: method takes 1 positional argument but 2 were given.\n\nclass Bad:\n    def greet(name):    # Missing self!\n        return f\"Hello {name}\"\n\nb = Bad()\nb.greet(\"Alice\")  # TypeError!\n\nPython passes the object as the first argument. Without self, \"Alice\" becomes the 2nd argument.",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["self", "errors"]
+    },
+    {
+      "id": "c-cls-07",
+      "front": "When should you use a class vs a plain function?",
+      "back": "Use a class when:\n- Data AND behavior belong together\n- You need multiple instances of the same thing\n- You want to organize related functions\n\nUse functions when:\n- You just need to do one thing\n- There is no state to manage\n- A dictionary would work fine for the data",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["when-to-use", "design"]
+    },
+    {
+      "id": "c-cls-08",
+      "front": "What is the mutable default argument bug in classes?",
+      "back": "A mutable default is shared between ALL instances.\n\n# WRONG:\nclass Bad:\n    def __init__(self, items=[]):\n        self.items = items  # same list for everyone!\n\n# RIGHT:\nclass Good:\n    def __init__(self, items=None):\n        self.items = items or []  # new list each time\n\nThis applies to lists, dicts, and sets as defaults.",
+      "concept_ref": "concepts/classes-and-objects.md",
+      "difficulty": 2,
+      "tags": ["mutable-default", "bug"]
+    }
+  ]
+}

@@ -26,7 +26,7 @@ DEFAULTS = {
 REQUIRED_KEYS = ["app_name", "port"]
 
 
-def load_json(path: Path) -> dict:
+def load_json(path: Path) -> dict[str, object]:
     """Load and parse a JSON file.
 
     WHY handle JSONDecodeError? -- If the file contains invalid JSON
@@ -40,10 +40,15 @@ def load_json(path: Path) -> dict:
     try:
         return json.loads(text)
     except json.JSONDecodeError as err:
-        raise ValueError(f"Invalid JSON in {path}: {err}")
+        raise ValueError(
+            f"Invalid JSON in {path} — "
+            f"problem on line {err.lineno}, position {err.colno}: {err.msg}\n"
+            f"  Hint: check for missing commas, extra commas, or unquoted keys "
+            f"near that location."
+        )
 
 
-def merge_settings(defaults: dict, overrides: dict) -> dict:
+def merge_settings(defaults: dict[str, object], overrides: dict[str, object]) -> dict[str, object]:
     """Merge overrides into defaults.
 
     WHY copy first? -- We do not want to modify the original defaults
@@ -55,7 +60,7 @@ def merge_settings(defaults: dict, overrides: dict) -> dict:
     return merged
 
 
-def validate_settings(settings: dict, required: list[str]) -> list[str]:
+def validate_settings(settings: dict[str, object], required: list[str]) -> list[str]:
     """Check that all required keys are present.
 
     Returns a list of missing key names (empty if all present).
@@ -67,7 +72,7 @@ def validate_settings(settings: dict, required: list[str]) -> list[str]:
     return missing
 
 
-def settings_diff(defaults: dict, settings: dict) -> list[str]:
+def settings_diff(defaults: dict[str, object], settings: dict[str, object]) -> list[str]:
     """Show which settings differ from defaults.
 
     WHY a diff? -- It helps the user see what they have customised

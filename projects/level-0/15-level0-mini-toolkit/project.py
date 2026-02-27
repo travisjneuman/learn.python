@@ -14,7 +14,7 @@ from pathlib import Path
 
 # --- Tool 1: Word Counter ---
 
-def count_words(text: str) -> dict:
+def count_words(text: str) -> dict[str, int]:
     """Count words, lines, and characters in text.
 
     WHY return a dict? -- Bundling results in a dict makes the
@@ -31,7 +31,7 @@ def count_words(text: str) -> dict:
 
 # --- Tool 2: Duplicate Finder ---
 
-def find_duplicates(lines: list[str]) -> list[dict]:
+def find_duplicates(lines: list[str]) -> list[dict[str, str | int]]:
     """Find lines that appear more than once.
 
     WHY track counts with a dict? -- A dictionary lets us count
@@ -76,7 +76,7 @@ def clean_string(text: str) -> str:
 
 # --- Toolkit dispatcher ---
 
-def run_tool(tool_name: str, text: str) -> dict:
+def run_tool(tool_name: str, text: str) -> dict[str, object]:
     """Run one of the three tools and return results.
 
     WHY a dispatcher? -- A single function that routes to the right
@@ -100,7 +100,7 @@ def run_tool(tool_name: str, text: str) -> dict:
         return {"tool": tool_name, "error": f"Unknown tool: {tool_name}"}
 
 
-def run_all_tools(text: str) -> dict:
+def run_all_tools(text: str) -> dict[str, object]:
     """Run all three tools on the same text and collect results.
 
     WHY run all? -- The default mode gives a complete analysis,

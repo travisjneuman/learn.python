@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Comprehensions Explained",
+  "description": "List, dict, set comprehensions, generator expressions, filtering, and walrus operator",
+  "cards": [
+    {
+      "id": "c-comp-01",
+      "front": "What is a list comprehension and what is the pattern?",
+      "back": "A one-line way to build a list from another sequence.\n\nPattern: [expression for variable in iterable]\n\nsquares = [n ** 2 for n in range(1, 6)]\n# [1, 4, 9, 16, 25]\n\nRead as: \"give me n squared for each n in range(1,6).\"",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 1,
+      "tags": ["list-comprehension", "basics"]
+    },
+    {
+      "id": "c-comp-02",
+      "front": "How do you filter items in a comprehension?",
+      "back": "Add if at the end to include only matching items.\n\nPattern: [expression for variable in iterable if condition]\n\nevens = [n for n in range(10) if n % 2 == 0]\n# [0, 2, 4, 6, 8]\n\nlong_words = [w for w in words if len(w) > 3]",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 1,
+      "tags": ["filter", "comprehension"]
+    },
+    {
+      "id": "c-comp-03",
+      "front": "What is the difference between filter if and transform if/else in comprehensions?",
+      "back": "Filter (which items) — if at the END:\n[x for x in range(10) if x > 5]  # [6, 7, 8, 9]\n\nTransform (what value) — if/else BEFORE for:\n[x if x > 5 else 0 for x in range(10)]  # [0,0,0,0,0,0,6,7,8,9]\n\nCommon mistake: [x if x > 5 for x in range(10)] is a SyntaxError!",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 2,
+      "tags": ["filter", "transform", "if-else"]
+    },
+    {
+      "id": "c-comp-04",
+      "front": "How do you write a dictionary comprehension?",
+      "back": "Use {key: value for ...} syntax:\n\nsquares = {n: n ** 2 for n in range(1, 6)}\n# {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}\n\n# Flip keys and values:\nflipped = {v: k for k, v in original.items()}\n\n# Filter a dict:\npassing = {name: score for name, score in scores.items() if score >= 70}",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 2,
+      "tags": ["dict-comprehension"]
+    },
+    {
+      "id": "c-comp-05",
+      "front": "What is a generator expression and when should you use it?",
+      "back": "Use () instead of [] to create a lazy generator that uses minimal memory.\n\nsquares_list = [n ** 2 for n in range(1_000_000)]  # ~8 MB\nsquares_gen = (n ** 2 for n in range(1_000_000))   # ~100 bytes\n\nUse generators when:\n- Processing large datasets\n- Passing directly to sum(), min(), max()\n\ntotal = sum(n ** 2 for n in range(1_000_000))",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 2,
+      "tags": ["generator-expression", "memory"]
+    },
+    {
+      "id": "c-comp-06",
+      "front": "How do you flatten a list of lists with a comprehension?",
+      "back": "Nested loops in a comprehension. Order matches regular loops.\n\nmatrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\nflat = [num for row in matrix for num in row]\n# [1, 2, 3, 4, 5, 6, 7, 8, 9]\n\nSame as:\nfor row in matrix:\n    for num in row:\n        flat.append(num)",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 2,
+      "tags": ["nested", "flatten"]
+    },
+    {
+      "id": "c-comp-07",
+      "front": "When should you use a regular loop instead of a comprehension?",
+      "back": "Use a loop when:\n- You need side effects (print, write files)\n- Logic is complex (multiple conditions, nested transforms)\n- Readability suffers\n\n# BAD — too complex:\n[transform(x, y) for x in items if validate(x) for y in x.children if y.score > threshold]\n\n# GOOD — clear comprehension:\nnames = [user.name for user in users if user.is_active]",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 2,
+      "tags": ["when-to-use", "readability"]
+    },
+    {
+      "id": "c-comp-08",
+      "front": "What is the walrus operator := in comprehensions?",
+      "back": "Assign and use a value in the same expression, avoiding duplicate computation.\n\n# Without walrus — len() called twice:\n[(w, len(w)) for w in data if len(w) > 2]\n\n# With walrus — len() called once:\n[(w, length) for w in data if (length := len(w)) > 2]\n\nThe := assigns len(w) to length and returns it for the if check.",
+      "concept_ref": "concepts/comprehensions-explained.md",
+      "difficulty": 3,
+      "tags": ["walrus", "optimization"]
+    }
+  ]
+}

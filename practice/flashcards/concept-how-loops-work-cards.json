@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — How Loops Work",
+  "description": "For loops, while loops, range(), break/continue, walrus operator, and common loop pitfalls",
+  "cards": [
+    {
+      "id": "c-loop-01",
+      "front": "What is the difference between a for loop and a while loop?",
+      "back": "for loop: iterates over a known sequence\nwhile loop: repeats until a condition becomes False\n\nfor item in my_list:   # known items\n    print(item)\n\nwhile count > 0:       # unknown when to stop\n    count -= 1",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 1,
+      "tags": ["loops", "for", "while"]
+    },
+    {
+      "id": "c-loop-02",
+      "front": "What does range(5) produce? What about range(1, 6)?",
+      "back": "range(5) produces: 0, 1, 2, 3, 4 (starts at 0, stops BEFORE 5)\nrange(1, 6) produces: 1, 2, 3, 4, 5 (starts at 1, stops BEFORE 6)\nrange(0, 10, 2) produces: 0, 2, 4, 6, 8 (step by 2)\n\nCommon mistake: range(5) gives 5 numbers but does NOT include 5.",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 1,
+      "tags": ["range", "loops"]
+    },
+    {
+      "id": "c-loop-03",
+      "front": "What causes an infinite while loop and how do you fix it?",
+      "back": "Forgetting to update the condition variable.\n\n# Infinite loop:\ncount = 1\nwhile count <= 5:\n    print(count)\n    # Missing: count += 1\n\n# Fixed:\ncount = 1\nwhile count <= 5:\n    print(count)\n    count += 1\n\nPress Ctrl+C to stop an infinite loop.",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["while", "infinite-loop"]
+    },
+    {
+      "id": "c-loop-04",
+      "front": "Why should you not modify a list while looping over it?",
+      "back": "Modifying a list during iteration causes unpredictable behavior — items get skipped.\n\n# WRONG:\nfor item in my_list:\n    if item == \"bad\":\n        my_list.remove(item)  # Skips items!\n\n# RIGHT — build a new list:\ngood_items = [item for item in my_list if item != \"bad\"]",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["loops", "anti-patterns"]
+    },
+    {
+      "id": "c-loop-05",
+      "front": "What is the walrus operator := and how is it used in loops?",
+      "back": "The walrus operator assigns a value and returns it in the same expression.\n\n# Without walrus — input() called twice:\nline = input(\"Enter: \")\nwhile line != \"quit\":\n    print(line)\n    line = input(\"Enter: \")\n\n# With walrus — cleaner:\nwhile (line := input(\"Enter: \")) != \"quit\":\n    print(line)",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 3,
+      "tags": ["walrus", "loops"]
+    },
+    {
+      "id": "c-loop-06",
+      "front": "What do break and continue do inside a loop?",
+      "back": "break: exits the loop immediately\ncontinue: skips to the next iteration\n\nfor n in range(10):\n    if n == 5:\n        break      # stops at 5, loop ends\n    if n % 2 == 0:\n        continue   # skip even numbers\n    print(n)       # prints 1, 3",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["break", "continue", "loops"]
+    },
+    {
+      "id": "c-loop-07",
+      "front": "How does a for loop variable work?",
+      "back": "The loop variable takes a different value each iteration.\n\ncolors = [\"red\", \"blue\", \"green\"]\nfor color in colors:\n    print(color)\n\nFirst iteration: color = \"red\"\nSecond: color = \"blue\"\nThird: color = \"green\"\n\nThe variable still exists after the loop with the last value.",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 1,
+      "tags": ["for", "variables"]
+    },
+    {
+      "id": "c-loop-08",
+      "front": "What is an off-by-one error with range()?",
+      "back": "range() stops BEFORE the end value, which often causes off-by-one errors.\n\nrange(5)     # 0,1,2,3,4 — NOT 1,2,3,4,5\nrange(1, 5)  # 1,2,3,4   — NOT 1,2,3,4,5\nrange(1, 6)  # 1,2,3,4,5 — this is usually what you want\n\nIf you need 1 through 5, use range(1, 6).",
+      "concept_ref": "concepts/how-loops-work.md",
+      "difficulty": 2,
+      "tags": ["range", "off-by-one"]
+    }
+  ]
+}

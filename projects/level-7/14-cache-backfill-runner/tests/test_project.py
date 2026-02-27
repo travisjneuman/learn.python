@@ -72,6 +72,7 @@ class TestCacheWithBackfill:
         assert len(cache.audit_log) >= 1
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "source": {"user_1": "Alice", "user_2": "Bob", "user_3": "Carol"},

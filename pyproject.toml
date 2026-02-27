@@ -84,3 +84,7 @@ testpaths = ["projects"]
 python_files = ["test_*.py", "test_project.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+markers = [
+    "slow: tests that involve sleep, network calls, or deliberate delays",
+    "integration: end-to-end tests that exercise multiple components together with file I/O",
+]

@@ -71,6 +71,7 @@ class TestQueryEngine:
         assert all(r.source == "api_a" for r in filtered)
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "sources": {

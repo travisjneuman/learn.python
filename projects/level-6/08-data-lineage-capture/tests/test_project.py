@@ -88,6 +88,7 @@ class TestPipelineSteps:
         assert steps == ["ingest", "normalize", "publish"]
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     inp = tmp_path / "data.json"
     inp.write_text(json.dumps(SAMPLE_RECORDS), encoding="utf-8")

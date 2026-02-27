@@ -1,0 +1,42 @@
+# Python Quick Reference
+
+This is a **quick reference** for common Python patterns.
+Use it as a *cheat sheet* while you learn.
+
+## Variables and Types
+
+Python uses dynamic typing. You do not need to declare types:
+
+- **int** for whole numbers
+- **float** for decimals
+- **str** for text
+- **bool** for True/False
+
+## Example Code
+
+```
+name = "Ada"
+age = 36
+is_scientist = True
+print(f"{name} was {age} years old.")
+```
+
+## String Methods
+
+Strings have many useful methods:
+
+- *strip()* removes whitespace
+- *split()* breaks a string into a list
+- *replace()* swaps substrings
+- *startswith()* checks a prefix
+
+## Why This Matters
+
+Understanding **string parsing** is the foundation of:
+
+- reading configuration files
+- processing log output
+- building compilers and interpreters
+- converting between data formats
+
+That is the end of this reference.

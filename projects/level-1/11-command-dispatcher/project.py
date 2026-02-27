@@ -54,7 +54,7 @@ COMMANDS = {
 }
 
 
-def dispatch(command: str, argument: str) -> dict:
+def dispatch(command: str, argument: str) -> dict[str, str]:
     """Look up a command by name and execute it.
 
     Returns a dict with the command, argument, and result (or error).
@@ -84,7 +84,7 @@ def list_commands() -> list[str]:
     return list(COMMANDS.keys())
 
 
-def process_file(path: Path) -> list[dict]:
+def process_file(path: Path) -> list[dict[str, str]]:
     """Read command lines from a file and execute each.
 
     Expected format: COMMAND argument text here

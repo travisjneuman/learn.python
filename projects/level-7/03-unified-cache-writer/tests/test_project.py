@@ -69,6 +69,7 @@ class TestWriteToCaches:
         assert result.written == 2
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "records": [{"key": "x", "data": "hello"}],

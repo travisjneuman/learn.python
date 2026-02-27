@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Dataclasses Explained",
+  "description": "The @dataclass decorator, fields, defaults, frozen, __post_init__, and when to use them",
+  "cards": [
+    {
+      "id": "c-dc-01",
+      "front": "What does @dataclass do?",
+      "back": "Automatically generates __init__, __repr__, and __eq__ from field definitions.\n\nfrom dataclasses import dataclass\n\n@dataclass\nclass Person:\n    name: str\n    age: int\n    email: str\n\n6 lines instead of 13 lines of boilerplate code.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 1,
+      "tags": ["dataclass", "decorator"]
+    },
+    {
+      "id": "c-dc-02",
+      "front": "How do default values work in dataclasses?",
+      "back": "@dataclass\nclass Config:\n    host: str = \"localhost\"\n    port: int = 8080\n    debug: bool = False\n\ndev = Config()              # uses all defaults\nprod = Config(host=\"api.example.com\", port=443)\n\nRule: fields without defaults must come BEFORE fields with defaults.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 1,
+      "tags": ["dataclass", "defaults"]
+    },
+    {
+      "id": "c-dc-03",
+      "front": "Why can't you use a mutable default like [] in a dataclass field?",
+      "back": "All instances would share the same list. Use field(default_factory=...) instead.\n\n# WRONG — raises ValueError:\n@dataclass\nclass Bad:\n    items: list[str] = []\n\n# RIGHT:\nfrom dataclasses import field\n@dataclass\nclass Good:\n    items: list[str] = field(default_factory=list)\n\ndefault_factory creates a NEW list for each instance.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "mutable-defaults"]
+    },
+    {
+      "id": "c-dc-04",
+      "front": "What is __post_init__ and when do you use it?",
+      "back": "A method that runs right after __init__. Use it for computed fields.\n\n@dataclass\nclass Rectangle:\n    width: float\n    height: float\n    area: float = field(init=False)  # not in constructor\n\n    def __post_init__(self):\n        self.area = self.width * self.height\n\nfield(init=False) + __post_init__ = computed values.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "post_init"]
+    },
+    {
+      "id": "c-dc-05",
+      "front": "What does frozen=True do on a dataclass?",
+      "back": "Makes instances immutable (read-only).\n\n@dataclass(frozen=True)\nclass Coordinate:\n    latitude: float\n    longitude: float\n\nnyc = Coordinate(40.7128, -74.0060)\nnyc.latitude = 0  # FrozenInstanceError!\n\nFrozen dataclasses are hashable — can be dict keys or set members.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "frozen", "immutable"]
+    },
+    {
+      "id": "c-dc-06",
+      "front": "Can you add custom methods to a dataclass?",
+      "back": "Yes. Dataclasses are regular classes with generated boilerplate.\n\n@dataclass\nclass Temperature:\n    celsius: float\n\n    @property\n    def fahrenheit(self) -> float:\n        return self.celsius * 9 / 5 + 32\n\n    def is_freezing(self) -> bool:\n        return self.celsius <= 0\n\nYou can add methods, properties, class methods — anything.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "methods"]
+    },
+    {
+      "id": "c-dc-07",
+      "front": "When should you use a dataclass vs a plain class?",
+      "back": "Dataclass: when the class mainly stores data with some methods.\nPlain class: when you need complex __init__ logic or fine-grained control.\n\nDataclass generates: __init__, __repr__, __eq__\nYou still get: custom methods, inheritance, properties\n\nRule of thumb: if the class has more than 3 fields, use @dataclass.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "plain-class"]
+    },
+    {
+      "id": "c-dc-08",
+      "front": "What error do you get if non-default fields come after default fields?",
+      "back": "TypeError, just like function arguments.\n\n# WRONG:\n@dataclass\nclass Bad:\n    name: str = \"Unknown\"\n    age: int              # TypeError!\n\n# RIGHT:\n@dataclass\nclass Good:\n    age: int\n    name: str = \"Unknown\"\n\nFields without defaults must come first.",
+      "concept_ref": "concepts/dataclasses-explained.md",
+      "difficulty": 2,
+      "tags": ["dataclass", "field-order"]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+"""Learn to open Python's interactive mode and run basic expressions in the terminal."""
 # ============================================================
 # Exercise 01: First Steps
 # ============================================================

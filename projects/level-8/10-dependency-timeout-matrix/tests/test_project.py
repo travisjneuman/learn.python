@@ -30,6 +30,7 @@ class TestDependencyConfig:
 
 # --- DependencyChecker --------------------------------------------------
 
+@pytest.mark.slow
 class TestDependencyChecker:
     def test_healthy_check(self) -> None:
         checker = DependencyChecker()
@@ -81,6 +82,7 @@ class TestDependencyChecker:
 
 # --- Matrix building ----------------------------------------------------
 
+@pytest.mark.slow
 class TestTimeoutMatrix:
     def test_matrix_dimensions(self) -> None:
         deps = [
@@ -112,6 +114,7 @@ class TestTimeoutMatrix:
 
 # --- Analysis -----------------------------------------------------------
 
+@pytest.mark.slow
 class TestAnalyzeMatrix:
     def test_finds_minimum_passing_timeout(self) -> None:
         deps = [DependencyConfig(name="svc", timeout_seconds=1.0)]

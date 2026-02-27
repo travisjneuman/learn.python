@@ -82,6 +82,7 @@ class TestDiffContracts:
         assert diff["breaking"] is True
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "contract": {

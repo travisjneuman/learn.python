@@ -72,6 +72,7 @@ class TestValidation:
         assert any("missing=id" in i for i in issues)
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     config = {
         "rules": [{"source": "x", "target": "y", "cast": "int"}],

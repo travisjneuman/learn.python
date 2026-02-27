@@ -3,7 +3,7 @@ Quiz: Functions Explained
 Review: concepts/functions-explained.md
 """
 
-from _quiz_helpers import normalize_answer
+from _quiz_helpers import normalize_answer, ask_true_false, ask_code_completion
 
 
 def run_quiz():
@@ -14,10 +14,10 @@ def run_quiz():
     print()
 
     score = 0
-    total = 7
+    total = 9
 
     # Question 1
-    print("Question 1/7: What keyword defines a function in Python?")
+    print("Question 1/9: What keyword defines a function in Python?")
     print()
     print("  a) function")
     print("  b) func")
@@ -34,7 +34,7 @@ def run_quiz():
     print()
 
     # Question 2
-    print("Question 2/7: What will this code print?")
+    print("Question 2/9: What will this code print?")
     print()
     print("  def add(a, b):")
     print("      result = a + b")
@@ -59,7 +59,7 @@ def run_quiz():
     print()
 
     # Question 3
-    print("Question 3/7: In this function definition, what is 'name'?")
+    print("Question 3/9: In this function definition, what is 'name'?")
     print()
     print("  def greet(name):")
     print('      return f"Hello, {name}!"')
@@ -81,7 +81,7 @@ def run_quiz():
     print()
 
     # Question 4
-    print("Question 4/7: What will this code print?")
+    print("Question 4/9: What will this code print?")
     print()
     print('  def greet(name, greeting="Hello"):')
     print('      return f"{greeting}, {name}!"')
@@ -104,7 +104,7 @@ def run_quiz():
     print()
 
     # Question 5
-    print("Question 5/7: What is wrong with this code?")
+    print("Question 5/9: What is wrong with this code?")
     print()
     print('  greet("Alice")')
     print()
@@ -127,7 +127,7 @@ def run_quiz():
     print()
 
     # Question 6
-    print("Question 6/7: What is the difference between these two lines?")
+    print("Question 6/9: What is the difference between these two lines?")
     print()
     print("  greet")
     print('  greet("Alice")')
@@ -148,7 +148,7 @@ def run_quiz():
     print()
 
     # Question 7
-    print("Question 7/7: Why are functions useful? (Pick the best answer)")
+    print("Question 7/9: Why are functions useful? (Pick the best answer)")
     print()
     print("  a) They make code run faster")
     print("  b) They let you reuse code, organize logic, and test pieces")
@@ -165,6 +165,33 @@ def run_quiz():
         print("Incorrect. The answer is b).")
         print("Functions help with reuse, organization, testing, and clarity.")
     print()
+
+    # Question 8 — true/false
+    if ask_true_false(
+        question_num=8,
+        total=total,
+        statement="A function can return more than one value using a tuple.",
+        correct=True,
+        explanation_correct="return x, y packs the values into a tuple that the caller can unpack.",
+        explanation_incorrect="Python lets you write return x, y which returns a tuple (x, y). The caller can unpack it: a, b = my_func().",
+    ):
+        score += 1
+
+    # Question 9 — code completion
+    if ask_code_completion(
+        question_num=9,
+        total=total,
+        prompt="Complete the function so it returns the square of n:",
+        code_lines=[
+            "def square(n):",
+            "    ____ n * n",
+        ],
+        correct_answers=["return"],
+        explanation_correct="The return keyword sends a value back to the caller.",
+        explanation_incorrect="Use the return keyword to send a value back from a function.",
+        case_sensitive=True,
+    ):
+        score += 1
 
     # Final score
     print("=" * 60)

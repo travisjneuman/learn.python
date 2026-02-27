@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Settings Loader — Level 1 Browser Exercise</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 260px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container" role="main">
+  <div class="header">
+    <h1>JSON Settings Loader</h1>
+    <nav class="nav-links" role="navigation" aria-label="Exercise navigation">
+      <a href="05-csv-reader.html">&larr; Prev</a>
+      <a href="../../../browser/index.html">All Exercises</a>
+      <a href="14-expense-tracker.html">Next &rarr;</a>
+    </nav>
+  </div>
+
+  <div class="description" id="description">Level 1 / Project 09 — JSON Settings Loader
+
+Load application settings from a JSON string, merge with defaults, and validate required keys.
+
+Browser adaptation: Instead of reading JSON from a file, you will parse a JSON
+string using json.loads(). The same merge and validation logic applies.
+
+1. parse_json(text)
+   - Parse a JSON string using json.loads()
+   - If the JSON is invalid, raise ValueError with a helpful message
+   - Return the parsed dictionary
+
+2. merge_settings(defaults, overrides)
+   - Copy defaults, then apply overrides on top
+   - Do NOT modify the original defaults dict
+   - Return the merged dictionary
+
+3. validate_settings(settings, required)
+   - Check that all keys in the "required" list exist in settings
+   - Return a list of missing key names (empty list if all present)
+
+4. settings_diff(defaults, settings)
+   - Return a list of strings showing what changed from defaults
+   - Format: "  key: old_value -> new_value" for changed keys
+   - Format: "  key: (new) value" for keys not in defaults
+
+Defaults to use:
+  {"app_name": "MyApp", "debug": False, "log_level": "INFO",
+   "max_retries": 3, "timeout_seconds": 30, "port": 8080}
+
+Required keys: ["app_name", "port"]
+
+Examples:
+  merge_settings({"a": 1, "b": 2}, {"b": 99, "c": 3})  ->  {"a": 1, "b": 99, "c": 3}
+  validate_settings({"app_name": "X"}, ["app_name", "port"])  ->  ["port"]</div>
+
+  <div class="editor-wrapper" aria-label="Python code editor">
+    <textarea id="editor" aria-label="Python code editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var originalCode = 'import json\n\n\n# Default settings the application uses when no config is provided.\nDEFAULTS = {\n    "app_name": "MyApp",\n    "debug": False,\n    "log_level": "INFO",\n    "max_retries": 3,\n    "timeout_seconds": 30,\n    "port": 8080,\n}\n\n# Keys that must be present in the final config.\nREQUIRED_KEYS = ["app_name", "port"]\n\n\ndef parse_json(text):\n    """Parse a JSON string and return the resulting dict.\n\n    If the JSON is invalid, raise ValueError with a helpful message.\n    Hint: wrap json.loads() in a try/except for json.JSONDecodeError.\n    """\n    # Your code here\n    pass\n\n\ndef merge_settings(defaults, overrides):\n    """Merge overrides into defaults, returning a NEW dict.\n\n    Do NOT modify the original defaults dictionary.\n    Hint: copy defaults first, then update with overrides.\n    """\n    # Your code here\n    pass\n\n\ndef validate_settings(settings, required):\n    """Check that all required keys are present in settings.\n\n    Return a list of missing key names (empty if all present).\n    """\n    # Your code here\n    pass\n\n\ndef settings_diff(defaults, settings):\n    """Show which settings differ from defaults.\n\n    Return a list of strings describing changes.\n    Format for changed:  "  key: old -> new"\n    Format for new keys: "  key: (new) value"\n    """\n    changes = []\n    # TODO: find changed values and new keys\n    return changes\n\n\n# --- Try it out ---\n# Simulate reading a JSON config string (instead of a file).\nconfig_text = \'\'\'{\n    "app_name": "LearnPython",\n    "debug": true,\n    "port": 9090,\n    "theme": "dark"\n}\'\'\'\n\nprint("=== Settings Loader ===\\n")\n\ntry:\n    user_settings = parse_json(config_text)\n    print(f"  Parsed: {user_settings}")\nexcept ValueError as err:\n    print(f"  ERROR: {err}")\n    user_settings = {}\n\nmerged = merge_settings(DEFAULTS, user_settings)\nprint(f"\\n  Final settings:")\nfor key, value in sorted(merged.items()):\n    print(f"    {key}: {value}")\n\nmissing = validate_settings(merged, REQUIRED_KEYS)\nif missing:\n    print(f"\\n  WARNING: Missing required keys: {missing}")\nelse:\n    print(f"\\n  All required keys present.")\n\nchanges = settings_diff(DEFAULTS, merged)\nif changes:\n    print(f"\\n  Changes from defaults:")\n    for change in changes:\n        print(change)\nelse:\n    print(f"\\n  All settings are at defaults.")\n';
+
+var checkCode_str = '# --- Tests ---\n# parse_json\nr = parse_json(\'{"debug": true, "port": 9090}\')\nassert r["debug"] is True, f"debug should be True, got {r[\'debug\']}"\nassert r["port"] == 9090, f"port should be 9090"\n\ntry:\n    parse_json("{not valid json}")\n    assert False, "Should have raised ValueError"\nexcept ValueError:\n    pass  # expected\n\n# merge_settings\ndefaults = {"a": 1, "b": 2}\noverrides = {"b": 99, "c": 3}\nmerged = merge_settings(defaults, overrides)\nassert merged == {"a": 1, "b": 99, "c": 3}, f"Merge failed: {merged}"\nassert defaults == {"a": 1, "b": 2}, "Original defaults must not be modified"\n\n# merge with empty overrides\nm2 = merge_settings({"x": 1}, {})\nassert m2 == {"x": 1}, "Empty overrides should keep defaults"\n\n# validate_settings\nmissing = validate_settings({"app_name": "Test"}, ["app_name", "port"])\nassert "port" in missing, f"port should be missing, got {missing}"\nassert "app_name" not in missing, "app_name is present, should not be missing"\n\nmissing2 = validate_settings({"app_name": "X", "port": 80}, ["app_name", "port"])\nassert missing2 == [], f"No keys should be missing, got {missing2}"\n\n# settings_diff\ndiff = settings_diff({"a": 1, "b": 2}, {"a": 1, "b": 99, "c": 3})\nassert any("b" in d and "99" in d for d in diff), f"Should show b changed, got {diff}"\nassert any("c" in d and "(new)" in d for d in diff), f"Should show c is new, got {diff}"\n\nprint("All tests passed!")\n';
+
+var storageKey = 'learn-python-l1-browser-09';
+var cmEditor;
+
+function initEditor() {
+  cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+    mode: 'python', theme: 'dracula', lineNumbers: true,
+    indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+    extraKeys: {
+      'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+      'Ctrl-Enter': function() { runCode(); },
+      'Cmd-Enter': function() { runCode(); }
+    }
+  });
+
+  var savedCode = localStorage.getItem(storageKey);
+  if (savedCode !== null) { cmEditor.setValue(savedCode); }
+  else { cmEditor.setValue(originalCode); }
+
+  var saveTimer = null;
+  cmEditor.on('change', function() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function() {
+      localStorage.setItem(storageKey, cmEditor.getValue());
+    }, 500);
+  });
+}
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    pyodideInstance.runPython(code);
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkSolution() {
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + checkCode_str;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+initEditor();
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkSolution);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

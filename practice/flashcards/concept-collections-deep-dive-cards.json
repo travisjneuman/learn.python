@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Collections Deep Dive",
+  "description": "Counter, defaultdict, OrderedDict, deque, namedtuple, ChainMap — specialized container types",
+  "cards": [
+    {
+      "id": "c-coll-01",
+      "front": "How do you count occurrences with Counter?",
+      "back": "from collections import Counter\n\nwords = [\"apple\", \"banana\", \"apple\", \"cherry\", \"banana\", \"apple\"]\nword_counts = Counter(words)\n# Counter({'apple': 3, 'banana': 2, 'cherry': 1})\n\nword_counts.most_common(2)\n# [('apple', 3), ('banana', 2)]\n\nCounter also works on strings: Counter(\"mississippi\")\n# Counter({'s': 4, 'i': 4, 'p': 2, 'm': 1})",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 1,
+      "tags": ["Counter", "counting"]
+    },
+    {
+      "id": "c-coll-02",
+      "front": "What math operations does Counter support?",
+      "back": "a = Counter(\"aabbcc\")\nb = Counter(\"aabbd\")\n\na + b     # Counter({'a': 4, 'b': 4, 'c': 2, 'd': 1}) — add counts\na - b     # Counter({'c': 2}) — subtract, keep only positive\na & b     # Counter({'a': 2, 'b': 2}) — minimum of each\na | b     # Counter({'a': 2, 'b': 2, 'c': 2, 'd': 1}) — maximum of each",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 2,
+      "tags": ["Counter", "math-operations"]
+    },
+    {
+      "id": "c-coll-03",
+      "front": "What is defaultdict and why use it?",
+      "back": "A dict that never raises KeyError — it auto-creates a default value for missing keys.\n\nfrom collections import defaultdict\n\ngroups = defaultdict(list)\nfor category, name in [(\"cat\", \"Felix\"), (\"dog\", \"Rex\")]:\n    groups[category].append(name)\n# {'cat': ['Felix'], 'dog': ['Rex']}\n\nCommon factories:\ndefaultdict(list)  → []\ndefaultdict(int)   → 0\ndefaultdict(set)   → set()\ndefaultdict(str)   → \"\"",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 1,
+      "tags": ["defaultdict", "grouping"]
+    },
+    {
+      "id": "c-coll-04",
+      "front": "What is the gotcha with defaultdict and key access?",
+      "back": "Accessing a missing key CREATES it with the default value.\n\nd = defaultdict(list)\nif d[\"missing_key\"]:    # This CREATES the key!\n    pass\n\n# Use 'in' to check without creating:\nif \"missing_key\" in d:\n    pass\n\nThis silent creation catches many beginners off guard.",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 2,
+      "tags": ["defaultdict", "gotcha"]
+    },
+    {
+      "id": "c-coll-05",
+      "front": "When is OrderedDict still useful (since Python 3.7+ dicts keep order)?",
+      "back": "OrderedDict considers order in equality checks:\nOrderedDict([('a', 1), ('b', 2)]) == OrderedDict([('b', 2), ('a', 1)])\n# False — different order!\n\n{'a': 1, 'b': 2} == {'b': 2, 'a': 1}\n# True — regular dicts ignore order for equality\n\nOrderedDict also has move_to_end():\nod.move_to_end(\"a\")           # move to end\nod.move_to_end(\"c\", last=False) # move to start",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 2,
+      "tags": ["OrderedDict", "equality"]
+    },
+    {
+      "id": "c-coll-06",
+      "front": "What is a deque and why use it instead of a list?",
+      "back": "deque (\"deck\") — double-ended queue optimized for both ends.\n\nfrom collections import deque\nd = deque([1, 2, 3])\nd.append(4)      # right: O(1)\nd.appendleft(0)  # left: O(1)\nd.pop()          # right: O(1)\nd.popleft()      # left: O(1)\n\nlist.insert(0, x) is O(n) — shifts every element.\ndeque.appendleft(x) is O(1).\n\nFixed-size buffer:\nrecent = deque(maxlen=5)  # auto-discards oldest",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 2,
+      "tags": ["deque", "performance"]
+    },
+    {
+      "id": "c-coll-07",
+      "front": "What is a namedtuple and when would you use one?",
+      "back": "A tuple with named fields — great for lightweight immutable records.\n\nfrom collections import namedtuple\nPoint = namedtuple(\"Point\", [\"x\", \"y\"])\np = Point(3, 4)\np.x        # 3\np.y        # 4\nx, y = p   # unpacking works\n\nImmutable — cannot change fields:\np.x = 5    # AttributeError!\n\nUse _replace for a modified copy:\np2 = p._replace(x=5)\n\nFor mutable named fields, use dataclasses instead.",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 2,
+      "tags": ["namedtuple", "immutable"]
+    },
+    {
+      "id": "c-coll-08",
+      "front": "What is ChainMap and when is it useful?",
+      "back": "Groups multiple dicts together. Lookups search each dict in order.\n\nfrom collections import ChainMap\n\ndefaults = {\"color\": \"blue\", \"size\": \"medium\"}\nuser_prefs = {\"color\": \"red\"}\ncli_args = {\"size\": \"large\"}\n\nconfig = ChainMap(cli_args, user_prefs, defaults)\nconfig[\"size\"]   # \"large\" (from cli_args)\nconfig[\"color\"]  # \"red\" (from user_prefs)\n\nPerfect for layered configuration: CLI > user prefs > defaults.",
+      "concept_ref": "concepts/collections-deep-dive.md",
+      "difficulty": 2,
+      "tags": ["ChainMap", "configuration"]
+    }
+  ]
+}

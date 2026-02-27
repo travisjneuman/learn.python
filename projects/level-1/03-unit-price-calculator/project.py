@@ -24,7 +24,7 @@ def calculate_unit_price(total_price: float, quantity: float) -> float:
     return round(total_price / quantity, 4)
 
 
-def parse_product_row(row: dict) -> dict:
+def parse_product_row(row: dict[str, str]) -> dict[str, str | float]:
     """Parse a CSV row into a product dict with unit price.
 
     Expected CSV columns: product, price, quantity, unit
@@ -49,7 +49,7 @@ def parse_product_row(row: dict) -> dict:
     }
 
 
-def load_products(path: Path) -> list[dict]:
+def load_products(path: Path) -> list[dict[str, str | float]]:
     """Load products from a CSV file and compute unit prices."""
     if not path.exists():
         raise FileNotFoundError(f"Input file not found: {path}")
@@ -63,7 +63,7 @@ def load_products(path: Path) -> list[dict]:
     return products
 
 
-def find_best_deal(products: list[dict]) -> dict | None:
+def find_best_deal(products: list[dict[str, str | float]]) -> dict[str, str | float] | None:
     """Find the product with the lowest unit price.
 
     WHY filter errors first? -- Products with parse errors have no
@@ -81,7 +81,7 @@ def find_best_deal(products: list[dict]) -> dict | None:
     return best
 
 
-def rank_products(products: list[dict]) -> list[dict]:
+def rank_products(products: list[dict[str, str | float]]) -> list[dict[str, str | float]]:
     """Sort valid products by unit price (cheapest first)."""
     valid = [p for p in products if "error" not in p]
     return sorted(valid, key=lambda p: p["unit_price"])

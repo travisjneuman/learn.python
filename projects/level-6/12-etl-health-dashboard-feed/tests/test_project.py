@@ -83,6 +83,7 @@ class TestRecentRuns:
         assert len(recent) == 2
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     inp = tmp_path / "runs.json"
     inp.write_text(json.dumps(SAMPLE_RUNS), encoding="utf-8")

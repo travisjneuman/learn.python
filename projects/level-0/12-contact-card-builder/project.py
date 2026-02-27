@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 
-def parse_contact_line(line: str) -> dict:
+def parse_contact_line(line: str) -> dict[str, str]:
     """Parse a comma-separated line into a contact dictionary.
 
     Expected format: name, phone, email
@@ -43,7 +43,7 @@ def parse_contact_line(line: str) -> dict:
     }
 
 
-def format_card(contact: dict) -> str:
+def format_card(contact: dict[str, str]) -> str:
     """Format a contact dict as a printable card.
 
     WHY a separate format function? -- It keeps display logic out of
@@ -63,7 +63,7 @@ def format_card(contact: dict) -> str:
     return "\n".join(lines)
 
 
-def load_contacts(path: Path) -> list[dict]:
+def load_contacts(path: Path) -> list[dict[str, str]]:
     """Load and parse contacts from a file."""
     if not path.exists():
         raise FileNotFoundError(f"Contacts file not found: {path}")
@@ -80,7 +80,7 @@ def load_contacts(path: Path) -> list[dict]:
     return contacts
 
 
-def contacts_summary(contacts: list[dict]) -> dict:
+def contacts_summary(contacts: list[dict[str, str]]) -> dict[str, int | list[dict[str, str]]]:
     """Build a summary of the parsed contacts."""
     valid = [c for c in contacts if "error" not in c]
     errors = [c for c in contacts if "error" in c]

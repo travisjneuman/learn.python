@@ -44,3 +44,31 @@ def test_classify_negative() -> None:
     result = classify_number(-10)
     assert result["sign"] == "negative"
     assert result["prime"] is False
+
+
+def test_empty_input_does_not_crash() -> None:
+    """Empty string input should be handled gracefully without crashing.
+
+    The interactive loop tries int(text) on user input.  An empty string
+    raises ValueError, which the program catches and prints a friendly
+    message.  This test verifies that conversion path: int('') raises
+    ValueError (so the except branch runs), and the program continues.
+    """
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    project_dir = Path(__file__).resolve().parent.parent
+    result = subprocess.run(
+        [sys.executable, "project.py"],
+        input="\nquit\n",
+        capture_output=True,
+        text=True,
+        cwd=str(project_dir),
+        timeout=10,
+    )
+
+    # The program should exit cleanly (return code 0), not crash.
+    assert result.returncode == 0
+    # The error message for invalid input should appear in the output.
+    assert "not a valid integer" in result.stdout

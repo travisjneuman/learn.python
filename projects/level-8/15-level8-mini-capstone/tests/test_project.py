@@ -103,6 +103,7 @@ class TestReportSerialization:
 
 # --- Full simulation ----------------------------------------------------
 
+@pytest.mark.integration
 class TestSimulation:
     def test_simulation_deterministic(self) -> None:
         r1 = run_simulation(num_requests=50, seed=42)

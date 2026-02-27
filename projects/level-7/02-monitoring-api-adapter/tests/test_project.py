@@ -63,6 +63,7 @@ class TestCollector:
         assert len(metrics) == 6  # 2 cpu + 2 memory + 2 disk
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     out = tmp_path / "out.json"
     summary = run(tmp_path / "nope.json", out)

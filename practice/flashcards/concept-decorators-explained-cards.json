@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Decorators Explained",
+  "description": "How decorators work, @syntax, functools.wraps, stacking, and real-world uses",
+  "cards": [
+    {
+      "id": "c-dec-01",
+      "front": "What is a decorator?",
+      "back": "A function that wraps another function to add extra behavior.\n\ndef shout(func):\n    def wrapper():\n        return func().upper()\n    return wrapper\n\n@shout\ndef greet():\n    return \"hello\"\n\ngreet()  # \"HELLO\"\n\n@shout is shorthand for: greet = shout(greet)",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 2,
+      "tags": ["decorators", "wrapping"]
+    },
+    {
+      "id": "c-dec-02",
+      "front": "How do you write a decorator that works with any function arguments?",
+      "back": "Use *args and **kwargs in the wrapper:\n\ndef log_call(func):\n    def wrapper(*args, **kwargs):\n        print(f\"Calling {func.__name__}\")\n        result = func(*args, **kwargs)\n        print(f\"Returned {result}\")\n        return result\n    return wrapper\n\n@log_call\ndef add(a, b):\n    return a + b",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 2,
+      "tags": ["decorators", "args-kwargs"]
+    },
+    {
+      "id": "c-dec-03",
+      "front": "Why should you use @functools.wraps in decorators?",
+      "back": "Without it, the decorated function loses its name and docstring.\n\nfrom functools import wraps\n\ndef my_decorator(func):\n    @wraps(func)  # preserves name, docstring, etc.\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\nWithout @wraps: wrapper.__name__ is \"wrapper\"\nWith @wraps: wrapper.__name__ is the original function name.",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 2,
+      "tags": ["wraps", "functools"]
+    },
+    {
+      "id": "c-dec-04",
+      "front": "How does stacking multiple decorators work?",
+      "back": "Decorators apply bottom to top.\n\n@decorator_a\n@decorator_b\ndef my_function():\n    pass\n\n# Equivalent to:\nmy_function = decorator_a(decorator_b(my_function))\n\ndecorator_b wraps first, then decorator_a wraps the result.",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 3,
+      "tags": ["stacking", "order"]
+    },
+    {
+      "id": "c-dec-05",
+      "front": "Name 4 real-world decorator examples.",
+      "back": "1. FastAPI routes: @app.get(\"/users\")\n2. pytest parametrize: @pytest.mark.parametrize(...)\n3. Click CLI: @click.command()\n4. Timing: @timer (custom)\n\nDecorators are everywhere in Python frameworks. Understanding them is essential.",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 1,
+      "tags": ["decorators", "real-world"]
+    },
+    {
+      "id": "c-dec-06",
+      "front": "What is the difference between @my_decorator and @my_decorator()?",
+      "back": "@my_decorator    — applies the decorator (no arguments)\n@my_decorator()  — calls the decorator factory, which returns the actual decorator\n\nSome decorators take arguments:\n@app.get(\"/\")  — get() returns a decorator\n@timer          — timer IS the decorator\n\nWhether you need () depends on how the decorator was written.",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 3,
+      "tags": ["decorator-factory", "syntax"]
+    },
+    {
+      "id": "c-dec-07",
+      "front": "How does a decorator work under the hood?",
+      "back": "A decorator is a function that:\n1. Takes a function as input\n2. Creates a new wrapper function\n3. Returns the wrapper\n\n@shout\ndef greet(): return \"hello\"\n\nIs exactly the same as:\ndef greet(): return \"hello\"\ngreet = shout(greet)\n\nAfter decoration, greet now refers to the wrapper function.",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 2,
+      "tags": ["decorators", "mechanism"]
+    },
+    {
+      "id": "c-dec-08",
+      "front": "How do you write a timing decorator?",
+      "back": "import time\nfrom functools import wraps\n\ndef timer(func):\n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        result = func(*args, **kwargs)\n        elapsed = time.time() - start\n        print(f\"{func.__name__} took {elapsed:.2f}s\")\n        return result\n    return wrapper\n\n@timer\ndef slow_function(): ...",
+      "concept_ref": "concepts/decorators-explained.md",
+      "difficulty": 2,
+      "tags": ["timer", "example"]
+    }
+  ]
+}

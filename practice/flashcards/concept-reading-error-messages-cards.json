@@ -1,0 +1,86 @@
+{
+  "deck": "Concept — Reading Error Messages",
+  "description": "Traceback anatomy, the 10 most common errors, step-by-step reading process",
+  "cards": [
+    {
+      "id": "c-rerr-01",
+      "front": "What are the 4 parts of a Python traceback?",
+      "back": "1. Last line — error type and message (THE ANSWER)\n2. Code snippet — the exact line that failed\n3. File and line number — where to look\n4. Call stack — chain of function calls that led here\n\nAlways read bottom to top. The last line is the most important.",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["traceback", "anatomy"]
+    },
+    {
+      "id": "c-rerr-02",
+      "front": "What is a KeyError and how do you fix it?",
+      "back": "You asked for a dictionary key that does not exist.\n\nperson = {\"name\": \"Alice\"}\nperson[\"email\"]  # KeyError: 'email'\n\nFixes:\n1. person.get(\"email\")  — returns None\n2. person.get(\"email\", \"default\") — returns default\n3. if \"email\" in person: — check first",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["KeyError", "dicts"]
+    },
+    {
+      "id": "c-rerr-03",
+      "front": "What is an IndexError and how do you fix it?",
+      "back": "You asked for a list position that does not exist.\n\nitems = [\"a\", \"b\", \"c\"]\nitems[5]  # IndexError: list index out of range\n\nFixes:\n1. Check length first: if len(items) > 5\n2. Use try/except IndexError\n3. Fix the off-by-one error in your loop",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["IndexError", "lists"]
+    },
+    {
+      "id": "c-rerr-04",
+      "front": "What is an AttributeError: 'NoneType' object has no attribute 'X'?",
+      "back": "You called a method on None — the variable is not what you think.\n\nname = None\nname.upper()  # AttributeError!\n\nCommon cause: a function returned None instead of a value.\nFix: check if the value is None first, or trace back to where it became None.",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 2,
+      "tags": ["AttributeError", "NoneType"]
+    },
+    {
+      "id": "c-rerr-05",
+      "front": "What is a ValueError?",
+      "back": "The type is correct but the specific value is wrong.\n\nint(\"hello\")  # ValueError: invalid literal for int()\nint(\"3.14\")   # ValueError: cannot convert float string directly\n\nThe function expected the right type (string) but the content was not valid for the operation.",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["ValueError", "conversion"]
+    },
+    {
+      "id": "c-rerr-06",
+      "front": "What is a ModuleNotFoundError and what causes it?",
+      "back": "Python cannot find the module you are importing.\n\nimport pandas  # ModuleNotFoundError: No module named 'pandas'\n\nCauses:\n1. Package not installed: pip install pandas\n2. Wrong virtual environment active\n3. Your file is named the same as the module (e.g., json.py shadows import json)",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 2,
+      "tags": ["ImportError", "modules"]
+    },
+    {
+      "id": "c-rerr-07",
+      "front": "What is the step-by-step process for reading a traceback?",
+      "back": "1. Look at the VERY LAST LINE — error type and message\n2. Look at the frame JUST ABOVE — where the error happened\n3. Note the FILE NAME and LINE NUMBER\n4. Read the CODE SNIPPET — does it match what you expected?\n5. If needed, trace UPWARD through the call stack",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 2,
+      "tags": ["traceback", "process"]
+    },
+    {
+      "id": "c-rerr-08",
+      "front": "What is a SyntaxError and when does it occur?",
+      "back": "Python cannot even parse your code — it has a grammar mistake.\n\nSyntaxError happens BEFORE your code runs.\n\nCommon causes:\n- Missing colon after if/for/def\n- Unmatched parentheses or quotes\n- Typos in keywords (whle instead of while)\n- Using = in a condition instead of ==",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["SyntaxError", "parsing"]
+    },
+    {
+      "id": "c-rerr-09",
+      "front": "What is the friendly library and when should you use it?",
+      "back": "A library that rewrites Python error messages in plain English.\n\npip install friendly\npython -m friendly script.py\n\nIt turns cryptic messages into explanations like:\n\"A NameError indicates that a variable name is not known to Python. Did you mean 'username'?\"\n\nGreat while learning to read tracebacks on your own.",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["friendly", "learning"]
+    },
+    {
+      "id": "c-rerr-10",
+      "front": "What does FileNotFoundError mean?",
+      "back": "The file path you specified does not point to an existing file.\n\nwith open(\"data.csv\") as f:  # FileNotFoundError!\n\nCommon causes:\n1. Wrong filename or typo\n2. Wrong working directory (cd to the right folder)\n3. File was moved or deleted\n\nCheck: print(Path(\"data.csv\").resolve()) to see the full path.",
+      "concept_ref": "concepts/reading-error-messages.md",
+      "difficulty": 1,
+      "tags": ["FileNotFoundError", "paths"]
+    }
+  ]
+}

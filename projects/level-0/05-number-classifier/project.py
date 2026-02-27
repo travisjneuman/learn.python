@@ -53,7 +53,7 @@ def classify_sign(n: int) -> str:
         return "zero"
 
 
-def classify_number(n: int) -> dict:
+def classify_number(n: int) -> dict[str, int | str | bool]:
     """Build a full classification dict for one number.
 
     Combines sign, parity (even/odd), and primality checks into

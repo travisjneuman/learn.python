@@ -3,7 +3,7 @@ Quiz: What is a Variable?
 Review: concepts/what-is-a-variable.md
 """
 
-from _quiz_helpers import normalize_answer
+from _quiz_helpers import normalize_answer, ask_true_false, ask_code_completion
 
 
 def run_quiz():
@@ -14,10 +14,10 @@ def run_quiz():
     print()
 
     score = 0
-    total = 7
+    total = 9
 
     # Question 1 — multiple choice
-    print("Question 1/7: Which of these is a valid Python variable name?")
+    print("Question 1/9: Which of these is a valid Python variable name?")
     print()
     print("  a) 2nd_place")
     print("  b) second-place")
@@ -35,7 +35,7 @@ def run_quiz():
     print()
 
     # Question 2 — code prediction
-    print("Question 2/7: What will this code print?")
+    print("Question 2/9: What will this code print?")
     print()
     print('  name = "Alice"')
     print('  name = "Bob"')
@@ -57,7 +57,7 @@ def run_quiz():
     print()
 
     # Question 3 — understanding = vs ==
-    print("Question 3/7: What is the difference between = and == in Python?")
+    print("Question 3/9: What is the difference between = and == in Python?")
     print()
     print("  a) They do the same thing")
     print("  b) = assigns a value, == checks equality")
@@ -74,7 +74,7 @@ def run_quiz():
     print()
 
     # Question 4 — case sensitivity
-    print("Question 4/7: Are 'Score' and 'score' the same variable in Python?")
+    print("Question 4/9: Are 'Score' and 'score' the same variable in Python?")
     print()
     print("  a) Yes, Python ignores case")
     print("  b) No, Python is case-sensitive")
@@ -90,7 +90,7 @@ def run_quiz():
     print()
 
     # Question 5 — code prediction
-    print("Question 5/7: What happens when you run this code?")
+    print("Question 5/9: What happens when you run this code?")
     print()
     print("  print(score)")
     print("  score = 100")
@@ -111,7 +111,7 @@ def run_quiz():
     print()
 
     # Question 6 — naming convention
-    print("Question 6/7: What naming convention does Python recommend")
+    print("Question 6/9: What naming convention does Python recommend")
     print("for variables?")
     print()
     print("  a) camelCase (studentCount)")
@@ -130,7 +130,7 @@ def run_quiz():
     print()
 
     # Question 7 — short answer
-    print("Question 7/7: What will this code print?")
+    print("Question 7/9: What will this code print?")
     print()
     print("  age = 25")
     print("  next_year = age + 1")
@@ -145,6 +145,32 @@ def run_quiz():
         print("Incorrect. The answer is 26.")
         print("age is 25, and 25 + 1 = 26.")
     print()
+
+    # Question 8 — true/false
+    if ask_true_false(
+        question_num=8,
+        total=total,
+        statement="In Python, you must declare a variable's type before using it.",
+        correct=False,
+        explanation_correct="Python figures out the type automatically based on the value you assign.",
+        explanation_incorrect="Python is dynamically typed. You just write x = 5, and Python knows it is an integer.",
+    ):
+        score += 1
+
+    # Question 9 — code completion
+    if ask_code_completion(
+        question_num=9,
+        total=total,
+        prompt="Assign the value 42 to a variable called answer:",
+        code_lines=[
+            "____ = 42",
+        ],
+        correct_answers=["answer"],
+        explanation_correct="Variable names go on the left side of =.",
+        explanation_incorrect="The variable name goes on the left side of the = sign.",
+        case_sensitive=True,
+    ):
+        score += 1
 
     # Final score
     print("=" * 60)

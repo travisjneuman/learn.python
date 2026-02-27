@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — What is a Variable",
+  "description": "Variables, assignment, naming conventions, f-strings, and common beginner mistakes",
+  "cards": [
+    {
+      "id": "c-var-01",
+      "front": "What is a variable in Python?",
+      "back": "A name that holds a value. You create it with the = operator.\n\nname = \"Alice\"\nage = 30\nis_student = True",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["variables", "basics"]
+    },
+    {
+      "id": "c-var-02",
+      "front": "What is an f-string and how do you use it?",
+      "back": "A string prefixed with f that lets you embed variables in curly braces.\n\nname = \"Alice\"\nprint(f\"Hello, {name}!\")  # Hello, Alice!\n\nWithout the f prefix, {name} prints as literal text.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "f-strings"]
+    },
+    {
+      "id": "c-var-03",
+      "front": "What are the rules for naming variables in Python?",
+      "back": "1. Must start with a letter or underscore (not a number)\n2. Can contain letters, numbers, and underscores\n3. Case-sensitive: Name and name are different\n4. Convention: use snake_case (lowercase_with_underscores)\n\nGood: student_count, max_temperature\nBad: x, temp, flag",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["variables", "naming"]
+    },
+    {
+      "id": "c-var-04",
+      "front": "What is the difference between = and == in Python?",
+      "back": "= is assignment (stores a value)\n== is comparison (checks equality)\n\nx = 5       # stores 5 in x\nx == 5      # returns True (x is equal to 5)\n\nUsing = when you meant == is a common bug.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["operators", "assignment"]
+    },
+    {
+      "id": "c-var-05",
+      "front": "What happens if you use a variable before creating it?",
+      "back": "You get a NameError.\n\nprint(score)   # NameError: name 'score' is not defined\nscore = 100    # This line creates the variable\nprint(score)   # Now it works: prints 100",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["variables", "errors"]
+    },
+    {
+      "id": "c-var-06",
+      "front": "What happens if you forget quotes around text?",
+      "back": "Python thinks it is a variable name, not text.\n\nname = Alice      # NameError! Python looks for a variable called Alice\nname = \"Alice\"    # Correct: quotes make it a string",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["strings", "errors"]
+    },
+    {
+      "id": "c-var-07",
+      "front": "Can a variable hold different types of values at different times?",
+      "back": "Yes. Python is dynamically typed. A variable can be reassigned to any type.\n\nx = 5         # x holds an int\nx = \"hello\"   # now x holds a str\nx = [1, 2, 3] # now x holds a list\n\nThe variable name is just a label pointing to a value.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 2,
+      "tags": ["variables", "types"]
+    },
+    {
+      "id": "c-var-08",
+      "front": "What does the snake_case naming convention look like and why use it?",
+      "back": "All lowercase with underscores separating words.\n\nstudent_count = 42\nmax_temperature = 98.6\nis_active = True\n\nPython's official style guide (PEP 8) recommends snake_case for variables and functions. CamelCase is used for class names.",
+      "concept_ref": "concepts/what-is-a-variable.md",
+      "difficulty": 1,
+      "tags": ["naming", "conventions"]
+    }
+  ]
+}

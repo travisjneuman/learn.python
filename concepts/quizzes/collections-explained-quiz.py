@@ -3,7 +3,7 @@ Quiz: Collections — Lists, Dicts, Sets, Tuples
 Review: concepts/collections-explained.md
 """
 
-from _quiz_helpers import normalize_answer
+from _quiz_helpers import normalize_answer, ask_true_false, ask_code_completion
 
 
 def run_quiz():
@@ -14,10 +14,10 @@ def run_quiz():
     print()
 
     score = 0
-    total = 8
+    total = 11
 
     # Question 1
-    print("Question 1/8: What will this code print?")
+    print("Question 1/11: What will this code print?")
     print()
     print("  x = [1, 2, 3]")
     print("  x.append(4)")
@@ -39,7 +39,7 @@ def run_quiz():
     print()
 
     # Question 2
-    print("Question 2/8: How do you access the value 'Denver' from this dict?")
+    print("Question 2/11: How do you access the value 'Denver' from this dict?")
     print()
     print('  person = {"name": "Alice", "city": "Denver"}')
     print()
@@ -59,7 +59,7 @@ def run_quiz():
     print()
 
     # Question 3
-    print("Question 3/8: What will this set contain after running?")
+    print("Question 3/11: What will this set contain after running?")
     print()
     print('  colors = {"red", "blue", "red", "green", "blue"}')
     print()
@@ -78,7 +78,7 @@ def run_quiz():
     print()
 
     # Question 4
-    print("Question 4/8: What happens if you try to change a tuple?")
+    print("Question 4/11: What happens if you try to change a tuple?")
     print()
     print("  point = (3, 5)")
     print("  point[0] = 10")
@@ -99,7 +99,7 @@ def run_quiz():
     print()
 
     # Question 5
-    print("Question 5/8: What does {} create in Python?")
+    print("Question 5/11: What does {} create in Python?")
     print()
     print("  a) An empty set")
     print("  b) An empty dictionary")
@@ -117,7 +117,7 @@ def run_quiz():
     print()
 
     # Question 6
-    print("Question 6/8: What does person.get('salary') return if")
+    print("Question 6/11: What does person.get('salary') return if")
     print("'salary' is not a key in the dict?")
     print()
     print('  person = {"name": "Alice", "age": 30}')
@@ -139,7 +139,7 @@ def run_quiz():
     print()
 
     # Question 7
-    print("Question 7/8: Which collection would you use to store a list")
+    print("Question 7/11: Which collection would you use to store a list")
     print("of student names where order matters and duplicates are possible?")
     print()
     print("  a) Set")
@@ -158,7 +158,7 @@ def run_quiz():
     print()
 
     # Question 8
-    print("Question 8/8: What will fruits[-1] return?")
+    print("Question 8/11: What will fruits[-1] return?")
     print()
     print('  fruits = ["apple", "banana", "cherry"]')
     print()
@@ -176,6 +176,44 @@ def run_quiz():
         print('Incorrect. The answer is b) "cherry".')
         print("In Python, -1 refers to the last element.")
     print()
+
+    # Question 9 — true/false
+    if ask_true_false(
+        question_num=9,
+        total=total,
+        statement="Lists and tuples can both contain items of different types.",
+        correct=True,
+        explanation_correct="Both lists and tuples are heterogeneous — they can hold ints, strings, booleans, and more in the same collection.",
+        explanation_incorrect="Python lists and tuples can both store mixed types: [1, 'hello', True] and (1, 'hello', True) are both valid.",
+    ):
+        score += 1
+
+    # Question 10 — true/false
+    if ask_true_false(
+        question_num=10,
+        total=total,
+        statement="Dictionary keys must be unique, but values can repeat.",
+        correct=True,
+        explanation_correct="Each key appears once. If you assign to the same key again, it overwrites the old value. Values have no such restriction.",
+        explanation_incorrect="Keys are unique identifiers. Assigning to an existing key replaces the value. Multiple keys can share the same value.",
+    ):
+        score += 1
+
+    # Question 11 — code completion
+    if ask_code_completion(
+        question_num=11,
+        total=total,
+        prompt="Remove the last item from a list and store it in a variable:",
+        code_lines=[
+            "fruits = ['apple', 'banana', 'cherry']",
+            "last = fruits.____()",
+        ],
+        correct_answers=["pop"],
+        explanation_correct="pop() removes and returns the last item from the list.",
+        explanation_incorrect="The pop() method removes the last item and returns it. del and remove() work differently.",
+        case_sensitive=True,
+    ):
+        score += 1
 
     # Final score
     print("=" * 60)

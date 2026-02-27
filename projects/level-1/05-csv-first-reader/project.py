@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 
-def load_csv(path: Path) -> list[dict]:
+def load_csv(path: Path) -> list[dict[str, str]]:
     """Read a CSV file and return rows as a list of dicts.
 
     WHY DictReader? -- It uses the header row as keys, so each
@@ -30,7 +30,7 @@ def load_csv(path: Path) -> list[dict]:
     return rows
 
 
-def detect_numeric_columns(rows: list[dict]) -> list[str]:
+def detect_numeric_columns(rows: list[dict[str, str]]) -> list[str]:
     """Find columns where all non-empty values are numeric.
 
     WHY detect? -- We need to know which columns can be averaged
@@ -59,7 +59,7 @@ def detect_numeric_columns(rows: list[dict]) -> list[str]:
     return numeric
 
 
-def column_stats(rows: list[dict], column: str) -> dict:
+def column_stats(rows: list[dict[str, str]], column: str) -> dict[str, str | int | float]:
     """Compute min, max, sum, and average for a numeric column."""
     values = []
     for row in rows:
@@ -80,7 +80,7 @@ def column_stats(rows: list[dict], column: str) -> dict:
     }
 
 
-def format_table(rows: list[dict], max_width: int = 15) -> str:
+def format_table(rows: list[dict[str, str]], max_width: int = 15) -> str:
     """Format rows as a simple text table.
 
     WHY truncate? -- Long values would break the table alignment.

@@ -76,6 +76,7 @@ class TestCreateIndex:
         create_index(conn, "orders", "product")  # should not raise
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     inp = tmp_path / "queries.txt"
     inp.write_text("SELECT * FROM orders WHERE customer = 'alice'\n", encoding="utf-8")

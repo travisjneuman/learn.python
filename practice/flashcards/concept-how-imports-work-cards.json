@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — How Imports Work",
+  "description": "Import syntax, importing your own files, packages, relative imports, and common mistakes",
+  "cards": [
+    {
+      "id": "c-imp-01",
+      "front": "What are the 3 main ways to import in Python?",
+      "back": "import math             # import entire module\nfrom math import sqrt   # import specific items\nimport math as m        # import with alias\n\nmath.sqrt(16)   # 4.0 (need prefix)\nsqrt(16)        # 4.0 (no prefix needed)\nm.sqrt(16)      # 4.0 (alias prefix)",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 1,
+      "tags": ["imports", "syntax"]
+    },
+    {
+      "id": "c-imp-02",
+      "front": "How do you import from your own files?",
+      "back": "If helpers.py is in the same folder as main.py:\n\n# helpers.py\ndef greet(name):\n    return f\"Hello, {name}!\"\n\n# main.py\nfrom helpers import greet\nprint(greet(\"Alice\"))\n\nThe filename (without .py) is the module name.",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 1,
+      "tags": ["imports", "own-files"]
+    },
+    {
+      "id": "c-imp-03",
+      "front": "What is __init__.py and what does it do?",
+      "back": "It makes a directory into a Python package (importable module).\n\nmy_package/\n    __init__.py    # can be empty\n    utils.py\n    models.py\n\nfrom my_package.utils import helper_function\n\nWithout __init__.py, Python does not recognize the folder as a package.",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["packages", "__init__"]
+    },
+    {
+      "id": "c-imp-04",
+      "front": "Why should you never name your file the same as a standard library module?",
+      "back": "Your file shadows the real module.\n\n# If you create json.py in your project:\nimport json  # imports YOUR json.py, not the standard library!\n\nThis causes confusing errors. Common offenders:\njson.py, email.py, test.py, random.py, collections.py\n\nFix: rename your file to something unique.",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["shadowing", "naming"]
+    },
+    {
+      "id": "c-imp-05",
+      "front": "What is if __name__ == \"__main__\"?",
+      "back": "It runs code only when the file is executed directly, not when imported.\n\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    print(greet(\"Alice\"))  # only runs if file is executed\n\nWhen imported, __name__ is the module name, not \"__main__\".\nThis prevents test code from running on import.",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["__main__", "guard"]
+    },
+    {
+      "id": "c-imp-06",
+      "front": "Why is 'from module import *' considered bad practice?",
+      "back": "It imports everything, polluting your namespace.\n\nfrom math import *  # imports dozens of names\n\nProblems:\n1. You do not know where names came from\n2. Names can clash with your variables\n3. Makes code harder to understand\n\nPrefer: from math import sqrt, pi (import only what you need)",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["star-import", "anti-patterns"]
+    },
+    {
+      "id": "c-imp-07",
+      "front": "What is a circular import and how do you fix it?",
+      "back": "When module A imports module B and module B imports module A.\n\n# a.py: from b import func_b\n# b.py: from a import func_a\n# ImportError!\n\nFixes:\n1. Move shared code to a third module c.py\n2. Move the import inside the function that needs it\n3. Restructure to break the cycle",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 3,
+      "tags": ["circular", "imports"]
+    },
+    {
+      "id": "c-imp-08",
+      "front": "Where does Python search for modules to import?",
+      "back": "Python searches sys.path in order:\n1. The directory of the current script\n2. PYTHONPATH environment variable\n3. Standard library directories\n4. site-packages (installed packages)\n\nimport sys\nprint(sys.path)  # shows the search order\n\nIf Python cannot find a module: ModuleNotFoundError.",
+      "concept_ref": "concepts/how-imports-work.md",
+      "difficulty": 2,
+      "tags": ["sys.path", "module-search"]
+    }
+  ]
+}

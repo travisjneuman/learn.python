@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Regex Explained",
+  "description": "Regular expressions, the re module, patterns, groups, flags, and common recipes",
+  "cards": [
+    {
+      "id": "c-regex-01",
+      "front": "What are the 3 most common re module functions?",
+      "back": "re.search(pattern, text)  — find FIRST match anywhere\nre.findall(pattern, text) — find ALL matches, return list\nre.sub(pattern, repl, text) — replace matches\n\nimport re\nre.search(r\"\\d+\", \"age 42\")   # Match: \"42\"\nre.findall(r\"\\d+\", \"42 and 99\") # [\"42\", \"99\"]\nre.sub(r\"\\d\", \"X\", \"age 42\")    # \"age XX\"",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 1,
+      "tags": ["re", "search", "findall"]
+    },
+    {
+      "id": "c-regex-02",
+      "front": "Why should you always use raw strings (r\"...\") for regex?",
+      "back": "Raw strings prevent Python from interpreting backslashes.\n\n# WRONG — Python sees \\b as backspace:\nre.search(\"\\bword\\b\", text)\n\n# RIGHT — regex engine sees \\b as word boundary:\nre.search(r\"\\bword\\b\", text)\n\nWithout r, \\n is newline, \\t is tab, \\b is backspace, etc.",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 1,
+      "tags": ["raw-strings", "backslash"]
+    },
+    {
+      "id": "c-regex-03",
+      "front": "What do \\d, \\w, \\s, and . match?",
+      "back": "\\d — any digit (0-9)\n\\w — word character (letter, digit, underscore)\n\\s — whitespace (space, tab, newline)\n.  — any character except newline\n\nUppercase is the opposite:\n\\D — non-digit\n\\W — non-word\n\\S — non-whitespace",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 1,
+      "tags": ["character-classes", "shortcuts"]
+    },
+    {
+      "id": "c-regex-04",
+      "front": "What do the quantifiers *, +, ?, and {n} mean?",
+      "back": "*     — zero or more\n+     — one or more\n?     — zero or one\n{3}   — exactly 3\n{2,4} — between 2 and 4\n{2,}  — 2 or more\n\n\\d+   matches \"42\", \"123\" but not \"\"\n\\d*   matches \"42\", \"123\", and \"\"",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 2,
+      "tags": ["quantifiers", "repetition"]
+    },
+    {
+      "id": "c-regex-05",
+      "front": "How do groups work in regex?",
+      "back": "Parentheses () capture parts of the match.\n\nmatch = re.search(r\"(\\d{4})-(\\d{2})-(\\d{2})\", \"2024-01-15\")\nmatch.group()   # \"2024-01-15\" (entire match)\nmatch.group(1)  # \"2024\" (first group)\nmatch.group(2)  # \"01\"\n\nNamed groups: (?P<year>\\d{4})\nmatch.group(\"year\")  # \"2024\"",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 2,
+      "tags": ["groups", "capturing"]
+    },
+    {
+      "id": "c-regex-06",
+      "front": "What is the difference between greedy and lazy matching?",
+      "back": "Greedy (default) — matches as MUCH as possible\nLazy (add ?) — matches as LITTLE as possible\n\ntext = \"<b>bold</b> and <b>more</b>\"\n\nre.search(r\"<b>.*</b>\", text).group()\n# \"<b>bold</b> and <b>more</b>\" — greedy\n\nre.search(r\"<b>.*?</b>\", text).group()\n# \"<b>bold</b>\" — lazy",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 2,
+      "tags": ["greedy", "lazy"]
+    },
+    {
+      "id": "c-regex-07",
+      "front": "What do ^ and $ anchors match?",
+      "back": "^ — start of string\n$ — end of string\n\\b — word boundary\n\nre.match(r\"^\\d+$\", \"12345\")  # Match (only digits)\nre.match(r\"^\\d+$\", \"123abc\") # No match\n\nre.findall(r\"\\bcat\\b\", \"the cat sat on the catalog\")\n# [\"cat\"] — does NOT match \"cat\" inside \"catalog\"",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 2,
+      "tags": ["anchors", "boundaries"]
+    },
+    {
+      "id": "c-regex-08",
+      "front": "What is the common mistake when search() returns None?",
+      "back": "Calling .group() on None crashes.\n\n# WRONG:\nresult = re.search(r\"\\d+\", \"no numbers\").group()  # AttributeError!\n\n# RIGHT:\nmatch = re.search(r\"\\d+\", \"no numbers\")\nif match:\n    result = match.group()\n\nAlways check if search() returned None before using .group().",
+      "concept_ref": "concepts/regex-explained.md",
+      "difficulty": 2,
+      "tags": ["None-check", "mistakes"]
+    }
+  ]
+}

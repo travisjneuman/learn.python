@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Functions Explained",
+  "description": "Defining functions, parameters, return values, default arguments, scope",
+  "cards": [
+    {
+      "id": "c-func-01",
+      "front": "How do you define and call a function in Python?",
+      "back": "Use def to define, then call by name with parentheses.\n\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nmessage = greet(\"Alice\")  # \"Hello, Alice!\"\n\ndef = define, name = the function name, (name) = parameter, return = send back a value.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["functions", "def"]
+    },
+    {
+      "id": "c-func-02",
+      "front": "What happens if a function has no return statement?",
+      "back": "It returns None automatically.\n\ndef say_hello():\n    print(\"Hello!\")\n\nresult = say_hello()  # prints \"Hello!\"\nprint(result)         # None\n\nFunctions that do something (print, write) often return None.\nFunctions that compute something should return the result.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["return", "None"]
+    },
+    {
+      "id": "c-func-03",
+      "front": "What is the difference between a parameter and an argument?",
+      "back": "Parameters are the names in the function definition.\nArguments are the values you pass when calling.\n\ndef add(a, b):     # a, b are parameters\n    return a + b\n\nadd(3, 5)          # 3, 5 are arguments",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["parameters", "arguments"]
+    },
+    {
+      "id": "c-func-04",
+      "front": "How do default parameter values work?",
+      "back": "Set a default with = in the definition. Optional when calling.\n\ndef greet(name, greeting=\"Hello\"):\n    return f\"{greeting}, {name}!\"\n\ngreet(\"Alice\")           # \"Hello, Alice!\"\ngreet(\"Alice\", \"Hey\")    # \"Hey, Alice!\"\n\nParameters with defaults must come after parameters without.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["defaults", "parameters"]
+    },
+    {
+      "id": "c-func-05",
+      "front": "What happens if you call a function without parentheses?",
+      "back": "You get the function object itself, not its return value.\n\ngreet          # <function greet at 0x...> (the function object)\ngreet(\"Alice\") # \"Hello, Alice!\" (calls the function)\n\nThis is a common mistake — always include () to call.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "calling"]
+    },
+    {
+      "id": "c-func-06",
+      "front": "Why do functions matter? Name 4 reasons.",
+      "back": "1. Reuse — write once, use everywhere\n2. Organize — break problems into named pieces\n3. Test — test each piece independently\n4. Read — calculate_tax(price) is clearer than 5 lines of math\n\nFunctions are the building blocks of all programs.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 1,
+      "tags": ["functions", "principles"]
+    },
+    {
+      "id": "c-func-07",
+      "front": "What error do you get if you define a function after calling it?",
+      "back": "NameError — the function does not exist yet.\n\ngreet(\"Alice\")    # NameError: name 'greet' is not defined\n\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nPython reads top-to-bottom. Define functions before using them.",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["functions", "errors"]
+    },
+    {
+      "id": "c-func-08",
+      "front": "What is the common mistake with forgetting return?",
+      "back": "The function runs but gives None instead of the result.\n\ndef add(a, b):\n    result = a + b\n    # Forgot: return result\n\ntotal = add(3, 5)  # total is None, not 8\n\nAlways check: does my function return the value, or just compute it?",
+      "concept_ref": "concepts/functions-explained.md",
+      "difficulty": 2,
+      "tags": ["return", "mistakes"]
+    }
+  ]
+}

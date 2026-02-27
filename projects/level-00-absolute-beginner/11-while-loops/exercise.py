@@ -1,3 +1,4 @@
+"""Learn to repeat actions based on a condition using while loops and break."""
 # ============================================================
 # Exercise 11: While Loops
 # ============================================================

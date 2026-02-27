@@ -103,6 +103,7 @@ class TestGeneratorRegistry:
         assert "MANIFEST.json" in bp.paths
 
 
+@pytest.mark.integration
 class TestBlueprintPersistence:
     def test_write_creates_all_files(self, tmp_path: Path, standard_spec: ProjectSpec) -> None:
         registry = build_default_registry()

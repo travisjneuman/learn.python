@@ -121,6 +121,7 @@ def test_load_rows_rejects_invalid(conn: sqlite3.Connection) -> None:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path: Path) -> None:
     csv_path = _write_csv(
         tmp_path,

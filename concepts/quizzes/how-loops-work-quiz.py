@@ -3,7 +3,7 @@ Quiz: How Loops Work
 Review: concepts/how-loops-work.md
 """
 
-from _quiz_helpers import normalize_answer
+from _quiz_helpers import normalize_answer, ask_true_false, ask_code_completion
 
 
 def run_quiz():
@@ -14,10 +14,10 @@ def run_quiz():
     print()
 
     score = 0
-    total = 7
+    total = 10
 
     # Question 1
-    print("Question 1/7: What does range(5) produce?")
+    print("Question 1/10: What does range(5) produce?")
     print()
     print("  a) 1, 2, 3, 4, 5")
     print("  b) 0, 1, 2, 3, 4")
@@ -35,7 +35,7 @@ def run_quiz():
     print()
 
     # Question 2
-    print("Question 2/7: What will this code print?")
+    print("Question 2/10: What will this code print?")
     print()
     print('  for letter in "Hi":')
     print("      print(letter)")
@@ -56,7 +56,7 @@ def run_quiz():
     print()
 
     # Question 3
-    print("Question 3/7: When should you use a while loop instead of")
+    print("Question 3/10: When should you use a while loop instead of")
     print("a for loop?")
     print()
     print("  a) When you know exactly how many times to repeat")
@@ -75,7 +75,7 @@ def run_quiz():
     print()
 
     # Question 4
-    print("Question 4/7: What is wrong with this code?")
+    print("Question 4/10: What is wrong with this code?")
     print()
     print("  count = 1")
     print("  while count <= 5:")
@@ -97,7 +97,7 @@ def run_quiz():
     print()
 
     # Question 5
-    print("Question 5/7: What does range(2, 8, 2) produce?")
+    print("Question 5/10: What does range(2, 8, 2) produce?")
     print()
     print("  a) 2, 4, 6, 8")
     print("  b) 2, 4, 6")
@@ -115,7 +115,7 @@ def run_quiz():
     print()
 
     # Question 6
-    print("Question 6/7: How many times does this loop print?")
+    print("Question 6/10: How many times does this loop print?")
     print()
     print("  for i in range(3):")
     print('      print("hello")')
@@ -131,7 +131,7 @@ def run_quiz():
     print()
 
     # Question 7
-    print("Question 7/7: Why is it dangerous to modify a list while")
+    print("Question 7/10: Why is it dangerous to modify a list while")
     print("looping over it?")
     print()
     print("  a) It causes a SyntaxError")
@@ -148,6 +148,51 @@ def run_quiz():
         print("Incorrect. The answer is b). Modifying a list during")
         print("iteration can skip items. Build a new list instead.")
     print()
+
+    # Question 8 — true/false
+    if ask_true_false(
+        question_num=8,
+        total=total,
+        statement="A for loop and a while loop can always be used interchangeably.",
+        correct=False,
+        explanation_correct="While they can often achieve the same result, for loops are best when you know the number of iterations, and while loops are best when you are waiting for a condition.",
+        explanation_incorrect="For loops iterate over a known sequence. While loops repeat until a condition becomes false. They have different strengths.",
+    ):
+        score += 1
+
+    # Question 9 — code completion
+    if ask_code_completion(
+        question_num=9,
+        total=total,
+        prompt="Complete the loop so it prints numbers 0 through 4:",
+        code_lines=[
+            "for i in ____(5):",
+            "    print(i)",
+        ],
+        correct_answers=["range"],
+        explanation_correct="range(5) produces 0, 1, 2, 3, 4.",
+        explanation_incorrect="The range() function generates a sequence of numbers.",
+        case_sensitive=True,
+    ):
+        score += 1
+
+    # Question 10 — code completion
+    if ask_code_completion(
+        question_num=10,
+        total=total,
+        prompt="What keyword exits a loop immediately?",
+        code_lines=[
+            "while True:",
+            "    user = input('Type quit to exit: ')",
+            "    if user == 'quit':",
+            "        ____",
+        ],
+        correct_answers=["break"],
+        explanation_correct="break exits the nearest enclosing loop right away.",
+        explanation_incorrect="The break keyword stops the loop and continues with the code after it.",
+        case_sensitive=True,
+    ):
+        score += 1
 
     # Final score
     print("=" * 60)

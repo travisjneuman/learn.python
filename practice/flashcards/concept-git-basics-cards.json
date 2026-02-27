@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Git Basics",
+  "description": "Local git, remotes, branches, merge conflicts, .gitignore, and the GitHub workflow",
+  "cards": [
+    {
+      "id": "c-git-01",
+      "front": "What are git's three areas and the basic workflow?",
+      "back": "Working Directory -> Staging Area -> Repository\n    (edit)          (git add)       (git commit)\n\n1. Edit files normally\n2. Stage changes: git add main.py\n3. Commit staged changes: git commit -m \"Add feature\"\n\ngit status shows where each file is in this flow.",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 1,
+      "tags": ["git", "workflow"]
+    },
+    {
+      "id": "c-git-02",
+      "front": "How do branches work in git?",
+      "back": "Branches are parallel timelines for experimentation.\n\ngit branch feature-login    # create branch\ngit switch feature-login    # switch to it\ngit switch -c feature-login # create AND switch\n\n# When done:\ngit switch main\ngit merge feature-login     # merge back\ngit branch -d feature-login # delete branch",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 2,
+      "tags": ["branches", "merge"]
+    },
+    {
+      "id": "c-git-03",
+      "front": "What should your .gitignore contain for Python projects?",
+      "back": "__pycache__/\n*.pyc\n.venv/\n.env\n.DS_Store\nThumbs.db\n.vscode/\n.idea/\ndist/\nbuild/\n*.egg-info/\n\nNever commit: secrets (.env), virtual environments (.venv/), IDE files, or build artifacts.",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 1,
+      "tags": ["gitignore", "python"]
+    },
+    {
+      "id": "c-git-04",
+      "front": "What is a merge conflict and how do you resolve it?",
+      "back": "When two branches change the same line, git marks the conflict:\n\n<<<<<<< HEAD\n    return \"Hello!\"\n=======\n    return \"Hi there!\"\n>>>>>>> feature-branch\n\nTo resolve:\n1. Choose which version to keep (or combine)\n2. Remove the <<<, ===, >>> markers\n3. git add filename.py\n4. git commit -m \"Resolve conflict\"",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 2,
+      "tags": ["merge-conflict", "resolution"]
+    },
+    {
+      "id": "c-git-05",
+      "front": "What are the essential git commands for working with GitHub?",
+      "back": "git clone <url>           # download a repo\ngit remote add origin <url>  # link to remote\ngit push                  # upload commits\ngit pull                  # download commits\ngit remote -v             # show remote URLs\n\nAlways git pull before git push to avoid conflicts.",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 1,
+      "tags": ["github", "remotes"]
+    },
+    {
+      "id": "c-git-06",
+      "front": "What makes a good commit message vs a bad one?",
+      "back": "BAD:\ngit commit -m \"fix\"\ngit commit -m \"stuff\"\ngit commit -m \"asdfg\"\n\nGOOD:\ngit commit -m \"Fix off-by-one error in pagination\"\ngit commit -m \"Add password validation to signup form\"\n\nEach commit should be one logical change with a clear description.",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 1,
+      "tags": ["commits", "messages"]
+    },
+    {
+      "id": "c-git-07",
+      "front": "What happens if you accidentally commit a secret?",
+      "back": "It lives in git history forever, even if you delete the file.\n\nYou MUST:\n1. Rotate (change) the exposed credentials immediately\n2. Add the file to .gitignore\n\nPrevention: set up .gitignore BEFORE your first commit.\nNever: git add .env or git add credentials.json",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 2,
+      "tags": ["secrets", "security"]
+    },
+    {
+      "id": "c-git-08",
+      "front": "How do you undo things in git?",
+      "back": "Unstage a file (keep changes):\ngit restore --staged file.py\n\nDiscard working changes:\ngit restore file.py\n\nUndo last commit (keep changes):\ngit reset --soft HEAD~1\n\nFix last commit message:\ngit commit --amend -m \"Better message\"",
+      "concept_ref": "concepts/git-basics.md",
+      "difficulty": 2,
+      "tags": ["undo", "restore"]
+    }
+  ]
+}

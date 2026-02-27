@@ -40,7 +40,7 @@ def calculate_average(scores: list[float]) -> float:
     return round(sum(scores) / len(scores), 2)
 
 
-def parse_student_row(row: dict) -> dict:
+def parse_student_row(row: dict[str, str]) -> dict[str, str | list[float] | float | bool]:
     """Parse a CSV row into a student record with computed fields.
 
     Expected columns: student, score1, score2, score3, ...
@@ -67,7 +67,7 @@ def parse_student_row(row: dict) -> dict:
     }
 
 
-def load_gradebook(path: Path) -> list[dict]:
+def load_gradebook(path: Path) -> list[dict[str, str | list[float] | float | bool]]:
     """Load students and their grades from a CSV file."""
     if not path.exists():
         raise FileNotFoundError(f"Gradebook file not found: {path}")
@@ -80,7 +80,7 @@ def load_gradebook(path: Path) -> list[dict]:
     return students
 
 
-def class_summary(students: list[dict]) -> dict:
+def class_summary(students: list[dict[str, str | list[float] | float | bool]]) -> dict[str, int | float]:
     """Compute class-wide statistics."""
     if not students:
         return {"total": 0}
@@ -98,7 +98,7 @@ def class_summary(students: list[dict]) -> dict:
     }
 
 
-def format_report(students: list[dict], summary: dict) -> str:
+def format_report(students: list[dict[str, str | list[float] | float | bool]], summary: dict[str, int | float]) -> str:
     """Format the gradebook as a plain-text table report.
 
     WHY plain text? -- A formatted table is easy to read and can be

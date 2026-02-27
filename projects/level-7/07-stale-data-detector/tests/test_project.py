@@ -84,6 +84,7 @@ class TestSummarise:
         assert summary["all_fresh"] is False
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     now = 1000.0
     config = {

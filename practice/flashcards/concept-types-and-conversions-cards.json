@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Types and Conversions",
+  "description": "Python data types, type checking, type casting, truthy/falsy values",
+  "cards": [
+    {
+      "id": "c-type-01",
+      "front": "What are the 5 basic Python data types?",
+      "back": "str — text: \"hello\"\nint — whole number: 42\nfloat — decimal: 3.14\nbool — True or False\nNone — nothing / empty\n\nCheck with type(): type(42) gives <class 'int'>",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["types", "basics"]
+    },
+    {
+      "id": "c-type-02",
+      "front": "Why must you convert input() results before doing math?",
+      "back": "input() always returns a string, even if the user types a number.\n\nage_text = input(\"Age? \")  # \"30\" — a string\nage = int(age_text)         # 30 — an integer\nprint(age + 1)              # 31\n\nWithout conversion: \"30\" + 1 raises TypeError.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["input", "conversion"]
+    },
+    {
+      "id": "c-type-03",
+      "front": "What are Python's type conversion functions?",
+      "back": "str()   — converts to string: str(42) gives \"42\"\nint()   — converts to integer: int(\"42\") gives 42\nfloat() — converts to float: float(\"3.14\") gives 3.14\nbool()  — converts to boolean: bool(0) gives False\n\nint(\"hello\") raises ValueError — not all strings convert.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["conversion", "functions"]
+    },
+    {
+      "id": "c-type-04",
+      "front": "What values are falsy in Python?",
+      "back": "Falsy (treated as False in conditions):\nFalse, 0, 0.0, \"\" (empty string), [] (empty list), {} (empty dict), None\n\nEverything else is truthy.\n\nname = \"\"\nif name:    # False — empty string is falsy\n    print(\"has name\")",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["truthy", "falsy", "booleans"]
+    },
+    {
+      "id": "c-type-05",
+      "front": "Why does \"5\" == 5 return False?",
+      "back": "Python does not automatically convert between types when comparing.\n\n\"5\" == 5       # False — string vs integer\nint(\"5\") == 5  # True — both are integers now\n\nExplicit conversion prevents subtle bugs where \"2\" + \"5\" = \"25\" but 2 + 5 = 7.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["comparison", "types"]
+    },
+    {
+      "id": "c-type-06",
+      "front": "What is the difference between int() and float() for string conversion?",
+      "back": "int() converts to whole number — fails on decimal strings.\nfloat() converts to decimal number — works on both.\n\nint(\"42\")     # 42\nint(\"3.14\")   # ValueError!\nfloat(\"3.14\") # 3.14\nfloat(\"42\")   # 42.0\n\nTo convert \"3.14\" to int: int(float(\"3.14\")) gives 3.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["conversion", "int", "float"]
+    },
+    {
+      "id": "c-type-07",
+      "front": "How do you check the type of a value?",
+      "back": "Use the type() function:\n\ntype(\"hello\")  # <class 'str'>\ntype(42)       # <class 'int'>\ntype(3.14)     # <class 'float'>\ntype(True)     # <class 'bool'>\n\nUse isinstance() for type checking in code:\nisinstance(42, int)  # True",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 1,
+      "tags": ["type", "introspection"]
+    },
+    {
+      "id": "c-type-08",
+      "front": "What is the difference between / and // division?",
+      "back": "/ always returns a float (true division)\n// returns an int (floor division — rounds down)\n\n10 / 3   # 3.3333...\n10 // 3  # 3\n10 / 2   # 5.0 (float, not int!)\n10 // 2  # 5 (int)\n\nUse // when you need a whole number result.",
+      "concept_ref": "concepts/types-and-conversions.md",
+      "difficulty": 2,
+      "tags": ["division", "operators"]
+    }
+  ]
+}

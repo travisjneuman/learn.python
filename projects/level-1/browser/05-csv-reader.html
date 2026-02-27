@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV First Reader — Level 1 Browser Exercise</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1b26;
+  --surface: #24283b;
+  --border: #3b4261;
+  --text: #c0caf5;
+  --text-dim: #565f89;
+  --accent: #7aa2f7;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --red: #f7768e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+.nav-links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+.nav-links a { color: var(--accent); text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+.description {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem;
+  white-space: pre-wrap; color: var(--text-dim); max-height: 260px; overflow-y: auto;
+}
+
+.editor-wrapper {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem;
+}
+
+.CodeMirror {
+  height: auto; min-height: 200px; max-height: 500px; font-size: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.5rem 1.25rem; border: none; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run { background: var(--green); color: var(--bg); }
+.btn-check { background: var(--accent); color: var(--bg); }
+.btn-reset { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-clear { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+.output-wrapper {
+  background: #0d1117; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim);
+}
+.output-content {
+  padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px; min-height: 100px; max-height: 300px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+}
+.output-content .error { color: var(--red); }
+.output-content .info { color: var(--text-dim); }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(26, 27, 38, 0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 1rem;
+}
+.loading-overlay p { font-size: 1.1rem; color: var(--text); }
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .header h1 { font-size: 1.1rem; }
+  .CodeMirror { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Loading Python runtime...</p>
+</div>
+
+<div class="container" role="main">
+  <div class="header">
+    <h1>CSV First Reader</h1>
+    <nav class="nav-links" role="navigation" aria-label="Exercise navigation">
+      <a href="02-password-strength.html">&larr; Prev</a>
+      <a href="../../../browser/index.html">All Exercises</a>
+      <a href="09-json-settings.html">Next &rarr;</a>
+    </nav>
+  </div>
+
+  <div class="description" id="description">Level 1 / Project 05 — CSV First Reader
+
+Parse CSV text into a list of dicts, detect numeric columns, and compute column statistics.
+
+Browser adaptation: Instead of reading from a file with csv.DictReader, you will
+parse a CSV string directly. The same logic applies -- split lines, use the
+header row as keys, and build dictionaries for each data row.
+
+1. parse_csv(text)
+   - The first line is the header row (comma-separated column names)
+   - Each subsequent line is a data row
+   - Return a list of dicts where keys come from the header
+   - Empty text returns an empty list
+
+2. detect_numeric_columns(rows)
+   - Find columns where ALL non-empty values can be converted to float
+   - Return a list of column names that are numeric
+
+3. column_stats(rows, column)
+   - Compute min, max, sum, and average for a numeric column
+   - Return: {"column": name, "count": n, "min": ..., "max": ..., "sum": ..., "average": ...}
+   - If no values, return: {"column": name, "count": 0}
+
+Examples:
+  csv_text = "name,age,city\nAlice,30,Denver\nBob,25,Austin"
+  parse_csv(csv_text)  ->  [{"name": "Alice", "age": "30", "city": "Denver"}, ...]
+
+  rows = [{"name": "A", "score": "90"}, {"name": "B", "score": "85"}]
+  detect_numeric_columns(rows)  ->  ["score"]
+
+  column_stats(rows, "score")  ->  {"column": "score", "count": 2, "min": 85.0, ...}</div>
+
+  <div class="editor-wrapper" aria-label="Python code editor">
+    <textarea id="editor" aria-label="Python code editor"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-run" id="runBtn" disabled>Run (Ctrl+Enter)</button>
+    <button class="btn btn-check" id="checkBtn" disabled>Check</button>
+    <button class="btn btn-reset" id="resetBtn">Reset Code</button>
+    <button class="btn btn-clear" id="clearBtn">Clear Output</button>
+  </div>
+
+  <div class="output-wrapper">
+    <div class="output-header">
+      <span>Output</span>
+      <span id="statusLabel"></span>
+    </div>
+    <div class="output-content" id="output">
+      <span class="info">Click "Run" to execute your code, or "Check" to validate.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script>
+var originalCode = 'def parse_csv(text):\n    """Parse CSV text into a list of dicts.\n\n    The first line is the header row. Each subsequent line is a data row.\n    Return a list of dicts where keys come from the header.\n    Empty text returns an empty list.\n    """\n    # Your code here\n    pass\n\n\ndef detect_numeric_columns(rows):\n    """Find columns where all non-empty values are numeric.\n\n    Return a list of column names that are numeric.\n    """\n    if not rows:\n        return []\n\n    columns = list(rows[0].keys())\n    numeric = []\n\n    # TODO: for each column, check if ALL values can be converted to float\n    # Hint: use try/except with float(value)\n\n    return numeric\n\n\ndef column_stats(rows, column):\n    """Compute min, max, sum, and average for a numeric column.\n\n    Return a dict with: column, count, min, max, sum, average.\n    If no values, return: {"column": column, "count": 0}.\n    """\n    values = []\n    for row in rows:\n        val = row[column].strip()\n        if val:\n            values.append(float(val))\n\n    if not values:\n        return {"column": column, "count": 0}\n\n    # TODO: compute and return the stats dict\n    pass\n\n\n# --- Try it out ---\ncsv_data = """name,age,city,salary\nAlice,30,Denver,85000\nBob,25,Austin,62000\nCharlie,35,Seattle,91000"""\n\nprint("=== Parsed CSV ===")\nrows = parse_csv(csv_data)\nfor row in rows:\n    print(f"  {row}")\n\nprint(f"\\n=== Numeric Columns ===")\nnumeric = detect_numeric_columns(rows)\nprint(f"  {numeric}")\n\nprint(f"\\n=== Column Statistics ===")\nfor col in numeric:\n    stats = column_stats(rows, col)\n    print(f"  {col}: min={stats[\'min\']}, max={stats[\'max\']}, avg={stats[\'average\']}")\n';
+
+var checkCode_str = '# --- Tests ---\ncsv1 = "name,age,city\\nAlice,30,Denver\\nBob,25,Austin"\nr = parse_csv(csv1)\nassert len(r) == 2, f"Expected 2 rows, got {len(r)}"\nassert r[0] == {"name": "Alice", "age": "30", "city": "Denver"}, f"Row 0 wrong: {r[0]}"\nassert r[1]["name"] == "Bob", f"Row 1 name should be Bob"\nassert r[1]["age"] == "25", f"Values should be strings"\n\nassert parse_csv("") == [], "Empty text should return empty list"\n\ncsv2 = "x,y\\n1,2"\nr2 = parse_csv(csv2)\nassert r2 == [{"x": "1", "y": "2"}], f"Single row failed: {r2}"\n\n# detect_numeric_columns\nrows = [{"name": "A", "score": "90"}, {"name": "B", "score": "85"}]\nnumeric = detect_numeric_columns(rows)\nassert "score" in numeric, f"score should be numeric, got {numeric}"\nassert "name" not in numeric, f"name should not be numeric"\n\nrows2 = [{"val": "10", "mix": "abc"}, {"val": "20", "mix": "30"}]\nassert "val" in detect_numeric_columns(rows2)\nassert "mix" not in detect_numeric_columns(rows2), "Mixed column should not be numeric"\n\n# column_stats\nrows3 = [{"val": "10"}, {"val": "20"}, {"val": "30"}]\nstats = column_stats(rows3, "val")\nassert stats["min"] == 10.0, f"min should be 10.0, got {stats[\'min\']}"\nassert stats["max"] == 30.0, f"max should be 30.0"\nassert stats["average"] == 20.0, f"average should be 20.0"\nassert stats["count"] == 3\n\nempty_stats = column_stats([], "val") if False else {"column": "x", "count": 0}\n# edge: empty values\nrows4 = [{"val": ""}]\nstats4 = column_stats(rows4, "val")\nassert stats4["count"] == 0, "Empty values should give count 0"\n\nprint("All tests passed!")\n';
+
+var storageKey = 'learn-python-l1-browser-05';
+var cmEditor;
+
+function initEditor() {
+  cmEditor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+    mode: 'python', theme: 'dracula', lineNumbers: true,
+    indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: true,
+    extraKeys: {
+      'Tab': function(cm) { cm.replaceSelection('    ', 'end'); },
+      'Ctrl-Enter': function() { runCode(); },
+      'Cmd-Enter': function() { runCode(); }
+    }
+  });
+
+  var savedCode = localStorage.getItem(storageKey);
+  if (savedCode !== null) { cmEditor.setValue(savedCode); }
+  else { cmEditor.setValue(originalCode); }
+
+  var saveTimer = null;
+  cmEditor.on('change', function() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function() {
+      localStorage.setItem(storageKey, cmEditor.getValue());
+    }, 500);
+  });
+}
+
+var outputEl = document.getElementById('output');
+var statusLabel = document.getElementById('statusLabel');
+var runBtn = document.getElementById('runBtn');
+var checkBtn = document.getElementById('checkBtn');
+
+function appendOutput(text, className) {
+  var span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text;
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function clearOutput() {
+  while (outputEl.firstChild) { outputEl.removeChild(outputEl.firstChild); }
+}
+
+var pyodideInstance = null;
+
+async function initPyodide() {
+  try {
+    pyodideInstance = await loadPyodide();
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+    document.getElementById('loading').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loading').querySelector('p').textContent =
+      'Failed to load Python runtime. Please refresh.';
+  }
+}
+
+async function executePython(code, label) {
+  if (!pyodideInstance) return;
+  clearOutput();
+  statusLabel.textContent = label || 'Running...';
+  statusLabel.style.color = '';
+  runBtn.disabled = true;
+  checkBtn.disabled = true;
+
+  try {
+    pyodideInstance.runPython(
+      'import sys\nfrom io import StringIO\n' +
+      'sys.stdout = StringIO()\nsys.stderr = StringIO()\n'
+    );
+
+    pyodideInstance.runPython(code);
+
+    var stdout = pyodideInstance.runPython('sys.stdout.getvalue()');
+    var stderr = pyodideInstance.runPython('sys.stderr.getvalue()');
+    if (stdout) appendOutput(stdout, '');
+    if (stderr) appendOutput(stderr, 'error');
+    statusLabel.textContent = 'Done';
+    return true;
+
+  } catch (e) {
+    try {
+      var partial = pyodideInstance.runPython('sys.stdout.getvalue()');
+      if (partial) appendOutput(partial, '');
+    } catch (ignored) {}
+
+    var msg = e.message || String(e);
+    var tbIdx = msg.indexOf('Traceback');
+    appendOutput(tbIdx !== -1 ? msg.substring(tbIdx) : msg, 'error');
+    statusLabel.textContent = 'Error';
+    return false;
+
+  } finally {
+    try {
+      pyodideInstance.runPython('sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__\n');
+    } catch (ignored) {}
+    runBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+}
+
+async function runCode() {
+  await executePython(cmEditor.getValue(), 'Running...');
+}
+
+async function checkSolution() {
+  var userCode = cmEditor.getValue();
+  var fullCode = userCode + '\n' + checkCode_str;
+  var success = await executePython(fullCode, 'Checking...');
+  if (success) {
+    var output = outputEl.textContent || '';
+    if (output.indexOf('All tests passed') !== -1) {
+      statusLabel.textContent = 'PASSED';
+      statusLabel.style.color = 'var(--green)';
+    }
+  }
+}
+
+initEditor();
+runBtn.addEventListener('click', runCode);
+checkBtn.addEventListener('click', checkSolution);
+document.getElementById('resetBtn').addEventListener('click', function() {
+  cmEditor.setValue(originalCode);
+  localStorage.removeItem(storageKey);
+});
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+
+var s = document.createElement('script');
+s.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js';
+s.onload = initPyodide;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+"""Learn to read user input from the keyboard and convert it to the right data type."""
 # ============================================================
 # Exercise 07: User Input
 # ============================================================

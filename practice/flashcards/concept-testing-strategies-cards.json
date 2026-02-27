@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Testing Strategies",
+  "description": "The test pyramid, pytest, fixtures, TDD, mocking, parametrize, and code coverage",
+  "cards": [
+    {
+      "id": "c-test-01",
+      "front": "What is the test pyramid?",
+      "back": "A model for how many of each test type you should have:\n\n        / E2E \\           Few — slow, expensive, brittle\n       /--------\\\n      / Integration \\     Some — test component interactions\n     /--------------\\\n    /   Unit Tests    \\   Many — fast, focused, isolated\n   --------------------\n\nUnit tests: test one function/class in isolation\nIntegration: test how components work together\nE2E: test the whole system from the user's view\n\nMost tests should be unit tests.",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 1,
+      "tags": ["test-pyramid", "types"]
+    },
+    {
+      "id": "c-test-02",
+      "front": "How do you write a basic pytest test?",
+      "back": "# calculator.py\ndef add(a, b):\n    return a + b\n\n# test_calculator.py\nfrom calculator import add\n\ndef test_add():\n    assert add(2, 3) == 5\n\ndef test_add_negative():\n    assert add(-1, 1) == 0\n\nRun: pytest\nRun verbose: pytest -v\nRun specific: pytest test_calculator.py::test_add\n\nTest functions must start with test_.",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 1,
+      "tags": ["pytest", "basics"]
+    },
+    {
+      "id": "c-test-03",
+      "front": "How do you test that an exception is raised?",
+      "back": "import pytest\n\ndef test_divide_by_zero():\n    with pytest.raises(ValueError, match=\"Cannot divide by zero\"):\n        divide(10, 0)\n\nThe test passes ONLY if:\n1. The code inside the with block raises ValueError\n2. The error message matches the pattern\n\nWithout match=, it just checks the exception type.",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 1,
+      "tags": ["pytest.raises", "exceptions"]
+    },
+    {
+      "id": "c-test-04",
+      "front": "What are pytest fixtures?",
+      "back": "Reusable setup/teardown for tests.\n\n@pytest.fixture\ndef db():\n    conn = sqlite3.connect(\":memory:\")\n    conn.execute(\"CREATE TABLE users (id INTEGER, name TEXT)\")\n    conn.execute(\"INSERT INTO users VALUES (1, 'Alice')\")\n    conn.commit()\n    yield conn    # Provide to the test\n    conn.close()   # Cleanup after\n\ndef test_count_users(db):    # db is injected automatically\n    cursor = db.execute(\"SELECT COUNT(*) FROM users\")\n    assert cursor.fetchone()[0] == 1\n\nEach test gets a fresh fixture — tests don't affect each other.",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 2,
+      "tags": ["fixtures", "setup"]
+    },
+    {
+      "id": "c-test-05",
+      "front": "What is TDD and the Red-Green-Refactor cycle?",
+      "back": "Test-Driven Development — write the test FIRST, then the code.\n\n1. RED — Write a failing test for the feature you want\n2. GREEN — Write the minimum code to make it pass\n3. REFACTOR — Clean up while keeping tests green\n\nExample:\n# RED: test_fizzbuzz_three fails (fizzbuzz doesn't exist)\ndef test_fizzbuzz_three():\n    assert fizzbuzz(3) == \"Fizz\"\n\n# GREEN: write minimum code\ndef fizzbuzz(n):\n    if n % 3 == 0: return \"Fizz\"\n    return str(n)\n\n# REFACTOR: clean up if needed",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 2,
+      "tags": ["TDD", "red-green-refactor"]
+    },
+    {
+      "id": "c-test-06",
+      "front": "How do parametrized tests work?",
+      "back": "Test many inputs with one test function.\n\n@pytest.mark.parametrize(\"a, b, expected\", [\n    (1, 1, 2),\n    (0, 0, 0),\n    (-1, 1, 0),\n    (100, 200, 300),\n    (1.5, 2.5, 4.0),\n])\ndef test_add(a, b, expected):\n    assert add(a, b) == expected\n\nOne function, five test cases. Each runs independently — if one fails, the others still run.",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 2,
+      "tags": ["parametrize", "multiple-inputs"]
+    },
+    {
+      "id": "c-test-07",
+      "front": "How do you mock external dependencies in tests?",
+      "back": "Replace external systems (APIs, databases) with test doubles.\n\nfrom unittest.mock import patch\n\ndef test_get_weather():\n    with patch(\"requests.get\") as mock_get:\n        mock_get.return_value.json.return_value = {\"temperature\": 72}\n\n        result = get_weather(\"Portland\")\n\n        assert result == 72\n        mock_get.assert_called_once_with(\"https://api.weather.com/Portland\")\n\nTypes: Stub (returns fake data), Mock (records calls), Fake (simplified implementation), Spy (wraps real object).",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 2,
+      "tags": ["mocking", "patch"]
+    },
+    {
+      "id": "c-test-08",
+      "front": "What is code coverage and what should you aim for?",
+      "back": "Coverage measures what percentage of your code runs during tests.\n\npip install pytest-cov\npytest --cov=myproject --cov-report=term-missing\n\nOutput:\nName              Stmts   Miss  Cover   Missing\ncalculator.py        10      2    80%   15-16\n\nAim for 80%+ on critical code.\n\n100% coverage does NOT mean zero bugs — it means every line ran, not that every scenario was tested.\n\nAlways test edge cases: empty input, zero, None, negatives, boundaries.",
+      "concept_ref": "concepts/testing-strategies.md",
+      "difficulty": 2,
+      "tags": ["coverage", "pytest-cov"]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — HTTP Explained",
+  "description": "HTTP methods, status codes, headers, JSON, and the request-response cycle",
+  "cards": [
+    {
+      "id": "c-http-01",
+      "front": "What is the HTTP request-response cycle?",
+      "back": "1. Client sends a REQUEST to a server\n2. Server processes it\n3. Server sends back a RESPONSE\n\nClient --- GET /posts/1 ---> Server\nClient <-- 200 OK + JSON --- Server\n\nEvery web page visit and API call follows this cycle.",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 1,
+      "tags": ["http", "request-response"]
+    },
+    {
+      "id": "c-http-02",
+      "front": "What are the 5 main HTTP methods?",
+      "back": "GET    — read data\nPOST   — create new data\nPUT    — replace data entirely\nPATCH  — update part of data\nDELETE — remove data\n\nGET /users       — list all users\nPOST /users      — create a user\nGET /users/42    — get user 42\nDELETE /users/42 — delete user 42",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 1,
+      "tags": ["methods", "REST"]
+    },
+    {
+      "id": "c-http-03",
+      "front": "What do HTTP status code ranges mean?",
+      "back": "2xx — Success (200 OK, 201 Created, 204 No Content)\n3xx — Redirect (301 Moved, 304 Not Modified)\n4xx — Client error / your fault (400 Bad Request, 401 Unauthorized, 404 Not Found)\n5xx — Server error / their fault (500 Internal Error, 503 Unavailable)\n\nFirst digit tells you the category.",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 1,
+      "tags": ["status-codes", "categories"]
+    },
+    {
+      "id": "c-http-04",
+      "front": "What is JSON and why is it used in APIs?",
+      "back": "JSON (JavaScript Object Notation) — the standard data format for APIs.\n\n{\"name\": \"Alice\", \"age\": 30, \"hobbies\": [\"reading\"]}\n\nIn Python:\nimport json\njson.dumps(data)  # dict -> JSON string\njson.loads(text)  # JSON string -> dict\nresponse.json()   # parse HTTP response body",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 1,
+      "tags": ["json", "data-format"]
+    },
+    {
+      "id": "c-http-05",
+      "front": "What are HTTP headers?",
+      "back": "Key-value metadata attached to requests and responses.\n\nCommon request headers:\nContent-Type: application/json\nAuthorization: Bearer <token>\nAccept: application/json\n\nCommon response headers:\nContent-Type: application/json\nCache-Control: max-age=3600\n\nHeaders configure how the request/response is processed.",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 2,
+      "tags": ["headers", "metadata"]
+    },
+    {
+      "id": "c-http-06",
+      "front": "How do you make HTTP requests in Python?",
+      "back": "import requests\n\n# GET\nresponse = requests.get(\"https://api.example.com/users\")\ndata = response.json()\n\n# POST\nresponse = requests.post(url, json={\"name\": \"Alice\"})\n\n# Check status\nresponse.status_code       # 200\nresponse.raise_for_status() # raises on 4xx/5xx",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 1,
+      "tags": ["requests", "python"]
+    },
+    {
+      "id": "c-http-07",
+      "front": "What is the difference between query parameters and request body?",
+      "back": "Query parameters — in the URL, for filtering/searching:\nGET /users?age=30&city=Portland\n\nRequest body — in the message, for sending data:\nPOST /users\nBody: {\"name\": \"Alice\", \"age\": 30}\n\nGET uses query params. POST/PUT use the body.\nQuery params are visible in the URL. Body is not.",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 2,
+      "tags": ["query-params", "body"]
+    },
+    {
+      "id": "c-http-08",
+      "front": "Why should you always use timeout when making HTTP requests?",
+      "back": "Without timeout, your program can hang forever if the server does not respond.\n\n# BAD — can hang forever:\nrequests.get(url)\n\n# GOOD — fails after 10 seconds:\nrequests.get(url, timeout=10)\n\nAlways set a timeout. Handle timeouts with try/except.",
+      "concept_ref": "concepts/http-explained.md",
+      "difficulty": 2,
+      "tags": ["timeout", "reliability"]
+    }
+  ]
+}

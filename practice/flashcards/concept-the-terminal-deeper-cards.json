@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — The Terminal — Going Deeper",
+  "description": "Pipes, redirects, environment variables, process management, and terminal productivity",
+  "cards": [
+    {
+      "id": "c-term-01",
+      "front": "What does the pipe operator | do in the terminal?",
+      "back": "Sends the output of one command as input to another.\n\nls *.py | wc -l            # count Python files\ncat app.log | grep \"error\"  # find error lines\ndu -sh * | sort -rh | head -5  # 5 largest files\n\nChain commands together to build powerful one-liners.",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 1,
+      "tags": ["pipes", "terminal"]
+    },
+    {
+      "id": "c-term-02",
+      "front": "What do > and >> do in the terminal?",
+      "back": ">  writes output to a file (overwrites)\n>> appends to a file\n\npython script.py > output.txt     # overwrite\necho \"new line\" >> output.txt      # append\npython script.py 2> errors.txt    # redirect errors\npython script.py &> all.txt       # redirect both",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 1,
+      "tags": ["redirects", "output"]
+    },
+    {
+      "id": "c-term-03",
+      "front": "What are environment variables and how do you use them?",
+      "back": "Key-value pairs available to all processes. Used for configuration.\n\n# Set (bash/zsh):\nexport API_KEY=\"abc123\"\n\n# Read in Python:\nimport os\nos.environ[\"API_KEY\"]  # \"abc123\"\nos.environ.get(\"API_KEY\", \"default\")\n\n# View all:\nenv  # or printenv",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 2,
+      "tags": ["env-vars", "configuration"]
+    },
+    {
+      "id": "c-term-04",
+      "front": "What does Ctrl+C do in the terminal?",
+      "back": "Sends SIGINT — interrupts (stops) the running program.\n\nUse when:\n- A program is stuck in an infinite loop\n- A server is running and you want to stop it\n- A command is taking too long\n\nCtrl+Z suspends (pauses) instead of stopping.\nCtrl+D sends EOF (end of file) — exits the Python REPL.",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 1,
+      "tags": ["signals", "ctrl-c"]
+    },
+    {
+      "id": "c-term-05",
+      "front": "What is the difference between $PATH and other environment variables?",
+      "back": "$PATH tells the shell where to find executable programs.\n\necho $PATH\n# /usr/local/bin:/usr/bin:/bin\n\nWhen you type python, the shell searches each directory in PATH.\nIf python is not in PATH, you get \"command not found.\"\n\nOther env vars (like API_KEY) are application-specific configuration.",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 2,
+      "tags": ["PATH", "executables"]
+    },
+    {
+      "id": "c-term-06",
+      "front": "How do you run a command in the background?",
+      "back": "Add & at the end:\npython server.py &\n\nThe terminal is free for other commands.\n\njobs        # list background jobs\nfg          # bring last job to foreground\nfg %1       # bring job 1 to foreground\nkill %1     # stop job 1",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 2,
+      "tags": ["background", "jobs"]
+    },
+    {
+      "id": "c-term-07",
+      "front": "What are useful terminal shortcuts for productivity?",
+      "back": "Tab — autocomplete file/command names\nUp arrow — previous command\nCtrl+R — search command history\nCtrl+A — move to start of line\nCtrl+E — move to end of line\nCtrl+L — clear screen\n!! — repeat last command\n\nThese work in bash, zsh, and most shells.",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 1,
+      "tags": ["shortcuts", "productivity"]
+    },
+    {
+      "id": "c-term-08",
+      "front": "How do you chain commands with && and ;?",
+      "back": "&& — run next command only if previous SUCCEEDED\n;  — run next command regardless\n\nmkdir build && cd build  # cd only if mkdir works\npython test.py && echo \"PASS\"  # echo only if tests pass\npython test.py; echo \"Done\"    # echo always runs\n\nUse && for dependent commands, ; for independent ones.",
+      "concept_ref": "concepts/the-terminal-deeper.md",
+      "difficulty": 2,
+      "tags": ["chaining", "operators"]
+    }
+  ]
+}

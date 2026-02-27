@@ -1,3 +1,4 @@
+"""Learn to display text and numbers on the screen using the print() function."""
 # ============================================================
 # Exercise 02: Hello World
 # ============================================================

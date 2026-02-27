@@ -25,7 +25,7 @@ def normalise_answer(raw: str) -> str:
     return "invalid"
 
 
-def tally_answers(answers: list) -> dict:
+def tally_answers(answers: list[str]) -> dict[str, int | float]:
     """Count how many yes, no, and invalid answers were given.
 
     WHY return a dict? -- Dicts let us label each count with a

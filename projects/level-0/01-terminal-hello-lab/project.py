@@ -32,7 +32,7 @@ def build_banner(title: str, width: int = 40) -> str:
     return f"{border}\n{centered_title}\n{border}"
 
 
-def build_info_card(name: str, language: str, day: int) -> dict:
+def build_info_card(name: str, language: str, day: int) -> dict[str, str | int]:
     """Collect key facts into a dictionary.
 
     WHY a dict? -- Dictionaries let you label each piece of data
@@ -46,7 +46,7 @@ def build_info_card(name: str, language: str, day: int) -> dict:
     }
 
 
-def run_hello_lab(name: str, day: int) -> dict:
+def run_hello_lab(name: str, day: int) -> dict[str, str | int]:
     """Execute the full hello-lab workflow and return results.
 
     Steps:

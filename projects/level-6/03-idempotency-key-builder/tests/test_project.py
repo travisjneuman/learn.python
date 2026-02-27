@@ -102,6 +102,7 @@ def test_process_deduplicates(conn: sqlite3.Connection) -> None:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.integration
 def test_run_end_to_end(tmp_path) -> None:
     ops = [
         {"source": "cron", "action": "backup"},

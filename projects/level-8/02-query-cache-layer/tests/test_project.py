@@ -67,6 +67,7 @@ class TestLRUEviction:
 
 # --- TTL expiration -----------------------------------------------------
 
+@pytest.mark.slow
 class TestTTLExpiration:
     def test_expired_entry_returns_none(self) -> None:
         cache = LRUCache(capacity=10, default_ttl=0.05)

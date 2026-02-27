@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — Jupyter Notebooks",
+  "description": "Notebooks, cells, magic commands, workflows, and when to use notebooks vs scripts",
+  "cards": [
+    {
+      "id": "c-jup-01",
+      "front": "What is a Jupyter notebook and why use it?",
+      "back": "A document (.ipynb) that mixes code, text, and visualizations.\nRun code in small chunks (cells) and see output immediately.\n\nGreat for: data exploration, prototyping, sharing analysis.\nUsed by: data scientists, researchers, teachers.\n\nInstall: pip install jupyterlab\nRun: jupyter lab",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 1,
+      "tags": ["jupyter", "notebooks"]
+    },
+    {
+      "id": "c-jup-02",
+      "front": "What are the two types of Jupyter cells?",
+      "back": "Code cells — run Python, show output below.\nMarkdown cells — write formatted text (headings, lists, links).\n\nShift+Enter runs a cell and moves to the next one.\n\nUse code cells for analysis.\nUse markdown cells to document your thinking.",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 1,
+      "tags": ["cells", "markdown"]
+    },
+    {
+      "id": "c-jup-03",
+      "front": "What are Jupyter magic commands?",
+      "back": "Special commands prefixed with % (line) or %% (cell).\n\n%timeit sorted(range(1000))  # time one line\n%%timeit                      # time entire cell\n!pip install requests         # shell command\n%matplotlib inline            # show plots inline\n%whos                         # list all variables\n\nThey provide shortcuts unavailable in regular Python.",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 2,
+      "tags": ["magic", "commands"]
+    },
+    {
+      "id": "c-jup-04",
+      "front": "What is the biggest pitfall with notebook cell execution order?",
+      "back": "Cells can run in any order, leading to hidden state.\n\nProblem: delete a cell that defined x, but x still exists in memory.\nProblem: run cell 5 before cell 3, and a variable does not exist yet.\n\nFix: use \"Restart & Run All\" before sharing or committing.\nThis catches hidden state issues.",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 2,
+      "tags": ["execution-order", "hidden-state"]
+    },
+    {
+      "id": "c-jup-05",
+      "front": "When should you use a notebook vs a .py script?",
+      "back": "Use notebooks for: exploring data, prototyping, visualization, teaching.\nUse scripts for: reusable tools, production code, libraries, CI/CD.\n\nRule of thumb: start in a notebook, then extract reusable code into .py files.\n\nNotebooks are for discovery. Scripts are for delivery.",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 1,
+      "tags": ["notebooks", "scripts"]
+    },
+    {
+      "id": "c-jup-06",
+      "front": "How do you export a Jupyter notebook?",
+      "back": "jupyter nbconvert --to script analysis.ipynb  # to .py\njupyter nbconvert --to html analysis.ipynb    # to HTML\njupyter nbconvert --to pdf analysis.ipynb     # to PDF\n\nHTML is great for sharing. Script is great for extracting reusable code.",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 1,
+      "tags": ["export", "nbconvert"]
+    },
+    {
+      "id": "c-jup-07",
+      "front": "How do you handle notebooks in version control?",
+      "back": ".ipynb files are JSON with embedded output (images, data), creating messy diffs.\n\nSolutions:\n1. Clear output before committing\n2. Use nbstripout to auto-strip output on commit\n3. Use jupytext to keep notebooks as .py files\n\nNever commit large output blobs to git.",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 2,
+      "tags": ["git", "version-control"]
+    },
+    {
+      "id": "c-jup-08",
+      "front": "What is JupyterLite?",
+      "back": "Jupyter running entirely in the browser — no installation needed.\nUses Pyodide (Python compiled to WebAssembly).\n\nGreat for:\n- Quick experiments without setup\n- Sharing interactive examples\n- Teaching where installing software is difficult\n\nTry it: jupyter.org/try-jupyter/lab/",
+      "concept_ref": "concepts/jupyter-notebooks.md",
+      "difficulty": 1,
+      "tags": ["jupyterlite", "browser"]
+    }
+  ]
+}

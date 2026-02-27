@@ -52,19 +52,90 @@ Check off items as you complete them. This is your personal tracker.
 ---
 
 ## Level 1 — Functions and Modular Code
-- [ ] 01 through 15 (update as you progress)
+- [ ] 01 — Input Validator Lab
+- [ ] 02 — Password Strength Checker
+- [ ] 03 — Unit Price Calculator
+- [ ] 04 — Log Line Parser
+- [ ] 05 — CSV First Reader
+- [ ] 06 — Simple Gradebook Engine
+- [ ] 07 — Date Difference Helper
+- [ ] 08 — Path Exists Checker
+- [ ] 09 — JSON Settings Loader
+- [ ] 10 — Ticket Priority Router
+- [ ] 11 — Command Dispatcher
+- [ ] 12 — File Extension Counter
+- [ ] 13 — Batch Rename Simulator
+- [ ] 14 — Basic Expense Tracker
+- [ ] 15 — Level 1 Mini Automation
 
 ## Level 2 — Collections
-- [ ] 01 through 15
+- [ ] 01 — Dictionary Lookup Service
+- [ ] 02 — Nested Data Flattener
+- [ ] 03 — Data Cleaning Pipeline
+- [ ] 04 — Error Safe Divider
+- [ ] 05 — Text Report Generator
+- [ ] 06 — Records Deduplicator
+- [ ] 07 — List Search Benchmark
+- [ ] 08 — Mini Inventory Engine
+- [ ] 09 — Config Driven Calculator
+- [ ] 10 — Mock API Response Parser
+- [ ] 11 — Retry Loop Practice
+- [ ] 12 — CSV to JSON Converter
+- [ ] 13 — Validation Rule Engine
+- [ ] 14 — Anomaly Flagger
+- [ ] 15 — Level 2 Mini Capstone
+- [ ] 16 — Markdown to HTML Converter
 
 ## Level 3 — File Automation
-- [ ] 01 through 15
+- [ ] 01 — Package Layout Starter
+- [ ] 02 — CLI Arguments Workbench
+- [ ] 03 — Logging Baseline Tool
+- [ ] 04 — Test Driven Normalizer
+- [ ] 05 — Refactor Monolith Drill
+- [ ] 06 — Structured Error Handler
+- [ ] 07 — Batch File Auditor
+- [ ] 08 — Template Driven Reporter
+- [ ] 09 — Reusable Utils Library
+- [ ] 10 — Dependency Boundary Lab
+- [ ] 11 — Project Config Bootstrap
+- [ ] 12 — Parser with Fixtures
+- [ ] 13 — Quality Gate Runner
+- [ ] 14 — Service Simulator
+- [ ] 15 — Level 3 Mini Capstone
 
 ## Level 4 — JSON and Structured Data
-- [ ] 01 through 15
+- [ ] 01 — Schema Validator Engine
+- [ ] 02 — Excel Input Health Check
+- [ ] 03 — Robust CSV Ingestor
+- [ ] 04 — Data Contract Enforcer
+- [ ] 05 — Path Safe File Mover
+- [ ] 06 — Backup Rotation Tool
+- [ ] 07 — Duplicate Record Investigator
+- [ ] 08 — Malformed Row Quarantine
+- [ ] 09 — Transformation Pipeline v1
+- [ ] 10 — Run Manifest Generator
+- [ ] 11 — Audit Log Enhancer
+- [ ] 12 — Checkpoint Recovery Tool
+- [ ] 13 — Reconciliation Reporter
+- [ ] 14 — Configurable Batch Runner
+- [ ] 15 — Level 4 Mini Capstone
 
 ## Level 5 — Exception Handling
-- [ ] 01 through 15
+- [ ] 01 — Schedule Ready Script
+- [ ] 02 — Alert Threshold Monitor
+- [ ] 03 — Multi File ETL Runner
+- [ ] 04 — Config Layer Priority
+- [ ] 05 — Plugin Style Transformer
+- [ ] 06 — Metrics Summary Engine
+- [ ] 07 — Resilient JSON Loader
+- [ ] 08 — Cross File Joiner
+- [ ] 09 — Template Report Renderer
+- [ ] 10 — API Polling Simulator
+- [ ] 11 — Retry Backoff Runner
+- [ ] 12 — Fail Safe Exporter
+- [ ] 13 — Operational Run Logger
+- [ ] 14 — Change Detection Tool
+- [ ] 15 — Level 5 Mini Capstone
 
 ---
 
@@ -75,10 +146,38 @@ Check off items as you complete them. This is your personal tracker.
 ---
 
 ## Level 6 — SQL Basics
-- [ ] 01 through 15
+- [ ] 01 — SQL Connection Simulator
+- [ ] 02 — Staging Table Loader
+- [ ] 03 — Idempotency Key Builder
+- [ ] 04 — Upsert Strategy Lab
+- [ ] 05 — Transaction Rollback Drill
+- [ ] 06 — Query Performance Checker
+- [ ] 07 — SQL Summary Publisher
+- [ ] 08 — Data Lineage Capture
+- [ ] 09 — Incremental Load Simulator
+- [ ] 10 — Table Drift Detector
+- [ ] 11 — Dead Letter Row Handler
+- [ ] 12 — ETL Health Dashboard Feed
+- [ ] 13 — Batch Window Controller
+- [ ] 14 — SQL Runbook Generator
+- [ ] 15 — Level 6 Mini Capstone
 
 ## Level 7 — ETL Pipelines
-- [ ] 01 through 15
+- [ ] 01 — API Query Adapter
+- [ ] 02 — Monitoring API Adapter
+- [ ] 03 — Unified Cache Writer
+- [ ] 04 — Source Field Mapper
+- [ ] 05 — Polling Cadence Manager
+- [ ] 06 — Token Rotation Simulator
+- [ ] 07 — Stale Data Detector
+- [ ] 08 — Ingestion Observability Kit
+- [ ] 09 — Contract Version Checker
+- [ ] 10 — Multi Source Reconciler
+- [ ] 11 — Pipeline Feature Flags
+- [ ] 12 — Incident Mode Switch
+- [ ] 13 — Service Account Policy Check
+- [ ] 14 — Cache Backfill Runner
+- [ ] 15 — Level 7 Mini Capstone
 
 ---
 
@@ -89,10 +188,38 @@ Check off items as you complete them. This is your personal tracker.
 ---
 
 ## Level 8 — APIs and Async
-- [ ] 01 through 15
+- [ ] 01 — Dashboard KPI Assembler
+- [ ] 02 — Query Cache Layer
+- [ ] 03 — Pagination Stress Lab
+- [ ] 04 — Filter State Manager
+- [ ] 05 — Export Governance Check
+- [ ] 06 — Response Time Profiler
+- [ ] 07 — Concurrency Queue Simulator
+- [ ] 08 — Fault Injection Harness
+- [ ] 09 — Graceful Degradation Engine
+- [ ] 10 — Dependency Timeout Matrix
+- [ ] 11 — Synthetic Monitor Runner
+- [ ] 12 — Release Readiness Evaluator
+- [ ] 13 — SLA Breach Detector
+- [ ] 14 — User Journey Tracer
+- [ ] 15 — Level 8 Mini Capstone
 
 ## Level 9 — Advanced Patterns
-- [ ] 01 through 15
+- [ ] 01 — Architecture Decision Log
+- [ ] 02 — Domain Boundary Enforcer
+- [ ] 03 — Event Driven Pipeline Lab
+- [ ] 04 — Observability SLO Pack
+- [ ] 05 — Capacity Planning Model
+- [ ] 06 — Reliability Scorecard
+- [ ] 07 — Canary Rollout Simulator
+- [ ] 08 — Change Impact Analyzer
+- [ ] 09 — Security Baseline Auditor
+- [ ] 10 — Data Governance Enforcer
+- [ ] 11 — Recovery Time Estimator
+- [ ] 12 — Incident Postmortem Generator
+- [ ] 13 — Platform Cost Estimator
+- [ ] 14 — Cross Team Handoff Kit
+- [ ] 15 — Level 9 Mini Capstone
 
 ---
 
@@ -103,7 +230,21 @@ Check off items as you complete them. This is your personal tracker.
 ---
 
 ## Level 10 — Systems Integration
-- [ ] 01 through 15
+- [ ] 01 — Enterprise Python Blueprint
+- [ ] 02 — Autonomous Run Orchestrator
+- [ ] 03 — Policy as Code Validator
+- [ ] 04 — Multi Tenant Data Guard
+- [ ] 05 — Compliance Evidence Builder
+- [ ] 06 — Resilience Chaos Workbench
+- [ ] 07 — High Risk Change Gate
+- [ ] 08 — Zero Downtime Migration Lab
+- [ ] 09 — Strategic Architecture Review
+- [ ] 10 — Executive Metrics Publisher
+- [ ] 11 — Production Readiness Director
+- [ ] 12 — Onboarding Accelerator System
+- [ ] 13 — Legacy Modernization Planner
+- [ ] 14 — SME Mentorship Toolkit
+- [ ] 15 — Level 10 Grand Capstone
 
 ---
 
@@ -137,7 +278,24 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] Docs 26-35: Zero-to-master execution layer
 - [ ] Docs 36-45: Elite engineering track
 - [ ] Docs 46-50: Adaptive learning layer
-- [ ] Elite Track Projects (10 projects)
+### Elite Track Projects
+- [ ] 01 — Algorithms Complexity Lab
+- [ ] 02 — Concurrent Job System
+- [ ] 03 — Distributed Cache Simulator
+- [ ] 04 — Secure Auth Gateway
+- [ ] 05 — Performance Profiler Workbench
+- [ ] 06 — Event Driven Architecture Lab
+- [ ] 07 — Observability SLO Platform
+- [ ] 08 — Policy Compliance Engine
+- [ ] 09 — Open Source Maintainer Simulator
+- [ ] 10 — Staff Engineer Capstone
+
+---
+
+## Capstone Projects
+- [ ] 01 — Personal Finance Tracker
+- [ ] 02 — API Aggregator
+- [ ] 03 — Task Automation System
 
 ---
 
@@ -163,6 +321,7 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] 03 POST and Auth
 - [ ] 04 Error Handling
 - [ ] 05 API Client Class
+- [ ] 06 Weather API Dashboard
 
 ### Module 04 — FastAPI Web Apps (after Level 3 + Module 03)
 - [ ] 01 Hello FastAPI
@@ -177,6 +336,7 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] 03 Async File Processing
 - [ ] 04 Producer-Consumer
 - [ ] 05 Async Web Server
+- [ ] 06 WebSocket Chat
 
 ### Module 06 — Databases & ORM (after Level 3)
 - [ ] 01 SQLite Basics
@@ -191,6 +351,7 @@ Check off items as you complete them. This is your personal tracker.
 - [ ] 03 Data Cleaning
 - [ ] 04 Visualization
 - [ ] 05 Analysis Report
+- [ ] 06 NumPy Foundations
 
 ### Module 08 — Advanced Testing (after Level 3)
 - [ ] 01 Parametrize

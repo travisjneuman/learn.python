@@ -1,0 +1,70 @@
+{
+  "deck": "Concept — functools and itertools",
+  "description": "lru_cache, partial, reduce, wraps, chain, groupby, combinations, islice, infinite iterators",
+  "cards": [
+    {
+      "id": "c-ftools-01",
+      "front": "What does functools.lru_cache do?",
+      "back": "Automatic memoization — caches results so repeated calls are instant.\n\nfrom functools import lru_cache\n\n@lru_cache(maxsize=128)\ndef fibonacci(n):\n    if n < 2:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nfibonacci(100)    # Returns instantly\n\nmaxsize=128 keeps the 128 most recent results.\nmaxsize=None for unlimited cache.\nArguments must be hashable (no lists or dicts).",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["lru_cache", "memoization"]
+    },
+    {
+      "id": "c-ftools-02",
+      "front": "What does functools.partial do?",
+      "back": "Creates a new function with some arguments pre-filled.\n\nfrom functools import partial\n\ndef power(base, exponent):\n    return base ** exponent\n\nsquare = partial(power, exponent=2)\ncube = partial(power, exponent=3)\n\nsquare(5)    # 25\ncube(3)      # 27\n\nUseful for callbacks and configuration:\npretty_json = partial(json.dumps, indent=2, sort_keys=True)",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["partial", "pre-fill"]
+    },
+    {
+      "id": "c-ftools-03",
+      "front": "What does functools.reduce do?",
+      "back": "Folds a sequence into a single value by applying a function cumulatively.\n\nfrom functools import reduce\n\nnumbers = [1, 2, 3, 4, 5]\ntotal = reduce(lambda a, b: a + b, numbers)    # 15\n\nwords = [\"cat\", \"elephant\", \"dog\"]\nlongest = reduce(lambda a, b: a if len(a) >= len(b) else b, words)\n# \"elephant\"\n\nFor simple ops, prefer built-ins (sum, max, min). Use reduce when no built-in fits.",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["reduce", "fold"]
+    },
+    {
+      "id": "c-ftools-04",
+      "front": "Why do you need functools.wraps in decorators?",
+      "back": "Without @wraps, the decorated function loses its name and docstring.\n\nfrom functools import wraps\n\ndef my_decorator(func):\n    @wraps(func)    # Copies name, docstring, etc.\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\n@my_decorator\ndef greet(name):\n    \"\"\"Say hello.\"\"\"\n    return f\"Hello, {name}\"\n\ngreet.__name__    # \"greet\" (without @wraps: \"wrapper\")\ngreet.__doc__     # \"Say hello.\" (without @wraps: None)",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["wraps", "decorators"]
+    },
+    {
+      "id": "c-ftools-05",
+      "front": "How does itertools.chain work?",
+      "back": "Combines multiple iterables into one continuous sequence.\n\nfrom itertools import chain\n\nlist(chain([1, 2], [3, 4], [5]))    # [1, 2, 3, 4, 5]\n\n# Flatten a list of lists:\nnested = [[1, 2], [3], [4, 5, 6]]\nlist(chain.from_iterable(nested))    # [1, 2, 3, 4, 5, 6]\n\nchain is lazy — it does not build a new list in memory.",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 1,
+      "tags": ["chain", "combine"]
+    },
+    {
+      "id": "c-ftools-06",
+      "front": "How does itertools.groupby work and what is its biggest gotcha?",
+      "back": "Groups consecutive items with the same key.\n\nfrom itertools import groupby\nwords = [\"apple\", \"avocado\", \"banana\", \"blueberry\"]\nfor letter, group in groupby(words, key=lambda w: w[0]):\n    print(letter, list(group))\n# a ['apple', 'avocado']\n# b ['banana', 'blueberry']\n\nBiggest gotcha: data MUST be sorted by key first!\nUnsorted data creates duplicate groups.\n\nAlso: materialize groups immediately with list(group) — the group iterator is consumed when you advance to the next.",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["groupby", "sorting"]
+    },
+    {
+      "id": "c-ftools-07",
+      "front": "What is the difference between combinations and permutations?",
+      "back": "from itertools import combinations, permutations\n\n# Combinations — order does NOT matter, no repeats:\nlist(combinations(\"ABCD\", 2))\n# [('A','B'), ('A','C'), ('A','D'), ('B','C'), ('B','D'), ('C','D')]\n\n# Permutations — order DOES matter:\nlist(permutations(\"ABC\", 2))\n# [('A','B'), ('A','C'), ('B','A'), ('B','C'), ('C','A'), ('C','B')]\n\n# Product — all combinations from multiple iterables:\nfrom itertools import product\nlist(product([\"red\", \"blue\"], [\"S\", \"M\"]))\n# [('red','S'), ('red','M'), ('blue','S'), ('blue','M')]",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["combinations", "permutations"]
+    },
+    {
+      "id": "c-ftools-08",
+      "front": "What are the three infinite iterators in itertools?",
+      "back": "from itertools import count, cycle, repeat\n\n# count — infinite counter:\nfor i in count(start=10, step=3):\n    if i > 20: break\n    print(i)    # 10, 13, 16, 19\n\n# cycle — repeat an iterable forever:\ncolors = cycle([\"red\", \"green\", \"blue\"])\n# red, green, blue, red, green, blue, ...\n\n# repeat — yield the same value:\nlist(repeat(\"hello\", 3))    # [\"hello\", \"hello\", \"hello\"]\n\nUse islice to take a slice from infinite iterators:\nfrom itertools import islice\nlist(islice(count(), 5))    # [0, 1, 2, 3, 4]",
+      "concept_ref": "concepts/functools-and-itertools.md",
+      "difficulty": 2,
+      "tags": ["count", "cycle", "infinite"]
+    }
+  ]
+}

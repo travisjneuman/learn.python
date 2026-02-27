@@ -1,3 +1,4 @@
+"""Learn to open, read, and parse data from text files line by line."""
 # ============================================================
 # Exercise 14: Reading Files
 # ============================================================
