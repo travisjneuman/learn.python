@@ -54,28 +54,44 @@ curriculum/ (advanced path, docs 16-50):
   Docs 36-45: Elite engineering track
   Docs 46-50: Adaptive learning layer
 
-projects/ (hands-on practice):
+projects/ (274 hands-on projects):
   level-00-absolute-beginner/  → 15 exercises (no imports, no tests)
-  level-0/ through level-10/   → 15 projects each (full structure)
-  elite-track/                 → 10 advanced projects
-  modules/                     → 12 technology modules, 56 projects
-    01-web-scraping/           → requests, BeautifulSoup, CSV
-    02-cli-tools/              → click, typer, rich
-    03-rest-apis/              → requests, JSON, API clients
-    04-fastapi-web/            → FastAPI, Pydantic, JWT auth
-    05-async-python/           → asyncio, aiohttp, queues
-    06-databases-orm/          → SQLAlchemy, Alembic, sqlite3
-    07-data-analysis/          → pandas, matplotlib
-    08-testing-advanced/       → parametrize, mocking, hypothesis
-    09-docker-deployment/      → Docker, docker-compose, GitHub Actions
-    10-django-fullstack/       → Django, DRF, templates
-    11-package-publishing/     → pyproject.toml, build, TestPyPI
-    12-cloud-deploy/           → Railway, Postgres, production config
+  level-0/                     → 15 projects (terminal, files, basic I/O)
+  level-1/                     → 16 projects (input, CSV, JSON, paths)
+  level-2/                     → 16 projects (data structures, cleaning)
+  level-3/ through level-10/   → 15 projects each (full structure)
+  elite-track/                 → 10 staff-engineer capstone projects
+  capstones/                   → 3 multi-level integration projects
+  modules/                     → 12 technology modules, 59 projects
+    01-web-scraping/     (5)   → requests, BeautifulSoup, CSV
+    02-cli-tools/        (5)   → click, typer, rich
+    03-rest-apis/        (6)   → requests, JSON, API clients
+    04-fastapi-web/      (5)   → FastAPI, Pydantic, JWT auth
+    05-async-python/     (6)   → asyncio, aiohttp, queues
+    06-databases-orm/    (5)   → SQLAlchemy, Alembic, sqlite3
+    07-data-analysis/    (6)   → pandas, matplotlib
+    08-testing-advanced/ (5)   → parametrize, mocking, hypothesis
+    09-docker-deployment/(5)   → Docker, docker-compose, GitHub Actions
+    10-django-fullstack/ (5)   → Django, DRF, templates
+    11-package-publishing/(3)  → pyproject.toml, build, TestPyPI
+    12-cloud-deploy/     (3)   → Railway, Postgres, production config
+  bridge docs (10)             → level-transition guides (bridge-00-to-0, etc.)
 
-concepts/ (reference docs):
+concepts/ (34 topics, 48 files with part splits):
   Core: variables, loops, functions, collections, files, errors, types
   Intermediate: imports, classes, decorators, virtual environments, terminal
-  Advanced: HTTP, APIs, async/await
+  Advanced: HTTP, APIs, async/await, regex, security, dataclasses, enums
+  quizzes/       → 34 terminal quiz scripts
+  diagrams/      → 36 Mermaid visualizations
+  cheatsheets/   → 9 quick-reference sheets
+  videos/        → 40 curated video resource pages
+
+practice/:
+  flashcards/    → 58 JSON decks (concept + level + module) + review runner
+  challenges/    → 30 coding challenges (15 beginner + 15 advanced)
+  code-reading/  → study materials
+
+browser/         → 7 Pyodide in-browser exercises
 ```
 
 ## Session Workflow
