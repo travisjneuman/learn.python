@@ -25,7 +25,7 @@
 
 ---
 
-## Why This Exists
+## I Don't Know Python. So I Built This.
 
 I wanted to learn Python. When I looked for resources, I hit the same wall a lot of people hit: most Python courses are either too shallow (build a calculator and call it a day) or too academic (here's a lecture on Big-O notation before you've written a for loop). Nothing matched how I actually learn — by building real things, breaking them, and understanding why they broke.
 
