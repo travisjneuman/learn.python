@@ -6,11 +6,11 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/Projects-251-2ea44f?style=for-the-badge" alt="251 Projects">
+  <img src="https://img.shields.io/badge/Projects-274-2ea44f?style=for-the-badge" alt="274 Projects">
   <img src="https://img.shields.io/badge/Levels-13-ff6f00?style=for-the-badge" alt="13 Levels">
-  <img src="https://img.shields.io/badge/Concept_Guides-35-7c4dff?style=for-the-badge" alt="35 Concept Guides">
+  <img src="https://img.shields.io/badge/Concept_Guides-34-7c4dff?style=for-the-badge" alt="34 Concept Guides">
   <img src="https://img.shields.io/badge/Quizzes-34-e53935?style=for-the-badge" alt="34 Quizzes">
-  <img src="https://img.shields.io/badge/Walkthroughs-51-00bcd4?style=for-the-badge" alt="51 Walkthroughs">
+  <img src="https://img.shields.io/badge/Walkthroughs-248-00bcd4?style=for-the-badge" alt="248 Walkthroughs">
   <img src="https://img.shields.io/badge/Diagrams-36-ff9800?style=for-the-badge" alt="36 Diagrams">
   <img src="https://img.shields.io/badge/Video_Guides-40-c62828?style=for-the-badge" alt="40 Video Guides">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License"></a>
@@ -33,7 +33,7 @@ Python wasn't one of them. I'd read about it, used it for the occasional script,
 
 So I built the curriculum I wished existed. Then I open-sourced it, because if it helps me learn Python, maybe it helps you too.
 
-**This is a complete, hands-on Python curriculum. From "what is a terminal?" to deploying production applications. 251 projects. Every learning style supported. Go at your own pace.**
+**This is a complete, hands-on Python curriculum. From "what is a terminal?" to deploying production applications. 274 projects. Every learning style supported. Go at your own pace.**
 
 ---
 
@@ -41,7 +41,7 @@ So I built the curriculum I wished existed. Then I open-sourced it, because if i
 
 **Every learning style is first-class.** Read concepts, build projects, watch walkthroughs, test with quizzes, review with flashcards, visualize with diagrams, or try code in the browser — all following the same path. However you learn best, there's a way through this curriculum for you.
 
-**You build real things.** 251 projects, not toy examples. Every project has tests, starter code, and challenges that force you past copy-paste into actual understanding.
+**You build real things.** 274 projects, not toy examples. Every project has tests, starter code, and challenges that force you past copy-paste into actual understanding.
 
 **You go at your own pace.** This isn't a bootcamp with deadlines. Follow the click chain, take breaks, come back. The spaced repetition system tracks what you've forgotten so you can review efficiently.
 
@@ -100,7 +100,7 @@ The curriculum is a straight line from zero experience to production-grade engin
 | **Elite Track** | Curriculum 16-50 | Architecture, observability, resilience, security, cost modeling | 10 projects |
 | **Expansion Modules** | 12 modules | Web scraping through cloud deployment — real libraries, real tools | 56 projects |
 
-**Total: 251 projects across 13 levels and 12 technology modules.**
+**Total: 274 projects across 13 levels and 12 technology modules.**
 
 See the full [Curriculum Map](./CURRICULUM_MAP.md) for a dependency diagram and every project listed at a glance.
 
@@ -169,7 +169,7 @@ Twelve self-contained technology modules. Each one teaches a real Python library
 
 ## Concept Guides & Practice Tools
 
-**35 concept guides** explain core ideas in plain language — from variables and loops through decorators, async/await, and security. Most have matching quizzes. See the [full concept index](./concepts/README.md).
+**34 concept guides** explain core ideas in plain language — from variables and loops through decorators, async/await, and security. Most have matching quizzes. See the [full concept index](./concepts/README.md).
 
 **34 quizzes** — one per concept guide. Run them from the terminal:
 ```bash
