@@ -25,11 +25,9 @@
 
 ---
 
-## I Don't Know Python. So I Built This.
+## Why This Exists
 
-I'm a full-stack developer. I've spent over a decade building web applications, managing production infrastructure, and debugging systems at 3am. My tools are TypeScript, React, Node.js, and whatever else the job demands.
-
-Python wasn't one of them. I'd read about it, used it for the occasional script, but I'd never actually sat down and *learned* it. When I finally decided to, I hit the same wall everyone hits: most Python courses are either too shallow (build a calculator and call it a day) or too academic (here's a lecture on Big-O notation before you've written a for loop). Nothing matched how I actually learn — by building real things, breaking them, and understanding why they broke.
+I wanted to learn Python. When I looked for resources, I hit the same wall a lot of people hit: most Python courses are either too shallow (build a calculator and call it a day) or too academic (here's a lecture on Big-O notation before you've written a for loop). Nothing matched how I actually learn — by building real things, breaking them, and understanding why they broke.
 
 So I built the curriculum I wished existed. Then I open-sourced it, because if it helps me learn Python, maybe it helps you too.
 
