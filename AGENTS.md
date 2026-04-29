@@ -1,3 +1,24 @@
+# AGENTS.md — Provider-Agnostic Agent Instructions
+
+<!-- phase-5-provider-agnostic-baseline -->
+
+Last updated: 2026-04-29
+
+## Phase 5 provider-agnostic baseline
+
+learn.python: Python 3.11+ learning curriculum with projects, guides, exercises, tests, and learner-focused docs.
+
+- Read before editing: inspect README.md, pyproject.toml, relevant lesson/project docs, and nearby tests.
+- Preserve existing documentation and the existing AGENTS.md content below; do not modify CLAUDE.md.
+- Commands confidently discovered: `python -m pytest`, `ruff check .`, `ruff format .`.
+- Compatibility: keep examples beginner-friendly and runnable with the documented Python version; do not reorder curriculum or project expectations without docs/tests updates.
+- Update docs for command, lesson, exercise, or expected-output changes.
+- No secrets: never print, commit, or invent credentials, tokens, cookies, private keys, OAuth secrets, API keys, personal data, or production-only config.
+
+Existing AGENTS.md content follows unchanged; more-specific nested AGENTS.md files override this baseline.
+
+---
+
 # AGENTS.md — Agent Instructions
 
 > Generated from `learn.python/CLAUDE.md` for Hermes/Codex/provider-agnostic agents. Keep the original `CLAUDE.md` in place and untouched. Last generated: 2026-04-29 17:09:05 EDT.
