@@ -1,15 +1,14 @@
 name: PR Validation
 
-# Automation approval: approved-restored 2026-05-30 by Travis J. Neuman.
-# Purpose: Validate pull requests with lint, compile, and curriculum contract checks.
-# Quota impact: GitHub Actions minutes on pull requests.
+# Automation approval: manual-only 2026-05-30 by Travis J. Neuman.
+# Purpose: manually run PR-style lint, compile, and curriculum contract checks.
+# Quota impact: GitHub Actions minutes only when manually dispatched.
 # Writes/deploys: validation only; does not commit repository changes.
 # Registry: E:/Web Development/_meta.notes/Projects/.webdev/Automation Approval Registry - 2026-05-30.md
-# Do not disable or mutate without workflow review, _meta.notes documentation, and current-session approval.
+# Manual-only in the canonical repo to avoid automatic free-tier usage; forks may enable their own triggers intentionally.
 
 on:
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   validate:

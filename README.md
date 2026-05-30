@@ -66,6 +66,12 @@ Not sure how you learn best? Take the [Learning Style Selector](./guides/LEARNIN
 
 ---
 
+## Validation Workflows
+
+This repository keeps GitHub Actions workflows as manual validation templates. In the canonical `travisjneuman/learn.python` repo, they run only when manually dispatched so the project does not spend GitHub Actions minutes automatically. Fork maintainers may enable push, pull request, or schedule triggers in their own forks if they want automatic checks.
+
+Manual workflows currently cover curriculum checks, documentation deployment, and PR-style validation.
+
 ## Quick Start
 
 ```bash

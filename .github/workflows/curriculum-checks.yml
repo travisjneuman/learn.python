@@ -1,26 +1,19 @@
 name: Curriculum Checks
 
-# Automation approval: approved-restored 2026-05-30 by Travis J. Neuman.
-# Purpose: Curriculum checks, smoke tests, lint, and quarterly full smoke suite.
-# Quota impact: GitHub Actions minutes on pushes, PRs, quarterly schedule, or manual dispatch.
+# Automation approval: manual-only 2026-05-30 by Travis J. Neuman.
+# Purpose: manual curriculum checks, smoke tests, lint, and optional full smoke suite.
+# Quota impact: GitHub Actions minutes only when manually dispatched.
 # Writes/deploys: validation only; does not commit repository changes.
 # Registry: E:/Web Development/_meta.notes/Projects/.webdev/Automation Approval Registry - 2026-05-30.md
-# Do not disable or mutate without workflow review, _meta.notes documentation, and current-session approval.
+# Manual-only in the canonical repo to avoid automatic free-tier usage; forks may enable their own triggers intentionally.
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       full_smoke:
         description: 'Run full smoke suite (all 165 projects)'
         required: false
         default: 'false'
-  schedule:
-    # Quarterly on Jan/Apr/Jul/Oct 1st at 06:00 UTC
-    - cron: '0 6 1 1,4,7,10 *'
 
 jobs:
   quick-checks:
@@ -107,7 +100,7 @@ jobs:
         continue-on-error: true   # Some projects use different input formats
 
   full-smoke:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.full_smoke == 'true')
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.full_smoke == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

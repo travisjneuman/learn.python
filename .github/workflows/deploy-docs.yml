@@ -1,20 +1,13 @@
 name: Deploy Documentation
 
-# Automation approval: approved-restored 2026-05-30 by Travis J. Neuman.
-# Purpose: Deploy MkDocs documentation to GitHub Pages.
-# Quota impact: GitHub Actions minutes and GitHub Pages deployment on docs changes or manual dispatch.
+# Automation approval: manual-only 2026-05-30 by Travis J. Neuman.
+# Purpose: manually build and deploy MkDocs documentation to GitHub Pages.
+# Quota impact: GitHub Actions minutes and GitHub Pages deployment only when manually dispatched.
 # Writes/deploys: deploys GitHub Pages; does not commit repository changes.
 # Registry: E:/Web Development/_meta.notes/Projects/.webdev/Automation Approval Registry - 2026-05-30.md
-# Do not disable or mutate without workflow review, _meta.notes documentation, and current-session approval.
+# Manual-only in the canonical repo to avoid automatic free-tier usage; forks may enable their own triggers intentionally.
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "**.md"
-      - "mkdocs.yml"
-      - ".github/workflows/deploy-docs.yml"
   workflow_dispatch:
 
 permissions:
