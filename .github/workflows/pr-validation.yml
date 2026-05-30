@@ -1,0 +1,63 @@
+name: PR Validation
+
+# Automation approval: approved-restored 2026-05-30 by Travis J. Neuman.
+# Purpose: Validate pull requests with lint, compile, and curriculum contract checks.
+# Quota impact: GitHub Actions minutes on pull requests.
+# Writes/deploys: validation only; does not commit repository changes.
+# Registry: E:/Web Development/_meta.notes/Projects/.webdev/Automation Approval Registry - 2026-05-30.md
+# Do not disable or mutate without workflow review, _meta.notes documentation, and current-session approval.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Lint, Compile & Contract Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install ruff pytest
+
+      - name: Ruff lint check
+        run: ruff check .
+
+      - name: Python syntax check (py_compile)
+        run: |
+          python -c "
+          import pathlib, py_compile, sys
+          errors = []
+          for p in pathlib.Path('.').rglob('*.py'):
+              if '.venv' in p.parts:
+                  continue
+              try:
+                  py_compile.compile(str(p), doraise=True)
+              except py_compile.PyCompileError as e:
+                  errors.append(str(e))
+          if errors:
+              print(f'Syntax errors in {len(errors)} file(s):')
+              for err in errors:
+                  print(f'  {err}')
+              sys.exit(1)
+          print('All Python files compile successfully.')
+          "
+
+      - name: Root doc contract checks
+        run: python tools/check_root_docs.py
+
+      - name: Level index contract checks
+        run: python tools/check_level_index_contract.py
+
+      - name: Elite track contract checks
+        run: python tools/check_elite_track_contract.py
+
+      - name: Modality hub link validation
+        run: python tools/check_modality_hubs.py
