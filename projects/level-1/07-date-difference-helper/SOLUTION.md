@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 07 - Date Difference Helper
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -181,10 +181,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `DATE_FORMAT` as module-level constant | Single source of truth for the date format; changing it from `%Y-%m-%d` to `%d/%m/%Y` updates all functions at once | Hardcode the format string in each function — easy to introduce format mismatches |
-| `abs()` for day differences | Users should not need to worry about which date comes first; negative day counts would be confusing | Return signed result — could be useful for "is date2 after date1?" checks, but adds complexity for the primary use case |
-| `parse_date()` as a shared helper | All date functions need the same string-to-datetime conversion; centralising it eliminates duplication | Inline `datetime.strptime()` in each function — works but duplicates the format string and strip logic |
-| Command dispatch via if/elif | Simple and transparent for three commands; a dict dispatcher (like Project 11) would be overkill here | Dict mapping command names to functions — better for 10+ commands, over-engineered for 3 |
+| `DATE_FORMAT` as module-level constant | Single source of truth for the date format; changing it from `%Y-%m-%d` to `%d/%m/%Y` updates all functions at once | Hardcode the format string in each function: easy to introduce format mismatches |
+| `abs()` for day differences | Users should not need to worry about which date comes first; negative day counts would be confusing | Return signed result: could be useful for "is date2 after date1?" checks, but adds complexity for the primary use case |
+| `parse_date()` as a shared helper | All date functions need the same string-to-datetime conversion; centralising it eliminates duplication | Inline `datetime.strptime()` in each function: works but duplicates the format string and strip logic |
+| Command dispatch via if/elif | Simple and transparent for three commands; a dict dispatcher (like Project 11) would be overkill here | Dict mapping command names to functions: better for 10+ commands, over-engineered for 3 |
 
 ## Alternative approaches
 

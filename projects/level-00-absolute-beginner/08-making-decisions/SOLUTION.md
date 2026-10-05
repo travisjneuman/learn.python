@@ -1,10 +1,10 @@
 # Solution: 08-making-decisions
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -72,10 +72,10 @@ if not is_raining:                    # WHY: "not" reverses True to False and Fa
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Check grades from highest to lowest | When using `elif`, order matters — checking >= 90 first means anything that passes is definitely an A. If you checked >= 60 first, everything above 60 would get a D | Could check for exact ranges (`80 <= score < 90`), but the cascading elif pattern is cleaner and more common |
-| Use `==` for password comparison | Demonstrates the critical difference between `=` (assignment) and `==` (comparison) — confusing them is the most common beginner bug with if-statements | Could compare using other methods, but `==` is the standard approach |
-| Show `and`, `or`, `not` as English words | Python uses English words instead of symbols like `&&` and `\|\|` (used in other languages) — this makes Python more readable | No alternative — this is Python syntax, but it is worth noting because other languages do it differently |
-| Use `True` and `False` with capital letters | These are Python's built-in boolean values — they must be capitalized exactly (True, not true) | `1` and `0` also work as True/False, but `True`/`False` are more readable |
+| Check grades from highest to lowest | When using `elif`, order matters: checking >= 90 first means anything that passes is definitely an A. If you checked >= 60 first, everything above 60 would get a D | Could check for exact ranges (`80 <= score < 90`), but the cascading elif pattern is cleaner and more common |
+| Use `==` for password comparison | Demonstrates the critical difference between `=` (assignment) and `==` (comparison): confusing them is the most common beginner bug with if-statements | Could compare using other methods, but `==` is the standard approach |
+| Show `and`, `or`, `not` as English words | Python uses English words instead of symbols like `&&` and `\|\|` (used in other languages): this makes Python more readable | No alternative: this is Python syntax, but it is worth noting because other languages do it differently |
+| Use `True` and `False` with capital letters | These are Python's built-in boolean values: they must be capitalized exactly (True, not true) | `1` and `0` also work as True/False, but `True`/`False` are more readable |
 
 ## Alternative approaches
 
@@ -112,14 +112,14 @@ else:
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Using `=` instead of `==`: `if x = 5:` | `SyntaxError` — Python catches this because you cannot assign a value inside an if-statement | Remember: one `=` stores a value, two `==` compares values. Read the error message — it often suggests using `==` |
-| Wrong indentation after `if:` | `IndentationError` — the code inside an if-block must be indented by exactly 4 spaces | Use consistent indentation. Most code editors add it automatically when you type `if something:` and press Enter |
-| Forgetting the colon at the end: `if score >= 90` | `SyntaxError: expected ':'` — every if, elif, and else line must end with a colon | The colon tells Python "the condition ends here, the indented code below is what to do" |
-| Checking `elif` after `else` | `SyntaxError` — `else` must always be the last option because it catches everything remaining | Order your blocks as: `if` (first check), then `elif` (additional checks), then `else` (everything else) at the end |
-| Comparing different types: `"5" == 5` | Returns `False` — the string "5" is not the same as the number 5 even though they look similar | Make sure you are comparing the same types. Convert with `int()` if needed: `int("5") == 5` is `True` |
+| Using `=` instead of `==`: `if x = 5:` | `SyntaxError`: Python catches this because you cannot assign a value inside an if-statement | Remember: one `=` stores a value, two `==` compares values. Read the error message: it often suggests using `==` |
+| Wrong indentation after `if:` | `IndentationError`: the code inside an if-block must be indented by exactly 4 spaces | Use consistent indentation. Most code editors add it automatically when you type `if something:` and press Enter |
+| Forgetting the colon at the end: `if score >= 90` | `SyntaxError: expected ':'`: every if, elif, and else line must end with a colon | The colon tells Python "the condition ends here, the indented code below is what to do" |
+| Checking `elif` after `else` | `SyntaxError`: `else` must always be the last option because it catches everything remaining | Order your blocks as: `if` (first check), then `elif` (additional checks), then `else` (everything else) at the end |
+| Comparing different types: `"5" == 5` | Returns `False`: the string "5" is not the same as the number 5 even though they look similar | Make sure you are comparing the same types. Convert with `int()` if needed: `int("5") == 5` is `True` |
 
 ## Key takeaways
 
-1. **if/elif/else gives your programs the ability to think** — instead of blindly running every line, your code can now look at data and choose what to do. This is the difference between a calculator (does the same thing every time) and an intelligent program (responds to different situations).
-2. **Indentation is not just formatting in Python, it is structure** — the 4 spaces before a line tell Python "this code belongs to the if-block above." Get indentation wrong and your program either crashes or does the wrong thing. This is unique to Python and is one of the reasons Python code looks clean.
-3. **`==`, `and`, `or`, and `not` are the building blocks of all decisions** — every smart feature in every program (login checks, search filters, game logic, form validation) is built from these simple comparison and combination tools. Master them and you can make any decision in code.
+1. **if/elif/else gives your programs the ability to think**: instead of blindly running every line, your code can now look at data and choose what to do. This is the difference between a calculator (does the same thing every time) and an intelligent program (responds to different situations).
+2. **Indentation is not just formatting in Python, it is structure**: the 4 spaces before a line tell Python "this code belongs to the if-block above." Get indentation wrong and your program either crashes or does the wrong thing. This is unique to Python and is one of the reasons Python code looks clean.
+3. **`==`, `and`, `or`, and `not` are the building blocks of all decisions**: every smart feature in every program (login checks, search filters, game logic, form validation) is built from these simple comparison and combination tools. Master them and you can make any decision in code.

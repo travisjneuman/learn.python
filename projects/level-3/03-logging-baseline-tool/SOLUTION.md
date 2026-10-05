@@ -1,4 +1,4 @@
-# Logging Baseline Tool — Annotated Solution
+# Logging Baseline Tool: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -303,8 +303,8 @@ def parse_strict(line: str) -> Optional[LogEntry]:
 
 ## Common Pitfalls
 
-1. **Confusing `print()` with `logging`** — `print()` goes to stdout and cannot be filtered by level. `logging` goes to configurable handlers, can be filtered, timestamped, and routed to files. Use `print()` for user-facing output, `logging` for diagnostic information.
+1. **Confusing `print()` with `logging`**: `print()` goes to stdout and cannot be filtered by level. `logging` goes to configurable handlers, can be filtered, timestamped, and routed to files. Use `print()` for user-facing output, `logging` for diagnostic information.
 
-2. **Calling `basicConfig()` multiple times** — It only takes effect the first time. If a library calls it before your code, your configuration is silently ignored. Use `getLogger()` and `addHandler()` for reliable setup.
+2. **Calling `basicConfig()` multiple times**: It only takes effect the first time. If a library calls it before your code, your configuration is silently ignored. Use `getLogger()` and `addHandler()` for reliable setup.
 
-3. **Not stripping whitespace from parsed parts** — `"INFO | auth | login"`.split("|") produces `["INFO ", " auth ", " login"]` with spaces. Always `.strip()` after splitting on delimiters.
+3. **Not stripping whitespace from parsed parts**: `"INFO | auth | login"`.split("|") produces `["INFO ", " auth ", " login"]` with spaces. Always `.strip()` after splitting on delimiters.

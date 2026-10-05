@@ -1,4 +1,4 @@
-# Exercise 02 — Find the Bugs
+# Exercise 02: Find the Bugs
 
 This module (`codebase.py`) is a data processing pipeline that reads sales records from a CSV, filters them by date, summarizes revenue per category, and writes results to a new file.
 

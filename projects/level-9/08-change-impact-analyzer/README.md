@@ -23,7 +23,7 @@ Before deploying a change, engineers must understand its blast radius: which ser
 teams, and SLOs are affected. A database schema migration might seem local, but it
 propagates through 12 downstream services owned by 4 different teams. This project
 builds an impact analyzer that traverses dependency graphs, scores change risk based
-on service tiers and change types, and identifies all affected stakeholders — the same
+on service tiers and change types, and identifies all affected stakeholders, the same
 analysis that platform teams perform before every production deployment.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `--team` filter that shows only impact on services owned by a specific team.
 
 ## Break it (required)
-1. Create a circular dependency (A -> B -> A) — does `transitive_dependents` handle cycles?
-2. Analyze a change to a service not in the graph — what error or result occurs?
-3. Set service tier to 0 (invalid) — does the risk scoring handle it?
+1. Create a circular dependency (A -> B -> A): does `transitive_dependents` handle cycles?
+2. Analyze a change to a service not in the graph: what error or result occurs?
+3. Set service tier to 0 (invalid): does the risk scoring handle it?
 
 ## Fix it (required)
 1. Add cycle detection in `transitive_dependents` using a visited set.

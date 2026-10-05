@@ -1,4 +1,4 @@
-# Module 08 — Advanced Testing
+# Module 08: Advanced Testing
 
 [README](../../../README.md) · Modules: [Index](../README.md)
 
@@ -6,7 +6,7 @@
 
 This module teaches advanced testing techniques that go beyond basic `assert` statements and simple test functions. You will learn to write tests that cover many inputs efficiently, isolate code from external dependencies, share setup across test files, discover edge cases automatically, and test full web applications end to end.
 
-Testing is not an afterthought — it is how professional developers build confidence that their code works. The techniques in this module are used daily in production Python codebases around the world.
+Testing is not an afterthought; it is how professional developers build confidence that their code works. The techniques in this module are used daily in production Python codebases around the world.
 
 ## Prerequisites
 
@@ -59,7 +59,7 @@ See [concepts/virtual-environments.md](../../../concepts/virtual-environments.md
 
 This module requires four packages (listed in `requirements.txt`):
 
-- **pytest** — the standard Python test runner. You write functions that start with `test_`, use `assert`, and pytest finds and runs them automatically.
-- **hypothesis** — a property-based testing library. Instead of writing specific test cases, you describe what kinds of inputs your function should handle and Hypothesis generates hundreds of examples automatically.
-- **httpx** — a modern HTTP client that supports async requests. Used here for testing FastAPI applications.
-- **fastapi** — a modern web framework for building APIs. Used in the integration testing project to give you a real app to test against.
+- **pytest**: the standard Python test runner. You write functions that start with `test_`, use `assert`, and pytest finds and runs them automatically.
+- **hypothesis**: a property-based testing library. Instead of writing specific test cases, you describe what kinds of inputs your function should handle and Hypothesis generates hundreds of examples automatically.
+- **httpx**: a modern HTTP client that supports async requests. Used here for testing FastAPI applications.
+- **fastapi**: a modern web framework for building APIs. Used in the integration testing project to give you a real app to test against.

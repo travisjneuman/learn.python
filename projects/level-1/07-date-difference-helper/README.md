@@ -49,17 +49,17 @@ Output written to data/output.json
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `weeks` command that returns the number of weeks and remaining days between two dates.
 2. Add support for alternate date formats like `DD/MM/YYYY` using a `--format` flag.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a line with an invalid date like `diff 2024-02-30 2024-03-01` (Feb 30 does not exist) -- does `parse_date()` crash?
 2. Add a `diff` command with dates in reversed order -- does `days_between()` return a negative number?
 3. Add a command with a misspelled action like `dif 2024-01-01 2024-01-10` -- what happens?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Wrap `parse_date()` in a try/except to handle invalid dates with a clear error message.
 2. Ensure `days_between()` always returns a non-negative value using `abs()`.
 3. Add a test for the reversed-dates case.

@@ -43,7 +43,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/reconciliation_report.json` — full comparison report
+- `data/reconciliation_report.json`: full comparison report
 - Passing tests
 - Updated `notes.md`
 
@@ -51,17 +51,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--tolerance` flag for numeric fields (e.g., salary difference within 5% is still "matched").
 2. Add a `--format` flag to output the report as CSV instead of JSON.
-3. Re-run script and tests — add a test for numeric tolerance.
+3. Re-run script and tests: add a test for numeric tolerance.
 
-## Break it (required) — Core
-1. Use a key field that has duplicate values in one file — observe the "last row wins" behavior.
+## Break it (required): Core
+1. Use a key field that has duplicate values in one file: observe the "last row wins" behavior.
 2. Feed two CSVs with completely different headers and see what happens.
 3. Use an empty CSV (headers only) as one of the inputs.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle duplicate keys by reporting them as a warning instead of silently overwriting.
 2. Report header differences as part of the reconciliation.
 3. Re-run until all tests pass.
@@ -72,7 +72,7 @@ pytest -q
 
 ## Explain it (teach-back)
 1. Why does `reconcile` use set operations (union, intersection, difference)?
-2. What is the purpose of `compare_fields` — when would you NOT compare all fields?
+2. What is the purpose of `compare_fields`: when would you NOT compare all fields?
 3. Why does the report separate "only_in_source" from "mismatches"?
 4. How would this scale to files with millions of rows?
 

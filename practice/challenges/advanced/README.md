@@ -7,7 +7,7 @@ you can run directly.
 ## How to Use
 
 1. Open a challenge file.
-2. Read the docstring carefully — it describes the problem and constraints.
+2. Read the docstring carefully; it describes the problem and constraints.
 3. Implement the function(s) marked with `# YOUR CODE HERE`.
 4. Run the file to execute the built-in tests:
 
@@ -40,18 +40,18 @@ an `AssertionError` with a descriptive message.
 
 ## Difficulty Guide
 
-- **Level 6** — Solid intermediate: generators, context managers, decorators,
+- **Level 6** (solid intermediate): generators, context managers, decorators,
   dataclasses.
-- **Level 7** — Advanced patterns: protocols, generics, type narrowing, asyncio
+- **Level 7** (advanced patterns): protocols, generics, type narrowing, asyncio
   basics, functional programming.
-- **Level 8** — Expert territory: metaclasses, descriptors, producer/consumer,
+- **Level 8** (expert territory): metaclasses, descriptors, producer/consumer,
   event systems.
-- **Level 9** — Near-mastery: AST manipulation, cooperative schedulers.
-- **Level 10** — (see elite-track for Level 10 challenges)
+- **Level 9** (near-mastery): AST manipulation, cooperative schedulers.
+- **Level 10**: (see elite-track for Level 10 challenges)
 
 ## Tips
 
-- Read the type hints — they tell you exactly what the function should accept
+- Read the type hints; they tell you exactly what the function should accept
   and return.
 - Start with Level 6 challenges even if you think you are ready for higher
   levels. They build foundational patterns used in later challenges.

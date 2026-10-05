@@ -1,4 +1,4 @@
-# Notes — Production Checklist
+# Notes: Production Checklist
 
 ## What I learned
 

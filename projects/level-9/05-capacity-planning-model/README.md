@@ -21,9 +21,9 @@ Home: [README](../../../README.md)
 ## Why this project exists
 Capacity planning prevents outages by projecting resource needs before demand exceeds
 supply. A service growing at 15% month-over-month will exhaust its database connections
-in 8 months — but without a model, the team only discovers this during a production
+in 8 months, but without a model, the team only discovers this during a production
 incident. This project models compute, storage, and bandwidth growth using configurable
-curves and generates capacity forecasts with months-until-exhaustion calculations — the
+curves and generates capacity forecasts with months-until-exhaustion calculations, the
 same approach infrastructure teams use at every major tech company.
 
 ## Run (copy/paste)
@@ -51,12 +51,12 @@ pytest -q
 ## Alter it (required)
 1. Add a `seasonal` growth function that models periodic spikes (e.g. Black Friday traffic).
 2. Add a `--chart` flag that outputs a text-based ASCII chart of the capacity forecast.
-3. Add cost estimation — multiply forecasted usage by per-unit cost to project spend.
+3. Add cost estimation: multiply forecasted usage by per-unit cost to project spend.
 
 ## Break it (required)
-1. Set `growth_rate=0` for exponential growth — does the forecast handle it?
-2. Create a resource profile with `capacity < current_usage` — is it flagged as already exhausted?
-3. Pass `months=0` to `forecast()` — does it return an empty forecast or error?
+1. Set `growth_rate=0` for exponential growth: does the forecast handle it?
+2. Create a resource profile with `capacity < current_usage`: is it flagged as already exhausted?
+3. Pass `months=0` to `forecast()`: does it return an empty forecast or error?
 
 ## Fix it (required)
 1. Validate that `growth_rate > 0` for exponential models.

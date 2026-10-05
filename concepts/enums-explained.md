@@ -14,7 +14,7 @@ An enum (enumeration) is a set of named constants. Instead of scattering magic s
 
 ## Why This Matters
 
-Magic strings and magic numbers are a top source of bugs. If you mistype `"actve"` instead of `"active"`, Python will not catch it — your code will silently do the wrong thing. Enums make invalid values impossible: `Status.ACTVE` raises an `AttributeError` immediately.
+Magic strings and magic numbers are a top source of bugs. If you mistype `"actve"` instead of `"active"`, Python will not catch it; your code will silently do the wrong thing. Enums make invalid values impossible: `Status.ACTVE` raises an `AttributeError` immediately.
 
 ## Basic enum
 
@@ -48,7 +48,7 @@ Color.RED == "red"       # False
 Color.RED.value == "red" # True
 ```
 
-## `IntEnum` — when you need integer values
+## `IntEnum`: when you need integer values
 
 `IntEnum` members behave like integers, so you can compare them with numbers and use them in math:
 
@@ -71,7 +71,7 @@ tasks = [Priority.HIGH, Priority.LOW, Priority.CRITICAL]
 sorted(tasks)    # [Priority.LOW, Priority.HIGH, Priority.CRITICAL]
 ```
 
-## `StrEnum` — when you need string values (Python 3.11+)
+## `StrEnum`: when you need string values (Python 3.11+)
 
 `StrEnum` members behave like strings:
 
@@ -92,7 +92,7 @@ print(f"User is {Status.ACTIVE}")  # "User is active"
 
 If you are on Python 3.10 or earlier, use `class Status(str, Enum):` instead.
 
-## `auto()` — automatic values
+## `auto()`: automatic values
 
 When you do not care about the specific values, let Python assign them:
 
@@ -106,7 +106,7 @@ class Direction(Enum):
     WEST = auto()     # 4
 ```
 
-`auto()` assigns incrementing integers starting from 1. Useful when the value does not matter — only the name.
+`auto()` assigns incrementing integers starting from 1. Useful when the value does not matter, only the name.
 
 ## Pattern matching with enums (Python 3.10+)
 
@@ -135,7 +135,7 @@ def handle(cmd: Command) -> str:
 print(handle(Command.START))    # "Starting..."
 ```
 
-## Real-world example — HTTP status codes
+## Real-world example: HTTP status codes
 
 ```python
 from enum import IntEnum
@@ -223,7 +223,7 @@ Color.RED = "crimson"    # AttributeError — enums are immutable
 ## Practice
 
 - [Level 3 / 01 Plugin Loader](../projects/level-3/01-plugin-loader/README.md)
-- [Module 04 FastAPI Web](../projects/modules/04-fastapi-web/) — status enums in API responses
+- [Module 04 FastAPI Web](../projects/modules/04-fastapi-web/): status enums in API responses
 - [Elite Track / 06 Event Driven Architecture Lab](../projects/elite-track/06-event-driven-architecture-lab/README.md)
 
 **Quick check:** [Take the quiz](quizzes/enums-explained-quiz.py) *(coming soon)*
@@ -233,8 +233,8 @@ Color.RED = "crimson"    # AttributeError — enums are immutable
 
 ## Further Reading
 
-- [enum — Support for enumerations (Python docs)](https://docs.python.org/3/library/enum.html)
-- [PEP 435 — Adding an Enum type to the Python standard library](https://peps.python.org/pep-0435/)
+- [enum: Support for enumerations (Python docs)](https://docs.python.org/3/library/enum.html)
+- [PEP 435: Adding an Enum type to the Python standard library](https://peps.python.org/pep-0435/)
 - [StrEnum (Python 3.11+)](https://docs.python.org/3/library/enum.html#enum.StrEnum)
 
 ---

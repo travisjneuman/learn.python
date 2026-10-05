@@ -1,4 +1,4 @@
-# Module 04 / Project 02 — CRUD API
+# Module 04 / Project 02: CRUD API
 
 Home: [README](../../../../README.md)
 
@@ -67,7 +67,7 @@ curl -X DELETE http://127.0.0.1:8000/todos/1
 
 ## Fix it
 
-1. The empty body error (422) is correct — Pydantic requires the `title` field. No fix needed; understand why validation matters.
+1. The empty body error (422) is correct: Pydantic requires the `title` field. No fix needed; understand why validation matters.
 2. Pydantic coerces the integer to a string by default. If you want strict validation, use `StrictStr` from pydantic. Try it and see how the behavior changes.
 3. The 404 response for missing IDs is already handled. If it is not, add a check that raises `HTTPException(status_code=404, detail="Todo not found")`.
 

@@ -1,7 +1,7 @@
 # Level 0 / Project 05 - Number Classifier
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=5) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=5): no installation needed!
 
 ## Before You Start
 
@@ -70,17 +70,17 @@ Enter a number (or 'quit'): quit
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a "perfect number" check (a number equal to the sum of its proper divisors, e.g. 6 = 1+2+3).
 2. After all numbers are entered, ask "Show only primes? (y/n): " and filter the summary.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Enter `0` -- is it classified as prime or composite? (It should be neither.)
 2. Enter `1` -- the `is_prime()` function should return `False`, but does it?
 3. Enter a negative number like `-7` -- does `is_prime()` handle negatives correctly?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `is_prime()` returns `False` for values less than 2.
 2. Add the "neither prime nor composite" label for 0 and 1.
 3. Add a test that verifies `is_prime(1)` returns `False`.

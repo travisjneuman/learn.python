@@ -1,4 +1,4 @@
-# Module 01 / Project 05 — Save to CSV
+# Module 01 / Project 05: Save to CSV
 
 [README](../../../../README.md) · [Module Index](../README.md)
 

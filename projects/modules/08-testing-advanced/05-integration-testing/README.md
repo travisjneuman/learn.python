@@ -1,4 +1,4 @@
-# Module 08 / Project 05 — Integration Testing
+# Module 08 / Project 05: Integration Testing
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -21,7 +21,7 @@
 
 ## Why this project exists
 
-Unit tests check individual functions in isolation. Integration tests check that the whole system works together — that HTTP requests reach the right endpoint, data is stored and retrieved correctly, and error responses have the right status codes. This project gives you a simple FastAPI todo API and teaches you to test it from the outside, the same way a real client would use it. This is the closest thing to "clicking through the app" but automated and repeatable.
+Unit tests check individual functions in isolation. Integration tests check that the whole system works together: that HTTP requests reach the right endpoint, data is stored and retrieved correctly, and error responses have the right status codes. This project gives you a simple FastAPI todo API and teaches you to test it from the outside, the same way a real client would use it. This is the closest thing to "clicking through the app" but automated and repeatable.
 
 ## Run
 
@@ -68,7 +68,7 @@ All tests should pass. Each test gets a fresh app instance so they do not interf
 
 1. What is the difference between a unit test and an integration test?
 2. Why does each test need a fresh app instance (a fresh `client` fixture)?
-3. What does `TestClient` do under the hood — does it start a real server?
+3. What does `TestClient` do under the hood? Does it start a real server?
 4. Why do we test error cases (404, invalid input) and not just the happy path?
 
 ## Mastery check
@@ -92,4 +92,4 @@ You can move on when you can:
 
 ## Next
 
-Congratulations — you have completed Module 08. You now have a professional-grade testing toolkit: parametrize for coverage, mocking for isolation, fixtures for setup, Hypothesis for edge cases, and integration tests for confidence. Go back to [Module Index](../README.md) and pick your next module.
+Congratulations, you have completed Module 08. You now have a professional-grade testing toolkit: parametrize for coverage, mocking for isolation, fixtures for setup, Hypothesis for edge cases, and integration tests for confidence. Go back to [Module Index](../README.md) and pick your next module.

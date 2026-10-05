@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 01 - Terminal Hello Lab
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -117,10 +117,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `greet()` as a standalone function | Makes the greeting testable in isolation — tests call `greet("Ada")` without running the whole script | Inline the greeting with `print(f"Hello, {name}!")` directly — simpler but untestable |
-| `build_banner()` uses a `width` default parameter | Callers get a sensible 40-char banner without passing extra arguments, but can customise when needed | Hard-code the width to 40 — less flexible if the title is very long |
-| `build_info_card()` returns a `dict` | Keys like `"name"` and `"language"` make data self-documenting; any code can access fields by name | Return a tuple `(name, language, day)` — shorter but relies on positional order, which is fragile |
-| `run_hello_lab()` both prints and returns | Lets the interactive script show output AND lets tests inspect the returned dict | Print-only with no return — tests would have to capture stdout, which is harder for beginners |
+| `greet()` as a standalone function | Makes the greeting testable in isolation: tests call `greet("Ada")` without running the whole script | Inline the greeting with `print(f"Hello, {name}!")` directly: simpler but untestable |
+| `build_banner()` uses a `width` default parameter | Callers get a sensible 40-char banner without passing extra arguments, but can customise when needed | Hard-code the width to 40: less flexible if the title is very long |
+| `build_info_card()` returns a `dict` | Keys like `"name"` and `"language"` make data self-documenting; any code can access fields by name | Return a tuple `(name, language, day)`: shorter but relies on positional order, which is fragile |
+| `run_hello_lab()` both prints and returns | Lets the interactive script show output AND lets tests inspect the returned dict | Print-only with no return: tests would have to capture stdout, which is harder for beginners |
 
 ## Alternative approaches
 
@@ -138,20 +138,20 @@ def build_banner(title: str, width: int = 40) -> str:
     return border + "\n" + centered_title + "\n" + border
 ```
 
-**Trade-off:** String concatenation with `+` is the most basic approach and works in all Python versions. However, f-strings (available since Python 3.6) are easier to read when mixing text and variables. You can see at a glance what the output looks like. The `.format()` method is a middle ground — more powerful than `+` but less readable than f-strings. For beginners, f-strings are the recommended default.
+**Trade-off:** String concatenation with `+` is the most basic approach and works in all Python versions. However, f-strings (available since Python 3.6) are easier to read when mixing text and variables. You can see at a glance what the output looks like. The `.format()` method is a middle ground: more powerful than `+` but less readable than f-strings. For beginners, f-strings are the recommended default.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| User presses Enter without typing a name (empty string) | `greet("")` returns `"Hello, ! Welcome to Python."` — an awkward blank space | Add a guard: `if not name.strip(): name = "friend"` before calling `greet()` |
+| User presses Enter without typing a name (empty string) | `greet("")` returns `"Hello, ! Welcome to Python."`: an awkward blank space | Add a guard: `if not name.strip(): name = "friend"` before calling `greet()` |
 | User types letters for the day number (e.g. "seven") | `int("seven")` raises `ValueError` and the program crashes | Wrap `int(day_text)` in a `try/except ValueError` and ask again |
-| User types a negative day number (e.g. "-3") | `int("-3")` succeeds, and the program says "Day -3" — technically wrong | Check `if day < 1:` and ask again or default to 1 |
-| User types only spaces as their name | `greet("   ")` returns `"Hello,    ! Welcome to Python."` — looks messy | Use `.strip()` on the name and check if it is empty after stripping |
+| User types a negative day number (e.g. "-3") | `int("-3")` succeeds, and the program says "Day -3": technically wrong | Check `if day < 1:` and ask again or default to 1 |
+| User types only spaces as their name | `greet("   ")` returns `"Hello,    ! Welcome to Python."`: looks messy | Use `.strip()` on the name and check if it is empty after stripping |
 
 ## Key takeaways
 
 1. **Functions make code testable.** By wrapping logic in `greet()` and `build_banner()`, tests can verify each piece independently without simulating user input. This is why every project from here on uses functions.
 2. **f-strings are your go-to for mixing text and variables.** The syntax `f"Hello, {name}!"` is clearer than concatenation and will be used in nearly every Python project you encounter.
 3. **The `if __name__ == "__main__"` guard separates "library code" from "script code."** This pattern appears in every project going forward and becomes essential when you start importing modules in Level 1+.
-4. **Dictionaries bundle related data with meaningful labels.** The `build_info_card()` function previews a pattern you will use constantly — returning structured data from functions instead of just printing it.
+4. **Dictionaries bundle related data with meaningful labels.** The `build_info_card()` function previews a pattern you will use constantly: returning structured data from functions instead of just printing it.

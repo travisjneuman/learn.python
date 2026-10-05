@@ -1,4 +1,4 @@
-# API Query Adapter — Step-by-Step Walkthrough
+# API Query Adapter: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -8,11 +8,11 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Imagine you work at a company that buys products from three different suppliers. Supplier A sends invoices with fields called `item_id`, `item_name`, and `price`. Supplier B uses `id`, `label`, and `cost`. Supplier C uses `sku`, `title`, and `amount`. They all mean the same thing — an identifier, a name, and a price — but every system uses different words for them.
+Imagine you work at a company that buys products from three different suppliers. Supplier A sends invoices with fields called `item_id`, `item_name`, and `price`. Supplier B uses `id`, `label`, and `cost`. Supplier C uses `sku`, `title`, and `amount`. They all mean the same thing (an identifier, a name, and a price) but every system uses different words for them.
 
 Your accounting team does not want to learn three different formats. They want one spreadsheet with columns `id`, `name`, and `value`. The Adapter pattern solves this: you write a small translator for each supplier that maps their unique field names to your standard format. Downstream code only deals with the standard format and never needs to know which supplier the data came from.
 
-The architecture has three layers. At the bottom, mock data simulates what each API would return. In the middle, adapter functions translate each API's format into `UnifiedRecord` dataclasses. At the top, a registry maps source names to adapters so you can add new sources without changing the core logic. This separation of concerns means adding a new API requires writing one adapter function and one registry entry — nothing else changes.
+The architecture has three layers. At the bottom, mock data simulates what each API would return. In the middle, adapter functions translate each API's format into `UnifiedRecord` dataclasses. At the top, a registry maps source names to adapters so you can add new sources without changing the core logic. This separation of concerns means adding a new API requires writing one adapter function and one registry entry: nothing else changes.
 
 ## Step 1: Define the Unified Schema
 
@@ -93,7 +93,7 @@ def adapt_api_b(raw: list[dict]) -> list[UnifiedRecord]:
 
 **What to do:** Create a dictionary that maps source names to their adapter functions. Write a `adapt_response()` function that looks up the correct adapter by name and calls it.
 
-**Why:** The registry is the Adapter pattern's dispatch mechanism. Instead of writing `if source == "api_a": ...` chains, you store the mapping in a dictionary. Adding a new API is a one-line change: add a new entry to the dictionary. This is the Open/Closed Principle in action — open for extension, closed for modification.
+**Why:** The registry is the Adapter pattern's dispatch mechanism. Instead of writing `if source == "api_a": ...` chains, you store the mapping in a dictionary. Adding a new API is a one-line change: add a new entry to the dictionary. This is the Open/Closed Principle in action: open for extension, closed for modification.
 
 ```python
 ADAPTERS: dict[str, Callable] = {
@@ -115,7 +115,7 @@ def adapt_response(source: str, raw: list[dict]) -> list[UnifiedRecord]:
 
 **What to do:** Write `query_all_sources()` that iterates over all configured sources, adapts each one, and merges the results into a single list of `UnifiedRecord` objects. Add `filter_records()` for optional filtering by minimum value or source.
 
-**Why:** The merge step is where the adapter pattern pays off. Downstream code receives one flat list of identically-shaped records. It does not matter whether the data came from 2 sources or 20 — the interface is the same.
+**Why:** The merge step is where the adapter pattern pays off. Downstream code receives one flat list of identically-shaped records. It does not matter whether the data came from 2 sources or 20: the interface is the same.
 
 ```python
 def query_all_sources(sources=None) -> list[UnifiedRecord]:
@@ -172,7 +172,7 @@ def run(input_path: Path, output_path: Path) -> dict:
 | Hard-coding field mappings in the query function instead of adapters | It seems simpler to put everything in one place | Keep mappings in adapter functions so each source's logic is isolated |
 | Forgetting to handle missing fields in raw data | Mock data is always clean, but real APIs can return partial responses | Use `.get("field", default)` or add explicit `KeyError` handling in adapters |
 | Using `if/elif` chains instead of a registry dictionary | It works for 2-3 sources but becomes unmanageable at scale | The dictionary registry makes adding sources trivial and avoids long conditionals |
-| Not including `source` in the unified record | You lose traceability — you cannot tell which API a record came from | Always include provenance so you can debug data quality issues per source |
+| Not including `source` in the unified record | You lose traceability: you cannot tell which API a record came from | Always include provenance so you can debug data quality issues per source |
 
 ## Testing Your Solution
 

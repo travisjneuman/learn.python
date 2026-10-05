@@ -1,4 +1,4 @@
-# Git Basics — Part 2: Remote Git and GitHub
+# Git Basics, Part 2: Remote Git and GitHub
 
 [← Part 1: Local Git](./git-basics-part1.md) · [Back to Overview](./git-basics.md)
 
@@ -73,7 +73,7 @@ git commit -m "Resolve merge conflict in greet function"
 ## Common Mistakes
 
 **Committing too much at once:**
-Each commit should be one logical change. "Add login form" is good. "Add login form, fix CSS, update README, refactor utils" is too much — make separate commits.
+Each commit should be one logical change. "Add login form" is good. "Add login form, fix CSS, update README, refactor utils" is too much; make separate commits.
 
 **Writing bad commit messages:**
 ```bash

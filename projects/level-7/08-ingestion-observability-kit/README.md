@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `filter_logs(stage, level)` method to the ObservabilityKit that returns matching log entries.
 2. Add a third pipeline stage (e.g. `"load"`) that writes records to a dict-based store.
-3. Re-run script and tests — verify the new stage metrics appear in the summary.
+3. Re-run script and tests: verify the new stage metrics appear in the summary.
 
 ## Break it (required)
 1. Call `end_stage()` for a stage name that was never started with `start_stage()`.
@@ -50,7 +50,7 @@ pytest -q
 
 ## Fix it (required)
 1. Check if the stage exists in `self.metrics` before accessing it in `end_stage()`.
-2. Guard the `error_rate` property against zero `rows_in` (already done — verify it).
+2. Guard the `error_rate` property against zero `rows_in` (already done: verify it).
 3. Add a test that calls `end_stage` on an unknown stage and expects a clear error.
 
 ## Explain it (teach-back)

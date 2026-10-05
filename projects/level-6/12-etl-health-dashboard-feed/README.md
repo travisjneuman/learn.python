@@ -39,7 +39,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — health metrics for dashboard consumption
+- `data/output_summary.json`: health metrics for dashboard consumption
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 

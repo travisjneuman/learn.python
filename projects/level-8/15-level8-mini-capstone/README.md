@@ -24,7 +24,7 @@ profiling, SLA monitoring, fault injection, and graceful degradation. Real obser
 platforms (Datadog, Grafana, New Relic) unify metrics, health checks, and alerting into
 a single pane of glass. This project builds a mini observability platform that monitors
 simulated services, detects degradation, generates alerts, and produces a unified health
-report — proving you can design systems that compose multiple subsystems into a coherent
+report, proving you can design systems that compose multiple subsystems into a coherent
 whole.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `--simulate` flag that generates random metrics and demonstrates real-time alerting.
 
 ## Break it (required)
-1. Record metrics for a service that was never registered — does `record_metric` handle it?
-2. Set `alert_threshold` to 0 — does every metric trigger an alert?
-3. Call `generate_report()` with no services registered — does it produce a valid report?
+1. Record metrics for a service that was never registered: does `record_metric` handle it?
+2. Set `alert_threshold` to 0: does every metric trigger an alert?
+3. Call `generate_report()` with no services registered: does it produce a valid report?
 
 ## Fix it (required)
 1. Add validation that services must be registered before recording metrics.
@@ -68,7 +68,7 @@ pytest -q
 ## Explain it (teach-back)
 1. How does this capstone integrate metrics, alerting, and health into a unified platform?
 2. What is the facade pattern and how does `ObservabilityPlatform` use it?
-3. Why are mean and p95 both tracked — when does each matter?
+3. Why are mean and p95 both tracked: when does each matter?
 4. How would you extend this to support distributed tracing across services?
 
 ## Mastery check

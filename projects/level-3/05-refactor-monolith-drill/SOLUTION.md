@@ -1,4 +1,4 @@
-# Refactor Monolith Drill — Annotated Solution
+# Refactor Monolith Drill: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -247,8 +247,8 @@ def build_report_pandas(csv_path: str) -> dict:
 
 ## Common Pitfalls
 
-1. **Division by zero in stats** — If a department has zero employees (which should not happen after grouping, but could happen with a filter), `sum(salaries) / len(salaries)` crashes. Always guard division operations or ensure the list is non-empty before computing.
+1. **Division by zero in stats**: If a department has zero employees (which should not happen after grouping, but could happen with a filter), `sum(salaries) / len(salaries)` crashes. Always guard division operations or ensure the list is non-empty before computing.
 
-2. **Mutating the input list** — Writing `employees = [e for e in employees if ...]` creates a new list. If you used `employees.remove(e)` in a loop, you would skip elements because the list shifts under the iterator.
+2. **Mutating the input list**: Writing `employees = [e for e in employees if ...]` creates a new list. If you used `employees.remove(e)` in a loop, you would skip elements because the list shifts under the iterator.
 
-3. **Forgetting to strip CSV fields** — Raw CSV values often have trailing spaces or newlines. The `row["name"].strip()` calls are essential. Without them, "Engineering" and "Engineering " would be treated as different departments.
+3. **Forgetting to strip CSV fields**: Raw CSV values often have trailing spaces or newlines. The `row["name"].strip()` calls are essential. Without them, "Engineering" and "Engineering " would be treated as different departments.

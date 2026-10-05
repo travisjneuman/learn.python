@@ -1,4 +1,4 @@
-# Notes — SQLAlchemy Models
+# Notes: SQLAlchemy Models
 
 ## What I learned
 

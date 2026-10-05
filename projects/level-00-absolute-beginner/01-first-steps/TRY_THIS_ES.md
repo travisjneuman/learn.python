@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 01
+# Prueba Esto: Ejercicio 01
 
 1. En el modo interactivo (`python` y luego `>>>`), intenta calcular tu edad en días:
    ```

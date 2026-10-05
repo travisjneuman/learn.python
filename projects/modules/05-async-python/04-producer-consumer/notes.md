@@ -1,4 +1,4 @@
-# Notes — Producer-Consumer
+# Notes: Producer-Consumer
 
 ## What I learned
 

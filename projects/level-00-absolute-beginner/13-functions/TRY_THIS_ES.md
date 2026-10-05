@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 13
+# Prueba Esto: Ejercicio 13
 
 1. Escribe una función que tome una temperatura en Fahrenheit y devuelva Celsius:
    ```python

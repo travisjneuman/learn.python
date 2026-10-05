@@ -1,4 +1,4 @@
-# Parametrize — Step-by-Step Walkthrough
+# Parametrize: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -10,7 +10,7 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 Testing a function with one input proves it works for that input. Testing it with ten inputs proves it handles variety. But writing ten separate test functions that all look nearly identical is tedious and hard to maintain. `@pytest.mark.parametrize` solves this by letting you define one test function and feed it a table of inputs and expected outputs. Pytest runs the function once per row, reporting each as a separate test.
 
-This project has two sides: writing the utility functions and writing the parametrized tests. The functions are deliberately simple — email validation, temperature conversion, palindrome checking, and number clamping. The complexity is not in the logic but in the edge cases: empty strings, boundary values, invalid types. Parametrize is the tool that lets you check all of those edge cases without drowning in duplicate code.
+This project has two sides: writing the utility functions and writing the parametrized tests. The functions are deliberately simple: email validation, temperature conversion, palindrome checking, and number clamping. The complexity is not in the logic but in the edge cases: empty strings, boundary values, invalid types. Parametrize is the tool that lets you check all of those edge cases without drowning in duplicate code.
 
 Think of parametrize like a spreadsheet. Each row is a test case. The columns are the inputs and the expected output. You write the test logic once, and pytest fills in the values row by row.
 
@@ -18,7 +18,7 @@ Think of parametrize like a spreadsheet. Each row is a test case. The columns ar
 
 **What to do:** Implement four small utility functions in `project.py`: `validate_email`, `celsius_to_fahrenheit`, `is_palindrome`, and `clamp`.
 
-**Why:** Each function is a textbook "pure function" — same input, same output, no side effects. This makes them perfect for parametrized testing. Start with the simplest implementation that handles the main cases, then refine edge cases based on your test results.
+**Why:** Each function is a textbook "pure function": same input, same output, no side effects. This makes them perfect for parametrized testing. Start with the simplest implementation that handles the main cases, then refine edge cases based on your test results.
 
 ```python
 import re
@@ -145,7 +145,7 @@ def test_clamp_raises_on_invalid_range():
         clamp(5, 10, 0)
 ```
 
-The `match` parameter checks that the error message contains the expected text. This prevents false positives — you are not just catching any `ValueError`, you are catching the specific one your function raises.
+The `match` parameter checks that the error message contains the expected text. This prevents false positives: you are not just catching any `ValueError`, you are catching the specific one your function raises.
 
 **Predict:** What happens if `clamp` does not raise an error? Does `pytest.raises` pass or fail?
 
@@ -182,6 +182,6 @@ Each parametrized case appears as a separate test with its readable id. All shou
 ## What You Learned
 
 - **`@pytest.mark.parametrize`** runs one test function with many different inputs, eliminating duplicate test code while increasing coverage.
-- **The `ids` parameter** gives each test case a human-readable name — critical for understanding which case failed when debugging.
+- **The `ids` parameter** gives each test case a human-readable name, critical for understanding which case failed when debugging.
 - **`pytest.approx()`** handles floating-point comparison by allowing a small tolerance, preventing false failures from rounding errors.
-- **`pytest.raises()`** tests that code raises the correct exception — sometimes the right behavior is to fail loudly, not to return garbage.
+- **`pytest.raises()`** tests that code raises the correct exception. Sometimes the right behavior is to fail loudly, not to return garbage.

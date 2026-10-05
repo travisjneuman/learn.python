@@ -103,7 +103,7 @@ response = requests.get(
 )
 ```
 
-## JSON — the language of APIs
+## JSON: the language of APIs
 
 Most APIs send and receive JSON (JavaScript Object Notation):
 

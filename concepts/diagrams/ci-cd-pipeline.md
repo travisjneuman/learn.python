@@ -1,4 +1,4 @@
-# CI/CD Pipeline — Diagrams
+# CI/CD Pipeline: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 

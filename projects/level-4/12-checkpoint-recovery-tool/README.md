@@ -40,8 +40,8 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/processed_output.json` — processed results
-- `data/.checkpoint.json` — checkpoint file (cleared on success)
+- `data/processed_output.json`: processed results
+- `data/.checkpoint.json`: checkpoint file (cleared on success)
 - Passing tests
 - Updated `notes.md`
 
@@ -49,17 +49,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--simulate-crash` flag that stops after N items to test recovery.
 2. Add a progress bar (percentage) logged at each checkpoint.
-3. Re-run script and tests — verify crash simulation creates a valid checkpoint.
+3. Re-run script and tests: verify crash simulation creates a valid checkpoint.
 
-## Break it (required) — Core
-1. Corrupt the checkpoint file (write invalid JSON) and run — observe the "starting fresh" behavior.
-2. Modify `process_item` to raise an exception on a specific item — verify the checkpoint has progress up to the failure point.
+## Break it (required): Core
+1. Corrupt the checkpoint file (write invalid JSON) and run: observe the "starting fresh" behavior.
+2. Modify `process_item` to raise an exception on a specific item: verify the checkpoint has progress up to the failure point.
 3. Set `--batch-size 0` and observe what happens.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate `batch_size` is positive in `parse_args`.
 2. Add error handling in `process_item` so one bad item does not crash the whole batch.
 3. Re-run until all tests pass.

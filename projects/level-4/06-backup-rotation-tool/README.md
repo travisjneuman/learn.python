@@ -43,7 +43,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/rotation_report.json` — keep/delete lists with retention reasons
+- `data/rotation_report.json`: keep/delete lists with retention reasons
 - Passing tests
 - Updated `notes.md`
 
@@ -51,17 +51,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--execute` flag that actually deletes the files marked for deletion (default: plan only).
 2. Add a `--min-keep` safety net that refuses to delete if fewer than N backups would remain.
-3. Re-run script and tests — add a test for the min-keep guard.
+3. Re-run script and tests: add a test for the min-keep guard.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Create backup files with unparseable names (no date) and confirm they land in `unparseable`.
 2. Set `--daily 0 --weekly 0 --monthly 0` and observe whether ALL backups are scheduled for deletion.
 3. Create two backups on the same day and verify only one is counted for the daily slot.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a confirmation prompt before actual deletion (when `--execute` is used).
 2. Handle the edge case of monthly retention when months vary in length (28-31 days).
 3. Re-run until all tests pass.
@@ -72,7 +72,7 @@ pytest -q
 
 ## Explain it (teach-back)
 1. Why does `classify_backups` take `now` as a parameter instead of calling `datetime.now()` internally?
-2. What is the purpose of `kept_set` — why not just check the `keep` list directly?
+2. What is the purpose of `kept_set`: why not just check the `keep` list directly?
 3. Why does weekly retention use ISO week numbers instead of just counting 7-day intervals?
 4. How would this pattern scale to thousands of backup files?
 

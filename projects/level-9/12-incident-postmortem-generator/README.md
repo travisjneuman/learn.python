@@ -19,12 +19,12 @@ Home: [README](../../../README.md)
 - Action item tracking with owners and due dates
 
 ## Why this project exists
-Blameless postmortems are essential for learning from failures — yet most teams skip
+Blameless postmortems are essential for learning from failures, yet most teams skip
 them or produce low-quality reports that gather dust. The difference between a useful
 postmortem and a useless one is structure: a clear timeline, honest root cause analysis,
 and actionable follow-ups with owners. This project takes raw incident data and generates
 a structured postmortem document with severity classification, quality scoring, and action
-item tracking — teaching the systematic approach to incident learning used by Google,
+item tracking, teaching the systematic approach to incident learning used by Google,
 Etsy, and every mature SRE organization.
 
 ## Run (copy/paste)
@@ -53,13 +53,13 @@ pytest -q
 
 ## Alter it (required)
 1. Add a `render_markdown()` method that outputs the postmortem as a formatted Markdown document.
-2. Add action item due-date validation — flag overdue items in the report.
+2. Add action item due-date validation: flag overdue items in the report.
 3. Add a `--template` flag that uses a custom section ordering.
 
 ## Break it (required)
-1. Generate a postmortem with no timeline entries — does the timeline section handle it?
-2. Create an `ImpactSummary` with negative `affected_users` — does the severity score handle it?
-3. Pass action items with empty `owner` fields — how does the quality score respond?
+1. Generate a postmortem with no timeline entries: does the timeline section handle it?
+2. Create an `ImpactSummary` with negative `affected_users`: does the severity score handle it?
+3. Pass action items with empty `owner` fields: how does the quality score respond?
 
 ## Fix it (required)
 1. Validate that `affected_users >= 0` and `duration_minutes >= 0` in `ImpactSummary`.

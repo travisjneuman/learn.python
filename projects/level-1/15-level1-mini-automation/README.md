@@ -51,17 +51,17 @@ Output written to data/output.json
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a Step 6: `step_export_csv()` that writes active records to a CSV file.
 2. Add a `--verbose` flag that prints the result of each pipeline step as it executes.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a line with only 2 pipe-separated values -- does `step_parse_records()` skip it or crash?
 2. Add a record with a non-numeric value field -- does `step_transform()` use the default 0.0?
 3. Use a file where all records have status "failed" -- does `step_summarise()` handle an empty active list?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `step_parse_records()` skips lines with fewer than 3 pipe-separated fields.
 2. Handle the all-filtered-out case in `step_summarise()` by returning zero counts.
 3. Add a test for the non-numeric-value fallback.

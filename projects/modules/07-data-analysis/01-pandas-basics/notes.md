@@ -1,4 +1,4 @@
-# Notes — Pandas Basics
+# Notes: Pandas Basics
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# SQL Connection Simulator — Step-by-Step Walkthrough
+# SQL Connection Simulator: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -58,7 +58,7 @@ class ConnectionPool:
 
 **What to do:** Write `acquire()` to check the pool first (reuse if possible, create if empty) and `release()` to return connections to the pool (or close them if the pool is full).
 
-**Why:** This is where the performance gain comes from. The first call to `acquire()` creates a new connection. When you `release()` it, the connection goes into the pool. The next `acquire()` finds it there and reuses it — no creation overhead.
+**Why:** This is where the performance gain comes from. The first call to `acquire()` creates a new connection. When you `release()` it, the connection goes into the pool. The next `acquire()` finds it there and reuses it: no creation overhead.
 
 ```python
 def acquire(self) -> sqlite3.Connection:

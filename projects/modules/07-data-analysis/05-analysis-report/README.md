@@ -1,4 +1,4 @@
-# Module 07 / Project 05 — Analysis Report
+# Module 07 / Project 05: Analysis Report
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -22,7 +22,7 @@
 
 ## Why this project exists
 
-This project ties together everything you learned in Projects 01 through 04 into a single realistic workflow. In a real job, you would receive a CSV of transaction data and be asked: "What is our monthly revenue trend? Which products sell best? Who are our top customers?" This project teaches you to answer those questions end to end — from raw file to finished report and chart.
+This project ties together everything you learned in Projects 01 through 04 into a single realistic workflow. In a real job, you would receive a CSV of transaction data and be asked: "What is our monthly revenue trend? Which products sell best? Who are our top customers?" This project teaches you to answer those questions end to end, from raw file to finished report and chart.
 
 ## Run
 

@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `"degraded"` severity level between warning and stale (e.g. at 75% of stale threshold).
 2. Add a `most_stale()` method that returns the single stalest source.
-3. Re-run script and tests — verify the new severity and method appear in output.
+3. Re-run script and tests: verify the new severity and method appear in output.
 
 ## Break it (required)
 1. Provide a `last_updated` timestamp in the future (ahead of `now`) and observe negative age.

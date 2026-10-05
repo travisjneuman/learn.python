@@ -1,4 +1,4 @@
-# Module 04 / Project 04 — Authentication
+# Module 04 / Project 04: Authentication
 
 Home: [README](../../../../README.md)
 

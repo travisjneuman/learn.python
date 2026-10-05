@@ -1,4 +1,4 @@
-# Module 03 / Project 01 — First API Call
+# Module 03 / Project 01: First API Call
 
 [README](../../../../README.md)
 

@@ -21,7 +21,7 @@ Watch how a for loop steps through a list, one item at a time:
 
 Python has two kinds of loops:
 
-## For loops — "do this for each item"
+## For loops: "do this for each item"
 
 ```python
 colors = ["red", "blue", "green"]
@@ -51,7 +51,7 @@ for i in range(0, 10, 2): # 0, 2, 4, 6, 8 (step by 2)
     print(i)
 ```
 
-## While loops — "keep doing this until something changes"
+## While loops: "keep doing this until something changes"
 
 ```python
 count = 1

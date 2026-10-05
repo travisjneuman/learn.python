@@ -1,4 +1,4 @@
-# Module 03 / Project 02 — Query Parameters
+# Module 03 / Project 02: Query Parameters
 
 [README](../../../../README.md)
 
@@ -59,9 +59,9 @@ Page 3: fetched 5 posts (IDs: 11, 12, 13, 14, 15)
 
 ## Break it
 
-1. Pass `userId=999` — a user that does not exist. What does the API return? Is it an error or an empty list?
+1. Pass `userId=999`, a user that does not exist. What does the API return? Is it an error or an empty list?
 2. Set `_limit=0`. What happens?
-3. Pass `params={"userId": [1, 2]}` — a list instead of a single value. Does the API handle it? What do you get back?
+3. Pass `params={"userId": [1, 2]}`, a list instead of a single value. Does the API handle it? What do you get back?
 
 ## Fix it
 

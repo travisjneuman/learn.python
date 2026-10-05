@@ -1,7 +1,7 @@
 # Level 1 / Project 03 - Unit Price Calculator
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=3) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=3): no installation needed!
 
 ## Before You Start
 
@@ -56,17 +56,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--category` filter flag that shows only products matching a category column.
 2. Add a "savings" column showing how much you save vs the most expensive option.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a CSV row with quantity `0` -- does `calculate_unit_price()` crash with division by zero?
 2. Add a row with a negative price -- does the calculator accept it or reject it?
 3. Add a row with missing columns -- does `parse_product_row()` handle it gracefully?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `calculate_unit_price()` raises `ValueError` for zero or negative quantities.
 2. Validate that prices are non-negative in `parse_product_row()`.
 3. Add a test for the zero-quantity edge case.

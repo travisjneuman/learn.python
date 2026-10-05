@@ -1,4 +1,4 @@
-# Enterprise Python Blueprint — Step-by-Step Walkthrough
+# Enterprise Python Blueprint: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

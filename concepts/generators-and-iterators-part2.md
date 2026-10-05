@@ -1,4 +1,4 @@
-# Generators and Iterators — Part 2: Generators
+# Generators and Iterators, Part 2: Generators
 
 [← Part 1: Iterators](./generators-and-iterators-part1.md) · [Back to Overview](./generators-and-iterators.md)
 
@@ -14,9 +14,9 @@
 
 ---
 
-A **generator** is a function that produces values one at a time using `yield` instead of `return`. Generators are the easy way to create iterators — they handle the protocol automatically and let you write lazy, memory-efficient code.
+A **generator** is a function that produces values one at a time using `yield` instead of `return`. Generators are the easy way to create iterators: they handle the protocol automatically and let you write lazy, memory-efficient code.
 
-## Generators — the easy way to make iterators
+## Generators: the easy way to make iterators
 
 Writing a class with `__iter__` and `__next__` is tedious. A **generator function** does the same thing with much less code:
 
@@ -35,7 +35,7 @@ for num in count_up(5):
 
 When Python hits `yield`, the function **pauses** and gives back the value. Next time you ask for a value, it **resumes** right where it left off.
 
-A generator function does not run when you call it — it returns a generator object:
+A generator function does not run when you call it. It returns a generator object:
 
 ```python
 gen = count_up(3)       # Nothing runs yet
@@ -45,7 +45,7 @@ print(next(gen))        # 2
 print(next(gen))        # 3
 ```
 
-## Generator expressions — one-liners
+## Generator expressions: one-liners
 
 Just like list comprehensions create lists, **generator expressions** create generators:
 
@@ -94,7 +94,7 @@ for ts in timestamps:
 
 Each generator pulls one value at a time from the previous one. The entire file is never loaded into memory.
 
-## `yield from` — delegating to another generator
+## `yield from`: delegating to another generator
 
 When one generator needs to yield all values from another, use `yield from`:
 
@@ -117,7 +117,7 @@ list(up_and_down(3))    # [1, 2, 3, 3, 2, 1]
 
 Without `yield from`, you would need a loop: `for x in count_up(n): yield x`.
 
-## `send()` and `throw()` — advanced two-way communication
+## `send()` and `throw()`: advanced two-way communication
 
 Generators can receive values, not just produce them:
 

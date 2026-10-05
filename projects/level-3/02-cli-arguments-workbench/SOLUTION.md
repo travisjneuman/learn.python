@@ -1,4 +1,4 @@
-# CLI Arguments Workbench — Annotated Solution
+# CLI Arguments Workbench: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -222,8 +222,8 @@ def convert(value: float, from_unit: str, to_unit: str) -> float:
 
 ## Common Pitfalls
 
-1. **Checking `if args.c_to_f` instead of `if args.c_to_f is not None`** — The value 0.0 is falsy in Python, so `if args.c_to_f` would skip a valid input of 0 degrees. Always use `is not None` when a valid value could be zero.
+1. **Checking `if args.c_to_f` instead of `if args.c_to_f is not None`**: The value 0.0 is falsy in Python, so `if args.c_to_f` would skip a valid input of 0 degrees. Always use `is not None` when a valid value could be zero.
 
-2. **Forgetting `required=True` on mutually exclusive groups** — Without it, the user can run `project.py temp` with no conversion flag, and argparse will silently accept it, leading to a confusing `None` value downstream.
+2. **Forgetting `required=True` on mutually exclusive groups**: Without it, the user can run `project.py temp` with no conversion flag, and argparse will silently accept it, leading to a confusing `None` value downstream.
 
-3. **Hardcoding conversion factors inline** — Scattering `* 2.20462` throughout the code makes it impossible to find and update. Keeping each conversion in its own named function (or a constants dict) makes the factor discoverable and testable.
+3. **Hardcoding conversion factors inline**: Scattering `* 2.20462` throughout the code makes it impossible to find and update. Keeping each conversion in its own named function (or a constants dict) makes the factor discoverable and testable.

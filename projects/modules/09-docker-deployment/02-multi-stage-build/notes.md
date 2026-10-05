@@ -1,4 +1,4 @@
-# Notes — Multi-Stage Build
+# Notes: Multi-Stage Build
 
 ## What I learned
 

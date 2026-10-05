@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 10 - Duplicate Line Finder
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -133,10 +133,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `count_line_occurrences()` is a separate function | It isolates the counting logic so `find_duplicates()` can focus on filtering and position tracking. Each function has one job | Do everything in `find_duplicates()` — combines counting and filtering, making it harder to test the counting logic alone |
-| `find_duplicates()` returns line numbers, not just counts | Knowing that "apple" appears on lines 1 and 3 is actionable — the user can go fix it. Just knowing "apple appears twice" is less helpful | Return only counts — simpler but less useful for debugging or data cleanup |
-| `build_report()` filters out empty lines first | Empty lines appearing multiple times is noise, not meaningful duplication. Filtering them produces cleaner results | Keep empty lines — technically correct but floods the report with useless entries |
-| `set(non_empty)` for counting unique lines | A set is the cleanest way to count distinct items in Python. `len(set(items))` is a one-line idiom for "how many unique values?" | Count manually with a loop and a seen-list — works but reinvents what `set` does natively |
+| `count_line_occurrences()` is a separate function | It isolates the counting logic so `find_duplicates()` can focus on filtering and position tracking. Each function has one job | Do everything in `find_duplicates()`: combines counting and filtering, making it harder to test the counting logic alone |
+| `find_duplicates()` returns line numbers, not just counts | Knowing that "apple" appears on lines 1 and 3 is actionable: the user can go fix it. Just knowing "apple appears twice" is less helpful | Return only counts: simpler but less useful for debugging or data cleanup |
+| `build_report()` filters out empty lines first | Empty lines appearing multiple times is noise, not meaningful duplication. Filtering them produces cleaner results | Keep empty lines: technically correct but floods the report with useless entries |
+| `set(non_empty)` for counting unique lines | A set is the cleanest way to count distinct items in Python. `len(set(items))` is a one-line idiom for "how many unique values?" | Count manually with a loop and a seen-list: works but reinvents what `set` does natively |
 
 ## Alternative approaches
 
@@ -174,7 +174,7 @@ def find_duplicates(lines: list) -> list:
 
 ## Key takeaways
 
-1. **Dictionaries are Python's universal counting tool.** The pattern `if key in dict: dict[key] += 1; else: dict[key] = 1` solves word counting, vote tallying, frequency analysis, and duplicate detection. Master this pattern — you will use it in nearly every project.
+1. **Dictionaries are Python's universal counting tool.** The pattern `if key in dict: dict[key] += 1; else: dict[key] = 1` solves word counting, vote tallying, frequency analysis, and duplicate detection. Master this pattern: you will use it in nearly every project.
 2. **Sets give you uniqueness for free.** `len(set(items))` counts distinct values in one line. `set` automatically removes duplicates because it only stores unique values. This is the standard Python idiom for deduplication.
 3. **Reporting WHERE something occurs is more valuable than reporting THAT it occurs.** "apple appears on lines 1 and 3" is actionable; "apple appears twice" is not. Including positions takes extra code but dramatically increases the report's usefulness.
 4. **Filter noise before analysis.** Empty lines, whitespace-only lines, and other non-content should be excluded before counting. Pre-filtering with a list comprehension (`[line for line in lines if line]`) keeps the analysis clean and the results meaningful.

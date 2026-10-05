@@ -44,18 +44,18 @@ Success after 3 retries (total delay: 0.7s)
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add jitter to the backoff delay (random variation) to prevent thundering-herd behavior.
 2. Add a `--max-retries` flag that overrides the default retry count from the command line.
 3. Log each retry attempt with the delay duration and the error that triggered it.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Set `--max-retries 0` so no retries are allowed and the flaky function always fails.
 2. Set `--base-delay` to a negative number.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate that max_retries >= 1 and base_delay > 0.
 2. Return a clear error report when all retries are exhausted.
 3. Add tests for zero retries and negative delay.

@@ -1,4 +1,4 @@
-# Fetch a Webpage — Step-by-Step Walkthrough
+# Fetch a Webpage: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -18,7 +18,7 @@ Start by thinking about what could go wrong. The server might not exist (connect
 
 **What to do:** Import the `requests` library and choose a URL to fetch.
 
-**Why:** The `requests` library does not come with Python — you installed it with `pip install requests`. The URL `http://books.toscrape.com/` is a website built specifically for scraping practice, so you will never get blocked or cause problems by fetching it.
+**Why:** The `requests` library does not come with Python; you installed it with `pip install requests`. The URL `http://books.toscrape.com/` is a website built specifically for scraping practice, so you will never get blocked or cause problems by fetching it.
 
 ```python
 import requests
@@ -32,7 +32,7 @@ url = "http://books.toscrape.com/"
 
 **What to do:** Call `requests.get(url)` and store the response object.
 
-**Why:** `requests.get()` sends an HTTP GET request — the same type of request your browser sends when you visit a URL. The function returns a `Response` object that contains everything the server sent back. Think of it as an envelope: the status code is stamped on the outside, the headers are metadata inside the flap, and the body (HTML) is the letter inside.
+**Why:** `requests.get()` sends an HTTP GET request, the same type of request your browser sends when you visit a URL. The function returns a `Response` object that contains everything the server sent back. Think of it as an envelope: the status code is stamped on the outside, the headers are metadata inside the flap, and the body (HTML) is the letter inside.
 
 ```python
 print(f"Fetching {url} ...")
@@ -45,7 +45,7 @@ response = requests.get(url)
 
 **What to do:** Read `response.status_code` and decide what to do based on its value.
 
-**Why:** The status code tells you whether the request succeeded. 200 means "OK" — the server found the page and sent it back. 404 means "not found." 500 means the server had an internal error. Checking the status code before processing the response prevents you from trying to read HTML that does not exist.
+**Why:** The status code tells you whether the request succeeded. 200 means "OK": the server found the page and sent it back. 404 means "not found." 500 means the server had an internal error. Checking the status code before processing the response prevents you from trying to read HTML that does not exist.
 
 ```python
 if response.status_code == 200:
@@ -61,7 +61,7 @@ else:
 
 **What to do:** Print the Content-Type header and a preview of the response body.
 
-**Why:** Headers are metadata that the server sends along with the response. The `Content-Type` header tells you what kind of content came back (HTML, JSON, an image, etc.). The response body (`response.text`) is the actual content — in this case, raw HTML. Printing the first 500 characters gives you a preview without flooding your terminal.
+**Why:** Headers are metadata that the server sends along with the response. The `Content-Type` header tells you what kind of content came back (HTML, JSON, an image, etc.). The response body (`response.text`) is the actual content (in this case, raw HTML). Printing the first 500 characters gives you a preview without flooding your terminal.
 
 ```python
 content_type = response.headers.get("Content-Type", "unknown")
@@ -85,7 +85,7 @@ Two details to notice:
 
 **What to do:** Organize your code into functions and add the `if __name__ == "__main__"` guard.
 
-**Why:** Putting the logic in functions makes the code reusable — another script could import `fetch_page()` without running the whole program. The `__name__` guard ensures `main()` only runs when you execute the file directly, not when someone imports it.
+**Why:** Putting the logic in functions makes the code reusable: another script could import `fetch_page()` without running the whole program. The `__name__` guard ensures `main()` only runs when you execute the file directly, not when someone imports it.
 
 ```python
 def fetch_page(url):
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
 ## Testing Your Solution
 
-There are no pytest tests for this project — it is a script that fetches a live website. Run it and check the output:
+There are no pytest tests for this project. It is a script that fetches a live website. Run it and check the output:
 
 ```bash
 python project.py
@@ -143,7 +143,7 @@ The exact character count may vary, but you should see status code 200 and recog
 
 ## What You Learned
 
-- **`requests.get()`** sends an HTTP GET request and returns a Response object — the same kind of request your browser makes when you visit a URL.
+- **`requests.get()`** sends an HTTP GET request and returns a Response object. This is the same kind of request your browser makes when you visit a URL.
 - **Status codes** tell you whether a request succeeded (200), the page was not found (404), or the server had an error (500). Always check before processing.
 - **`response.text`** gives you the response body as a string, while **`response.headers`** gives you the metadata the server sent back.
 - **The `if __name__ == "__main__"` pattern** lets you write code that works both as a standalone script and as an importable module.

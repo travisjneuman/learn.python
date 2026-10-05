@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 12 - File Extension Counter
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -158,10 +158,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `rglob("*")` for recursive scanning | Walks the entire directory tree including subdirectories, which is what users expect when counting files in a project | `iterdir()` — only lists the top-level directory, missing nested files |
-| Two counting functions (directory scan and path list) | Allows testing without real files; the list-based function can be tested with plain strings | One function that always scans a directory — harder to test, no way to count from a file list |
-| Normalise extensions to lowercase | Prevents `.PY` and `.py` from being counted as different types; this is especially important on case-insensitive filesystems (Windows, macOS) | Case-sensitive counting — would over-count on platforms where file extensions vary in case |
-| `"(no extension)"` for files without a suffix | Explicitly tracks extensionless files (Makefile, Dockerfile, README) instead of silently ignoring them | Skip extensionless files — would lose data; they are often important files |
+| `rglob("*")` for recursive scanning | Walks the entire directory tree including subdirectories, which is what users expect when counting files in a project | `iterdir()`, only lists the top-level directory, missing nested files |
+| Two counting functions (directory scan and path list) | Allows testing without real files; the list-based function can be tested with plain strings | One function that always scans a directory: harder to test, no way to count from a file list |
+| Normalise extensions to lowercase | Prevents `.PY` and `.py` from being counted as different types; this is especially important on case-insensitive filesystems (Windows, macOS) | Case-sensitive counting: would over-count on platforms where file extensions vary in case |
+| `"(no extension)"` for files without a suffix | Explicitly tracks extensionless files (Makefile, Dockerfile, README) instead of silently ignoring them | Skip extensionless files: would lose data; they are often important files |
 
 ## Alternative approaches
 
@@ -186,19 +186,19 @@ def count_extensions_counter(directory: Path) -> dict[str, int]:
     return dict(Counter(extensions))
 ```
 
-**Trade-off:** Counter reduces the counting logic to two lines. The manual `.get(ext, 0) + 1` approach teaches the underlying pattern — you will encounter situations where Counter is not sufficient (e.g., summing values instead of counting). Learn the manual pattern first, then use Counter as a shortcut.
+**Trade-off:** Counter reduces the counting logic to two lines. The manual `.get(ext, 0) + 1` approach teaches the underlying pattern: you will encounter situations where Counter is not sufficient (e.g., summing values instead of counting). Learn the manual pattern first, then use Counter as a shortcut.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
 | Empty directory | `count_extensions()` returns `{}`, `format_report()` displays "(no files found)" | The empty-dict case is handled by the `if not sorted_counts` guard |
-| Files with double extensions like `archive.tar.gz` | `Path.suffix` returns only `.gz`, not `.tar.gz` | This is by design — Python's Path.suffix only returns the last extension; use `.suffixes` if you need all of them |
+| Files with double extensions like `archive.tar.gz` | `Path.suffix` returns only `.gz`, not `.tar.gz` | This is by design: Python's Path.suffix only returns the last extension; use `.suffixes` if you need all of them |
 | Non-existent directory path | `is_dir()` returns False, `NotADirectoryError` is raised with a clear message | The explicit check before `rglob()` catches this |
 | Very large directory tree (thousands of files) | `rglob()` iterates lazily, but `list()` would load everything into memory; counting in a loop is memory-efficient | The loop approach streams results without materialising the full list |
 
 ## Key takeaways
 
 1. **`Path.suffix` extracts the file extension including the dot.** `Path("photo.jpg").suffix` returns `".jpg"`. Files without extensions (like `Makefile`) return an empty string. Always normalise with `.lower()` to avoid case-sensitivity issues.
-2. **`rglob()` vs `iterdir()` — know the difference.** `iterdir()` lists only the immediate contents of a directory. `rglob("*")` walks the entire tree recursively. Use `rglob` when you need to find all files in a project, and `iterdir` when you only want the top level.
+2. **`rglob()` vs `iterdir()`: know the difference.** `iterdir()` lists only the immediate contents of a directory. `rglob("*")` walks the entire tree recursively. Use `rglob` when you need to find all files in a project, and `iterdir` when you only want the top level.
 3. **File type distribution analysis connects to real-world tools.** Disk usage analysers (WinDirStat, ncdu), build systems (which files to compile), and code quality tools (how much code vs documentation) all start by counting file types. The count-sort-display pattern you built here is the foundation.

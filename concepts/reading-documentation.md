@@ -14,7 +14,7 @@ Learning to read documentation is one of the most valuable skills a programmer c
 
 ## Why This Matters
 
-No one memorizes every function in Python. Even experienced developers look things up constantly. The difference between a beginner and an expert is often just speed at finding answers in the docs. Learning to read documentation makes you self-sufficient — you stop needing to search for tutorials and Stack Overflow answers for every question.
+No one memorizes every function in Python. Even experienced developers look things up constantly. The difference between a beginner and an expert is often just speed at finding answers in the docs. Learning to read documentation makes you self-sufficient: you stop needing to search for tutorials and Stack Overflow answers for every question.
 
 ## Navigating docs.python.org
 
@@ -39,10 +39,10 @@ str.split(sep=None, maxsplit=-1)
 ```
 
 Breaking it down:
-- `str` — the type this method belongs to (string)
-- `.split` — the method name
-- `sep=None` — first parameter, defaults to `None` (split on whitespace)
-- `maxsplit=-1` — second parameter, defaults to `-1` (no limit)
+- `str`: the type this method belongs to (string)
+- `.split`: the method name
+- `sep=None`: first parameter, defaults to `None` (split on whitespace)
+- `maxsplit=-1`: second parameter, defaults to `-1` (no limit)
 
 The defaults tell you what happens when you do not pass an argument:
 ```python
@@ -59,9 +59,9 @@ Modern Python docs use type hints:
 json.loads(s: str | bytes, *, cls=None, ...) -> Any
 ```
 
-- `s: str | bytes` — the `s` parameter accepts a string or bytes
-- `*` — everything after this is keyword-only
-- `-> Any` — the return type (in this case, it depends on the JSON)
+- `s: str | bytes`: the `s` parameter accepts a string or bytes
+- `*`: everything after this is keyword-only
+- `-> Any`: the return type (in this case, it depends on the JSON)
 
 Common type patterns:
 | Notation | Meaning |
@@ -81,11 +81,11 @@ Common type patterns:
 
 When you look up a module (like `os.path` or `json`), the page usually has:
 
-1. **Module description** — what the module does
-2. **Functions/classes** — listed with signatures and descriptions
-3. **Examples** — code showing how to use it
-4. **Notes** — edge cases and platform differences
-5. **See also** — related modules
+1. **Module description**: what the module does
+2. **Functions/classes**: listed with signatures and descriptions
+3. **Examples**: code showing how to use it
+4. **Notes**: edge cases and platform differences
+5. **See also**: related modules
 
 **Strategy:** Start with the module description, scan the function list for what you need, then read that specific function's entry. Do not try to read the entire page.
 
@@ -105,7 +105,7 @@ help(json)
 help(list)
 ```
 
-`help()` shows the docstring — the same text that appears in the official docs, but right in your terminal.
+`help()` shows the docstring, the same text that appears in the official docs, but right in your terminal.
 
 ```python
 # Quick signature check with dir():
@@ -125,7 +125,7 @@ Searching "python read csv file" will usually return the relevant docs page in t
 
 ### Strategy 3: Module index
 
-The docs have a [Global Module Index](https://docs.python.org/3/py-modindex.html) — an alphabetical list of every standard library module. Browse it when you are not sure what module to use.
+The docs have a [Global Module Index](https://docs.python.org/3/py-modindex.html): an alphabetical list of every standard library module. Browse it when you are not sure what module to use.
 
 ### Strategy 4: Start from what you know
 
@@ -161,7 +161,7 @@ TypeError: can only concatenate str (not "int") to str
 ```
 
 This tells you:
-- **What happened**: `TypeError` — wrong type
+- **What happened**: `TypeError`, wrong type
 - **Why**: you tried to concatenate a str and an int
 - **The fix**: convert the int to a string first: `"hello" + str(42)`
 
@@ -170,7 +170,7 @@ See [Reading Error Messages](./reading-error-messages.md) for a deeper dive.
 ## Common Mistakes
 
 **Skipping the "Parameters" section:**
-The parameters section tells you what each argument does, what types it accepts, and what the defaults are. Read it carefully — it often answers your question faster than reading the prose description.
+The parameters section tells you what each argument does, what types it accepts, and what the defaults are. Read it carefully. It often answers your question faster than reading the prose description.
 
 **Not reading the "Raises" section:**
 Many functions document which exceptions they raise and when. This tells you what errors to handle:

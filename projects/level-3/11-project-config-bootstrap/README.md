@@ -50,17 +50,17 @@ Sources:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add support for TOML config files alongside JSON.
 2. Add a `--mask-secrets` flag that hides secret_key and database_url in output.
 3. Add a `diff` subcommand that shows which values differ from defaults.
 
-## Break it (required) — Core
-1. Set `APP_PORT=notanumber` as an environment variable — what happens?
-2. Pass a config file with an unknown key — is it ignored or does it crash?
-3. Set `port` to -1 in the config — does `validate` catch it?
+## Break it (required): Core
+1. Set `APP_PORT=notanumber` as an environment variable: what happens?
+2. Pass a config file with an unknown key: is it ignored or does it crash?
+3. Set `port` to -1 in the config: does `validate` catch it?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add type coercion error handling with clear messages.
 2. Warn about unknown config keys instead of ignoring them silently.
 3. Ensure `validate_config` catches all edge cases (negative values, etc.).

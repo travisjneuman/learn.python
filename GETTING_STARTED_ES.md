@@ -115,11 +115,11 @@ El curriculum soporta tres modos. Escoge el que se ajuste a como aprendes:
 
 El curriculum incluye varias herramientas para reforzar tu aprendizaje mas alla de los proyectos principales:
 
-- **Quizzes** — Pon a prueba tu comprension de cada concepto: [`concepts/quizzes/`](./concepts/quizzes/)
-- **Flashcards** — Mazos de repaso rapido para terminos y patrones clave: [`practice/flashcards/`](./practice/flashcards/)
-- **Challenges** — Problemas independientes ordenados por dificultad: [`practice/challenges/`](./practice/challenges/)
-- **Ejercicios en el Navegador** — Ejecuta Python en tu navegador sin instalar nada: [`browser/`](./browser/index.html)
-- **Repeticion Espaciada** — Algoritmo SM-2 para programar tus repasos: [`tools/spaced_repetition.py`](./tools/spaced_repetition.py)
+- **Quizzes**: Pon a prueba tu comprension de cada concepto: [`concepts/quizzes/`](./concepts/quizzes/)
+- **Flashcards**: Mazos de repaso rapido para terminos y patrones clave: [`practice/flashcards/`](./practice/flashcards/)
+- **Challenges**: Problemas independientes ordenados por dificultad: [`practice/challenges/`](./practice/challenges/)
+- **Ejercicios en el Navegador**: Ejecuta Python en tu navegador sin instalar nada: [`browser/`](./browser/index.html)
+- **Repeticion Espaciada**: Algoritmo SM-2 para programar tus repasos: [`tools/spaced_repetition.py`](./tools/spaced_repetition.py)
 
 ---
 

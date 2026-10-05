@@ -6,7 +6,7 @@ Other platforms: [Windows](./03_SETUP_WINDOWS.md) | [macOS](./03_SETUP_MACOS.md)
 
 ---
 
-## Step 1 — Install Python
+## Step 1: Install Python
 
 We recommend **Python 3.13+** for the best experience. Python 3.13 has dramatically better error messages that explain what went wrong in plain English, making debugging much easier for beginners.
 
@@ -43,7 +43,7 @@ Python 3.x.x
 hello from python
 ```
 
-## Step 2 — Install an editor
+## Step 2: Install an editor
 
 **Option A (recommended): VS Code**
 
@@ -58,13 +58,13 @@ Install [VS Code](https://code.visualstudio.com/), then add these extensions:
 
 [Thonny](https://thonny.org/) is a Python IDE designed for beginners. It comes with Python built in, has a simple interface, and includes a debugger that lets you step through code line by line. If VS Code feels overwhelming, start with Thonny and switch to VS Code later.
 
-## Step 3 — Create your learning folder
+## Step 3: Create your learning folder
 
 ```bash
 mkdir -p "$HOME/python_sme/projects" "$HOME/python_sme/templates" "$HOME/python_sme/notes"
 ```
 
-## Step 4 — Install uv (recommended package manager)
+## Step 4: Install uv (recommended package manager)
 
 **uv** is a modern, fast replacement for pip and venv. It is used throughout this curriculum.
 
@@ -77,7 +77,7 @@ Expected output: `uv x.x.x` (version number).
 
 > **If you prefer pip:** All `uv` commands in this curriculum have pip equivalents. Replace `uv venv` with `python3 -m venv .venv` and `uv pip install` with `pip install`. Everything else stays the same.
 
-## Step 5 — Create first project and virtual environment
+## Step 5: Create first project and virtual environment
 
 ```bash
 cd "$HOME/python_sme/projects"
@@ -95,7 +95,7 @@ Expected output:
 
 > **pip fallback:** Replace `uv venv` with `python3 -m venv .venv`.
 
-## Step 6 — Install pytest and run sanity checks
+## Step 6: Install pytest and run sanity checks
 
 ```bash
 uv pip install pytest
@@ -106,7 +106,7 @@ pytest --version
 
 Expected output: pytest version is displayed.
 
-## Step 7 — Create first script and first test
+## Step 7: Create first script and first test
 
 Create `hello.py`:
 
@@ -135,7 +135,7 @@ Hello, Future Python SME
 1 passed
 ```
 
-## Step 8 — Credential handling
+## Step 8: Credential handling
 
 Do not embed database credentials in scripts. Use environment variables:
 
@@ -162,7 +162,7 @@ After completing this guide you should have:
 - **Missing `venv` module:** Install the OS package `python3-venv` (Ubuntu/Debian: `sudo apt install python3-venv`).
 - **`uv` not found:** Re-run the install command from Step 4. Or fall back to pip.
 - **`pytest` not found:** Confirm venv is active. Run `uv pip install pytest` (or `pip install pytest`).
-- **Permission denied on install:** Use `sudo` for system-level packages. Never use `sudo pip install` — always use a virtual environment.
+- **Permission denied on install:** Use `sudo` for system-level packages. Never use `sudo pip install`. Always use a virtual environment.
 
 ## Break/fix drills
 

@@ -1,4 +1,4 @@
-# Error Safe Divider — Annotated Solution
+# Error Safe Divider: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -218,8 +218,8 @@ For financial calculations, `float` arithmetic introduces rounding errors (`0.1 
 
 ## Common Pitfalls
 
-1. **Bare `except:` catches everything** — Writing `except:` without specifying a type catches `KeyboardInterrupt` and `SystemExit`, which prevents the user from pressing Ctrl+C to stop the program. Always catch specific exception types.
+1. **Bare `except:` catches everything**: Writing `except:` without specifying a type catches `KeyboardInterrupt` and `SystemExit`, which prevents the user from pressing Ctrl+C to stop the program. Always catch specific exception types.
 
-2. **Forgetting `float('inf')` and `float('nan')`** — Dividing very large floats can produce infinity, and `0.0 / 0.0` does not raise `ZeroDivisionError` for floats (it returns `nan`). Production code should check `math.isinf()` and `math.isnan()` on results.
+2. **Forgetting `float('inf')` and `float('nan')`**: Dividing very large floats can produce infinity, and `0.0 / 0.0` does not raise `ZeroDivisionError` for floats (it returns `nan`). Production code should check `math.isinf()` and `math.isnan()` on results.
 
-3. **Division by zero only applies to integers** — `1 / 0` raises `ZeroDivisionError`, but `1.0 / 0.0` also raises it in Python. However, `float('inf') / float('inf')` silently returns `nan`. Edge cases in floating-point arithmetic are subtle.
+3. **Division by zero only applies to integers**: `1 / 0` raises `ZeroDivisionError`, but `1.0 / 0.0` also raises it in Python. However, `float('inf') / float('inf')` silently returns `nan`. Edge cases in floating-point arithmetic are subtle.

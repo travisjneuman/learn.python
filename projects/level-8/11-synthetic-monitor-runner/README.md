@@ -20,11 +20,11 @@ Home: [README](../../../README.md)
 
 ## Why this project exists
 Synthetic monitoring proactively detects outages by running scripted checks against your
-system at regular intervals — before real users hit problems. Unlike real-user monitoring
+system at regular intervals, before real users hit problems. Unlike real-user monitoring
 that waits for complaints, synthetic checks continuously verify that login works, API
 responses are fast, and databases are reachable. This project builds a monitor runner that
 executes health checks, evaluates pass/fail criteria, tracks history for trend analysis,
-and generates status reports — the same pattern used by Pingdom, UptimeRobot, and custom
+and generates status reports, the same pattern used by Pingdom, UptimeRobot, and custom
 health-check frameworks.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `history` feature that stores the last N results per check for trend analysis.
 
 ## Break it (required)
-1. Register a check with an unknown `check_type` — does the factory handle it gracefully?
-2. Set a threshold check's expected value to `None` — what happens in comparison?
-3. Mark a check as `critical=True` and make it fail — verify the report's `overall_healthy` flag.
+1. Register a check with an unknown `check_type`: does the factory handle it gracefully?
+2. Set a threshold check's expected value to `None`: what happens in comparison?
+3. Mark a check as `critical=True` and make it fail: verify the report's `overall_healthy` flag.
 
 ## Fix it (required)
 1. Add a default handler in the check factory for unknown check types.

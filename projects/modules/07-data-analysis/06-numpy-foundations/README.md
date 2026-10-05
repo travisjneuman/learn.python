@@ -1,4 +1,4 @@
-# Module 07 / Project 06 — NumPy Foundations
+# Module 07 / Project 06: NumPy Foundations
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -22,7 +22,7 @@
 
 ## Why this project exists
 
-NumPy is the foundation of Python's data science ecosystem. Pandas, matplotlib, scikit-learn, and TensorFlow all build on NumPy arrays. Understanding how arrays work — especially broadcasting and vectorized operations — is essential before moving to any data science library. This project teaches you to think in arrays instead of loops, which is both faster and more readable.
+NumPy is the foundation of Python's data science ecosystem. Pandas, matplotlib, scikit-learn, and TensorFlow all build on NumPy arrays. Understanding how arrays work (especially broadcasting and vectorized operations) is essential before moving to any data science library. This project teaches you to think in arrays instead of loops, which is both faster and more readable.
 
 ## Prerequisites
 

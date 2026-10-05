@@ -1,4 +1,4 @@
-# Test Driven Normalizer — Annotated Solution
+# Test Driven Normalizer: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -248,7 +248,7 @@ if __name__ == "__main__":
 | NORMALISERS registry dict | Decouples the CLI and record-processing logic from the individual normalisers. New rules require zero changes to existing code. |
 | Regex for date parsing instead of `datetime.strptime` | `strptime` is stricter and more correct for date validation, but regex shows the pattern more explicitly for learning purposes. Also handles partial dates without raising exceptions. |
 | Pass-through for unmapped fields | Records often have fields beyond what we want to normalise. Dropping them silently would lose data. |
-| Individual functions per normaliser | Each function is independently testable. TDD naturally produces this shape — you write one test, then one function. |
+| Individual functions per normaliser | Each function is independently testable. TDD naturally produces this shape: you write one test, then one function. |
 
 ## Alternative Approaches
 
@@ -270,12 +270,12 @@ def normalise_date_strict(date_str: str) -> NormalisationResult:
     return NormalisationResult(date_str, date_str, "no_change", False)
 ```
 
-**Trade-off:** This validates that dates are actually real (rejects "13/32/2024"), which regex alone cannot do. But it is less transparent — format strings like `%m/%d/%Y` are harder for beginners to read than explicit regex groups.
+**Trade-off:** This validates that dates are actually real (rejects "13/32/2024"), which regex alone cannot do. But it is less transparent: format strings like `%m/%d/%Y` are harder for beginners to read than explicit regex groups.
 
 ## Common Pitfalls
 
-1. **Ambiguous date formats** — Is "01/02/2024" January 2nd or February 1st? The MM/DD/YYYY vs DD/MM/YYYY ambiguity is unsolvable without context. The code assumes MM/DD/YYYY for slash-separated dates. Document your assumption clearly.
+1. **Ambiguous date formats**: Is "01/02/2024" January 2nd or February 1st? The MM/DD/YYYY vs DD/MM/YYYY ambiguity is unsolvable without context. The code assumes MM/DD/YYYY for slash-separated dates. Document your assumption clearly.
 
-2. **Normalising data that should not be normalised** — Title-casing "mcdonald" gives "Mcdonald" not "McDonald". Simple rules break on edge cases. For production, consider a lookup-based approach for known exceptions.
+2. **Normalising data that should not be normalised**: Title-casing "mcdonald" gives "Mcdonald" not "McDonald". Simple rules break on edge cases. For production, consider a lookup-based approach for known exceptions.
 
-3. **Not testing with the `changed` flag** — Many TDD beginners test only the `normalised` output and forget to assert that `changed` is `True` or `False`. The `changed` flag is part of the contract.
+3. **Not testing with the `changed` flag**: Many TDD beginners test only the `normalised` output and forget to assert that `changed` is `True` or `False`. The `changed` flag is part of the contract.

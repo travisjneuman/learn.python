@@ -1,4 +1,4 @@
-# Schema Validator Engine — Annotated Solution
+# Schema Validator Engine: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
 | Decision | Why |
 |----------|-----|
 | `TYPE_MAP` as a module-level constant | Keeps the mapping in one place. Adding a new type (e.g., `"date"`) is a single-line change instead of editing validation logic. |
-| Collect all errors per record instead of stopping at the first | Batch reporting is more useful for data pipelines — fixing one error at a time and re-running is slow when you have thousands of records. |
+| Collect all errors per record instead of stopping at the first | Batch reporting is more useful for data pipelines: fixing one error at a time and re-running is slow when you have thousands of records. |
 | Flag unexpected fields in the record | Catches upstream schema drift early. In production, a new column appearing silently can cause downstream bugs that are hard to trace. |
 | Separate `load_schema` / `load_records` / `validate_record` functions | Each function has one job. You can test validation without touching the filesystem, or swap the loader for a database reader. |
 
@@ -222,6 +222,6 @@ def validate_or_raise(record, schema):
 
 ## Common Pitfalls
 
-1. **Forgetting that `bool` is a subclass of `int` in Python** — `isinstance(True, int)` returns `True`. If your schema has both `"boolean"` and `"integer"` types, check for `bool` first or a boolean value will pass an integer check.
-2. **Checking `value is None` but not `field_name not in record`** — A field can be present with value `None` (explicit null in JSON), or entirely absent from the dict. Both are "missing" but require different checks.
-3. **Mutating the input records during validation** — If you add or modify fields on the original dicts, subsequent validation passes or downstream code will see corrupted data. Always work on copies if you need to transform.
+1. **Forgetting that `bool` is a subclass of `int` in Python**: `isinstance(True, int)` returns `True`. If your schema has both `"boolean"` and `"integer"` types, check for `bool` first or a boolean value will pass an integer check.
+2. **Checking `value is None` but not `field_name not in record`**: A field can be present with value `None` (explicit null in JSON), or entirely absent from the dict. Both are "missing" but require different checks.
+3. **Mutating the input records during validation**: If you add or modify fields on the original dicts, subsequent validation passes or downstream code will see corrupted data. Always work on copies if you need to transform.

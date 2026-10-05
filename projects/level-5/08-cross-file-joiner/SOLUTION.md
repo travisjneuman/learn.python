@@ -1,4 +1,4 @@
-# Cross-File Joiner — Annotated Solution
+# Cross-File Joiner: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -237,6 +237,6 @@ Pandas handles duplicate keys, type mismatches, column name conflicts (with suff
 
 ## Common Pitfalls
 
-1. **Join key exists in only one file** — Using `--key dept_id` when the right file uses `department_id` produces zero matches. Always verify column names in both files before joining.
-2. **Duplicate keys with different data** — If the left file has two rows with `dept_id=1`, only the last one appears in the index. This silently drops data. Log the duplicate count so the user is aware.
-3. **Column name collisions** — If both files have a column called `name`, the right side's value overwrites the left side's in the merged dict. In production, you would add suffixes (`name_left`, `name_right`) to preserve both.
+1. **Join key exists in only one file**: Using `--key dept_id` when the right file uses `department_id` produces zero matches. Always verify column names in both files before joining.
+2. **Duplicate keys with different data**: If the left file has two rows with `dept_id=1`, only the last one appears in the index. This silently drops data. Log the duplicate count so the user is aware.
+3. **Column name collisions**: If both files have a column called `name`, the right side's value overwrites the left side's in the merged dict. In production, you would add suffixes (`name_left`, `name_right`) to preserve both.

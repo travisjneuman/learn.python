@@ -1,4 +1,4 @@
-# Level 5 Mini Capstone: Operational Pipeline — Step-by-Step Walkthrough
+# Level 5 Mini Capstone: Operational Pipeline (Step-by-Step Walkthrough)
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

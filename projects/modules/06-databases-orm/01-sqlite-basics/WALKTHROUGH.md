@@ -1,4 +1,4 @@
-# SQLite Basics — Step-by-Step Walkthrough
+# SQLite Basics: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -8,11 +8,11 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-A database stores data in tables — like spreadsheets with rows and columns. SQLite is special because it is built into Python (no server to install) and stores everything in a single file. The workflow is always the same: connect to the database, execute SQL statements, and commit your changes.
+A database stores data in tables, like spreadsheets with rows and columns. SQLite is special because it is built into Python (no server to install) and stores everything in a single file. The workflow is always the same: connect to the database, execute SQL statements, and commit your changes.
 
-The most important lesson in this project is not SQL syntax — it is parameterized queries. When you build SQL strings by concatenating user input (`f"WHERE name = '{user_input}'"`, you create a SQL injection vulnerability: a malicious user can type something that breaks out of the string and runs arbitrary SQL commands. Parameterized queries (`WHERE name = ?` with values passed separately) make this impossible because the database treats the values as data, never as code.
+The most important lesson in this project is not SQL syntax; it is parameterized queries. When you build SQL strings by concatenating user input (`f"WHERE name = '{user_input}'"`, you create a SQL injection vulnerability: a malicious user can type something that breaks out of the string and runs arbitrary SQL commands. Parameterized queries (`WHERE name = ?` with values passed separately) make this impossible because the database treats the values as data, never as code.
 
-Think of it like filling out a form. String concatenation is like letting someone write directly on the form — they could scribble over the instructions. Parameterized queries are like having pre-printed fields where the user can only write inside the boxes.
+Think of it like filling out a form. String concatenation is like letting someone write directly on the form: they could scribble over the instructions. Parameterized queries are like having pre-printed fields where the user can only write inside the boxes.
 
 ## Step 1: Connect to the Database
 
@@ -40,7 +40,7 @@ def create_connection():
 
 **What to do:** Execute a `CREATE TABLE IF NOT EXISTS` statement to define the schema.
 
-**Why:** A table defines the structure of your data — what columns exist, what types they hold, and what constraints apply. `IF NOT EXISTS` makes the statement safe to run multiple times — it only creates the table the first time. `conn.commit()` saves the change to disk.
+**Why:** A table defines the structure of your data: what columns exist, what types they hold, and what constraints apply. `IF NOT EXISTS` makes the statement safe to run multiple times; it only creates the table the first time. `conn.commit()` saves the change to disk.
 
 ```python
 def create_table(conn):
@@ -60,7 +60,7 @@ Four things to notice:
 - **`INTEGER PRIMARY KEY AUTOINCREMENT`** gives each row a unique ID that increases automatically. You never set it manually.
 - **`TEXT NOT NULL`** means this column must contain text and cannot be empty.
 - **Triple-quoted strings** let you write multi-line SQL that is easy to read.
-- **`conn.commit()`** is required — without it, the table creation is not saved to disk.
+- **`conn.commit()`** is required. Without it, the table creation is not saved to disk.
 
 **Predict:** What happens if you remove `NOT NULL` from the title column and then try to insert a row with no title?
 
@@ -68,7 +68,7 @@ Four things to notice:
 
 **What to do:** Use `executemany()` with `?` placeholders to insert multiple rows safely.
 
-**Why:** `executemany()` runs the same INSERT statement for each tuple in a list. The `?` placeholders get replaced with the tuple values by SQLite — this is a parameterized query. SQLite handles escaping, so special characters in the data (like apostrophes in "O'Reilly") cannot break the SQL.
+**Why:** `executemany()` runs the same INSERT statement for each tuple in a list. The `?` placeholders get replaced with the tuple values by SQLite. This is a parameterized query. SQLite handles escaping, so special characters in the data (like apostrophes in "O'Reilly") cannot break the SQL.
 
 ```python
 SAMPLE_BOOKS = [
@@ -91,7 +91,7 @@ def insert_sample_books(conn):
 
 **What to do:** Write functions that query the database using parameterized `WHERE` clauses.
 
-**Why:** `SELECT` retrieves data. `WHERE` filters rows. Always use `?` placeholders for user-provided values — never put variables directly into the SQL string. `cursor.fetchall()` returns all matching rows.
+**Why:** `SELECT` retrieves data. `WHERE` filters rows. Always use `?` placeholders for user-provided values. Never put variables directly into the SQL string. `cursor.fetchall()` returns all matching rows.
 
 ```python
 def get_books_by_year(conn, year):
@@ -111,7 +111,7 @@ def search_books_by_title(conn, search_term):
 
 Two details to notice:
 
-- **`(year,)`** is a one-element tuple. The trailing comma is required — without it, `(year)` is just parentheses around the variable, not a tuple.
+- **`(year,)`** is a one-element tuple. The trailing comma is required. Without it, `(year)` is just parentheses around the variable, not a tuple.
 - **`LIKE` with `%` wildcards** does partial matching. `%Python%` matches any title containing "Python" anywhere.
 
 **Predict:** If you pass `"'; DROP TABLE books; --"` as the `search_term`, what happens? Does the table get dropped?
@@ -145,11 +145,11 @@ def demo_safe_query(conn, dangerous_input):
 | `sqlite3.OperationalError: no such table` | Forgot to call `create_table()` first | Create tables before inserting or querying |
 | `(year)` instead of `(year,)` | Forgetting the tuple comma | A one-element tuple needs a trailing comma: `(year,)` |
 | Data disappears after restart | Forgot `conn.commit()` | Always commit after INSERT, UPDATE, or DELETE |
-| Using f-strings in SQL | It seems simpler | Never do this — use `?` placeholders to prevent SQL injection |
+| Using f-strings in SQL | It seems simpler | Never do this; use `?` placeholders to prevent SQL injection |
 
 ## Testing Your Solution
 
-There are no pytest tests for this project — run it and verify the output:
+There are no pytest tests for this project. Run it and verify the output:
 
 ```bash
 python project.py
@@ -177,7 +177,7 @@ The important verification: the table still exists after the injection attempt.
 
 ## What You Learned
 
-- **`sqlite3`** is built into Python and requires no server — it stores the entire database in a single file.
-- **`conn.execute()`** runs SQL statements, and **`conn.commit()`** saves changes — without commit, INSERT/UPDATE/DELETE changes are lost when the connection closes.
+- **`sqlite3`** is built into Python and requires no server; it stores the entire database in a single file.
+- **`conn.execute()`** runs SQL statements, and **`conn.commit()`** saves changes. Without commit, INSERT/UPDATE/DELETE changes are lost when the connection closes.
 - **Parameterized queries** (`?` placeholders) prevent SQL injection by treating user input as data, never as executable SQL code.
 - **`cursor.fetchall()`** returns all matching rows, and **`row_factory = sqlite3.Row`** lets you access columns by name instead of index.

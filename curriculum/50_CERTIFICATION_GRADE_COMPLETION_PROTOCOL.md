@@ -22,7 +22,7 @@ You must pass all five:
 
 ## Detailed Scoring Rubrics by Level
 
-### Level 00 — Absolute Beginner (Pass/Fail)
+### Level 00: Absolute Beginner (Pass/Fail)
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
@@ -30,7 +30,7 @@ You must pass all five:
 | Student can explain what their code does | Demonstrates understanding | Cannot explain |
 | No syntax errors in submitted code | Clean execution | Runtime errors |
 
-### Levels 0–2 — Foundations (100-Point Scale)
+### Levels 0–2: Foundations (100-Point Scale)
 
 | Category | Points | Criteria |
 |----------|--------|----------|
@@ -42,7 +42,7 @@ You must pass all five:
 
 **Pass threshold:** 70/100. Projects scoring 60–69 may resubmit once.
 
-### Levels 3–5 — Intermediate (100-Point Scale)
+### Levels 3–5: Intermediate (100-Point Scale)
 
 | Category | Points | Criteria |
 |----------|--------|----------|
@@ -55,7 +55,7 @@ You must pass all five:
 
 **Pass threshold:** 70/100.
 
-### Levels 6–8 — Advanced (100-Point Scale)
+### Levels 6–8: Advanced (100-Point Scale)
 
 | Category | Points | Criteria |
 |----------|--------|----------|
@@ -68,7 +68,7 @@ You must pass all five:
 
 **Pass threshold:** 75/100.
 
-### Levels 9–10 — Professional (100-Point Scale)
+### Levels 9–10: Professional (100-Point Scale)
 
 | Category | Points | Criteria |
 |----------|--------|----------|
@@ -223,7 +223,7 @@ How to deploy this in a production-like environment.
 ### Review Ethics
 
 - Review the code, not the person
-- Be specific: "This function is 80 lines — consider splitting the validation into a helper" is better than "Code is too long"
+- Be specific: "This function is 80 lines; consider splitting the validation into a helper" is better than "Code is too long"
 - Acknowledge what works before noting what does not
 - If you are unsure whether something is wrong, ask a question instead of making a statement
 

@@ -38,7 +38,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — lineage chains per record
+- `data/output_summary.json`: lineage chains per record
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 

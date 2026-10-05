@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 11 - Command Dispatcher
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -201,10 +201,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Dict mapping command names to functions | Adding a command is one dict entry; the dispatch logic never changes | If/elif chain — requires modifying the dispatch function for every new command |
-| Functions as first-class values in the dict | Demonstrates Python's ability to treat functions as data; the same pattern powers web frameworks and plugin systems | Lambda functions in the dict — works but harder to test and document individually |
-| Return error dict for unknown commands | Lets the caller decide how to handle errors (display, log, retry) without crashing the program | Raise KeyError — would require try/except in every caller |
-| All handlers share the same signature (`str -> str`) | Uniform interface means the dispatcher does not need special-case logic per command | Mixed signatures — requires the dispatcher to inspect and adapt arguments per command |
+| Dict mapping command names to functions | Adding a command is one dict entry; the dispatch logic never changes | If/elif chain: requires modifying the dispatch function for every new command |
+| Functions as first-class values in the dict | Demonstrates Python's ability to treat functions as data; the same pattern powers web frameworks and plugin systems | Lambda functions in the dict: works but harder to test and document individually |
+| Return error dict for unknown commands | Lets the caller decide how to handle errors (display, log, retry) without crashing the program | Raise KeyError: would require try/except in every caller |
+| All handlers share the same signature (`str -> str`) | Uniform interface means the dispatcher does not need special-case logic per command | Mixed signatures: requires the dispatcher to inspect and adapt arguments per command |
 
 ## Alternative approaches
 
@@ -235,7 +235,7 @@ def dispatch_if_elif(command: str, argument: str) -> dict:
     return {"command": command, "argument": argument, "result": result}
 ```
 
-**Trade-off:** The if/elif approach is simpler to understand — each branch is explicit. But it does not scale: adding 20 commands means 20 elif branches. The dict approach scales better because adding a command is one line (`"newcmd": cmd_newcmd`), and the dispatch logic stays the same. The dict approach also makes it easy to list available commands, which the if/elif approach cannot do without duplicating the command names.
+**Trade-off:** The if/elif approach is simpler to understand: each branch is explicit. But it does not scale: adding 20 commands means 20 elif branches. The dict approach scales better because adding a command is one line (`"newcmd": cmd_newcmd`), and the dispatch logic stays the same. The dict approach also makes it easy to list available commands, which the if/elif approach cannot do without duplicating the command names.
 
 ## What could go wrong
 

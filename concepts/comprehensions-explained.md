@@ -14,7 +14,7 @@ A comprehension is a one-line way to build a list, dictionary, or set from anoth
 
 ## Why This Matters
 
-Comprehensions make your code shorter, faster, and more readable — once you learn the pattern. They show up everywhere in Python: filtering data, transforming lists, building dictionaries from pairs, and more. Understanding them is essential from Level 2 onward.
+Comprehensions make your code shorter, faster, and more readable, once you learn the pattern. They show up everywhere in Python: filtering data, transforming lists, building dictionaries from pairs, and more. Understanding them is essential from Level 2 onward.
 
 ## Visualize It
 
@@ -104,7 +104,7 @@ Note: sets use `{}` just like dicts, but without the `:`. If there is no colon, 
 
 ## Generator expressions
 
-Use `()` instead of `[]` to create a generator instead of a list. Generators compute values lazily — one at a time — and use almost no memory:
+Use `()` instead of `[]` to create a generator instead of a list. Generators compute values lazily (one at a time) and use almost no memory:
 
 ```python
 # List comprehension — builds the whole list:
@@ -157,8 +157,8 @@ labels = ["even" if n % 2 == 0 else "odd" for n in numbers]
 ```
 
 Note the position:
-- **Filter** (which items): `[x for x in items if condition]` — `if` at the end
-- **Transform** (what value): `[a if condition else b for x in items]` — `if/else` before `for`
+- **Filter** (which items): `[x for x in items if condition]` with `if` at the end
+- **Transform** (what value): `[a if condition else b for x in items]` with `if/else` before `for`
 
 ## The walrus operator `:=` in comprehensions
 
@@ -174,7 +174,7 @@ result = [(w, length) for w in data if (length := len(w)) > 2]
 # [("hello", 5), ("hey", 3), ("howdy", 5)]
 ```
 
-Another example — filtering and transforming expensive function calls:
+Another example: filtering and transforming expensive function calls:
 
 ```python
 import math
@@ -199,7 +199,7 @@ Use a comprehension when:
 Use a regular loop when:
 - You need side effects (printing, writing files, modifying other data)
 - The logic is complex (multiple conditions, nested transforms)
-- Readability suffers — if you have to squint to understand it, use a loop
+- Readability suffers: if you have to squint to understand it, use a loop
 
 ```python
 # GOOD — simple and clear:
@@ -248,8 +248,8 @@ empty_set = set()    # Use set() for an empty set
 - [Level 0 / 06 Word Counter Basic](../projects/level-0/06-word-counter-basic/README.md)
 - [Level 1 / 05 CSV First Reader](../projects/level-1/05-csv-first-reader/README.md)
 - [Level 2 / 01 JSON Explorer](../projects/level-2/01-json-explorer/README.md)
-- [Module 01 Web Scraping](../projects/modules/01-web-scraping/) — transforming scraped data
-- [Module 07 Data Analysis](../projects/modules/07-data-analysis/) — pandas-style filtering
+- [Module 01 Web Scraping](../projects/modules/01-web-scraping/): transforming scraped data
+- [Module 07 Data Analysis](../projects/modules/07-data-analysis/): pandas-style filtering
 
 **Quick check:** [Take the quiz](quizzes/comprehensions-explained-quiz.py) *(coming soon)*
 
@@ -259,8 +259,8 @@ empty_set = set()    # Use set() for an empty set
 ## Further Reading
 
 - [List comprehensions (Python tutorial)](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions)
-- [PEP 274 — Dict Comprehensions](https://peps.python.org/pep-0274/)
-- [PEP 572 — Assignment Expressions (:=)](https://peps.python.org/pep-0572/)
+- [PEP 274: Dict Comprehensions](https://peps.python.org/pep-0274/)
+- [PEP 572: Assignment Expressions (:=)](https://peps.python.org/pep-0572/)
 
 ---
 

@@ -1,4 +1,4 @@
-# Deploy to Railway — Step-by-Step Walkthrough
+# Deploy to Railway: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -8,9 +8,9 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Deployment is the bridge between "it runs on my laptop" and "anyone on the internet can use it." The app itself is a straightforward FastAPI server — you have built these before. The new skill here is configuring it for a cloud platform. Three things change when you move from local to cloud: configuration comes from environment variables (not hardcoded values), the port is assigned by the platform (not chosen by you), and the server must listen on `0.0.0.0` (not `127.0.0.1`).
+Deployment is the bridge between "it runs on my laptop" and "anyone on the internet can use it." The app itself is a straightforward FastAPI server; you have built these before. The new skill here is configuring it for a cloud platform. Three things change when you move from local to cloud: configuration comes from environment variables (not hardcoded values), the port is assigned by the platform (not chosen by you), and the server must listen on `0.0.0.0` (not `127.0.0.1`).
 
-Railway (and similar platforms like Render, Fly.io, and Heroku) follow a simple workflow: you push code to GitHub, the platform detects it, builds a container, and runs it. The `Procfile` tells Railway how to start your app. Environment variables control configuration without code changes. This is the Twelve-Factor App methodology in practice — the same code runs in development and production, with only environment variables changing.
+Railway (and similar platforms like Render, Fly.io, and Heroku) follow a simple workflow: you push code to GitHub, the platform detects it, builds a container, and runs it. The `Procfile` tells Railway how to start your app. Environment variables control configuration without code changes. This is the Twelve-Factor App methodology in practice: the same code runs in development and production, with only environment variables changing.
 
 Think of it like mailing a package. Locally, you hand the package directly to someone. In the cloud, you need an address (URL), a delivery method (Procfile), and instructions for the recipient (environment variables). The package contents (your code) stay the same.
 
@@ -35,7 +35,7 @@ app = FastAPI(title=APP_NAME, version=APP_VERSION)
 Two details to notice:
 
 - **`os.environ.get("APP_ENV", "development")`** reads the environment variable with a default value. Locally, the default kicks in. On Railway, you set `APP_ENV=production`.
-- **`PORT = int(os.environ.get("PORT", 8000))`** reads the port as a string and converts to int. Railway assigns the port automatically — you must not hardcode it.
+- **`PORT = int(os.environ.get("PORT", 8000))`** reads the port as a string and converts to int. Railway assigns the port automatically; you must not hardcode it.
 
 **Predict:** What happens if you hardcode `port=8000` and deploy to Railway, but Railway assigns port 3000? Can anyone reach your app?
 
@@ -76,7 +76,7 @@ The `/health` endpoint is not optional in production. Railway, Render, and Kuber
 
 **What to do:** Create a `Procfile` that tells Railway how to start your app.
 
-**Why:** The Procfile is a single-line configuration file that cloud platforms read to know which command starts your app. Without it, Railway has to guess — and it might guess wrong. The format is `<process type>: <command>`.
+**Why:** The Procfile is a single-line configuration file that cloud platforms read to know which command starts your app. Without it, Railway has to guess, and it might guess wrong. The format is `<process type>: <command>`.
 
 ```
 web: uvicorn app:app --host 0.0.0.0 --port $PORT
@@ -85,7 +85,7 @@ web: uvicorn app:app --host 0.0.0.0 --port $PORT
 Three details to notice:
 
 - **`web:`** tells Railway this is a web process that receives HTTP traffic.
-- **`--host 0.0.0.0`** listens on all interfaces — required in the cloud, just like in Docker.
+- **`--host 0.0.0.0`** listens on all interfaces (required in the cloud, just like in Docker).
 - **`$PORT`** is an environment variable that Railway sets automatically. Your app must use it.
 
 **Predict:** What happens if you omit the Procfile? Can Railway still deploy your app?
@@ -113,7 +113,7 @@ APP_NAME=my-fastapi-app
 APP_ENV=development
 ```
 
-**Predict:** What happens if you forget to include `uvicorn` in `requirements.txt`? When does the error appear — during build or at runtime?
+**Predict:** What happens if you forget to include `uvicorn` in `requirements.txt`? When does the error appear: during build or at runtime?
 
 ## Step 5: Test Locally, Then Deploy
 
@@ -133,9 +133,9 @@ Deployment steps:
 1. Push your code to a GitHub repository
 2. Sign in to https://railway.app with your GitHub account
 3. Click "New Project" and select "Deploy from GitHub repo"
-4. Select your repository — Railway detects the Procfile and starts building
+4. Select your repository. Railway detects the Procfile and starts building
 5. In the Railway dashboard, set environment variables: `APP_ENV=production`, `APP_NAME=my-fastapi-app`
-6. Railway gives you a public URL — visit it to verify
+6. Railway gives you a public URL; visit it to verify
 
 ```bash
 # After deployment, verify with curl
@@ -170,7 +170,7 @@ After deploying to Railway, the same endpoints should work at your Railway URL, 
 
 ## What You Learned
 
-- **Environment variables** are the standard way to configure apps in the cloud — they let you run the same code in development and production with different settings.
-- **The Procfile** tells the cloud platform exactly how to start your app — without it, the platform has to guess, which often fails.
-- **`--host 0.0.0.0`** and reading `$PORT`** are the two changes every app needs for cloud deployment — the platform assigns the port and routes traffic through its network.
-- **The deployment workflow** is push to GitHub, connect to Railway, set environment variables, and verify — Railway handles building and running automatically.
+- **Environment variables** are the standard way to configure apps in the cloud. They let you run the same code in development and production with different settings.
+- **The Procfile** tells the cloud platform exactly how to start your app. Without it, the platform has to guess, which often fails.
+- **`--host 0.0.0.0`** and reading `$PORT`** are the two changes every app needs for cloud deployment: the platform assigns the port and routes traffic through its network.
+- **The deployment workflow** is push to GitHub, connect to Railway, set environment variables, and verify. Railway handles building and running automatically.

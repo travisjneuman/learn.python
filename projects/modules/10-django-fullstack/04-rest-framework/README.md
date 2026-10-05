@@ -1,4 +1,4 @@
-# Module 10 / Project 04 — REST Framework
+# Module 10 / Project 04: REST Framework
 
 Home: [README](../../../../README.md)
 
@@ -14,13 +14,13 @@ Home: [README](../../../../README.md)
 
 ## Focus
 
-Django REST Framework (DRF) — serializers, viewsets, routers, and the browsable API.
+Django REST Framework (DRF): serializers, viewsets, routers, and the browsable API.
 
 ## Why this project exists
 
 Django's template system renders HTML for browsers, but modern applications often need a JSON API for mobile apps, single-page applications, or third-party integrations. Django REST Framework adds this capability to Django. If you used FastAPI in Module 04, DRF is Django's equivalent: it provides serializers (like Pydantic models), viewsets (like route handlers), and routers (like FastAPI's path decorators).
 
-DRF also includes a browsable API — a web interface where you can interact with your API directly in the browser, similar to FastAPI's `/docs` page.
+DRF also includes a browsable API: a web interface where you can interact with your API directly in the browser, similar to FastAPI's `/docs` page.
 
 ## Run
 
@@ -33,10 +33,10 @@ python manage.py runserver
 
 Then open your browser to:
 
-- **http://127.0.0.1:8000/api/** — API root (browsable API)
-- **http://127.0.0.1:8000/api/books/** — list all books (JSON)
-- **http://127.0.0.1:8000/api/authors/** — list all authors (JSON)
-- **http://127.0.0.1:8000/admin/** — add books and authors via admin
+- **http://127.0.0.1:8000/api/**: API root (browsable API)
+- **http://127.0.0.1:8000/api/books/**: list all books (JSON)
+- **http://127.0.0.1:8000/api/authors/**: list all authors (JSON)
+- **http://127.0.0.1:8000/admin/**: add books and authors via admin
 
 Press `Ctrl+C` to stop the server.
 

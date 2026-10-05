@@ -1,4 +1,4 @@
-# Project Config Bootstrap — Annotated Solution
+# Project Config Bootstrap: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -266,7 +266,7 @@ if __name__ == "__main__":
 | Precedence chain: defaults < file < env < CLI | Industry standard. Defaults ensure the app always works. Files customise deployments. Env vars handle containers/CI. CLI flags override everything for one-off runs. |
 | `coerce_value` with explicit bool handling | `bool("false")` is `True` in Python (non-empty string is truthy). Explicit string matching prevents this trap for environment variables. |
 | `ConfigSource` tracing | When port is 5000 and you expected 8000, knowing "it came from the config file" immediately points you to the right place. |
-| `validate_config` as a separate step | Validation is distinct from loading. You might want to load a config, display it, and THEN validate — or skip validation for debugging. |
+| `validate_config` as a separate step | Validation is distinct from loading. You might want to load a config, display it, and THEN validate, or skip validation for debugging. |
 | Filter unknown keys with `valid_fields` | A config file with a typo ("prot" instead of "port") should be ignored or warned about, not crash with `TypeError: unexpected keyword argument`. |
 
 ## Alternative Approaches
@@ -289,8 +289,8 @@ class AppConfig(BaseSettings):
 
 ## Common Pitfalls
 
-1. **`bool("false")` is `True`** — This is the most common config bug. Any non-empty string is truthy in Python. The `coerce_value` function handles this correctly by checking against a list of known truthy strings ("true", "1", "yes", "on").
+1. **`bool("false")` is `True`**: This is the most common config bug. Any non-empty string is truthy in Python. The `coerce_value` function handles this correctly by checking against a list of known truthy strings ("true", "1", "yes", "on").
 
-2. **Environment variables leaking between tests** — If test A sets `APP_PORT=9000` and test B does not clean it up, test B reads the wrong port. Use pytest's `monkeypatch.setenv` which auto-reverts after each test.
+2. **Environment variables leaking between tests**: If test A sets `APP_PORT=9000` and test B does not clean it up, test B reads the wrong port. Use pytest's `monkeypatch.setenv` which auto-reverts after each test.
 
-3. **Config file overwriting defaults with empty strings** — If the JSON file has `{"secret_key": ""}`, the merge function should NOT overwrite the default with an empty string. The `merge_configs` function skips empty strings for this reason.
+3. **Config file overwriting defaults with empty strings**: If the JSON file has `{"secret_key": ""}`, the merge function should NOT overwrite the default with an empty string. The `merge_configs` function skips empty strings for this reason.

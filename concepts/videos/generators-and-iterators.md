@@ -1,4 +1,4 @@
-# Generators and Iterators — Video Resources
+# Generators and Iterators: Video Resources
 
 [← Back to Concept](../generators-and-iterators.md)
 
@@ -9,12 +9,12 @@ Why: Builds generators from the ground up, starting with a normal function and c
 
 ## Alternatives
 
-- **[Generators](https://youtube.com/watch?v=gMompY5MyPg)** by Socratica (~9 min) — A polished, classroom-style explanation of generators with a focus on the conceptual "why." Socratica's production quality makes this feel like a lecture, which some learners prefer.
-- **[Iterators, Iterables, and Itertools](https://youtube.com/watch?v=WR7mO_jYN9g)** by Socratica (~12 min) — Covers the iterator protocol (__iter__ and __next__), what makes something iterable versus an iterator, and introduces the itertools module. A different angle that focuses on the protocol underneath generators.
+- **[Generators](https://youtube.com/watch?v=gMompY5MyPg)** by Socratica (~9 min). A polished, classroom-style explanation of generators with a focus on the conceptual "why." Socratica's production quality makes this feel like a lecture, which some learners prefer.
+- **[Iterators, Iterables, and Itertools](https://youtube.com/watch?v=WR7mO_jYN9g)** by Socratica (~12 min). Covers the iterator protocol (__iter__ and __next__), what makes something iterable versus an iterator, and introduces the itertools module. A different angle that focuses on the protocol underneath generators.
 
 ## Deep Dives
 
-- **[Python Tutorial: Decorators - Dynamically Alter The Functionality Of Your Functions](https://youtube.com/watch?v=FsAPt_9Bf3U)** by Corey Schafer (30 min) — Understanding closures (covered in the first half) is essential for grasping how generators maintain state between yields. This video fills in the mental model that makes generators click.
+- **[Python Tutorial: Decorators - Dynamically Alter The Functionality Of Your Functions](https://youtube.com/watch?v=FsAPt_9Bf3U)** by Corey Schafer (30 min). Understanding closures (covered in the first half) is essential for grasping how generators maintain state between yields. This video fills in the mental model that makes generators click.
 
 ---
 

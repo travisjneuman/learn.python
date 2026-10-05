@@ -1,4 +1,4 @@
-# Module 09 — Docker & Deployment
+# Module 09: Docker & Deployment
 
 [README](../../../README.md) · Modules: [Index](../README.md)
 
@@ -61,8 +61,8 @@ You need the Python dependencies installed locally for code editing and testing 
 
 This module requires several packages (listed in `requirements.txt`):
 
-- **fastapi** — the web framework used in every project. You define routes with decorators and FastAPI handles request parsing and validation.
-- **uvicorn** — an ASGI server that runs your FastAPI app inside the container.
-- **sqlalchemy** — an ORM for database interaction, used in the compose and production projects.
-- **pytest** — the test runner, used in the CI project.
-- **httpx** — an HTTP client used by FastAPI's TestClient for testing endpoints.
+- **fastapi**: the web framework used in every project. You define routes with decorators and FastAPI handles request parsing and validation.
+- **uvicorn**: an ASGI server that runs your FastAPI app inside the container.
+- **sqlalchemy**: an ORM for database interaction, used in the compose and production projects.
+- **pytest**: the test runner, used in the CI project.
+- **httpx**: an HTTP client used by FastAPI's TestClient for testing endpoints.

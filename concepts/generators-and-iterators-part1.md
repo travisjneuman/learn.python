@@ -1,4 +1,4 @@
-# Generators and Iterators — Part 1: Iterators
+# Generators and Iterators, Part 1: Iterators
 
 [← Back to Overview](./generators-and-iterators.md) · [Part 2: Generators →](./generators-and-iterators-part2.md)
 
@@ -28,8 +28,8 @@ Watch how `yield` pauses and resumes a function:
 ## The iterator protocol
 
 An iterator implements two methods:
-- `__iter__()` — returns the iterator object itself
-- `__next__()` — returns the next value, or raises `StopIteration` when done
+- `__iter__()`: returns the iterator object itself
+- `__next__()`: returns the next value, or raises `StopIteration` when done
 
 ```python
 # A list is iterable — you can get an iterator from it
@@ -44,7 +44,7 @@ print(next(it))          # StopIteration error — no more values
 
 A `for` loop does exactly this behind the scenes: it calls `iter()` to get an iterator, then calls `next()` repeatedly until `StopIteration`.
 
-## Memory efficiency — why iterators matter
+## Memory efficiency: why iterators matter
 
 ```python
 import sys
@@ -80,7 +80,7 @@ for line in read_lines("server.log"):
         print(line)
 ```
 
-## `itertools` — the standard library for iteration
+## `itertools`: the standard library for iteration
 
 Python's `itertools` module provides powerful building blocks:
 

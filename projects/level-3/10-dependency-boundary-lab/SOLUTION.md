@@ -1,4 +1,4 @@
-# Dependency Boundary Lab — Annotated Solution
+# Dependency Boundary Lab: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -264,7 +264,7 @@ if __name__ == "__main__":
 | `Protocol` for DataReader/DataWriter | Defines interfaces without inheritance. Any class with a matching `read()` or `write()` method automatically satisfies the protocol. This is Python's version of Go-style interfaces. |
 | In-memory reader/writer for tests | Tests can exercise the full pipeline without creating temp files. Pass `InMemoryReader([{"name": "Alice"}])` and check `writer.results`. Fast, reliable, no cleanup needed. |
 | Pure business logic functions (no I/O) | `filter_records`, `transform_records`, and `enrich_records` take data in and return data out. They are trivially testable, reusable, and composable. |
-| `run()` as the single orchestration point | Only `run()` connects I/O to logic. Changing the data source (JSON file to database to API) only requires a new Reader class — zero changes to business logic. |
+| `run()` as the single orchestration point | Only `run()` connects I/O to logic. Changing the data source (JSON file to database to API) only requires a new Reader class: zero changes to business logic. |
 | `{**defaults, **record}` for enrichment | Dict unpacking merges two dicts in one expression. The right-hand dict wins on key conflicts, so existing record values are preserved. |
 
 ## Alternative Approaches
@@ -288,8 +288,8 @@ class JsonFileReader(DataReader):
 
 ## Common Pitfalls
 
-1. **Business logic calling I/O directly** — If `filter_records` reads from a file internally, you cannot test it without a real file. The whole point of dependency boundaries is that logic functions receive data as arguments, never fetch it themselves.
+1. **Business logic calling I/O directly**: If `filter_records` reads from a file internally, you cannot test it without a real file. The whole point of dependency boundaries is that logic functions receive data as arguments, never fetch it themselves.
 
-2. **Testing the orchestrator instead of the logic** — The `run()` function is hard to test because it involves I/O. Test `filter_records`, `transform_records`, and `enrich_records` individually with plain dicts. Only integration-test `run()` if needed.
+2. **Testing the orchestrator instead of the logic**: The `run()` function is hard to test because it involves I/O. Test `filter_records`, `transform_records`, and `enrich_records` individually with plain dicts. Only integration-test `run()` if needed.
 
-3. **Config rename map creating duplicate keys** — If `rename_map` maps both "first_name" and "given_name" to "name", the second one silently overwrites the first. Validate the rename map for duplicate target keys before processing.
+3. **Config rename map creating duplicate keys**: If `rename_map` maps both "first_name" and "given_name" to "name", the second one silently overwrites the first. Validate the rename map for duplicate target keys before processing.

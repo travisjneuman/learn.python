@@ -1,4 +1,4 @@
-# Module 11 / Project 03 — Publish to PyPI
+# Module 11 / Project 03: Publish to PyPI
 
 Home: [README](../../../../README.md) · Module: [Package Publishing](../README.md)
 
@@ -131,4 +131,4 @@ You can move on when you can:
 
 ## Next
 
-Go back to [Module index](../README.md) or continue to [Module 12 — Cloud Deployment](../../12-cloud-deploy/).
+Go back to [Module index](../README.md) or continue to [Module 12: Cloud Deployment](../../12-cloud-deploy/).

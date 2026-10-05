@@ -1,4 +1,4 @@
-# Mini Inventory Engine — Annotated Solution
+# Mini Inventory Engine: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -283,8 +283,8 @@ Dataclasses provide type safety, default values, and `__repr__` for free. They a
 
 ## Common Pitfalls
 
-1. **Allowing negative quantities** — Without validation, `add_item(inv, "bolt", -50, 0.50)` would reduce stock through the "add" path, bypassing `remove_stock` checks. Production code should validate that quantity is non-negative in `add_item`.
+1. **Allowing negative quantities**: Without validation, `add_item(inv, "bolt", -50, 0.50)` would reduce stock through the "add" path, bypassing `remove_stock` checks. Production code should validate that quantity is non-negative in `add_item`.
 
-2. **Floating-point price arithmetic** — `0.10 + 0.20 = 0.30000000000000004` in floating-point. For financial calculations, use `decimal.Decimal` or store prices in cents as integers. The `round()` calls in `inventory_value` mitigate this but do not eliminate it.
+2. **Floating-point price arithmetic**: `0.10 + 0.20 = 0.30000000000000004` in floating-point. For financial calculations, use `decimal.Decimal` or store prices in cents as integers. The `round()` calls in `inventory_value` mitigate this but do not eliminate it.
 
-3. **Concurrent modification** — If two processes modify the same inventory simultaneously (e.g., two warehouse workers scanning items), data can become inconsistent. Real inventory systems use database transactions with locking. This single-process version does not need to worry about concurrency.
+3. **Concurrent modification**: If two processes modify the same inventory simultaneously (e.g., two warehouse workers scanning items), data can become inconsistent. Real inventory systems use database transactions with locking. This single-process version does not need to worry about concurrency.

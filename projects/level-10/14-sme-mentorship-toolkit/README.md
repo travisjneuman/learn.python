@@ -41,12 +41,12 @@ Matches:
 3. Add a `MentorReport` that shows how many mentees each mentor has and their completion rates.
 
 ## Break it (required)
-1. Create a mentee with goals that no mentor can fulfill — observe a low compatibility score.
+1. Create a mentee with goals that no mentor can fulfill: observe a low compatibility score.
 2. Set `max_mentees=0` for all mentors and verify no matches are produced.
 3. Try to complete a non-existent milestone ID.
 
 ## Fix it (required)
-1. Add a minimum compatibility threshold — do not assign a mentor if the score is below 30.
+1. Add a minimum compatibility threshold: do not assign a mentor if the score is below 30.
 2. Add a warning when a mentee cannot be matched due to capacity constraints.
 3. Test both fixes.
 

@@ -1,4 +1,4 @@
-# Fast Track — Python for Experienced Developers
+# Fast Track: Python for Experienced Developers
 
 Home: [README](./README.md)
 
@@ -15,7 +15,7 @@ You should use this guide if you can answer "yes" to all of these:
 - You have used a terminal before
 - You have used git before
 
-If any of those are "no," start at [START_HERE.md](./START_HERE.md) and follow the normal path. There is no shame in it — the foundations matter.
+If any of those are "no," start at [START_HERE.md](./START_HERE.md) and follow the normal path. There is no shame in it: the foundations matter.
 
 ---
 
@@ -43,13 +43,13 @@ If any of those are "no," start at [START_HERE.md](./START_HERE.md) and follow t
 |---------|-----------|--------|
 | Variables | `let x = 5` / `const x = 5` | `x = 5` (no keyword, all mutable by default) |
 | Strings | `'single'`, `"double"`, `` `template` `` | `'single'`, `"double"`, `f"template {var}"` |
-| Arrays/Lists | `[1, 2, 3]` — `Array` methods | `[1, 2, 3]` — list methods (different names) |
+| Arrays/Lists | `[1, 2, 3]`, `Array` methods | `[1, 2, 3]`, list methods (different names) |
 | Objects/Dicts | `{key: value}` | `{"key": value}` (keys must be quoted) |
 | None/null | `null` / `undefined` | `None` (one concept, not two) |
 | Truthiness | `0`, `""`, `null`, `undefined`, `NaN` | `0`, `""`, `None`, `[]`, `{}`, `set()` |
-| Iteration | `for...of`, `forEach`, `.map()` | `for x in collection:` — list comprehensions |
+| Iteration | `for...of`, `forEach`, `.map()` | `for x in collection:`, list comprehensions |
 | Async | `async/await` + Promises | `async/await` + asyncio (event loop is explicit) |
-| Imports | `import/require` (ES modules/CJS) | `import` (always — no require) |
+| Imports | `import/require` (ES modules/CJS) | `import` (always; no require) |
 | Scope | Function + block (`let`/`const`) | Function scope + `global`/`nonlocal` keywords |
 | Classes | `class` with `constructor` | `class` with `__init__` + `self` everywhere |
 | Type system | Dynamic (TypeScript for types) | Dynamic (type hints are optional annotations) |
@@ -63,7 +63,7 @@ If any of those are "no," start at [START_HERE.md](./START_HERE.md) and follow t
 2. **`self` is explicit.** Every method takes `self` as its first argument.
 3. **No `this` weirdness.** `self` always means the instance. No binding issues.
 4. **List comprehensions replace `.map()` and `.filter()`.** `[x*2 for x in items if x > 0]`
-5. **Tuples are immutable lists.** `(1, 2, 3)` — used everywhere for return values.
+5. **Tuples are immutable lists.** `(1, 2, 3)`: used everywhere for return values.
 6. **Slicing is powerful.** `items[1:5]`, `items[::-1]` (reverse), `items[::2]` (every other).
 7. **No semicolons.** Ever.
 
@@ -96,7 +96,7 @@ Jump to the [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) doc and skim through it, pa
 ### What Will Surprise You
 
 1. **No type declarations required.** Python figures it out. Type hints exist but are optional.
-2. **Everything is an object.** Integers, functions, classes — everything.
+2. **Everything is an object.** Integers, functions, classes: everything.
 3. **No access modifiers.** No `public`/`private`/`protected`. Convention: prefix with `_` for private.
 4. **Duck typing.** If it has a `.read()` method, it is file-like. No interface required.
 5. **Multiple return values.** Functions return tuples: `return x, y, z`
@@ -105,7 +105,7 @@ Jump to the [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) doc and skim through it, pa
 
 ### Start Here
 
-Read [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) carefully — Python's simplicity will feel strange after Java. Do Level 0 projects 03, 06, 10, 13, and 15 to calibrate. Then jump to Level 3.
+Read [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) carefully. Python's simplicity will feel strange after Java. Do Level 0 projects 03, 06, 10, 13, and 15 to calibrate. Then jump to Level 3.
 
 ---
 
@@ -129,7 +129,7 @@ Read [04_FOUNDATIONS.md](./04_FOUNDATIONS.md) carefully — Python's simplicity 
 1. **No solution/project files.** Just directories and `.py` files.
 2. **No compilation step.** Run directly: `python script.py`
 3. **`with` statement replaces `using`.** Same concept for resource management.
-4. **Dictionaries are first-class.** Used everywhere — config, kwargs, data.
+4. **Dictionaries are first-class.** Used everywhere: config, kwargs, data.
 5. **REPL is your friend.** Type `python` in terminal for an interactive session.
 
 ### Start Here
@@ -144,7 +144,7 @@ Skim [04_FOUNDATIONS.md](./04_FOUNDATIONS.md), do Level 0 projects 05, 08, 12, a
 
 | Concept | Ruby | Python |
 |---------|------|--------|
-| Blocks | `do...end`, `{ }` | No blocks — use functions, lambdas, comprehensions |
+| Blocks | `do...end`, `{ }` | No blocks; use functions, lambdas, comprehensions |
 | Symbols | `:name` | Just use strings |
 | Methods | Implicit return | Explicit `return` (or implicit `None`) |
 | Truthiness | Only `nil` and `false` are falsy | `0`, `""`, `None`, `[]`, `{}`, `set()` are falsy |
@@ -156,7 +156,7 @@ Skim [04_FOUNDATIONS.md](./04_FOUNDATIONS.md), do Level 0 projects 05, 08, 12, a
 
 1. **Explicit is better than implicit.** Python prefers `self.name` over Ruby's `@name`.
 2. **No implicit returns.** You must write `return value`.
-3. **Indentation matters.** No `end` keyword — blocks are defined by indentation.
+3. **Indentation matters.** No `end` keyword. Blocks are defined by indentation.
 4. **No method_missing.** Python has `__getattr__` but it is used less.
 5. **Community prefers readability over cleverness.** "There should be one obvious way to do it."
 
@@ -202,13 +202,13 @@ Estimated time to reach Level 5 competency: 4–6 weeks at 10–15 hours per wee
 
 Even if you know other languages well, these Python-specific topics deserve study:
 
-1. **The GIL** — Python's Global Interpreter Lock means threads do not run in parallel for CPU work. Use `multiprocessing` or `asyncio` instead.
-2. **Mutable default arguments** — `def f(items=[])` is a classic bug. The list is shared across calls.
-3. **Everything is a reference** — `a = [1,2,3]; b = a; b.append(4)` modifies both.
-4. **Comprehensions vs generators** — `[x for x in range(10)]` creates a list; `(x for x in range(10))` creates a lazy generator.
-5. **`__init__` vs `__new__`** — You almost always want `__init__`. `__new__` is for metaclass magic.
-6. **Context managers** — The `with` statement is Python's RAII. Use it for files, locks, connections.
-7. **Decorators** — Not annotations. They wrap functions. Understand closures first.
+1. **The GIL**: Python's Global Interpreter Lock means threads do not run in parallel for CPU work. Use `multiprocessing` or `asyncio` instead.
+2. **Mutable default arguments**: `def f(items=[])` is a classic bug. The list is shared across calls.
+3. **Everything is a reference**: `a = [1,2,3]; b = a; b.append(4)` modifies both.
+4. **Comprehensions vs generators**: `[x for x in range(10)]` creates a list; `(x for x in range(10))` creates a lazy generator.
+5. **`__init__` vs `__new__`**: You almost always want `__init__`. `__new__` is for metaclass magic.
+6. **Context managers**: The `with` statement is Python's RAII. Use it for files, locks, connections.
+7. **Decorators**: Not annotations. They wrap functions. Understand closures first.
 
 Read the relevant concept docs in `concepts/` for detailed explanations of each.
 

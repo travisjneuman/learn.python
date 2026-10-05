@@ -1,6 +1,6 @@
 # Solution: Mutable Defaults
 
-## Bug 1 — Mutable default argument in `create_student`
+## Bug 1: Mutable default argument in `create_student`
 
 **Line:** `def create_student(name, courses=[]):`
 
@@ -15,11 +15,11 @@ def create_student(name, courses=None):
     return {"name": name, "courses": courses if courses is not None else []}
 ```
 
-## Bug 2 — `merge_students` mutates `student_a`
+## Bug 2: `merge_students` mutates `student_a`
 
 **Line:** `merged = student_a`
 
-**Problem:** `merged = student_a` does not copy the dictionary — both names
+**Problem:** `merged = student_a` does not copy the dictionary; both names
 point to the same object. Modifying `merged["name"]` also changes
 `student_a["name"]`.
 
@@ -34,11 +34,11 @@ def merge_students(student_a, student_b):
     return merged
 ```
 
-## Bug 3 — `build_lookup` uses a list as a dict key
+## Bug 3: `build_lookup` uses a list as a dict key
 
 **Line:** `lookup[s["courses"]] = len(s["courses"])`
 
-**Problem:** `s["courses"]` is a list, and lists are unhashable — they cannot
+**Problem:** `s["courses"]` is a list, and lists are unhashable; they cannot
 be dictionary keys. This raises `TypeError: unhashable type: 'list'`.
 
 **Fix:** Use the student name as the key:

@@ -1,4 +1,4 @@
-# Async Python — Video Resources
+# Async Python: Video Resources
 
 [<- Back to Video Index](../../guides/VIDEO_INDEX.md)
 
@@ -7,7 +7,7 @@
 **[Python Tutorial: AsyncIO - Complete Guide to Asynchronous Programming]** by Corey Schafer (~90 min)
 `https://www.youtube.com/results?search_query=corey+schafer+python+asyncio+complete+guide`
 
-*Why this one:* The most comprehensive free asyncio walkthrough — uses visual animations to explain event loops, coroutines, tasks, futures, async/await syntax, asyncio.gather, TaskGroup, error handling, and asyncio.to_thread, building a complete mental model from the ground up.
+*Why this one:* The most comprehensive free asyncio walkthrough. Uses visual animations to explain event loops, coroutines, tasks, futures, async/await syntax, asyncio.gather, TaskGroup, error handling, and asyncio.to_thread, building a complete mental model from the ground up.
 
 ## Alternative Explanations
 
@@ -19,16 +19,16 @@
 
 ## Deep Dives
 
-- **Concurrency Patterns:** ArjanCodes — Next-Level Concurrent Programming in Python with Asyncio (~25 min) — `https://www.youtube.com/results?search_query=arjancodes+next+level+concurrent+programming+asyncio`
-- **aiohttp Client & Server:** sentdex — aiohttp Tutorial for Python (~20 min) — `https://www.youtube.com/results?search_query=sentdex+python+aiohttp+tutorial`
-- **Threading vs Asyncio vs Multiprocessing:** Corey Schafer — Python Threading / Multiprocessing Tutorials (~35 min total) — `https://www.youtube.com/results?search_query=corey+schafer+python+threading+multiprocessing+asyncio`
-- **Async Generators & Context Managers:** ArjanCodes — Advanced Async Python Patterns (~20 min) — `https://www.youtube.com/results?search_query=arjancodes+advanced+async+python+patterns`
+- **Concurrency Patterns:** ArjanCodes, Next-Level Concurrent Programming in Python with Asyncio (~25 min): `https://www.youtube.com/results?search_query=arjancodes+next+level+concurrent+programming+asyncio`
+- **aiohttp Client & Server:** sentdex, aiohttp Tutorial for Python (~20 min): `https://www.youtube.com/results?search_query=sentdex+python+aiohttp+tutorial`
+- **Threading vs Asyncio vs Multiprocessing:** Corey Schafer, Python Threading / Multiprocessing Tutorials (~35 min total): `https://www.youtube.com/results?search_query=corey+schafer+python+threading+multiprocessing+asyncio`
+- **Async Generators & Context Managers:** ArjanCodes, Advanced Async Python Patterns (~20 min): `https://www.youtube.com/results?search_query=arjancodes+advanced+async+python+patterns`
 
 ## Interactive Practice
 
-- [asyncio Official Documentation](https://docs.python.org/3/library/asyncio.html) — Reference with examples for every asyncio primitive
-- [Real Python: Async IO in Python](https://realpython.com/async-io-python/) — Step-by-step tutorial with exercises
-- [aiohttp Documentation](https://docs.aiohttp.org/en/stable/) — Build async HTTP clients and servers
+- [asyncio Official Documentation](https://docs.python.org/3/library/asyncio.html): Reference with examples for every asyncio primitive
+- [Real Python: Async IO in Python](https://realpython.com/async-io-python/): Step-by-step tutorial with exercises
+- [aiohttp Documentation](https://docs.aiohttp.org/en/stable/): Build async HTTP clients and servers
 
 ---
 

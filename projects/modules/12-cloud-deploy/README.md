@@ -1,4 +1,4 @@
-# Module 12 — Cloud Deployment
+# Module 12: Cloud Deployment
 
 Home: [README](../../../README.md) · Modules: [Index](../README.md)
 

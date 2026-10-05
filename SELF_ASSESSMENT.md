@@ -3,11 +3,11 @@
 Rate yourself honestly on each skill. Use the scale to identify strengths and gaps, then focus your practice on areas scored 1-3.
 
 **Rating Scale:**
-- **1 — No idea:** Have not encountered this concept yet
-- **2 — Seen it:** Recognize the concept but cannot apply it independently
-- **3 — Can do with help:** Can accomplish this with documentation or examples open
-- **4 — Confident:** Can do this from memory in most situations
-- **5 — Can teach it:** Could explain this clearly to someone else and handle edge cases
+- **1 (No idea):** Have not encountered this concept yet
+- **2 (Seen it):** Recognize the concept but cannot apply it independently
+- **3 (Can do with help):** Can accomplish this with documentation or examples open
+- **4 (Confident):** Can do this from memory in most situations
+- **5 (Can teach it):** Could explain this clearly to someone else and handle edge cases
 
 ---
 
@@ -61,7 +61,7 @@ Rate yourself honestly on each skill. Use the scale to identify strengths and ga
 | 2 | Can I integrate external REST APIs and handle authentication, pagination, and errors? | ___ |
 | 3 | Can I work with databases using an ORM (SQLAlchemy) and write raw SQL when needed? | ___ |
 | 4 | Can I handle concurrent operations safely using asyncio or threading? | ___ |
-| 5 | Can I debug without print() — using breakpoint(), pdb, or a debugger? | ___ |
+| 5 | Can I debug without print(), using breakpoint(), pdb, or a debugger? | ___ |
 | 6 | Can I profile code to find performance bottlenecks? | ___ |
 | 7 | Can I design a data model with proper relationships and constraints? | ___ |
 | 8 | Can I write integration tests that test multiple components together? | ___ |
@@ -95,11 +95,11 @@ Rate yourself honestly on each skill. Use the scale to identify strengths and ga
 
 ## How to Use This Assessment
 
-1. **Take it honestly.** There is no grade — this is for your own planning.
+1. **Take it honestly.** There is no grade; this is for your own planning.
 2. **Retake every 2-4 weeks** to track growth. Date your assessments.
 3. **Focus practice** on your lowest-scoring items within your current tier.
 4. **Do not skip ahead** to a higher tier until you hit the milestone for your current one.
-5. **Use the projects** — each curriculum level is designed to build the skills listed above.
+5. **Use the projects**: each curriculum level is designed to build the skills listed above.
 
 ### Assessment Log
 

@@ -1,4 +1,4 @@
-# Notes — Forms & Auth
+# Notes: Forms & Auth
 
 ## What I learned
 

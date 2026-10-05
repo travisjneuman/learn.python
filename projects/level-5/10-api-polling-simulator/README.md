@@ -46,18 +46,18 @@ Polling complete: 10 attempts, 7 successful, 2 rate-limited
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--timeout` flag that stops polling after N seconds regardless of max polls.
 2. Track and report the average response time per successful poll.
 3. Add a `--fail-rate` parameter to control the MockAPI's simulated failure percentage.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Set `--max-polls 0` and observe the behavior.
 2. Configure the MockAPI to always return rate-limit errors and watch backoff grow indefinitely.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate that max_polls is at least 1.
 2. Cap the maximum backoff delay so it does not grow unbounded.
 3. Add tests for zero-polls and capped backoff.

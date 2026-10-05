@@ -1,4 +1,4 @@
-# Portfolio Guide — Presenting Your Projects to Employers
+# Portfolio Guide: Presenting Your Projects to Employers
 
 Home: [README](./README.md)
 
@@ -26,7 +26,7 @@ Not every project belongs in a portfolio. Employers want to see judgment, not vo
 ### What Not to Include
 
 - Level 00 exercises (too basic)
-- Level 0 projects 01–05 (hello world, calculator — everyone has these)
+- Level 0 projects 01–05 (hello world, calculator; everyone has these)
 - Projects where you only followed the instructions without adding anything
 
 ---
@@ -74,7 +74,7 @@ python project.py
 Hiring managers see hundreds of calculator apps. They rarely see candidates who can articulate what they learned. This section separates you from other applicants.
 
 Good examples:
-- "I learned that retry logic needs exponential backoff — my first version hammered the API and got rate-limited."
+- "I learned that retry logic needs exponential backoff; my first version hammered the API and got rate-limited."
 - "I discovered that CSV files from Excel often have invisible BOM characters. I added detection for this after debugging a parsing failure for 2 hours."
 - "I refactored this three times. The first version used nested dicts, the second used dataclasses, and the final version used Pydantic models. Each refactor taught me why the previous approach was limited."
 
@@ -166,7 +166,7 @@ Employers look at your GitHub contribution graph. You do not need to commit ever
 
 You do not need a portfolio website to get a junior role, but it helps. If you build one:
 
-1. Keep it simple — a single page with your name, a short bio, and links to 3–5 projects
+1. Keep it simple: a single page with your name, a short bio, and links to 3–5 projects
 2. Host it for free on GitHub Pages, Netlify, or Vercel
 3. Include links to your GitHub profile and LinkedIn
 4. Do not include projects you cannot explain in an interview

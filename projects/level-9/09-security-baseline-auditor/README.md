@@ -23,7 +23,7 @@ Security baselines like CIS Benchmarks and NIST frameworks define hundreds of re
 configuration settings: TLS versions, password policies, logging requirements, encryption
 standards. Manually checking them is slow, error-prone, and quickly outdated. This project
 builds a configurable security auditor that checks system configurations against baselines,
-scores compliance, and generates actionable gap analysis reports — the same automation that
+scores compliance, and generates actionable gap analysis reports, the same automation that
 compliance teams run before every SOC2 or ISO 27001 audit.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `--config` flag that loads the system configuration from a JSON file.
 
 ## Break it (required)
-1. Pass an empty config dictionary — how many controls fail and what compliance_pct results?
-2. Set `min_tls_version` to a non-numeric string (e.g. "abc") — does the comparison work?
-3. Add a custom check function that raises an exception — does the auditor handle it?
+1. Pass an empty config dictionary: how many controls fail and what compliance_pct results?
+2. Set `min_tls_version` to a non-numeric string (e.g. "abc"): does the comparison work?
+3. Add a custom check function that raises an exception: does the auditor handle it?
 
 ## Fix it (required)
 1. Add a fallback value for missing config keys so checks degrade gracefully.

@@ -1,6 +1,6 @@
 # API Basics
 
-An **API** (Application Programming Interface) is a way for programs to talk to each other. When people say "API" in web development, they usually mean a web API — a server that accepts HTTP requests and returns data (usually JSON).
+An **API** (Application Programming Interface) is a way for programs to talk to each other. When people say "API" in web development, they usually mean a web API: a server that accepts HTTP requests and returns data (usually JSON).
 
 <!-- modality-hub-start -->
 
@@ -30,7 +30,7 @@ Your Python script          The API server
 
 Your script is the **client**. The API is the **server**. The conversation happens over HTTP.
 
-## REST — the most common API style
+## REST: the most common API style
 
 REST (Representational State Transfer) is a set of conventions for designing APIs:
 
@@ -83,12 +83,12 @@ Run with `uvicorn app:app` and visit `http://localhost:8000/hello/Alice`.
 
 Most APIs require you to prove who you are:
 
-**API Key** — a secret string you include in the request:
+**API Key**: a secret string you include in the request:
 ```python
 response = requests.get(url, headers={"X-API-Key": "your-key-here"})
 ```
 
-**Bearer Token (JWT)** — a token you get by logging in:
+**Bearer Token (JWT)**: a token you get by logging in:
 ```python
 response = requests.get(url, headers={"Authorization": "Bearer eyJ..."})
 ```

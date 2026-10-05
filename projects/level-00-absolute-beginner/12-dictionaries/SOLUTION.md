@@ -1,10 +1,10 @@
 # Solution: 12-dictionaries
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -68,10 +68,10 @@ print(f"\n{name}'s number is {phone_book[name]}")  # WHY: phone_book["Bob"] retu
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Use string keys with descriptive names | Keys like "name", "age", "city" make the data self-documenting — you know exactly what each value represents | Could use numeric keys (like a list), but then you lose the ability to look up data by label |
-| Show `del` for removing pairs | `del` is the simplest way to remove a key-value pair — one word, one operation | `.pop("job")` also removes a key and returns its value, which is useful if you need the value. But `del` is simpler for beginners |
-| Demonstrate the phone book pattern | Looking up a number by name is exactly what dictionaries are designed for — it connects the abstract concept to something familiar | Could use another example, but everyone understands phone books |
-| Use `.items()` for looping | `.items()` gives you both key and value, which is what you almost always want when looping through a dictionary | `.keys()` gives just keys, `.values()` gives just values — but `.items()` is the most versatile |
+| Use string keys with descriptive names | Keys like "name", "age", "city" make the data self-documenting: you know exactly what each value represents | Could use numeric keys (like a list), but then you lose the ability to look up data by label |
+| Show `del` for removing pairs | `del` is the simplest way to remove a key-value pair: one word, one operation | `.pop("job")` also removes a key and returns its value, which is useful if you need the value. But `del` is simpler for beginners |
+| Demonstrate the phone book pattern | Looking up a number by name is exactly what dictionaries are designed for: it connects the abstract concept to something familiar | Could use another example, but everyone understands phone books |
+| Use `.items()` for looping | `.items()` gives you both key and value, which is what you almost always want when looping through a dictionary | `.keys()` gives just keys, `.values()` gives just values, but `.items()` is the most versatile |
 
 ## Alternative approaches
 
@@ -117,14 +117,14 @@ print(f"Name: {name}")                    # WHY: Prints "Name: Alice" — the de
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Accessing a key that does not exist: `person["salary"]` | `KeyError: 'salary'` — Python crashes because there is no key called "salary" | Check first with `if "salary" in person:` or use `.get("salary")` which returns None instead of crashing |
-| Using a list as a key: `{[1,2]: "value"}` | `TypeError: unhashable type: 'list'` — lists cannot be dictionary keys | Keys must be immutable types: strings, numbers, or tuples. Strings are by far the most common |
-| Confusing dictionaries and lists | Trying `person[0]` thinking it returns the first item — dictionaries have no order concept in that sense | Lists use numeric indices (`[0]`, `[1]`). Dictionaries use named keys (`["name"]`, `["age"]`). They are different tools |
-| Modifying a dictionary while looping through it | `RuntimeError: dictionary changed size during iteration` — Python stops the program | Loop through a copy: `for key in list(person.keys()):` — or build a separate list of changes |
-| Forgetting quotes around keys: `person[name]` instead of `person["name"]` | Python looks for a VARIABLE called `name` — if it does not exist, you get a `NameError`. If it does exist, you get whatever value `name` holds | Use quotes for literal key names: `person["name"]`. Without quotes, Python thinks you mean a variable |
+| Accessing a key that does not exist: `person["salary"]` | `KeyError: 'salary'`: Python crashes because there is no key called "salary" | Check first with `if "salary" in person:` or use `.get("salary")` which returns None instead of crashing |
+| Using a list as a key: `{[1,2]: "value"}` | `TypeError: unhashable type: 'list'`: lists cannot be dictionary keys | Keys must be immutable types: strings, numbers, or tuples. Strings are by far the most common |
+| Confusing dictionaries and lists | Trying `person[0]` thinking it returns the first item: dictionaries have no order concept in that sense | Lists use numeric indices (`[0]`, `[1]`). Dictionaries use named keys (`["name"]`, `["age"]`). They are different tools |
+| Modifying a dictionary while looping through it | `RuntimeError: dictionary changed size during iteration`: Python stops the program | Loop through a copy: `for key in list(person.keys()):`, or build a separate list of changes |
+| Forgetting quotes around keys: `person[name]` instead of `person["name"]` | Python looks for a VARIABLE called `name`: if it does not exist, you get a `NameError`. If it does exist, you get whatever value `name` holds | Use quotes for literal key names: `person["name"]`. Without quotes, Python thinks you mean a variable |
 
 ## Key takeaways
 
-1. **Dictionaries store labeled data as key-value pairs** — they are the perfect tool when your data has names or labels, not just positions. A person's name, age, and city naturally fit a dictionary. A list of scores naturally fits a list. Choosing the right container makes your code clearer and faster.
-2. **Lookup by key is instant** — `person["name"]` finds "Alice" immediately, even in a dictionary with millions of entries. Lists have to search one by one to find a value. This speed difference is why dictionaries are used for phone books, caches, configurations, and any lookup table.
-3. **Dictionaries are everywhere in real Python** — JSON data from web APIs, configuration files, database results, and function arguments all use dictionaries. The pattern of creating, reading, updating, and deleting key-value pairs (often called CRUD) is the foundation of data management in every programming language.
+1. **Dictionaries store labeled data as key-value pairs**: they are the perfect tool when your data has names or labels, not just positions. A person's name, age, and city naturally fit a dictionary. A list of scores naturally fits a list. Choosing the right container makes your code clearer and faster.
+2. **Lookup by key is instant**: `person["name"]` finds "Alice" immediately, even in a dictionary with millions of entries. Lists have to search one by one to find a value. This speed difference is why dictionaries are used for phone books, caches, configurations, and any lookup table.
+3. **Dictionaries are everywhere in real Python**: JSON data from web APIs, configuration files, database results, and function arguments all use dictionaries. The pattern of creating, reading, updating, and deleting key-value pairs (often called CRUD) is the foundation of data management in every programming language.

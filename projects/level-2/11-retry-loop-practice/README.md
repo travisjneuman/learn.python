@@ -49,17 +49,17 @@ Simulating 10 operations (failure_rate=0.6, max_attempts=5)
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--jitter` flag that adds random variation to delay times.
 2. Add a `--fail-fast` mode that stops all operations after the first failure.
 3. Log each retry attempt with a timestamp.
 
-## Break it (required) — Core
-1. Set `--failure-rate 1.0` — every operation should exhaust all attempts.
-2. Set `--attempts 0` — what happens with zero allowed attempts?
-3. Set `--delay -1` — negative delay makes no sense.
+## Break it (required): Core
+1. Set `--failure-rate 1.0`: every operation should exhaust all attempts.
+2. Set `--attempts 0`: what happens with zero allowed attempts?
+3. Set `--delay -1`: negative delay makes no sense.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate that max_attempts is at least 1.
 2. Validate that delay is non-negative.
 3. Add tests for edge-case configurations.

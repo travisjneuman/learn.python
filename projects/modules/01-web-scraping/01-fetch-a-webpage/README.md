@@ -1,4 +1,4 @@
-# Module 01 / Project 01 — Fetch a Webpage
+# Module 01 / Project 01: Fetch a Webpage
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -57,7 +57,7 @@ The exact character count and HTML will vary, but you should see status code 200
 ## Break it
 
 1. Change the URL to `http://books.toscrape.com/this-page-does-not-exist`. What status code do you get?
-2. Change the URL to `http://definitely-not-a-real-website-abc123.com`. What error do you get? (Hint: it is not a status code — it is a Python exception.)
+2. Change the URL to `http://definitely-not-a-real-website-abc123.com`. What error do you get? (Hint: it is not a status code; it is a Python exception.)
 3. Remove the `import requests` line and run the script. Read the error message carefully.
 
 ## Fix it
@@ -93,4 +93,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 02 — Parse HTML](../02-parse-html/)
+[Project 02: Parse HTML](../02-parse-html/)

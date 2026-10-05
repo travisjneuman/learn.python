@@ -1,4 +1,4 @@
-# Web Scraping Pipeline — Diagrams
+# Web Scraping Pipeline: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 

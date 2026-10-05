@@ -1,4 +1,4 @@
-# Reusable Utils Library — Annotated Solution
+# Reusable Utils Library: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 |----------|-----|
 | Small, single-purpose functions | Each function does one thing and can be tested with one line: `assert slugify("Hello World!") == "hello-world"`. Composability comes from calling multiple utilities together. |
 | `chunk` raises ValueError for size <= 0 | An infinite loop or empty results would be confusing. Explicit errors are better than silent misbehaviour. |
-| `flatten` only one level deep | Deep flattening is ambiguous (strings are iterable — should "abc" become ["a", "b", "c"]?). One-level flatten is predictable. |
+| `flatten` only one level deep | Deep flattening is ambiguous (strings are iterable: should "abc" become ["a", "b", "c"]?). One-level flatten is predictable. |
 | Regex for slugify instead of translate tables | The three-step pipeline (remove, replace, collapse) is readable and handles Unicode well. `str.translate` is faster but harder to read and modify. |
 | `ValidationResult` dataclass | Returning a structured result (valid flag + errors list) is more useful than returning a bare boolean. The caller gets both the answer and the reason. |
 
@@ -310,8 +310,8 @@ def chunk_iter(items, size):
 
 ## Common Pitfalls
 
-1. **`chunk(items, 0)` causing an infinite loop** — `range(0, len(items), 0)` raises `ValueError` in Python, but if you implemented chunking with a while-loop, size=0 would loop forever. The explicit check prevents this.
+1. **`chunk(items, 0)` causing an infinite loop**: `range(0, len(items), 0)` raises `ValueError` in Python, but if you implemented chunking with a while-loop, size=0 would loop forever. The explicit check prevents this.
 
-2. **`slugify` producing empty strings** — Input like `"!!!"` removes all characters and returns `""`. Depending on use case, you may want to return a fallback like `"untitled"` instead.
+2. **`slugify` producing empty strings**: Input like `"!!!"` removes all characters and returns `""`. Depending on use case, you may want to return a fallback like `"untitled"` instead.
 
-3. **`camel_to_snake` on already-snake strings** — `camel_to_snake("my_var")` produces `"my_var"` (correct), but `camel_to_snake("MyVar")` produces `"my_var"` while `camel_to_snake("myVAR")` produces `"my_v_a_r"`. Consecutive uppercase letters (acronyms) need special handling in production code.
+3. **`camel_to_snake` on already-snake strings**: `camel_to_snake("my_var")` produces `"my_var"` (correct), but `camel_to_snake("MyVar")` produces `"my_var"` while `camel_to_snake("myVAR")` produces `"my_v_a_r"`. Consecutive uppercase letters (acronyms) need special handling in production code.

@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 06 - Word Counter Basic
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -151,10 +151,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Separate functions for `count_words`, `count_lines`, `count_characters` | Each metric is independently testable. `assert count_words("hello world") == 2` is a one-line test | One big `analyse_text()` that computes everything — harder to test individual metrics |
-| Manual dict counting in `word_frequencies()` | Shows the fundamental counting pattern explicitly: check if key exists, increment or initialise. This is the foundation for `Counter` | Use `collections.Counter(words)` — one line but hides the learning opportunity at Level 0 |
-| `word_frequencies()` lowercases and strips punctuation | "The", "the", and "the," should all count as the same word. Without normalisation, frequencies would be fragmented | Keep case and punctuation — more "accurate" but gives misleading counts for text analysis |
-| `top_words()` uses `lambda` for sorting | Introduces the concept of sorting by a custom criterion, which is essential for many Python tasks | Sort manually with a loop to find the max n times — works but is O(n*k) instead of O(n log n) |
+| Separate functions for `count_words`, `count_lines`, `count_characters` | Each metric is independently testable. `assert count_words("hello world") == 2` is a one-line test | One big `analyse_text()` that computes everything: harder to test individual metrics |
+| Manual dict counting in `word_frequencies()` | Shows the fundamental counting pattern explicitly: check if key exists, increment or initialise. This is the foundation for `Counter` | Use `collections.Counter(words)`: one line but hides the learning opportunity at Level 0 |
+| `word_frequencies()` lowercases and strips punctuation | "The", "the", and "the," should all count as the same word. Without normalisation, frequencies would be fragmented | Keep case and punctuation: more "accurate" but gives misleading counts for text analysis |
+| `top_words()` uses `lambda` for sorting | Introduces the concept of sorting by a custom criterion, which is essential for many Python tasks | Sort manually with a loop to find the max n times: works but is O(n*k) instead of O(n log n) |
 
 ## Alternative approaches
 
@@ -179,7 +179,7 @@ def top_words(freq: dict, n: int = 5) -> list:
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| User enters no text (presses Enter immediately) | `lines` is empty, program prints "No text entered." — no crash | Already handled by the `if not lines` check |
+| User enters no text (presses Enter immediately) | `lines` is empty, program prints "No text entered.": no crash | Already handled by the `if not lines` check |
 | Text contains only punctuation like `"!!! ??? ..."` | `word_frequencies()` strips all punctuation, leaving empty strings. The `if cleaned:` guard skips them, so the frequency dict is empty | Already handled by the `if cleaned` check after stripping |
 | Text contains unicode like emojis | `len("hello ")` returns 7 (counts the emoji as one character). `split()` treats the emoji as part of a word. Results are technically correct | Already works. Python 3 handles unicode natively |
 | Very large text (millions of words) | The dict grows large but Python handles it. `sort()` on a large list may be slow | For Level 0 this is fine. Production code would use streaming or database approaches |
@@ -190,4 +190,4 @@ def top_words(freq: dict, n: int = 5) -> list:
 1. **Dictionary-based counting is one of the most common patterns in programming.** The loop `if key in dict: dict[key] += 1; else: dict[key] = 1` appears in word counting, log analysis, vote tallying, inventory tracking, and hundreds of other domains. Master this pattern.
 2. **`split()` without arguments is smarter than `split(" ")`.** It splits on any whitespace, handles consecutive spaces, and strips leading/trailing whitespace. Always prefer `split()` over `split(" ")` for general text processing.
 3. **Normalisation before counting prevents fragmented results.** If you count "The" and "the" separately, your frequency data is misleading. Lowercasing and stripping punctuation gives you the true word frequencies.
-4. **Sorting with a `key` function unlocks custom ordering.** `sorted(items, key=lambda x: x[1], reverse=True)` sorts by the second element in descending order. This pattern works for sorting any data by any criterion — prices, dates, scores, or frequencies.
+4. **Sorting with a `key` function unlocks custom ordering.** `sorted(items, key=lambda x: x[1], reverse=True)` sorts by the second element in descending order. This pattern works for sorting any data by any criterion: prices, dates, scores, or frequencies.

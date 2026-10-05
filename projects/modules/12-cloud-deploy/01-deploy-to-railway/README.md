@@ -1,4 +1,4 @@
-# Module 12 / Project 01 — Deploy to Railway
+# Module 12 / Project 01: Deploy to Railway
 
 Home: [README](../../../../README.md) · Module: [Cloud Deployment](../README.md)
 
@@ -72,7 +72,7 @@ In Railway dashboard → your service → Variables:
 
 ### 5. Verify
 
-Visit `https://your-app.up.railway.app/health` — you should see a JSON response.
+Visit `https://your-app.up.railway.app/health`. You should see a JSON response.
 
 ## Expected output
 
@@ -131,4 +131,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 02 — Deploy with Database](../02-deploy-with-database/)
+[Project 02: Deploy with Database](../02-deploy-with-database/)

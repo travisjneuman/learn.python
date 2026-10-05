@@ -1,4 +1,4 @@
-# Testing Strategies — Part 2: Advanced Testing
+# Testing Strategies, Part 2: Advanced Testing
 
 [← Part 1: Unit Testing](./testing-strategies-part1.md) · [Back to Overview](./testing-strategies.md)
 
@@ -14,9 +14,9 @@
 
 ---
 
-This part covers mocking, parametrized tests, code coverage, and common testing mistakes — the tools and techniques that take your test suite from basic to professional.
+This part covers mocking, parametrized tests, code coverage, and common testing mistakes: the tools and techniques that take your test suite from basic to professional.
 
-## Parametrized tests — test many inputs at once
+## Parametrized tests: test many inputs at once
 
 ```python
 import pytest
@@ -32,9 +32,9 @@ def test_add(a, b, expected):
     assert add(a, b) == expected
 ```
 
-One test function, five test cases. Each runs independently — if one fails, the others still run.
+One test function, five test cases. Each runs independently; if one fails, the others still run.
 
-## Test doubles — stub, mock, fake, spy
+## Test doubles: stub, mock, fake, spy
 
 When your code depends on external systems (APIs, databases, file systems), you replace them with test doubles:
 
@@ -114,7 +114,7 @@ test_calculator.py   20      0   100%
 TOTAL                30      2    93%
 ```
 
-Aim for 80%+ coverage on critical code. 100% coverage does not mean zero bugs — it means every line ran, not that every scenario was tested.
+Aim for 80%+ coverage on critical code. 100% coverage does not mean zero bugs; it means every line ran, not that every scenario was tested.
 
 ## Common Mistakes
 

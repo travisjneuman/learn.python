@@ -1,4 +1,4 @@
-# Audit Log Enhancer — Annotated Solution
+# Audit Log Enhancer: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -232,6 +232,6 @@ severity_counts = Counter(e["severity"] for e in enriched)
 
 ## Common Pitfalls
 
-1. **Assuming all timestamps have timezone info** — `datetime.fromisoformat("2025-01-15T10:30:00")` produces a naive datetime (no timezone). Subtracting a naive from an aware datetime raises a `TypeError`. Handle timezone-naive timestamps by assuming UTC or catching the error.
-2. **Using `json.load()` instead of line-by-line `json.loads()`** — JSON Lines is NOT valid JSON. `json.load()` expects a single JSON value (object or array), not one JSON object per line. You must read line by line and parse each line separately.
-3. **Not handling entries without session_id** — If `session_id` is missing, `entry.get("session_id", "")` returns an empty string. Using `""` as a dictionary key would group all session-less entries under one correlation ID, which is wrong. The solution checks for empty strings and generates unique IDs for those entries.
+1. **Assuming all timestamps have timezone info**: `datetime.fromisoformat("2025-01-15T10:30:00")` produces a naive datetime (no timezone). Subtracting a naive from an aware datetime raises a `TypeError`. Handle timezone-naive timestamps by assuming UTC or catching the error.
+2. **Using `json.load()` instead of line-by-line `json.loads()`**: JSON Lines is NOT valid JSON. `json.load()` expects a single JSON value (object or array), not one JSON object per line. You must read line by line and parse each line separately.
+3. **Not handling entries without session_id**: If `session_id` is missing, `entry.get("session_id", "")` returns an empty string. Using `""` as a dictionary key would group all session-less entries under one correlation ID, which is wrong. The solution checks for empty strings and generates unique IDs for those entries.

@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 05
+# Prueba Esto: Ejercicio 05
 
 1. Calcula cuántos segundos hay en un año:
    ```python

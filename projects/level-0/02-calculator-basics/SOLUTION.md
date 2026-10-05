@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 02 - Calculator Basics
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -128,10 +128,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Separate `add`, `subtract`, `multiply`, `divide` functions | Each is independently testable with a single `assert`. Tests read naturally: `assert add(2, 3) == 5` | One big `calculate()` that does everything — harder to test individual operations |
-| `operations` dict maps operator strings to functions | Adding a new operator (like `%` or `**`) requires one new dict entry instead of another `elif` branch | `if/elif/else` chain — works but gets long as operators grow; does not demonstrate dict-as-dispatch |
-| `calculate()` returns a dict with either `"result"` or `"error"` | The caller checks one key to know if it worked. No exceptions leak out of `calculate()` | Raise exceptions for errors — forces the caller to use try/except, which is more complex at Level 0 |
-| `divide()` raises `ValueError` instead of returning a special value | Exceptions are Python's standard way to signal errors. The caller in `calculate()` catches it and converts to an error dict | Return `None` or `float('inf')` — hides the error, and the caller may not notice |
+| Separate `add`, `subtract`, `multiply`, `divide` functions | Each is independently testable with a single `assert`. Tests read naturally: `assert add(2, 3) == 5` | One big `calculate()` that does everything: harder to test individual operations |
+| `operations` dict maps operator strings to functions | Adding a new operator (like `%` or `**`) requires one new dict entry instead of another `elif` branch | `if/elif/else` chain: works but gets long as operators grow; does not demonstrate dict-as-dispatch |
+| `calculate()` returns a dict with either `"result"` or `"error"` | The caller checks one key to know if it worked. No exceptions leak out of `calculate()` | Raise exceptions for errors: forces the caller to use try/except, which is more complex at Level 0 |
+| `divide()` raises `ValueError` instead of returning a special value | Exceptions are Python's standard way to signal errors. The caller in `calculate()` catches it and converts to an error dict | Return `None` or `float('inf')`: hides the error, and the caller may not notice |
 
 ## Alternative approaches
 
@@ -164,21 +164,21 @@ def calculate(expression: str) -> dict:
     return {"expression": expression.strip(), "result": result}
 ```
 
-**Trade-off:** The if/elif approach is easier for an absolute beginner to read because it uses no advanced concepts like "storing functions in a dict." However, the dict dispatch approach scales better — adding modulo or exponentiation is one line instead of another branch. In real codebases, dict dispatch is the standard pattern for this kind of routing.
+**Trade-off:** The if/elif approach is easier for an absolute beginner to read because it uses no advanced concepts like "storing functions in a dict." However, the dict dispatch approach scales better: adding modulo or exponentiation is one line instead of another branch. In real codebases, dict dispatch is the standard pattern for this kind of routing.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| User types `10 / 0` | `divide()` raises `ValueError("Cannot divide by zero")`, caught by `calculate()` — returns error dict | Already handled; the outer try/except catches it |
-| User types `hello + world` | `float("hello")` raises `ValueError`, caught in the try/except — returns error dict | Already handled by the input validation block |
-| User types just `5` (no operator) | `parts` has length 1, not 3 — returns "Expected format" error | Already handled by the length check |
-| User types `10+5` (no spaces) | `split()` gives `["10+5"]` — length 1, returns format error | Document that spaces are required; alternatively, use regex to parse |
-| User types `10 + 5 + 3` | `parts` has length 5, not 3 — returns format error | Only binary expressions are supported; extending to multi-operand requires a proper parser |
+| User types `10 / 0` | `divide()` raises `ValueError("Cannot divide by zero")`, caught by `calculate()`: returns error dict | Already handled; the outer try/except catches it |
+| User types `hello + world` | `float("hello")` raises `ValueError`, caught in the try/except: returns error dict | Already handled by the input validation block |
+| User types just `5` (no operator) | `parts` has length 1, not 3: returns "Expected format" error | Already handled by the length check |
+| User types `10+5` (no spaces) | `split()` gives `["10+5"]`: length 1, returns format error | Document that spaces are required; alternatively, use regex to parse |
+| User types `10 + 5 + 3` | `parts` has length 5, not 3: returns format error | Only binary expressions are supported; extending to multi-operand requires a proper parser |
 
 ## Key takeaways
 
 1. **Dict dispatch replaces long if/elif chains.** Mapping `"+"` to `add` and `"*"` to `multiply` is cleaner and more extensible than branching for every operator. This pattern appears in web frameworks, CLI tools, and game engines.
 2. **`float()` and `int()` convert strings to numbers, but they crash on bad input.** Always wrap them in `try/except ValueError` when the data comes from a user or file. You will use this pattern in every project that reads numeric input.
 3. **Returning error dicts keeps the caller simple.** Instead of raising exceptions that force try/except everywhere, `calculate()` returns `{"error": "..."}` so the caller just checks `if "error" in result`. This is a beginner-friendly version of the "Result type" pattern used in many languages.
-4. **Functions that do one thing are easier to test.** `assert add(2, 3) == 5` is a one-line test. If `add` also handled parsing and printing, the test would need to set up input and capture output — much harder.
+4. **Functions that do one thing are easier to test.** `assert add(2, 3) == 5` is a one-line test. If `add` also handled parsing and printing, the test would need to set up input and capture output: much harder.

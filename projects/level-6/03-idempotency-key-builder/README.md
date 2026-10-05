@@ -38,7 +38,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — dedup results with key counts
+- `data/output_summary.json`: dedup results with key counts
 - Passing tests (`pytest -q` → 7+ passed)
 - Updated `notes.md`
 
@@ -49,7 +49,7 @@ pytest -q
 4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Submit operations with identical `source` + `action` but different other fields — observe that they are treated as duplicates.
+1. Submit operations with identical `source` + `action` but different other fields: observe that they are treated as duplicates.
 2. Change the separator in `build_key` from `|` to empty string and create a collision with `build_key("ab", "cd")` vs `build_key("abc", "d")`.
 3. Pass an input file with missing `source` or `action` fields.
 

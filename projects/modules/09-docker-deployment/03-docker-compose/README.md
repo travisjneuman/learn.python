@@ -1,4 +1,4 @@
-# Module 09 / Project 03 — Docker Compose
+# Module 09 / Project 03: Docker Compose
 
 Home: [README](../../../../README.md)
 
@@ -38,9 +38,9 @@ Docker Compose will:
 
 Once you see `Uvicorn running on http://0.0.0.0:8000`, visit:
 
-- http://127.0.0.1:8000 — root endpoint
-- http://127.0.0.1:8000/docs — interactive API docs (try creating items here)
-- http://127.0.0.1:8000/items — list all items
+- http://127.0.0.1:8000 (root endpoint)
+- http://127.0.0.1:8000/docs (interactive API docs; try creating items here)
+- http://127.0.0.1:8000/items (list all items)
 
 ### Create some data
 

@@ -57,9 +57,9 @@ print(my_dog.name)                   # "Rex" — access an attribute
 
 `self` is the object itself. When you call `my_dog.learn_trick("sit")`, Python translates this to `Dog.learn_trick(my_dog, "sit")`. The `self` parameter receives `my_dog`.
 
-Every method's first parameter must be `self`. You never pass it explicitly — Python does it automatically.
+Every method's first parameter must be `self`. You never pass it explicitly; Python does it automatically.
 
-## `__init__` — the constructor
+## `__init__`: the constructor
 
 `__init__` runs when you create a new object. It sets up the initial state:
 
@@ -106,7 +106,7 @@ print(p)              # "Point(3, 4)" — uses __str__
 print(p == Point(3, 4))  # True — uses __eq__
 ```
 
-## Inheritance — building on existing classes
+## Inheritance: building on existing classes
 
 ```python
 class Animal:

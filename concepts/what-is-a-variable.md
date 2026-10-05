@@ -45,7 +45,7 @@ See how Python stores variables in memory step by step:
 
 Think of it like a labeled jar. The label is the name. The contents are the value. You can:
 - **Look at** the contents: `print(name)` shows `Alice`
-- **Replace** the contents: `name = "Alice"` — now it holds `"Alice"`
+- **Replace** the contents: `name = "Alice"`, now it holds `"Alice"`
 - **Use** the contents in calculations: `next_year = age + 1`
 
 ## Rules for naming variables

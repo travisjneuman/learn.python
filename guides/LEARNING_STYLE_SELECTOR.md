@@ -2,7 +2,7 @@
 
 This curriculum supports every learning style. Answer 5 quick questions to discover your recommended path through the material.
 
-Every concept and project offers multiple ways to learn the same topic — read about it, build it, watch it being built, test your knowledge, visualize it, or try it in the browser. You do not need to use all of them. Find the combination that works for you.
+Every concept and project offers multiple ways to learn the same topic: read about it, build it, watch it being built, test your knowledge, visualize it, or try it in the browser. You do not need to use all of them. Find the combination that works for you.
 
 ---
 
@@ -100,7 +100,7 @@ You learn best by seeing the big picture before diving into details.
 
 **Your recommended path at each step:**
 
-1. Open the **Mermaid diagrams** for the topic — see how things connect
+1. Open the **Mermaid diagrams** for the topic to see how things connect
 2. Read the **concept guide** with the diagram as your mental map
 3. Do the **project**, referring back to the diagram when stuck
 4. Review with **flashcards** and **quizzes**

@@ -1,4 +1,4 @@
-# Level 7 Mini Capstone — Step-by-Step Walkthrough
+# Level 7 Mini Capstone: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -8,11 +8,11 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Think of this project as building a data integration hub — the kind of system that sits at the center of a company and pulls data from multiple upstream APIs, cleans it, validates it, checks for staleness, and reconciles it across sources. Each source speaks a different dialect, some data is cached from previous runs, and you need to be able to toggle individual stages on and off for debugging.
+Think of this project as building a data integration hub, the kind of system that sits at the center of a company and pulls data from multiple upstream APIs, cleans it, validates it, checks for staleness, and reconciles it across sources. Each source speaks a different dialect, some data is cached from previous runs, and you need to be able to toggle individual stages on and off for debugging.
 
 The pipeline has five stages, each addressing a specific concern. Adaptation normalizes source-specific formats into a common shape. Caching deduplicates records so the same data is not processed twice. Validation ensures every record has the required fields. Freshness checking flags stale data. Reconciliation compares records across sources to find discrepancies. Feature flags let you disable any stage without modifying code.
 
-The most important architectural insight is that these stages form a pipeline where each stage's output feeds into the next. The adapt stage produces normalized records. The cache stage deduplicates them. The validate stage filters out invalid ones. Each stage shrinks or transforms the record list before passing it on. Understanding this flow — and what happens when you disable a stage in the middle — is what this capstone tests.
+The most important architectural insight is that these stages form a pipeline where each stage's output feeds into the next. The adapt stage produces normalized records. The cache stage deduplicates them. The validate stage filters out invalid ones. Each stage shrinks or transforms the record list before passing it on. Understanding this flow, and what happens when you disable a stage in the middle, is what this capstone tests.
 
 ## Step 1: Build the Source Adapters
 
@@ -152,7 +152,7 @@ def run_pipeline(config: dict) -> dict:
     # ...
 ```
 
-**Predict:** What happens if you disable the `adapt` flag but leave all other stages enabled? The `all_records` list starts empty — what do the cache, validate, and freshness stages do with zero records?
+**Predict:** What happens if you disable the `adapt` flag but leave all other stages enabled? The `all_records` list starts empty: what do the cache, validate, and freshness stages do with zero records?
 
 ## Step 6: Build the Output Report
 
@@ -194,5 +194,5 @@ You should see 2+ tests pass. The tests verify that the full pipeline produces c
 ## What You Learned
 
 - **Feature flags** give operators runtime control over pipeline behavior without code changes. In production, this is how teams safely roll out changes: enable a new stage for 10% of traffic, monitor for errors, then gradually increase.
-- **Multi-stage pipelines** are composed of independent stages where each stage's output feeds the next. Understanding the data flow — and what happens when a stage is removed or disabled — is essential for debugging production issues.
+- **Multi-stage pipelines** are composed of independent stages where each stage's output feeds the next. Understanding the data flow, and what happens when a stage is removed or disabled, is essential for debugging production issues.
 - **Cross-source reconciliation** catches data quality problems that no single source can detect on its own. When two authoritative sources disagree about the same record, something is wrong, and the earlier you detect it, the cheaper it is to fix.

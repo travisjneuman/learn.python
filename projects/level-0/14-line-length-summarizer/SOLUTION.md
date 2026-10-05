@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 14 - Line Length Summarizer
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -159,10 +159,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `measure_lines()` returns a list of integers | Pure data transformation: strings in, integers out. Testable with `assert measure_lines(["hi", "hello"]) == [2, 5]` | Compute lengths inline in `compute_stats()` — couples measuring with statistics, making each harder to test |
-| `compute_stats()` uses manual accumulation | The `total += length` loop makes the average formula visible: `total / count`. Beginners can trace every step | Use `sum(lengths)` — one line but hides the accumulation concept that this project teaches |
-| `build_histogram()` uses integer division for scaling | `length // scale` keeps bars proportional but manageable. A 200-char line at scale=2 gives a 100-char bar, not 200 | No scaling — long lines produce bars that wrap the terminal, destroying the visual layout |
-| `categorise_lengths()` uses fixed thresholds (40/80) | Simple, understandable categories. "Short" means fits in half a terminal; "long" means wider than a standard terminal | Dynamic thresholds based on percentiles — more sophisticated but hard to explain at Level 0 |
+| `measure_lines()` returns a list of integers | Pure data transformation: strings in, integers out. Testable with `assert measure_lines(["hi", "hello"]) == [2, 5]` | Compute lengths inline in `compute_stats()`: couples measuring with statistics, making each harder to test |
+| `compute_stats()` uses manual accumulation | The `total += length` loop makes the average formula visible: `total / count`. Beginners can trace every step | Use `sum(lengths)`: one line but hides the accumulation concept that this project teaches |
+| `build_histogram()` uses integer division for scaling | `length // scale` keeps bars proportional but manageable. A 200-char line at scale=2 gives a 100-char bar, not 200 | No scaling: long lines produce bars that wrap the terminal, destroying the visual layout |
+| `categorise_lengths()` uses fixed thresholds (40/80) | Simple, understandable categories. "Short" means fits in half a terminal; "long" means wider than a standard terminal | Dynamic thresholds based on percentiles: more sophisticated but hard to explain at Level 0 |
 
 ## Alternative approaches
 
@@ -184,14 +184,14 @@ def compute_stats(lengths: list[int]) -> dict:
     }
 ```
 
-**Trade-off:** The `statistics` module provides `mean()`, `median()`, `stdev()` and more in one import. For production code, this is the right choice — no need to reimplement math. At Level 0, the manual accumulation loop teaches the pattern behind these functions. Once you understand how an average is computed (sum / count), using `statistics.mean()` is a confident shortcut, not magic.
+**Trade-off:** The `statistics` module provides `mean()`, `median()`, `stdev()` and more in one import. For production code, this is the right choice: no need to reimplement math. At Level 0, the manual accumulation loop teaches the pattern behind these functions. Once you understand how an average is computed (sum / count), using `statistics.mean()` is a confident shortcut, not magic.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
 | Empty file (no lines) | `measure_lines([])` returns `[]`. `compute_stats([])` returns all zeros. `build_histogram([])` returns `"(no data)"`. No crash | Already handled by the empty-list guards in each function |
-| File where every line is the same length | Stats show min == max == average. Histogram has uniform bars. Categorisation puts all lines in one bucket | Already works correctly — this is a valid (if boring) result |
+| File where every line is the same length | Stats show min == max == average. Histogram has uniform bars. Categorisation puts all lines in one bucket | Already works correctly: this is a valid (if boring) result |
 | Very long line (10,000+ characters) | The histogram bar would be 5,000 characters at scale=2, wrapping multiple times in the terminal | Cap bar width: `bar = bar_char * min(bar_width, 50)` to limit visual overflow |
 | File with only blank lines | Each blank line has length 0. `measure_lines()` returns `[0, 0, 0, ...]`. Stats show min=0, max=0, average=0.0. All categorised as "short" | Already works, though the histogram shows minimal bars (1 char each due to the `max(bar_width, 1)` guard) |
 | Non-text file (binary) | `read_text()` may raise `UnicodeDecodeError` on binary content | Add a try/except for `UnicodeDecodeError` with a helpful message |

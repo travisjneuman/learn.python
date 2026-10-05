@@ -1,4 +1,4 @@
-# Try This — Project 13
+# Try This: Project 13
 
 1. Add a new rule: `number` that adds a sequential number prefix to each filename. The first file becomes `001_filename.txt`, the second `002_filename.txt`, and so on. You will need to change `simulate_batch()` slightly because this rule depends on the file's position in the list, not just its name. Hint: use `enumerate()` and `str.zfill(3)` to zero-pad the number.
 

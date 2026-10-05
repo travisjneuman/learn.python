@@ -1,4 +1,4 @@
-# Package Structure — Step-by-Step Walkthrough
+# Package Structure: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -8,9 +8,9 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Every Python project you have written so far has been a script — a single file (or a few files) that you run directly. A package is different: it is a library that other people install with `pip install` and import in their own code. The transition from "script that runs" to "package that others can install" requires a specific file structure and configuration.
+Every Python project you have written so far has been a script: a single file (or a few files) that you run directly. A package is different: it is a library that other people install with `pip install` and import in their own code. The transition from "script that runs" to "package that others can install" requires a specific file structure and configuration.
 
-The `src` layout puts your package code inside a `src/` directory. This prevents a common bug where tests accidentally import the local source code instead of the installed package. When your code is in `src/mymath/`, you cannot accidentally `import mymath` from the project root — you must install the package first. This catches import errors early.
+The `src` layout puts your package code inside a `src/` directory. This prevents a common bug where tests accidentally import the local source code instead of the installed package. When your code is in `src/mymath/`, you cannot accidentally `import mymath` from the project root; you must install the package first. This catches import errors early.
 
 `pyproject.toml` is the single source of truth for your package. It tells build tools the package name, version, dependencies, where to find the code, and how to build it. Before `pyproject.toml` existed, Python packaging required `setup.py`, `setup.cfg`, and sometimes `MANIFEST.in`. Now everything goes in one file.
 
@@ -37,9 +37,9 @@ The `src` layout puts your package code inside a `src/` directory. This prevents
 
 Three directories to understand:
 
-- **`src/mymath/`** — the actual package code. The directory name `mymath` becomes the import name.
-- **`tests/`** — test files live outside the package so they are not included in the distribution.
-- **Root directory** — contains `pyproject.toml`, README, and LICENSE, which are metadata, not code.
+- **`src/mymath/`**: the actual package code. The directory name `mymath` becomes the import name.
+- **`tests/`**: test files live outside the package so they are not included in the distribution.
+- **Root directory**: contains `pyproject.toml`, README, and LICENSE, which are metadata, not code.
 
 **Predict:** What happens if you rename the `mymath/` directory to `my_math/`? What would need to change in the rest of the project?
 
@@ -58,15 +58,15 @@ from mymath.statistics import mean, median, mode
 
 Three things this file does:
 
-- **Sets `__version__`** — a single source of truth for the package version that tools can read.
-- **Re-exports functions** from submodules — `from mymath import add` works because `__init__.py` imports `add` from `calculator.py`.
-- **Exists as a file** — its mere presence tells Python "this directory is a package."
+- **Sets `__version__`**: a single source of truth for the package version that tools can read.
+- **Re-exports functions** from submodules: `from mymath import add` works because `__init__.py` imports `add` from `calculator.py`.
+- **Exists as a file**: its mere presence tells Python "this directory is a package."
 
 **Predict:** If you remove the `from mymath.calculator import ...` line, can you still use `from mymath.calculator import add`? What about `from mymath import add`?
 
 ## Step 3: Write a Module with Functions
 
-**What to do:** Examine `calculator.py` and `statistics.py` — the two modules inside the package.
+**What to do:** Examine `calculator.py` and `statistics.py`, the two modules inside the package.
 
 **Why:** A module is a single `.py` file. A package is a directory containing modules (plus `__init__.py`). Each module should have a focused purpose. `calculator.py` does arithmetic. `statistics.py` does statistics. This separation makes the code easier to navigate and test.
 
@@ -97,7 +97,7 @@ def mode(numbers):
     return counts.most_common(1)[0][0]
 ```
 
-Both modules validate their inputs (empty lists, division by zero) and raise clear errors. This is good practice for any library code — the caller should get a useful error message, not a cryptic traceback.
+Both modules validate their inputs (empty lists, division by zero) and raise clear errors. This is good practice for any library code: the caller should get a useful error message, not a cryptic traceback.
 
 **Predict:** Why does `calculator.py` have a `main()` function and an `if __name__ == "__main__"` guard? What does `python -m mymath.calculator` do?
 
@@ -125,9 +125,9 @@ where = ["src"]
 
 Three sections to understand:
 
-- **`[build-system]`** — tells pip which tool builds the package (setuptools is the most common).
-- **`[project]`** — the metadata that appears on PyPI: name, version, description, author.
-- **`[tool.setuptools.packages.find]`** — tells setuptools to look in the `src/` directory for packages.
+- **`[build-system]`**: tells pip which tool builds the package (setuptools is the most common).
+- **`[project]`**: the metadata that appears on PyPI: name, version, description, author.
+- **`[tool.setuptools.packages.find]`**: tells setuptools to look in the `src/` directory for packages.
 
 **Predict:** What happens if you change `where = ["src"]` to `where = ["."]`? Where would setuptools look for packages?
 
@@ -190,6 +190,6 @@ python -m mymath.calculator
 ## What You Learned
 
 - **The `src` layout** puts package code in `src/<package>/`, preventing accidental imports of local code instead of the installed package.
-- **`__init__.py`** marks a directory as a Python package and controls what is importable — re-exporting functions from submodules creates a clean public API.
-- **`pyproject.toml`** is the single configuration file for package metadata, build system, and tool settings — it replaces the older `setup.py` approach.
-- **Modules vs packages** — a module is a single `.py` file, a package is a directory with `__init__.py` and one or more modules. Packages can be installed with pip and imported by anyone.
+- **`__init__.py`** marks a directory as a Python package and controls what is importable. Re-exporting functions from submodules creates a clean public API.
+- **`pyproject.toml`** is the single configuration file for package metadata, build system, and tool settings; it replaces the older `setup.py` approach.
+- **Modules vs packages**: a module is a single `.py` file, a package is a directory with `__init__.py` and one or more modules. Packages can be installed with pip and imported by anyone.

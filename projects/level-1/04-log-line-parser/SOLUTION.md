@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 04 - Log Line Parser
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -190,10 +190,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `split(maxsplit=3)` for log parsing | The message field may contain spaces; limiting the split to 4 parts preserves the full message text | Regex with capture groups — more precise but harder to understand at Level 1 |
-| Error dict for malformed lines | Lets the program continue parsing remaining lines instead of stopping at the first bad line | Raise an exception — would require try/except in the caller and lose the remaining lines |
-| `dict.get(level, 0) + 1` counting pattern | Standard Python idiom for counting occurrences without needing `defaultdict` or `Counter` (which come later) | `collections.Counter` — more concise but introduces a new import and concept at Level 1 |
-| Case-insensitive level filtering | Users should not need to remember whether to type "ERROR" or "error"; normalising removes friction | Case-sensitive — would frustrate users who type the wrong case |
+| `split(maxsplit=3)` for log parsing | The message field may contain spaces; limiting the split to 4 parts preserves the full message text | Regex with capture groups: more precise but harder to understand at Level 1 |
+| Error dict for malformed lines | Lets the program continue parsing remaining lines instead of stopping at the first bad line | Raise an exception: would require try/except in the caller and lose the remaining lines |
+| `dict.get(level, 0) + 1` counting pattern | Standard Python idiom for counting occurrences without needing `defaultdict` or `Counter` (which come later) | `collections.Counter`: more concise but introduces a new import and concept at Level 1 |
+| Case-insensitive level filtering | Users should not need to remember whether to type "ERROR" or "error"; normalising removes friction | Case-sensitive: would frustrate users who type the wrong case |
 
 ## Alternative approaches
 

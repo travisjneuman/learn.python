@@ -1,4 +1,4 @@
-# Diagrams: The Terminal — Going Deeper
+# Diagrams: The Terminal (Going Deeper)
 
 [Back to concept](../the-terminal-deeper.md)
 

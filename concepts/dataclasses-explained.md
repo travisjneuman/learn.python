@@ -111,7 +111,7 @@ print(cart)  # ShoppingCart(owner='Alice', items=['Coffee'])
 
 Why? If you wrote `items: list[str] = []`, every instance would share the same list. `default_factory=list` creates a new list for each instance.
 
-## `__post_init__` — extra setup after creation
+## `__post_init__`: extra setup after creation
 
 Sometimes you need to compute a value from other fields:
 
@@ -132,7 +132,7 @@ print(r)       # Rectangle(width=5.0, height=3.0, area=15.0)
 
 `field(init=False)` means "don't include this in the constructor." `__post_init__` runs right after `__init__` finishes.
 
-## Frozen dataclasses — immutable data
+## Frozen dataclasses: immutable data
 
 Add `frozen=True` to make instances read-only:
 

@@ -1,4 +1,4 @@
-# Module 11 / Project 02 — Build and Test
+# Module 11 / Project 02: Build and Test
 
 Home: [README](../../../../README.md) · Module: [Package Publishing](../README.md)
 
@@ -65,7 +65,7 @@ tests/test_calculator.py::test_subtract PASSED
 
 ## Project files
 
-This project is a guide — the code lives in project 01. The script below automates the build-and-test workflow.
+This project is a guide; the code lives in project 01. The script below automates the build-and-test workflow.
 
 ## Alter it
 
@@ -90,7 +90,7 @@ This project is a guide — the code lives in project 01. The script below autom
 1. What is the difference between a wheel (.whl) and an sdist (.tar.gz)?
 2. What does "editable mode" (`pip install -e .`) do differently from a normal install?
 3. Why does `python -m build` create both a wheel and an sdist?
-4. What is inside a wheel file? (Hint: it's a zip file — try renaming to .zip and opening it.)
+4. What is inside a wheel file? (Hint: it's a zip file; try renaming to .zip and opening it.)
 
 ## Mastery check
 
@@ -110,4 +110,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — Publish to PyPI](../03-publish-to-pypi/)
+[Project 03: Publish to PyPI](../03-publish-to-pypi/)

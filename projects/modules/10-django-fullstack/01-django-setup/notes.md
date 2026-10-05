@@ -1,4 +1,4 @@
-# Notes — Django Setup
+# Notes: Django Setup
 
 ## What I learned
 

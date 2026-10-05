@@ -22,7 +22,7 @@ Home: [README](../../../README.md)
 Understanding where time is spent is essential for optimization. A function that runs
 in 2ms on average but 200ms at p99 causes intermittent user-visible slowdowns that are
 invisible to mean-based monitoring. This project builds a profiling toolkit that measures
-function execution times, computes percentile distributions, and identifies bottlenecks —
+function execution times, computes percentile distributions, and identifies bottlenecks,
 the same approach used by APM tools like New Relic, Datadog, and Jaeger.
 
 ## Run (copy/paste)
@@ -55,9 +55,9 @@ pytest -q
 3. Add a `@profile` class method that works as a decorator without needing an instance reference.
 
 ## Break it (required)
-1. Call `report()` with no recorded timings — does `percentile()` handle an empty list?
-2. Record a negative duration (simulate a clock skew) — what happens to the percentile calculations?
-3. Use the context manager but raise an exception inside it — does the timing still get recorded?
+1. Call `report()` with no recorded timings: does `percentile()` handle an empty list?
+2. Record a negative duration (simulate a clock skew): what happens to the percentile calculations?
+3. Use the context manager but raise an exception inside it: does the timing still get recorded?
 
 ## Fix it (required)
 1. Add a guard in `percentile()` that returns 0.0 for empty data.

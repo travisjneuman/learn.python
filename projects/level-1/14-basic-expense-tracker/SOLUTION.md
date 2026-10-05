@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 14 - Basic Expense Tracker
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -223,10 +223,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Validate and reject negative amounts | Expenses are money spent; negative amounts would distort totals and averages | Allow negatives for refunds — makes sense in full accounting but adds complexity at Level 1 |
-| Normalise categories to lowercase | Prevents "Food" and "food" from creating separate groups; all variants aggregate together | Case-sensitive categories — would require users to be consistent, which they never are |
-| CSV output for the summary | Spreadsheet-compatible format that users can open in Excel for charts and further analysis | JSON output — machine-readable but not spreadsheet-friendly for non-developers |
-| Separate `overall_stats()` from `total_by_category()` | Different concerns: one groups by category, the other computes aggregate statistics; separating makes each testable | One function that does both — harder to test and modify independently |
+| Validate and reject negative amounts | Expenses are money spent; negative amounts would distort totals and averages | Allow negatives for refunds: makes sense in full accounting but adds complexity at Level 1 |
+| Normalise categories to lowercase | Prevents "Food" and "food" from creating separate groups; all variants aggregate together | Case-sensitive categories: would require users to be consistent, which they never are |
+| CSV output for the summary | Spreadsheet-compatible format that users can open in Excel for charts and further analysis | JSON output: machine-readable but not spreadsheet-friendly for non-developers |
+| Separate `overall_stats()` from `total_by_category()` | Different concerns: one groups by category, the other computes aggregate statistics; separating makes each testable | One function that does both: harder to test and modify independently |
 
 ## Alternative approaches
 
@@ -262,5 +262,5 @@ def total_by_category_defaultdict(expenses: list[dict]) -> dict[str, float]:
 ## Key takeaways
 
 1. **Always validate financial data at the input boundary.** Catching negative amounts, missing fields, and non-numeric values in `parse_expense()` means every downstream function can trust the data. This "validate early, trust later" pattern is how real financial systems work.
-2. **Category normalisation is essential for aggregation.** Without `.lower().strip()`, you would get separate totals for "Food", "food", "FOOD", and " Food ". This normalisation step applies to any grouping operation — tags, statuses, labels, etc.
+2. **Category normalisation is essential for aggregation.** Without `.lower().strip()`, you would get separate totals for "Food", "food", "FOOD", and " Food ". This normalisation step applies to any grouping operation: tags, statuses, labels, etc.
 3. **This project is a simplified version of real personal finance apps.** Mint, YNAB, and bank statements all parse transactions, categorise them, and compute spending summaries. The same CSV-parse-aggregate-report pipeline scales from a script to a full application with a database and web interface.

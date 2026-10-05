@@ -1,4 +1,4 @@
-# Config Layer Priority — Annotated Solution
+# Config Layer Priority: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -211,6 +211,6 @@ Dataclasses provide type safety and IDE autocomplete. The downside is that addin
 
 ## Common Pitfalls
 
-1. **Boolean coercion from strings** — `bool("false")` is `True` in Python because any non-empty string is truthy. You must explicitly check for string values like `"true"`, `"1"`, or `"yes"` to correctly convert env var booleans.
-2. **Missing prefix on env vars** — Setting `PORT=9090` instead of `APP_PORT=9090` means the variable is ignored by the prefix filter. This is a common deployment mistake that silently falls back to the default.
-3. **Config file overriding env vars** — If you accidentally apply layers in the wrong order (file after env), the config file wins over environment variables, breaking the twelve-factor contract.
+1. **Boolean coercion from strings**: `bool("false")` is `True` in Python because any non-empty string is truthy. You must explicitly check for string values like `"true"`, `"1"`, or `"yes"` to correctly convert env var booleans.
+2. **Missing prefix on env vars**: Setting `PORT=9090` instead of `APP_PORT=9090` means the variable is ignored by the prefix filter. This is a common deployment mistake that silently falls back to the default.
+3. **Config file overriding env vars**: If you accidentally apply layers in the wrong order (file after env), the config file wins over environment variables, breaking the twelve-factor contract.

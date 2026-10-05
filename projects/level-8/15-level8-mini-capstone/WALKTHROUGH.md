@@ -1,4 +1,4 @@
-# Level 8 Mini Capstone — Step-by-Step Walkthrough
+# Level 8 Mini Capstone: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -10,9 +10,9 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 Real observability platforms like Datadog, Grafana, and New Relic all solve the same fundamental problem: given N services producing M metrics each, how do you turn that firehose of data into a clear picture of system health? The answer has three parts: collect metrics, evaluate health, and alert when something is wrong.
 
-Your platform monitors five simulated services, each with a different performance profile. The "api-gateway" is fast and reliable. The "payment-service" is slower with higher error rates. The "notification-svc" is the most problematic — high error rates and occasional downtime. By simulating traffic to all five services simultaneously, you produce realistic metric distributions that your platform must aggregate and evaluate.
+Your platform monitors five simulated services, each with a different performance profile. The "api-gateway" is fast and reliable. The "payment-service" is slower with higher error rates. The "notification-svc" is the most problematic: high error rates and occasional downtime. By simulating traffic to all five services simultaneously, you produce realistic metric distributions that your platform must aggregate and evaluate.
 
-The architectural pattern here is the Facade. The `ObservabilityPlatform` class provides one unified interface that hides the complexity of metrics collection, health evaluation, and alert generation. Callers just say `record_request()` and `evaluate_alerts()` — they do not need to understand how percentiles are computed or how health thresholds work. This encapsulation is what makes the platform composable: you could add log aggregation or distributed tracing as new subsystems without changing the public interface.
+The architectural pattern here is the Facade. The `ObservabilityPlatform` class provides one unified interface that hides the complexity of metrics collection, health evaluation, and alert generation. Callers just say `record_request()` and `evaluate_alerts()`: they do not need to understand how percentiles are computed or how health thresholds work. This encapsulation is what makes the platform composable: you could add log aggregation or distributed tracing as new subsystems without changing the public interface.
 
 ## Step 1: Define the Service Health Model
 
@@ -122,7 +122,7 @@ class ObservabilityPlatform:
             metrics.uptime_passes += 1
 ```
 
-**Predict:** What happens if you call `record_request("unknown-service", 50.0, True)` for a service that was never registered? The code silently ignores it — is this a good design choice, or should it raise an error?
+**Predict:** What happens if you call `record_request("unknown-service", 50.0, True)` for a service that was never registered? The code silently ignores it: is this a good design choice, or should it raise an error?
 
 ## Step 4: Implement Alert Evaluation
 
@@ -167,7 +167,7 @@ def evaluate_alerts(self) -> list[Alert]:
 
 **What to do:** Write `report()` that collects all service metrics, determines the overall platform health (worst status wins), and returns a `PlatformReport` object.
 
-**Why:** The report is the final output — the "single pane of glass" that shows the state of the entire platform. The overall health follows the same worst-status-wins pattern as the dashboard KPI assembler: if any service is DOWN, the platform is DOWN, regardless of how healthy the other services are.
+**Why:** The report is the final output: the "single pane of glass" that shows the state of the entire platform. The overall health follows the same worst-status-wins pattern as the dashboard KPI assembler: if any service is DOWN, the platform is DOWN, regardless of how healthy the other services are.
 
 ```python
 def report(self) -> PlatformReport:

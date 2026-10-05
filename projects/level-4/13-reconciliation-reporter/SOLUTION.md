@@ -1,4 +1,4 @@
-# Reconciliation Reporter — Annotated Solution
+# Reconciliation Reporter: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -227,6 +227,6 @@ def detailed_diff(src_val: str, tgt_val: str) -> str:
 
 ## Common Pitfalls
 
-1. **Duplicate keys cause silent data loss** — If the key field has duplicates, `dict[key] = row` overwrites the previous row with the same key. The reconciliation then compares against the last occurrence only. Always validate key uniqueness or handle duplicates explicitly.
-2. **Comparing files with different headers** — If source has columns `[id, name, email]` and target has `[id, name, phone]`, the "email" column comparison will show every record as mismatched (source has it, target does not). Check header alignment before reconciling.
-3. **String comparison of numeric values** — CSV values are strings. `"100"` and `"100.0"` are different as strings but equal as numbers. If your data contains numeric fields, consider coercing to float before comparing.
+1. **Duplicate keys cause silent data loss**: If the key field has duplicates, `dict[key] = row` overwrites the previous row with the same key. The reconciliation then compares against the last occurrence only. Always validate key uniqueness or handle duplicates explicitly.
+2. **Comparing files with different headers**: If source has columns `[id, name, email]` and target has `[id, name, phone]`, the "email" column comparison will show every record as mismatched (source has it, target does not). Check header alignment before reconciling.
+3. **String comparison of numeric values**: CSV values are strings. `"100"` and `"100.0"` are different as strings but equal as numbers. If your data contains numeric fields, consider coercing to float before comparing.

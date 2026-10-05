@@ -1,12 +1,12 @@
 # Fill-In Challenges
 
-Exercises where function stubs are provided — you write the implementation.
+Exercises where function stubs are provided; you write the implementation.
 
 ## How It Works
 
 1. Open the exercise file. You will see functions with docstrings and
    `# YOUR CODE HERE` markers.
-2. Read the docstring carefully — it tells you exactly what the function
+2. Read the docstring carefully; it tells you exactly what the function
    should do, what arguments it takes, and what it returns.
 3. Replace `# YOUR CODE HERE` with your implementation.
 4. Run the tests to check your work:
@@ -31,6 +31,6 @@ Exercises where function stubs are provided — you write the implementation.
 ## Tips
 
 - Read the docstring before writing any code.
-- Run the tests frequently — they tell you exactly what is expected.
+- Run the tests frequently; they tell you exactly what is expected.
 - Start with the simplest function in each file and work your way up.
-- The tests are not trick questions — if your logic is sound, they will pass.
+- The tests are not trick questions; if your logic is sound, they will pass.

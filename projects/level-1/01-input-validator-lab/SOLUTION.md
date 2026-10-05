@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 01 - Input Validator Lab
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -201,10 +201,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Separate validator functions per type | Each validator has its own rules and error messages; isolating them makes testing and modification easy | One big function with nested if/elif for all types — harder to test and extend |
-| Dispatch table (dict mapping type to function) | Adding a new type is one line instead of a new elif branch; the dict is also iterable for help text | if/elif chain — works but does not scale well and is harder to extend |
-| Return dict with `valid` + `errors` list | Gives the caller both the pass/fail decision and the specific reasons, enabling rich error messages | Return just True/False — caller loses context about what failed |
-| Use `re.match` for zip codes but string methods for email/phone | Zip codes have a strict fixed pattern ideal for regex; emails and phones benefit from step-by-step checks that are easier to understand at this level | Use regex for everything — works but is harder to debug at Level 1 |
+| Separate validator functions per type | Each validator has its own rules and error messages; isolating them makes testing and modification easy | One big function with nested if/elif for all types: harder to test and extend |
+| Dispatch table (dict mapping type to function) | Adding a new type is one line instead of a new elif branch; the dict is also iterable for help text | if/elif chain: works but does not scale well and is harder to extend |
+| Return dict with `valid` + `errors` list | Gives the caller both the pass/fail decision and the specific reasons, enabling rich error messages | Return just True/False: caller loses context about what failed |
+| Use `re.match` for zip codes but string methods for email/phone | Zip codes have a strict fixed pattern ideal for regex; emails and phones benefit from step-by-step checks that are easier to understand at this level | Use regex for everything: works but is harder to debug at Level 1 |
 
 ## Alternative approaches
 
@@ -231,12 +231,12 @@ def validate_email_regex(email: str) -> dict:
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
 | Input line has no colon separator | `validate_input()` returns an error dict instead of crashing, because we check for ":" before splitting | The check is already in place; always test with malformed input |
-| Email like `user@` (no domain) | `validate_email()` catches it — after splitting on @, the domain part is empty, triggering "domain must contain a dot" | The elif branch handles this; add test cases for edge-case emails |
+| Email like `user@` (no domain) | `validate_email()` catches it: after splitting on @, the domain part is empty, triggering "domain must contain a dot" | The elif branch handles this; add test cases for edge-case emails |
 | Unknown type like `ssn: 123-45-6789` | `validate_input()` returns `{"error": "Unknown type: ssn"}` because `ssn` is not in the validators dict | Already handled; the dict lookup pattern naturally rejects unknown keys |
 | File does not exist | `process_file()` raises `FileNotFoundError` with a clear message before attempting to read | The existence check is explicit; argparse defaults to a sample file |
 
 ## Key takeaways
 
 1. **Validate one thing at a time.** Each validator checks a single format, and each check within a validator tests one rule. This makes bugs easy to isolate and fixes easy to verify.
-2. **Return structured results, not just True/False.** Returning a dict with `valid`, `type`, `value`, and `errors` gives callers everything they need to display helpful feedback — a pattern used in every form validation library.
+2. **Return structured results, not just True/False.** Returning a dict with `valid`, `type`, `value`, and `errors` gives callers everything they need to display helpful feedback: a pattern used in every form validation library.
 3. **The dispatch table pattern (dict mapping names to functions) will appear repeatedly** in future projects: command dispatchers, API routers, plugin systems. Learning it here at Level 1 prepares you for the pattern everywhere else.

@@ -1,6 +1,6 @@
 # Regex Explained
 
-A regular expression (regex) is a pattern that describes text. It lets you search for, match, and extract specific patterns from strings — like finding all email addresses in a document or validating that a phone number has the right format. Python's `re` module provides regex support.
+A regular expression (regex) is a pattern that describes text. It lets you search for, match, and extract specific patterns from strings, like finding all email addresses in a document or validating that a phone number has the right format. Python's `re` module provides regex support.
 
 <!-- modality-hub-start -->
 
@@ -14,7 +14,7 @@ A regular expression (regex) is a pattern that describes text. It lets you searc
 
 ## Why This Matters
 
-String methods like `.find()` and `.startswith()` work for simple cases, but they fall apart when patterns are complex. "Find every word that starts with a capital letter and ends with a number" is one line of regex but dozens of lines of string manipulation. Regex is a universal skill — the same patterns work in Python, JavaScript, SQL, and most editors.
+String methods like `.find()` and `.startswith()` work for simple cases, but they fall apart when patterns are complex. "Find every word that starts with a capital letter and ends with a number" is one line of regex but dozens of lines of string manipulation. Regex is a universal skill: the same patterns work in Python, JavaScript, SQL, and most editors.
 
 ## The `re` module basics
 
@@ -37,7 +37,7 @@ cleaned = re.sub(r"\d", "X", text)
 print(cleaned)    # "My phone number is XXX-XXX-XXXX and my zip is XXXXX"
 ```
 
-Always use **raw strings** (`r"..."`) for regex patterns — this prevents Python from interpreting backslashes before the regex engine sees them.
+Always use **raw strings** (`r"..."`) for regex patterns. This prevents Python from interpreting backslashes before the regex engine sees them.
 
 ## Character classes
 
@@ -54,7 +54,7 @@ Always use **raw strings** (`r"..."`) for regex patterns — this prevents Pytho
 | `[^abc]` | Any character NOT a, b, or c | `[^0-9]` matches non-digits |
 | `[a-z]` | Any lowercase letter | `[A-Za-z]` matches any letter |
 
-## Quantifiers — how many?
+## Quantifiers: how many?
 
 | Pattern | Meaning | Example |
 |---------|---------|---------|
@@ -65,7 +65,7 @@ Always use **raw strings** (`r"..."`) for regex patterns — this prevents Pytho
 | `{2,4}` | Between 2 and 4 | `\d{2,4}` matches `"12"`, `"123"`, `"1234"` |
 | `{2,}` | 2 or more | `\d{2,}` matches `"12"`, `"123456"` |
 
-## Anchors — where in the string?
+## Anchors: where in the string?
 
 | Pattern | Meaning |
 |---------|---------|
@@ -83,7 +83,7 @@ re.findall(r"\bcat\b", "the cat sat on the catalog")
 # ["cat"] — does NOT match "cat" inside "catalog"
 ```
 
-## Groups — capturing parts of a match
+## Groups: capturing parts of a match
 
 Parentheses `()` create groups that capture parts of the match:
 
@@ -129,7 +129,7 @@ for m in re.finditer(r"\d+", text):
     print(f"Found {m.group()} at position {m.start()}")
 ```
 
-## `re.compile` — precompile for performance
+## `re.compile`: precompile for performance
 
 If you use the same pattern many times, compile it once:
 
@@ -231,8 +231,8 @@ if match:
 ## Practice
 
 - [Level 1 / 08 Log Level Counter](../projects/level-1/08-log-level-counter/README.md)
-- [Module 01 Web Scraping](../projects/modules/01-web-scraping/) — extracting data from HTML
-- [Module 02 CLI Tools](../projects/modules/02-cli-tools/) — parsing user input
+- [Module 01 Web Scraping](../projects/modules/01-web-scraping/): extracting data from HTML
+- [Module 02 CLI Tools](../projects/modules/02-cli-tools/): parsing user input
 
 **Quick check:** [Take the quiz](quizzes/regex-explained-quiz.py) *(coming soon)*
 
@@ -241,9 +241,9 @@ if match:
 
 ## Further Reading
 
-- [re — Regular expression operations (Python docs)](https://docs.python.org/3/library/re.html)
+- [re: Regular expression operations (Python docs)](https://docs.python.org/3/library/re.html)
 - [Regular Expression HOWTO (Python docs)](https://docs.python.org/3/howto/regex.html)
-- [regex101.com — interactive regex tester](https://regex101.com/)
+- [regex101.com: interactive regex tester](https://regex101.com/)
 
 ---
 

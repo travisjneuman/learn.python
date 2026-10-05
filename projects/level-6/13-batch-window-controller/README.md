@@ -38,7 +38,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — window analysis with overlaps and gaps
+- `data/output_summary.json`: window analysis with overlaps and gaps
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 

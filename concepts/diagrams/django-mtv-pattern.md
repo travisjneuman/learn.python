@@ -1,4 +1,4 @@
-# Django MTV Pattern — Diagrams
+# Django MTV Pattern: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 

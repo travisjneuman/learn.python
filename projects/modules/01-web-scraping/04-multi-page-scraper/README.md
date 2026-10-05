@@ -1,4 +1,4 @@
-# Module 01 / Project 04 — Multi-Page Scraper
+# Module 01 / Project 04: Multi-Page Scraper
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -100,4 +100,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 05 — Save to CSV](../05-save-to-csv/)
+[Project 05: Save to CSV](../05-save-to-csv/)

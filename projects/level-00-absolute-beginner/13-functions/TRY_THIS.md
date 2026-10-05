@@ -1,4 +1,4 @@
-# Try This — Exercise 13
+# Try This: Exercise 13
 
 1. Write a function that takes a temperature in Fahrenheit and returns Celsius:
    ```python

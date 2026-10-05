@@ -1,7 +1,7 @@
 # Level 0 / Project 04 - Yes No Questionnaire
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=4) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=4): no installation needed!
 
 ## Before You Start
 
@@ -65,17 +65,17 @@ Answer 5 questions with yes or no.
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add "maybe" as a third valid answer category (accept "maybe", "perhaps", "unsure").
 2. Add a percentage bar using `#` characters next to each tally count.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Answer every question with just spaces or blank -- does `tally_answers()` crash or return zeros?
 2. Answer with "YES!!!" or "y e s" -- does `normalise_answer()` handle them?
 3. What happens if you call `tally_answers([])` with an empty list?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle the empty-answers case by returning a tally with all zeros.
 2. Strip punctuation from answers so "YES!!!" normalises to "yes".
 3. Add a test for the all-blank-answers edge case.

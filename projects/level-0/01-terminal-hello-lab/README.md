@@ -1,7 +1,7 @@
 # Level 0 / Project 01 - Terminal Hello Lab
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=1) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=1): no installation needed!
 
 ## Before You Start
 
@@ -103,17 +103,17 @@ def build_welcome(name):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `build_greeting_box()` function that wraps the greeting in a box made of `+`, `-`, and `|` characters.
 2. Ask the user if they want UPPERCASE output. If they type "yes", print everything in upper case.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Type nothing when asked for your name (just press Enter) -- what happens to the greeting and banner?
 2. Type only spaces as your name -- does `build_banner()` handle it or crash?
 3. Try typing letters instead of a number for the day -- what error do you get?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a guard in `greet()` that returns a default message for empty names.
 2. Add a check that the day is a valid positive number, with a helpful error message.
 3. Add a test that verifies empty-name handling.

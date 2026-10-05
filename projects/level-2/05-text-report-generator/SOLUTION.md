@@ -1,4 +1,4 @@
-# Text Report Generator — Annotated Solution
+# Text Report Generator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -195,7 +195,7 @@ if __name__ == "__main__":
 | `zip(headers, values)` for record building | `zip` is the idiomatic Python way to pair two parallel lists. It is concise, readable, and handles unequal lengths gracefully (stops at the shorter list). |
 | `group_by` as a standalone function | Grouping is a reusable pattern. Making it a function means you can group by any field without rewriting the logic. This is the manual version of `itertools.groupby` or SQL `GROUP BY`. |
 | Sorted group names in report | Deterministic output makes testing and diffing possible. If groups appeared in random order, every test would need to sort before comparing. |
-| `extract_numeric` with try/except | Real CSV data is messy — salary columns might contain "N/A", blank strings, or currency symbols. Silently skipping non-numeric values is more robust than crashing on bad data. |
+| `extract_numeric` with try/except | Real CSV data is messy: salary columns might contain "N/A", blank strings, or currency symbols. Silently skipping non-numeric values is more robust than crashing on bad data. |
 | Text report format with `=` borders | Plain text reports work everywhere (email, terminal, log files) without requiring a rendering engine. The visual structure makes them scannable. |
 
 ## Alternative Approaches
@@ -226,8 +226,8 @@ F-string format specifiers like `>10.2f` (right-align, 10 chars wide, 2 decimal 
 
 ## Common Pitfalls
 
-1. **`zip` with unequal-length lists** — If a CSV row has fewer values than headers, `zip` silently drops the extra headers. The record will be missing fields. Defensive code should pad short rows with empty strings before zipping.
+1. **`zip` with unequal-length lists**: If a CSV row has fewer values than headers, `zip` silently drops the extra headers. The record will be missing fields. Defensive code should pad short rows with empty strings before zipping.
 
-2. **Grouping by a missing field** — If `--group department` is used but "department" does not exist in the CSV headers, every record gets grouped under "UNKNOWN". The `.get(key, "UNKNOWN")` default handles this gracefully, but the user may not realise their field name was wrong.
+2. **Grouping by a missing field**: If `--group department` is used but "department" does not exist in the CSV headers, every record gets grouped under "UNKNOWN". The `.get(key, "UNKNOWN")` default handles this gracefully, but the user may not realise their field name was wrong.
 
-3. **Integer vs float in statistics** — If all values happen to be integers, `sum(values) / len(values)` produces a float in Python 3, which is correct. But `min([])` and `max([])` raise `ValueError` on empty lists — always guard against empty data before calling these builtins.
+3. **Integer vs float in statistics**: If all values happen to be integers, `sum(values) / len(values)` produces a float in Python 3, which is correct. But `min([])` and `max([])` raise `ValueError` on empty lists: always guard against empty data before calling these builtins.

@@ -1,4 +1,4 @@
-# Data Cleaning Pipeline — Annotated Solution
+# Data Cleaning Pipeline: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -183,7 +183,7 @@ if __name__ == "__main__":
 |----------|-----|
 | Each cleaning step is a separate function | Single-responsibility makes each step independently testable and reorderable. You can add a new step without touching existing ones. |
 | Pipeline step ordering (strip before dedupe) | Stripping and normalising must happen before deduplication, otherwise `"Alice "` and `"alice"` would be treated as different records. Order matters. |
-| Set for deduplication | A set provides O(1) membership checks. Using a list for `seen` would make deduplication O(n^2) — unacceptable for large datasets. |
+| Set for deduplication | A set provides O(1) membership checks. Using a list for `seen` would make deduplication O(n^2): unacceptable for large datasets. |
 | `re.compile` before the loop | Compiling the regex once avoids redundant parsing on every iteration. This is a standard performance pattern when applying the same pattern to many strings. |
 | Returning a result dict with both cleaned and rejected | Callers may need either or both. Returning everything in a structured dict keeps the function flexible without requiring separate calls. |
 
@@ -201,7 +201,7 @@ def run_pipeline_functional(records, filter_pattern=None):
     # ... handle filter and stats
 ```
 
-This is more concise but harder to debug — you cannot easily inspect intermediate results. The explicit step-by-step approach is better for learning and for adding logging between steps.
+This is more concise but harder to debug: you cannot easily inspect intermediate results. The explicit step-by-step approach is better for learning and for adding logging between steps.
 
 ### Using Python's `csv` module for separator handling
 
@@ -209,8 +209,8 @@ The `csv` module handles quoting, escaping, and multi-character delimiters autom
 
 ## Common Pitfalls
 
-1. **Wrong pipeline order** — If you deduplicate before normalising case, `"Alice"` and `"alice"` survive as separate records. Always normalise first, then deduplicate.
+1. **Wrong pipeline order**: If you deduplicate before normalising case, `"Alice"` and `"alice"` survive as separate records. Always normalise first, then deduplicate.
 
-2. **Invalid regex in `--filter`** — An unclosed bracket like `[abc` will crash `re.compile`. Production code should wrap this in `try/except re.error` and return a clear error message.
+2. **Invalid regex in `--filter`**: An unclosed bracket like `[abc` will crash `re.compile`. Production code should wrap this in `try/except re.error` and return a clear error message.
 
-3. **Encoding issues** — Files saved with non-UTF-8 encoding (like Latin-1 or Windows-1252) will cause `UnicodeDecodeError`. Adding `errors="replace"` to `read_text()` prevents crashes but loses characters. The correct fix is to detect or specify the encoding.
+3. **Encoding issues**: Files saved with non-UTF-8 encoding (like Latin-1 or Windows-1252) will cause `UnicodeDecodeError`. Adding `errors="replace"` to `read_text()` prevents crashes but loses characters. The correct fix is to detect or specify the encoding.

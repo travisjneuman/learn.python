@@ -1,4 +1,4 @@
-# Module 09 / Project 04 — CI with GitHub Actions
+# Module 09 / Project 04: CI with GitHub Actions
 
 Home: [README](../../../../README.md)
 

@@ -1,4 +1,4 @@
-# Try This — Project 04
+# Try This: Project 04
 
 1. Add a "time gap" feature that shows the time between consecutive log entries. After parsing all entries, calculate the difference between each entry and the one before it, and print it next to the log line:
    ```text

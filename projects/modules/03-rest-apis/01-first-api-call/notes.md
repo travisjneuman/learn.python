@@ -1,4 +1,4 @@
-# Notes — First API Call
+# Notes: First API Call
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 10
+# Prueba Esto: Ejercicio 10
 
 1. Imprime la tabla de multiplicar de un número:
    ```python

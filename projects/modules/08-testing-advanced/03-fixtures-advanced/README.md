@@ -1,4 +1,4 @@
-# Module 08 / Project 03 — Fixtures Advanced
+# Module 08 / Project 03: Fixtures Advanced
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -91,4 +91,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 04 — Property-Based Testing](../04-property-based/)
+[Project 04: Property-Based Testing](../04-property-based/)

@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 08 - String Cleaner Starter
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -128,10 +128,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Each cleaning step is a separate function | Each can be tested independently: `assert collapse_spaces("a  b") == "a b"`. Steps can be reused or reordered | One monolithic `clean_string()` that does everything — harder to test, debug, and customise |
-| Pipeline order: strip, lower, remove, collapse | Stripping first removes noise. Lowering before filtering keeps filtering logic simple. Collapsing last fixes gaps left by character removal | Different order — e.g., collapsing before removing specials would miss gaps created by removal |
-| `remove_special_characters()` uses a list and `join()` | Building a list and joining is O(n). Concatenating with `+=` is O(n^2) because each `+=` creates a new string in memory | Use `+=` string concatenation — simpler syntax but gets slow on long strings |
-| `collapse_spaces()` uses a while loop with `replace()` | Simple and correct for any number of consecutive spaces. Easy for beginners to understand | Use `" ".join(text.split())` — more Pythonic but harder to explain at Level 0 |
+| Each cleaning step is a separate function | Each can be tested independently: `assert collapse_spaces("a  b") == "a b"`. Steps can be reused or reordered | One monolithic `clean_string()` that does everything: harder to test, debug, and customise |
+| Pipeline order: strip, lower, remove, collapse | Stripping first removes noise. Lowering before filtering keeps filtering logic simple. Collapsing last fixes gaps left by character removal | Different order, e.g., collapsing before removing specials would miss gaps created by removal |
+| `remove_special_characters()` uses a list and `join()` | Building a list and joining is O(n). Concatenating with `+=` is O(n^2) because each `+=` creates a new string in memory | Use `+=` string concatenation: simpler syntax but gets slow on long strings |
+| `collapse_spaces()` uses a while loop with `replace()` | Simple and correct for any number of consecutive spaces. Easy for beginners to understand | Use `" ".join(text.split())`: more Pythonic but harder to explain at Level 0 |
 
 ## Alternative approaches
 
@@ -151,16 +151,16 @@ def clean_string(text: str) -> str:
     return " ".join(cleaned.split())
 ```
 
-**Trade-off:** This approach is more concise and arguably more Pythonic. `" ".join(text.split())` replaces both `strip_whitespace()` and `collapse_spaces()` in one line. The generator expression `(c for c in text if ...)` replaces the explicit for loop. However, it combines multiple concepts into dense expressions that may overwhelm a Level 0 learner. The pipeline approach makes each step visible and debuggable — you can print the intermediate result after each step to see what changed.
+**Trade-off:** This approach is more concise and arguably more Pythonic. `" ".join(text.split())` replaces both `strip_whitespace()` and `collapse_spaces()` in one line. The generator expression `(c for c in text if ...)` replaces the explicit for loop. However, it combines multiple concepts into dense expressions that may overwhelm a Level 0 learner. The pipeline approach makes each step visible and debuggable: you can print the intermediate result after each step to see what changed.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Input is already clean (e.g. `"hello world"`) | Each step is a no-op: strip does nothing, lower does nothing, no specials to remove, no doubles to collapse. Returns `"hello world"` unchanged | Already handled — the pipeline is idempotent by design |
-| Input is only special characters (e.g. `"@#$%^&*"`) | `remove_special_characters()` strips everything, leaving an empty string `""`. `collapse_spaces()` gets `""` and returns `""` | Already handled — returns empty string without error |
+| Input is already clean (e.g. `"hello world"`) | Each step is a no-op: strip does nothing, lower does nothing, no specials to remove, no doubles to collapse. Returns `"hello world"` unchanged | Already handled: the pipeline is idempotent by design |
+| Input is only special characters (e.g. `"@#$%^&*"`) | `remove_special_characters()` strips everything, leaving an empty string `""`. `collapse_spaces()` gets `""` and returns `""` | Already handled: returns empty string without error |
 | Input has tab characters (e.g. `"hello\tworld"`) | `strip_whitespace()` removes leading/trailing tabs. But internal tabs survive because `remove_special_characters()` only keeps `isalnum()` and `" "`. A tab is not a space, so it gets removed, joining the words: `"helloworld"` | To preserve word boundaries, replace tabs with spaces before filtering: `text = text.replace("\t", " ")` |
-| Input has newline characters | Same as tabs — `\n` is not `isalnum()` or `" "`, so it gets removed. Words across lines would merge | Replace `\n` with spaces before filtering to preserve word boundaries |
+| Input has newline characters | Same as tabs: `\n` is not `isalnum()` or `" "`, so it gets removed. Words across lines would merge | Replace `\n` with spaces before filtering to preserve word boundaries |
 | Very long input (millions of characters) | The while loop in `collapse_spaces()` runs at most log2(max_consecutive_spaces) times. For normal text, this is 2-3 iterations | Already efficient enough for any realistic input |
 
 ## Key takeaways

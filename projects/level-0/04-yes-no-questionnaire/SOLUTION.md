@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 04 - Yes No Questionnaire
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -115,10 +115,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `normalise_answer()` accepts many synonyms for yes/no | Real users type "y", "YES", "Yeah" — accepting common variants reduces "invalid" counts and improves user experience | Accept only "yes" and "no" exactly — simpler code but frustrating for users who type "y" |
-| Return `"invalid"` for unrecognised input | Invalid answers are counted and reported, giving the questionnaire administrator useful data about question clarity | Raise `ValueError` — stops the program; or silently skip — loses data |
-| `tally_answers()` calls `normalise_answer()` internally | The caller passes raw strings and gets clean results. Normalisation is an implementation detail hidden from the caller | Require the caller to normalise first — splits responsibility and risks forgotten normalisation |
-| Percentages use `round(..., 1)` | One decimal place (e.g. `80.0%`) is precise enough for a survey and avoids long floating-point decimals | No rounding — `80.00000000000001%` looks broken to a beginner |
+| `normalise_answer()` accepts many synonyms for yes/no | Real users type "y", "YES", "Yeah": accepting common variants reduces "invalid" counts and improves user experience | Accept only "yes" and "no" exactly: simpler code but frustrating for users who type "y" |
+| Return `"invalid"` for unrecognised input | Invalid answers are counted and reported, giving the questionnaire administrator useful data about question clarity | Raise `ValueError` (stops the program) or silently skip (loses data) |
+| `tally_answers()` calls `normalise_answer()` internally | The caller passes raw strings and gets clean results. Normalisation is an implementation detail hidden from the caller | Require the caller to normalise first: splits responsibility and risks forgotten normalisation |
+| Percentages use `round(..., 1)` | One decimal place (e.g. `80.0%`) is precise enough for a survey and avoids long floating-point decimals | No rounding: `80.00000000000001%` looks broken to a beginner |
 
 ## Alternative approaches
 
@@ -142,15 +142,15 @@ def tally_answers(answers: list) -> dict:
     }
 ```
 
-**Trade-off:** `Counter` from the standard library does the counting in one line — no manual loop needed. However, at Level 0, understanding the manual counting loop (`counts[key] += 1`) teaches the fundamental pattern behind tools like `Counter`. Once you understand the manual approach, you can switch to `Counter` in later projects for brevity.
+**Trade-off:** `Counter` from the standard library does the counting in one line: no manual loop needed. However, at Level 0, understanding the manual counting loop (`counts[key] += 1`) teaches the fundamental pattern behind tools like `Counter`. Once you understand the manual approach, you can switch to `Counter` in later projects for brevity.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| User enters only spaces or blank for every answer | `normalise_answer("   ")` returns `"invalid"` because `"".strip()` is empty, which does not match any yes/no variant. All answers count as invalid | Already handled — the function returns `"invalid"` for empty strings |
+| User enters only spaces or blank for every answer | `normalise_answer("   ")` returns `"invalid"` because `"".strip()` is empty, which does not match any yes/no variant. All answers count as invalid | Already handled: the function returns `"invalid"` for empty strings |
 | User enters `"YES!!!"` with punctuation | `normalise_answer("YES!!!")` returns `"invalid"` because `"yes!!!"` does not match `"yes"` | Strip punctuation before checking: `cleaned = raw.strip().lower().strip("!?.")` |
-| Empty answers list (`tally_answers([])`) | Returns `{"yes": 0, "no": 0, "invalid": 0, "total": 0, "yes_percent": 0.0, "no_percent": 0.0}` — no crash | Already handled by the `if total > 0` guard |
+| Empty answers list (`tally_answers([])`) | Returns `{"yes": 0, "no": 0, "invalid": 0, "total": 0, "yes_percent": 0.0, "no_percent": 0.0}`: no crash | Already handled by the `if total > 0` guard |
 | User types `"y e s"` with spaces between letters | `normalise_answer("y e s")` returns `"invalid"` because `"y e s"` does not match any variant | Could remove internal spaces, but that risks false positives. Better to accept this as invalid |
 
 ## Key takeaways
@@ -158,4 +158,4 @@ def tally_answers(answers: list) -> dict:
 1. **Input normalisation is fundamental.** Users never type exactly what you expect. Stripping whitespace and lowering case before comparison handles 90% of input variations. This pattern appears in form validation, search engines, and database queries.
 2. **Guard against division by zero.** Whenever you divide, ask: "Can the denominator ever be zero?" If yes, check first. This is one of the most common beginner bugs and appears in every project that computes averages or percentages.
 3. **Membership testing with `in` is cleaner than chained `if/elif`.** Writing `if x in ("yes", "y", "yeah")` is shorter and easier to extend than writing separate branches for each value. You will use this pattern in data validation, command parsing, and filtering.
-4. **Returning "invalid" instead of crashing builds robust programs.** In real applications, bad input is normal — you handle it, count it, and keep going. This is an early lesson in defensive programming that becomes critical as your programs grow.
+4. **Returning "invalid" instead of crashing builds robust programs.** In real applications, bad input is normal: you handle it, count it, and keep going. This is an early lesson in defensive programming that becomes critical as your programs grow.

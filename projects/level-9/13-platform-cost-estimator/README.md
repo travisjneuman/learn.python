@@ -19,7 +19,7 @@ Home: [README](../../../README.md)
 - Cost optimization recommendations based on usage patterns
 
 ## Why this project exists
-Cloud infrastructure costs can spiral without visibility — a team discovers their monthly
+Cloud infrastructure costs can spiral without visibility: a team discovers their monthly
 AWS bill doubled because someone left GPU instances running over a holiday weekend. This
 project models resource consumption across compute, storage, network, and database tiers,
 projects monthly costs using different pricing models, and runs what-if scenarios to find
@@ -55,9 +55,9 @@ pytest -q
 3. Add a `--budget` flag that compares estimated costs against a monthly budget limit.
 
 ## Break it (required)
-1. Create a `ResourceUsage` with `quantity=-100` — does the cost calculation handle negatives?
-2. Use a `PricingTier.SPOT` for a resource type with no spot pricing rule — what fallback occurs?
-3. Set volume tier thresholds in non-ascending order — does `PricingRule.calculate` break?
+1. Create a `ResourceUsage` with `quantity=-100`: does the cost calculation handle negatives?
+2. Use a `PricingTier.SPOT` for a resource type with no spot pricing rule: what fallback occurs?
+3. Set volume tier thresholds in non-ascending order: does `PricingRule.calculate` break?
 
 ## Fix it (required)
 1. Validate that `quantity >= 0` in resource usage.

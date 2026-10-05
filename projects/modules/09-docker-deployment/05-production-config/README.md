@@ -1,4 +1,4 @@
-# Module 09 / Project 05 — Production Config
+# Module 09 / Project 05: Production Config
 
 Home: [README](../../../../README.md)
 
@@ -152,4 +152,4 @@ You can move on when you can:
 
 ## Next
 
-You have completed Module 09 — Docker & Deployment. You now have the skills to containerize any Python application and deploy it with confidence. Consider continuing to [Module 10 — Django Full-Stack](../../10-django-fullstack/) or [Module 12 — Cloud Deployment](../../12-cloud-deploy/).
+You have completed Module 09: Docker & Deployment. You now have the skills to containerize any Python application and deploy it with confidence. Consider continuing to [Module 10: Django Full-Stack](../../10-django-fullstack/) or [Module 12: Cloud Deployment](../../12-cloud-deploy/).

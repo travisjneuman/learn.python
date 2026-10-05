@@ -1,4 +1,4 @@
-# Hello FastAPI — Step-by-Step Walkthrough
+# Hello FastAPI: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -8,11 +8,11 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Up until now, you have been a consumer of APIs — fetching data from other people's servers. Now you are switching sides. You are building the server. When someone visits `http://127.0.0.1:8000`, your code decides what to send back. FastAPI makes this shockingly simple: you write a regular Python function, put a decorator on it that says "this handles GET requests to path /", and FastAPI takes care of turning the return value into a JSON response.
+Up until now, you have been a consumer of APIs, fetching data from other people's servers. Now you are switching sides. You are building the server. When someone visits `http://127.0.0.1:8000`, your code decides what to send back. FastAPI makes this shockingly simple: you write a regular Python function, put a decorator on it that says "this handles GET requests to path /", and FastAPI takes care of turning the return value into a JSON response.
 
-The architecture has two parts. FastAPI is the framework — it defines routes, validates inputs, and generates documentation. Uvicorn is the server — it listens on a port for incoming HTTP requests and forwards them to FastAPI. Think of it like a restaurant: uvicorn is the host who seats customers (requests), and FastAPI is the kitchen that prepares the food (responses).
+The architecture has two parts. FastAPI is the framework: it defines routes, validates inputs, and generates documentation. Uvicorn is the server: it listens on a port for incoming HTTP requests and forwards them to FastAPI. Think of it like a restaurant: uvicorn is the host who seats customers (requests), and FastAPI is the kitchen that prepares the food (responses).
 
-The magic of FastAPI is type hints. When you write `item_id: int` in a function signature, FastAPI automatically validates that the value is an integer. If someone passes a string, FastAPI returns a 422 error with a clear message — and you did not write a single line of validation code. This is why type hints matter beyond documentation.
+The magic of FastAPI is type hints. When you write `item_id: int` in a function signature, FastAPI automatically validates that the value is an integer. If someone passes a string, FastAPI returns a 422 error with a clear message, and you did not write a single line of validation code. This is why type hints matter beyond documentation.
 
 ## Step 1: Create the FastAPI Application
 
@@ -55,7 +55,7 @@ Three things happen automatically here:
 
 **What to do:** Create an endpoint with a path parameter (`{item_id}`) and an optional query parameter (`q`).
 
-**Why:** Path parameters are part of the URL structure (`/items/42`). Query parameters come after a `?` in the URL (`/items/42?q=hello`). FastAPI uses your function's type hints to distinguish between them — if the parameter name appears in the path, it is a path parameter; otherwise, it is a query parameter.
+**Why:** Path parameters are part of the URL structure (`/items/42`). Query parameters come after a `?` in the URL (`/items/42?q=hello`). FastAPI uses your function's type hints to distinguish between them: if the parameter name appears in the path, it is a path parameter; otherwise, it is a query parameter.
 
 ```python
 @app.get("/items/{item_id}")
@@ -90,7 +90,7 @@ def health_check():
 
 **What to do:** Add the `if __name__ == "__main__"` block that starts uvicorn.
 
-**Why:** FastAPI defines your routes, but it cannot serve HTTP requests on its own. Uvicorn is an ASGI server — it opens a network port, listens for incoming requests, and routes them to your FastAPI app. The `"app:app"` string tells uvicorn: "in the file called `app`, find the variable called `app`."
+**Why:** FastAPI defines your routes, but it cannot serve HTTP requests on its own. Uvicorn is an ASGI server: it opens a network port, listens for incoming requests, and routes them to your FastAPI app. The `"app:app"` string tells uvicorn: "in the file called `app`, find the variable called `app`."
 
 ```python
 if __name__ == "__main__":
@@ -132,7 +132,7 @@ Press `Ctrl+C` to stop the server when done.
 
 ## What You Learned
 
-- **FastAPI route decorators** (`@app.get("/")`) map URL paths to Python functions — the function's return value becomes the JSON response.
-- **Type hints drive validation** — `item_id: int` automatically rejects non-integer values with a 422 error, with zero validation code written by you.
-- **Path parameters** are part of the URL (`/items/{id}`), while **query parameters** come after `?` (`/items/1?q=search`) — FastAPI infers which is which from the route definition.
-- **Uvicorn** is the ASGI server that actually listens for HTTP requests and forwards them to FastAPI — the framework and the server are separate concerns.
+- **FastAPI route decorators** (`@app.get("/")`) map URL paths to Python functions; the function's return value becomes the JSON response.
+- **Type hints drive validation**: `item_id: int` automatically rejects non-integer values with a 422 error, with zero validation code written by you.
+- **Path parameters** are part of the URL (`/items/{id}`), while **query parameters** come after `?` (`/items/1?q=search`). FastAPI infers which is which from the route definition.
+- **Uvicorn** is the ASGI server that actually listens for HTTP requests and forwards them to FastAPI. The framework and the server are separate concerns.

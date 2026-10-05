@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 02
+# Prueba Esto: Ejercicio 02
 
 1. Cambia el mensaje dentro de `print()` para que diga tu propio nombre:
    ```python

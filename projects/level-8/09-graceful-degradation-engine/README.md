@@ -20,10 +20,10 @@ Home: [README](../../../README.md)
 
 ## Why this project exists
 Production systems must degrade gracefully rather than fail completely. When a database
-slows down, the right response is not a 500 error page — it is disabling non-essential
+slows down, the right response is not a 500 error page: it is disabling non-essential
 features (search, recommendations, exports) while keeping core functionality alive. This
 project implements a circuit-breaker-style degradation engine that monitors error rates
-and progressively reduces service quality — the same pattern used by Netflix, AWS, and
+and progressively reduces service quality, the same pattern used by Netflix, AWS, and
 every major cloud platform to maintain availability during partial outages.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add per-tier feature lists (e.g. tier DEGRADED disables search but keeps core reads).
 
 ## Break it (required)
-1. Set `failure_threshold=0` — does the engine immediately open the circuit?
-2. Record successes rapidly after failures — does the sliding window correctly age out old entries?
-3. Set `window_size=0` on `SlidingWindowTracker` — what happens to error rate calculation?
+1. Set `failure_threshold=0`: does the engine immediately open the circuit?
+2. Record successes rapidly after failures: does the sliding window correctly age out old entries?
+3. Set `window_size=0` on `SlidingWindowTracker`: what happens to error rate calculation?
 
 ## Fix it (required)
 1. Validate that `failure_threshold > 0` and `window_size > 0` in `__init__`.

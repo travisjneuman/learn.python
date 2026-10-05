@@ -1,4 +1,4 @@
-# Async Basics — Step-by-Step Walkthrough
+# Async Basics: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -8,17 +8,17 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Imagine you are cooking dinner. Sequential execution means you boil water, wait until it boils, then chop vegetables, wait until they are chopped, then set the table. Total time: the sum of everything. Concurrent execution means you start the water boiling, chop vegetables while it heats, and set the table during downtime. Total time: roughly the longest single task. The food is the same — you just organized your time better.
+Imagine you are cooking dinner. Sequential execution means you boil water, wait until it boils, then chop vegetables, wait until they are chopped, then set the table. Total time: the sum of everything. Concurrent execution means you start the water boiling, chop vegetables while it heats, and set the table during downtime. Total time: roughly the longest single task. The food is the same; you just organized your time better.
 
-Async Python works exactly like that. When one task is waiting (for a network response, a timer, a file read), other tasks can run during that idle time. The key is `await` — it says "I am going to pause here; if anyone else needs the CPU, go ahead." When the thing you awaited finishes, you resume right where you left off.
+Async Python works exactly like that. When one task is waiting (for a network response, a timer, a file read), other tasks can run during that idle time. The key is `await`: it says "I am going to pause here; if anyone else needs the CPU, go ahead." When the thing you awaited finishes, you resume right where you left off.
 
-The critical distinction is between `asyncio.sleep()` and `time.sleep()`. `asyncio.sleep()` cooperates — it lets other tasks run during the wait. `time.sleep()` blocks — it holds onto the CPU and nobody else can run. One is a polite pause; the other is a brick wall.
+The critical distinction is between `asyncio.sleep()` and `time.sleep()`. `asyncio.sleep()` cooperates: it lets other tasks run during the wait. `time.sleep()` blocks: it holds onto the CPU and nobody else can run. One is a polite pause; the other is a brick wall.
 
 ## Step 1: Define a Coroutine with async def
 
 **What to do:** Write a function using `async def` that simulates a task taking some time.
 
-**Why:** `async def` declares a coroutine — a function that can pause and resume. When you call a regular function, it runs start to finish. When you call a coroutine, it returns a coroutine object that must be scheduled to actually run. This is the fundamental building block of async Python.
+**Why:** `async def` declares a coroutine, a function that can pause and resume. When you call a regular function, it runs start to finish. When you call a coroutine, it returns a coroutine object that must be scheduled to actually run. This is the fundamental building block of async Python.
 
 ```python
 import asyncio
@@ -32,16 +32,16 @@ async def do_task(name, seconds):
 
 Two details to notice:
 
-- **`async def`** instead of `def` — this makes the function a coroutine.
+- **`async def`** instead of `def`. This makes the function a coroutine.
 - **`await asyncio.sleep(seconds)`** pauses this coroutine but lets others run. The `await` keyword is what makes concurrency possible.
 
-**Predict:** What happens if you call `do_task("A", 2)` without `await`? Try it — you will get a coroutine object, not the result.
+**Predict:** What happens if you call `do_task("A", 2)` without `await`? Try it: you will get a coroutine object, not the result.
 
 ## Step 2: Run Tasks Sequentially
 
 **What to do:** Write an async function that awaits each task one at a time.
 
-**Why:** Sequential execution is the baseline. Each `await` pauses until the task finishes, then moves to the next one. Total time is the sum of all task durations. This is how regular synchronous code works — one thing at a time. You need to see this before concurrency makes sense.
+**Why:** Sequential execution is the baseline. Each `await` pauses until the task finishes, then moves to the next one. Total time is the sum of all task durations. This is how regular synchronous code works: one thing at a time. You need to see this before concurrency makes sense.
 
 ```python
 import time
@@ -58,7 +58,7 @@ async def run_sequential():
     print(f"Sequential total: ~{elapsed:.0f} seconds\n")
 ```
 
-Each `await` blocks the flow — Task B does not start until Task A finishes. The total time is 2 + 1 + 3 = 6 seconds.
+Each `await` blocks the flow: Task B does not start until Task A finishes. The total time is 2 + 1 + 3 = 6 seconds.
 
 **Predict:** If you add a fourth task that takes 4 seconds, what will the total sequential time be?
 
@@ -119,7 +119,7 @@ The tasks start running as soon as you hit the first `await`. Even though you `a
 
 **What to do:** Write a `main()` coroutine and start it with `asyncio.run()`.
 
-**Why:** `asyncio.run()` is the bridge between synchronous and asynchronous Python. It creates an event loop, runs your main coroutine, and then shuts down the loop. You call it once at the top level — everything inside is async.
+**Why:** `asyncio.run()` is the bridge between synchronous and asynchronous Python. It creates an event loop, runs your main coroutine, and then shuts down the loop. You call it once at the top level, and everything inside is async.
 
 ```python
 async def main():
@@ -138,13 +138,13 @@ if __name__ == "__main__":
 | Mistake | Why It Happens | Fix |
 |---------|---------------|-----|
 | Calling async function without `await` | Forgetting that coroutines must be awaited | Add `await` before every coroutine call |
-| Using `time.sleep()` inside async code | Not knowing the difference | Use `asyncio.sleep()` — it cooperates with the event loop |
+| Using `time.sleep()` inside async code | Not knowing the difference | Use `asyncio.sleep()`; it cooperates with the event loop |
 | `RuntimeError: This event loop is already running` | Calling `asyncio.run()` inside an async context | Use `await` instead; `asyncio.run()` is for the entry point only |
 | Tasks appear to run sequentially | Using `await` immediately after each `create_task()` | Create all tasks first, then await them (or use `gather()`) |
 
 ## Testing Your Solution
 
-There are no pytest tests for this project — run it and observe the timing:
+There are no pytest tests for this project. Run it and observe the timing:
 
 ```bash
 python project.py
@@ -175,7 +175,7 @@ The key verification: sequential takes about 6 seconds, concurrent takes about 3
 
 ## What You Learned
 
-- **`async def`** declares a coroutine — a function that can pause and resume, enabling concurrency without threads.
-- **`await`** pauses the current coroutine and lets others run — it is the mechanism that makes concurrent execution possible.
+- **`async def`** declares a coroutine, a function that can pause and resume, enabling concurrency without threads.
+- **`await`** pauses the current coroutine and lets others run. It is the mechanism that makes concurrent execution possible.
 - **`asyncio.gather()`** runs multiple coroutines concurrently and waits for all of them to finish, while **`asyncio.create_task()`** gives you individual handles for more control.
 - **`asyncio.sleep()` vs `time.sleep()`** is the critical distinction: `asyncio.sleep()` cooperates with the event loop (others can run), while `time.sleep()` blocks everything.

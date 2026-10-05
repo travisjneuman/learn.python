@@ -1,4 +1,4 @@
-# Anomaly Flagger — Annotated Solution
+# Anomaly Flagger: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -275,8 +275,8 @@ For time-ordered data (like server metrics), a global mean/std_dev may not be me
 
 ## Common Pitfalls
 
-1. **Division by zero when all values are identical** — If every value is 50, std_dev is 0, and computing `(value - mean) / std_dev` divides by zero. The `if sd == 0: return 0.0` guard in `z_score()` prevents this crash.
+1. **Division by zero when all values are identical**: If every value is 50, std_dev is 0, and computing `(value - mean) / std_dev` divides by zero. The `if sd == 0: return 0.0` guard in `z_score()` prevents this crash.
 
-2. **IQR on very small datasets** — With only 3 values, Q1 and Q3 are essentially the min and max, making the IQR nearly the full data range. The `if len(values) < 4: return []` guard prevents meaningless anomaly detection on tiny datasets.
+2. **IQR on very small datasets**: With only 3 values, Q1 and Q3 are essentially the min and max, making the IQR nearly the full data range. The `if len(values) < 4: return []` guard prevents meaningless anomaly detection on tiny datasets.
 
-3. **Confusing population vs sample standard deviation** — Dividing by `N` gives population std_dev; dividing by `N-1` gives sample std_dev (Bessel's correction). Using the wrong one changes the threshold sensitivity. For this project, population std_dev is correct because we are analyzing the entire dataset, not estimating from a sample.
+3. **Confusing population vs sample standard deviation**: Dividing by `N` gives population std_dev; dividing by `N-1` gives sample std_dev (Bessel's correction). Using the wrong one changes the threshold sensitivity. For this project, population std_dev is correct because we are analyzing the entire dataset, not estimating from a sample.

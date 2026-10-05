@@ -63,8 +63,8 @@ A path is the address of a file on your computer:
 
 ### Relative vs absolute paths
 
-- **Absolute:** Full address from the root — `C:\Users\alice\projects\data.txt`
-- **Relative:** Address from where you are now — `data.txt` or `../other_folder/file.txt`
+- **Absolute:** Full address from the root: `C:\Users\alice\projects\data.txt`
+- **Relative:** Address from where you are now: `data.txt` or `../other_folder/file.txt`
 
 `..` means "go up one folder." So `../data.txt` means "go up one folder, then find data.txt."
 

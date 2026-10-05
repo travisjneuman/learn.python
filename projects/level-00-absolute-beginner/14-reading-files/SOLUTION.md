@@ -1,10 +1,10 @@
 # Solution: 14-reading-files
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -71,10 +71,10 @@ Eve,91
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Show three different ways to read a file | `.read()` (all at once), `.readlines()` (list of lines), and `for line in open()` (one at a time) — each has its use case | Could show just one method, but understanding the options helps you choose the right tool for each situation |
-| Use `.strip()` on every line | Files include invisible newline characters (`\n`) at the end of each line — stripping them prevents bugs in comparisons and display | Could leave them and deal with the extra whitespace, but that leads to subtle bugs |
+| Show three different ways to read a file | `.read()` (all at once), `.readlines()` (list of lines), and `for line in open()` (one at a time): each has its use case | Could show just one method, but understanding the options helps you choose the right tool for each situation |
+| Use `.strip()` on every line | Files include invisible newline characters (`\n`) at the end of each line: stripping them prevents bugs in comparisons and display | Could leave them and deal with the extra whitespace, but that leads to subtle bugs |
 | Keep names and scores in separate parallel lists | Two lists (names and scores) let us use `max(scores)`, `min(scores)`, and `sum(scores)` directly | Could use a list of dictionaries (shown in Exercise 15), which is more organized but more complex for a first file-reading exercise |
-| Use `continue` to skip blank lines | `continue` is cleaner than wrapping the entire loop body in an `if` block — it handles the special case early and keeps the main logic clean | Could use `if clean_line:` to wrap the body, which also works but adds indentation |
+| Use `continue` to skip blank lines | `continue` is cleaner than wrapping the entire loop body in an `if` block: it handles the special case early and keeps the main logic clean | Could use `if clean_line:` to wrap the body, which also works but adds indentation |
 
 ## Alternative approaches
 
@@ -100,7 +100,7 @@ for line in open("data/sample.txt"):
 print(f"Top student: {best_name} with {best_score}")  # WHY: After checking all students, the best one is stored in these variables
 ```
 
-**Trade-off:** This approach finds the best student in a single pass through the file — it does not need to store all the data first. For huge files with millions of lines, this is more memory-efficient than loading everything into lists. For small files, either approach works fine.
+**Trade-off:** This approach finds the best student in a single pass through the file: it does not need to store all the data first. For huge files with millions of lines, this is more memory-efficient than loading everything into lists. For small files, either approach works fine.
 
 ### Approach C: Using `with open()` (the safer way)
 
@@ -120,14 +120,14 @@ with open("data/sample.txt") as f:        # WHY: "with" automatically closes the
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| File does not exist: `open("wrong_name.txt")` | `FileNotFoundError: No such file or directory` — Python cannot find the file at that path | Double-check the filename and make sure you are running the script from the correct folder. The path is relative to where you run `python exercise.py` |
-| File has unexpected format: a line without a comma | `IndexError: list index out of range` — `.split(",")` produces only one item, so `parts[1]` does not exist | Always inspect your data file first. For robust code, check `len(parts)` before accessing `parts[1]` |
-| Score is not a number: `int("abc")` | `ValueError: invalid literal for int()` — Python cannot convert non-numeric text to a number | Make sure your data file has the correct format: `name,number` on each line. No extra text in the score column |
-| Running from the wrong directory | The program looks for `data/sample.txt` relative to where you ran the command — if you are in the wrong folder, it will not find the file | Always `cd` into the `14-reading-files` directory before running `python exercise.py` |
+| File does not exist: `open("wrong_name.txt")` | `FileNotFoundError: No such file or directory`: Python cannot find the file at that path | Double-check the filename and make sure you are running the script from the correct folder. The path is relative to where you run `python exercise.py` |
+| File has unexpected format: a line without a comma | `IndexError: list index out of range`: `.split(",")` produces only one item, so `parts[1]` does not exist | Always inspect your data file first. For robust code, check `len(parts)` before accessing `parts[1]` |
+| Score is not a number: `int("abc")` | `ValueError: invalid literal for int()`: Python cannot convert non-numeric text to a number | Make sure your data file has the correct format: `name,number` on each line. No extra text in the score column |
+| Running from the wrong directory | The program looks for `data/sample.txt` relative to where you ran the command: if you are in the wrong folder, it will not find the file | Always `cd` into the `14-reading-files` directory before running `python exercise.py` |
 | Encoding issues with special characters | `UnicodeDecodeError` if the file contains characters not in the default encoding | For now, stick to basic ASCII text (regular English letters and numbers). Encoding is an advanced topic |
 
 ## Key takeaways
 
-1. **Reading files is how programs interact with stored data** — every real application reads files: spreadsheets, logs, settings, databases, web pages. The pattern you learned here (open the file, loop through lines, split each line into pieces, process the pieces) is the universal foundation of data processing.
-2. **Always clean your data with `.strip()` and check for empty lines** — real-world data is messy. Lines have invisible newline characters, files have blank lines, and formats vary. Getting in the habit of stripping and validating every line saves you hours of debugging later.
-3. **`.split()` is the bridge between raw text and usable data** — a file is just a long string of text. `.split(",")` turns that text into structured pieces you can work with. This same concept scales to CSV files, JSON data, log files, and any text-based data format. In Exercise 15, you will combine file reading with functions and dictionaries to build a complete data processing program.
+1. **Reading files is how programs interact with stored data**. Every real application reads files: spreadsheets, logs, settings, databases, web pages. The pattern you learned here (open the file, loop through lines, split each line into pieces, process the pieces) is the universal foundation of data processing.
+2. **Always clean your data with `.strip()` and check for empty lines**: real-world data is messy. Lines have invisible newline characters, files have blank lines, and formats vary. Getting in the habit of stripping and validating every line saves you hours of debugging later.
+3. **`.split()` is the bridge between raw text and usable data**: a file is just a long string of text. `.split(",")` turns that text into structured pieces you can work with. This same concept scales to CSV files, JSON data, log files, and any text-based data format. In Exercise 15, you will combine file reading with functions and dictionaries to build a complete data processing program.

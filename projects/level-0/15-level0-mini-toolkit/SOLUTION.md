@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 15 - Level 0 Mini Toolkit
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -211,11 +211,11 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Three independent tool functions | Each tool can be tested in isolation: `assert count_words("hi there")["words"] == 2`. No coupling between tools | One monolithic function that does everything — impossible to test individual tools |
-| `run_tool()` dispatcher function | Routes tool name to implementation. Adding a 4th tool means adding one elif branch and one function | Direct if/elif in `main()` — mixes routing logic with I/O, harder to test |
-| `run_all_tools()` for the default mode | Gives a complete overview with one command. Shows how small utilities compose into a dashboard | Require the user to run each tool separately — more commands, less convenient |
-| `argparse` with `choices` parameter | Rejects invalid tool names at the argument-parsing level with a helpful auto-generated error message | Manual validation in `run_tool()` — works but requires writing custom error messages |
-| Functions reused from earlier projects (06, 08, 10) | Demonstrates code reuse. The same counting, cleaning, and duplicate-finding patterns appear again, reinforcing learning | Write new implementations — misses the pedagogical point of combining what you already know |
+| Three independent tool functions | Each tool can be tested in isolation: `assert count_words("hi there")["words"] == 2`. No coupling between tools | One monolithic function that does everything: impossible to test individual tools |
+| `run_tool()` dispatcher function | Routes tool name to implementation. Adding a 4th tool means adding one elif branch and one function | Direct if/elif in `main()`: mixes routing logic with I/O, harder to test |
+| `run_all_tools()` for the default mode | Gives a complete overview with one command. Shows how small utilities compose into a dashboard | Require the user to run each tool separately: more commands, less convenient |
+| `argparse` with `choices` parameter | Rejects invalid tool names at the argument-parsing level with a helpful auto-generated error message | Manual validation in `run_tool()`: works but requires writing custom error messages |
+| Functions reused from earlier projects (06, 08, 10) | Demonstrates code reuse. The same counting, cleaning, and duplicate-finding patterns appear again, reinforcing learning | Write new implementations: misses the pedagogical point of combining what you already know |
 
 ## Alternative approaches
 
@@ -250,14 +250,14 @@ def format_menu() -> str:
     return "\n".join(lines)
 ```
 
-**Trade-off:** A tool registry makes adding new tools purely declarative — add one dict entry and the tool appears in the menu, help text, and validation automatically. This is the "plugin architecture" pattern used by real CLI tools like `git`, `docker`, and `kubectl`. However, it requires understanding lambdas, nested dicts, and functions-as-values, which may be too much at Level 0. The if/elif approach makes the routing explicit and easy to follow.
+**Trade-off:** A tool registry makes adding new tools purely declarative: add one dict entry and the tool appears in the menu, help text, and validation automatically. This is the "plugin architecture" pattern used by real CLI tools like `git`, `docker`, and `kubectl`. However, it requires understanding lambdas, nested dicts, and functions-as-values, which may be too much at Level 0. The if/elif approach makes the routing explicit and easy to follow.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
 | Unknown tool name via `run_tool()` | Returns `{"tool": "nope", "error": "Unknown tool: nope"}`. No crash | Already handled by the else branch. Additionally, `argparse choices` prevents this from the command line |
-| Empty file as input | `count_words("")` returns `{"words": 0, "lines": 0, "characters": 0}`. `find_duplicates([])` returns `[]`. `clean_string("")` returns `""`. No crash | Already handled — all tools produce sensible empty results |
+| Empty file as input | `count_words("")` returns `{"words": 0, "lines": 0, "characters": 0}`. `find_duplicates([])` returns `[]`. `clean_string("")` returns `""`. No crash | Already handled: all tools produce sensible empty results |
 | `--tool` flag omitted | `argparse` uses `default="all"`, running all tools. This is intentional and documented in the help text | Already handled by the default parameter |
 | Very large file | All tools process the full text in memory. For a gigabyte file, this could exhaust RAM | For Level 0 this is acceptable. Production code would process line-by-line or use streaming |
 | File with mixed line endings (\\r\\n and \\n) | `splitlines()` handles all line-ending styles correctly. No issue | Already handled by using `splitlines()` instead of `split("\\n")` |
@@ -267,4 +267,4 @@ def format_menu() -> str:
 1. **Small functions compose into powerful programs.** `count_words()`, `find_duplicates()`, and `clean_string()` are simple individually. Combined in `run_all_tools()`, they create a multi-function text analysis suite. This is the core lesson of Level 0: build small, test small, combine into big.
 2. **The dispatcher pattern routes commands to handlers.** `run_tool("wordcount", text)` calls `count_words()`. This is the same pattern behind `git add`, `docker run`, and every CLI tool with subcommands. Understanding it here prepares you for building real tools.
 3. **`argparse` with `choices` gives you input validation for free.** Instead of writing `if tool not in ["wordcount", "duplicates", "clean"]: raise ValueError(...)`, `argparse` does it automatically and generates a helpful error message. Leverage library features instead of reimplementing them.
-4. **This project is a capstone — everything from Level 0 comes together.** Word counting from Project 06, duplicate detection from Project 10, string cleaning from Project 08, menu dispatch from Project 11, file I/O from Project 07, and argparse from Project 13. If you understand this project, you have mastered the fundamentals. Level 1 builds on everything you learned here.
+4. **This project is a capstone: everything from Level 0 comes together.** Word counting from Project 06, duplicate detection from Project 10, string cleaning from Project 08, menu dispatch from Project 11, file I/O from Project 07, and argparse from Project 13. If you understand this project, you have mastered the fundamentals. Level 1 builds on everything you learned here.

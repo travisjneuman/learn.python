@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 13 - Alarm Message Generator
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -207,10 +207,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Pipe `\|` delimiter instead of comma | Alarm messages often contain commas ("CPU usage above 95%, check immediately"). Pipes are rare in prose, so they are safer delimiters | Comma-separated — would break on messages containing commas, requiring CSV quoting |
-| `SEVERITY_ORDER` dict for custom sorting | Alphabetical sorting puts "info" before "warning", which is wrong for urgency. Explicit numeric ordering gives full control | Sort alphabetically — simple but produces incorrect priority order |
-| `format_alarm()` takes a `timestamp` parameter | Hardcoded default makes tests deterministic. Real usage would pass `datetime.now()`. Testability over convenience | Call `datetime.now()` inside the function — makes output unpredictable, tests would need time mocking |
-| `sort_by_severity()` uses `sorted()` (not `.sort()`) | Returns a new sorted list without modifying the original. Safer when the original order is needed elsewhere (e.g., for the summary) | Use `.sort()` in-place — mutates the list, which could surprise callers who still hold a reference |
+| Pipe `\|` delimiter instead of comma | Alarm messages often contain commas ("CPU usage above 95%, check immediately"). Pipes are rare in prose, so they are safer delimiters | Comma-separated: would break on messages containing commas, requiring CSV quoting |
+| `SEVERITY_ORDER` dict for custom sorting | Alphabetical sorting puts "info" before "warning", which is wrong for urgency. Explicit numeric ordering gives full control | Sort alphabetically: simple but produces incorrect priority order |
+| `format_alarm()` takes a `timestamp` parameter | Hardcoded default makes tests deterministic. Real usage would pass `datetime.now()`. Testability over convenience | Call `datetime.now()` inside the function: makes output unpredictable, tests would need time mocking |
+| `sort_by_severity()` uses `sorted()` (not `.sort()`) | Returns a new sorted list without modifying the original. Safer when the original order is needed elsewhere (e.g., for the summary) | Use `.sort()` in-place: mutates the list, which could surprise callers who still hold a reference |
 
 ## Alternative approaches
 
@@ -245,7 +245,7 @@ class Alarm:
 # sorted(alarms, key=lambda a: a.priority)
 ```
 
-**Trade-off:** Dataclasses give each alarm a proper type with methods and properties. `alarm.severity` is clearer than `alarm["severity"]`, and the IDE can autocomplete field names. However, dataclasses are a Level 2+ concept. At Level 0, plain dicts keep things simple — no imports, no class definitions, no `self` parameter to explain. Once you learn classes (Level 2-3), refactoring from dicts to dataclasses is a natural progression.
+**Trade-off:** Dataclasses give each alarm a proper type with methods and properties. `alarm.severity` is clearer than `alarm["severity"]`, and the IDE can autocomplete field names. However, dataclasses are a Level 2+ concept. At Level 0, plain dicts keep things simple: no imports, no class definitions, no `self` parameter to explain. Once you learn classes (Level 2-3), refactoring from dicts to dataclasses is a natural progression.
 
 ## What could go wrong
 
@@ -254,7 +254,7 @@ class Alarm:
 | Unknown severity like `"danger"` | `parse_alarm()` returns an error dict: `"Unknown severity: danger"`. The alarm is counted as an error in the summary | Already handled by the severity validation |
 | Line with fewer than 3 pipe-delimited fields | Returns error dict: `"Expected: SEVERITY \| SOURCE \| MESSAGE"` | Already handled by the `len(parts) < 3` check |
 | Line with extra pipes (e.g. `"critical \| server \| CPU \| 95%"`) | `split("\|")` produces 4 parts. We take the first 3. The `"95%"` portion is lost from the message | Use `split("\|", maxsplit=2)` to keep everything after the second pipe as the message |
-| All alarms have the same severity | Sorting produces a valid result — all critical alarms grouped together. No crash | Already handled |
+| All alarms have the same severity | Sorting produces a valid result: all critical alarms grouped together. No crash | Already handled |
 | No alarms in the file | `process_alarms([])` returns `[]`. Summary shows all zeros. No crash | Already handled |
 
 ## Key takeaways
@@ -262,4 +262,4 @@ class Alarm:
 1. **Custom sorting with a key function gives you complete control.** `sorted(items, key=severity_key)` sorts by priority instead of alphabetically. The key function translates each item into a comparable value. This pattern works for sorting by date, price, priority, or any custom criterion.
 2. **Choosing the right delimiter prevents parsing headaches.** Commas are common in text, so comma-delimited data needs quoting rules. Pipes (`|`) or tabs are rarer in prose and work better as delimiters when field content is unpredictable. This is a real-world data engineering decision.
 3. **Parameterising things that change (like timestamps) makes code testable.** If `format_alarm()` called `datetime.now()` internally, tests would produce different output every second. Passing the timestamp as a parameter gives tests control over the value. This is called "dependency injection" and is a fundamental testing technique.
-4. **Module-level constants are a single source of truth.** `SEVERITY_ICONS` and `SEVERITY_ORDER` are defined once and used by multiple functions. If you add a new severity level, you update two dicts — everything else adapts automatically.
+4. **Module-level constants are a single source of truth.** `SEVERITY_ICONS` and `SEVERITY_ORDER` are defined once and used by multiple functions. If you add a new severity level, you update two dicts: everything else adapts automatically.

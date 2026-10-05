@@ -19,7 +19,7 @@ Python has several ways to group multiple values together.
 See how lists, dicts, and sets store data differently in memory:
 [Open in Python Tutor](https://pythontutor.com/render.html#code=fruits%20%3D%20%5B%22apple%22%2C%20%22banana%22%5D%0Afruits.append%28%22cherry%22%29%0A%0Aperson%20%3D%20%7B%22name%22%3A%20%22Alice%22%2C%20%22age%22%3A%2030%7D%0Aperson%5B%22city%22%5D%20%3D%20%22Denver%22%0A%0Acolors%20%3D%20%7B%22red%22%2C%20%22blue%22%2C%20%22red%22%7D%0Aprint%28len%28colors%29%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
 
-## Lists — ordered, changeable, allows duplicates
+## Lists: ordered, changeable, allows duplicates
 
 ```python
 fruits = ["apple", "banana", "cherry"]
@@ -32,7 +32,7 @@ len(fruits)               # 4
 
 Use lists when: you have an ordered collection of similar items (scores, names, files).
 
-## Dictionaries — key-value pairs, insertion-ordered (Python 3.7+), changeable
+## Dictionaries: key-value pairs, insertion-ordered (Python 3.7+), changeable
 
 ```python
 person = {"name": "Alice", "age": 30}
@@ -43,7 +43,7 @@ person.get("salary")      # None (safe access, no error)
 
 Use dicts when: you have labeled data (a person's details, configuration, lookup table).
 
-## Sets — unordered, no duplicates
+## Sets: unordered, no duplicates
 
 ```python
 colors = {"red", "blue", "green", "red"}
@@ -54,7 +54,7 @@ colors.add("yellow")
 
 Use sets when: you need unique values or want to check membership quickly.
 
-### Set operations — comparing groups
+### Set operations: comparing groups
 
 Sets really shine when you want to compare two groups. Imagine you are planning a party and have two guest lists:
 
@@ -88,9 +88,9 @@ Think of it this way:
 - `&` (intersection) means "only what overlaps"
 - `-` (difference) means "what is in the first group but not the second"
 
-These three operations cover most real-world "compare two groups" problems — finding shared friends, overlapping skills on a resume, or items on one shopping list that are missing from another.
+These three operations cover most real-world "compare two groups" problems: finding shared friends, overlapping skills on a resume, or items on one shopping list that are missing from another.
 
-## Tuples — ordered, unchangeable
+## Tuples: ordered, unchangeable
 
 ```python
 point = (3, 5)

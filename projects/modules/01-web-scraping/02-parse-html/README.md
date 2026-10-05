@@ -1,4 +1,4 @@
-# Module 01 / Project 02 — Parse HTML
+# Module 01 / Project 02: Parse HTML
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -21,7 +21,7 @@
 
 ## Why this project exists
 
-Raw HTML is a mess of tags, attributes, and nesting. BeautifulSoup turns that mess into a tree structure you can search. This project teaches you to find specific elements on a page — the single most important skill in web scraping. You will extract book titles and prices from a real webpage.
+Raw HTML is a mess of tags, attributes, and nesting. BeautifulSoup turns that mess into a tree structure you can search. This project teaches you to find specific elements on a page, the single most important skill in web scraping. You will extract book titles and prices from a real webpage.
 
 ## Run
 
@@ -57,7 +57,7 @@ The exact titles and prices depend on the current page content, but you should s
 
 ## Break it
 
-1. Change the parser from `"lxml"` to `"html.parser"` (Python's built-in). Does the output change? What if the HTML were malformed — which parser would handle it better?
+1. Change the parser from `"lxml"` to `"html.parser"` (Python's built-in). Does the output change? What if the HTML were malformed? Which parser would handle it better?
 2. Search for a tag that does not exist: `soup.find("div", class_="nonexistent")`. What does it return? What happens if you try to call `.text` on that result?
 3. Remove the `import` for BeautifulSoup and run the script. Read the error.
 
@@ -95,4 +95,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — Extract Structured Data](../03-extract-structured-data/)
+[Project 03: Extract Structured Data](../03-extract-structured-data/)

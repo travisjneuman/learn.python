@@ -1,4 +1,4 @@
-# Notes — Data Cleaning
+# Notes: Data Cleaning
 
 ## What I learned
 

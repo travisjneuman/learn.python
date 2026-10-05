@@ -19,12 +19,12 @@ Home: [README](../../../README.md)
 - Impact of team size, runbooks, and incident novelty on recovery time
 
 ## Why this project exists
-When systems fail, stakeholders need realistic recovery time estimates — not guesses.
+When systems fail, stakeholders need realistic recovery time estimates, not guesses.
 "How long until the site is back?" requires modeling the full recovery process: detecting
 the issue, diagnosing root cause, implementing a fix, verifying it works, and deploying.
 Each phase has uncertainty. This project uses Monte Carlo simulation to model recovery
 times as probability distributions, producing confidence intervals that account for
-team capacity, runbook availability, and incident complexity — the same approach used
+team capacity, runbook availability, and incident complexity, the same approach used
 by incident management teams at Google, Netflix, and PagerDuty.
 
 ## Run (copy/paste)
@@ -60,9 +60,9 @@ pytest -q
 3. Add a `--runs` flag that controls the number of Monte Carlo simulation iterations.
 
 ## Break it (required)
-1. Set `team_size=0` — does the diagnosis multiplier handle division by zero?
-2. Create a `PhaseEstimate` where `min > max` — what happens to the triangular distribution?
-3. Run the simulation with `simulation_runs=0` — does the percentile calculation handle empty data?
+1. Set `team_size=0`: does the diagnosis multiplier handle division by zero?
+2. Create a `PhaseEstimate` where `min > max`: what happens to the triangular distribution?
+3. Run the simulation with `simulation_runs=0`: does the percentile calculation handle empty data?
 
 ## Fix it (required)
 1. Validate that `team_size >= 1` in `IncidentProfile`.
@@ -73,7 +73,7 @@ pytest -q
 1. What is Monte Carlo simulation and why is it used for time estimation?
 2. How does the triangular distribution model 3-point estimates (min, expected, max)?
 3. What do p50, p90, and p99 mean in the context of recovery time estimation?
-4. Why do runbooks significantly reduce recovery time — what does the multiplier model?
+4. Why do runbooks significantly reduce recovery time: what does the multiplier model?
 
 ## Mastery check
 You can move on when you can:

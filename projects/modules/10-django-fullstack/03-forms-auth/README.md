@@ -1,4 +1,4 @@
-# Module 10 / Project 03 — Forms & Auth
+# Module 10 / Project 03: Forms & Auth
 
 Home: [README](../../../../README.md)
 
@@ -33,11 +33,11 @@ python manage.py runserver
 
 Then open your browser to:
 
-- **http://127.0.0.1:8000/books/** — list all books
-- **http://127.0.0.1:8000/books/add/** — add a new book (requires login)
-- **http://127.0.0.1:8000/register/** — create a new user account
-- **http://127.0.0.1:8000/login/** — log in
-- **http://127.0.0.1:8000/logout/** — log out
+- **http://127.0.0.1:8000/books/**: list all books
+- **http://127.0.0.1:8000/books/add/**: add a new book (requires login)
+- **http://127.0.0.1:8000/register/**: create a new user account
+- **http://127.0.0.1:8000/login/**: log in
+- **http://127.0.0.1:8000/logout/**: log out
 
 Press `Ctrl+C` to stop the server.
 

@@ -1,4 +1,4 @@
-# API Polling Simulator — Annotated Solution
+# API Polling Simulator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -226,6 +226,6 @@ A decorator separates retry logic from business logic. Libraries like `tenacity`
 
 ## Common Pitfalls
 
-1. **No maximum delay cap** — Without a cap, exponential backoff can grow to absurd values (2^10 = 1024 seconds = 17 minutes between retries). Always set a `max_delay`.
-2. **Retrying on all exceptions** — Not all errors are retryable. A `404 Not Found` will never succeed on retry; a `429 Too Many Requests` or `503 Service Unavailable` will. Filter retry-eligible exceptions.
-3. **Fixed-interval polling without backoff** — Polling every 5 seconds regardless of failures keeps hammering a struggling server. Exponential backoff gives the server time to recover.
+1. **No maximum delay cap**: Without a cap, exponential backoff can grow to absurd values (2^10 = 1024 seconds = 17 minutes between retries). Always set a `max_delay`.
+2. **Retrying on all exceptions**: Not all errors are retryable. A `404 Not Found` will never succeed on retry; a `429 Too Many Requests` or `503 Service Unavailable` will. Filter retry-eligible exceptions.
+3. **Fixed-interval polling without backoff**: Polling every 5 seconds regardless of failures keeps hammering a struggling server. Exponential backoff gives the server time to recover.

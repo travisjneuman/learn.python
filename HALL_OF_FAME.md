@@ -1,6 +1,6 @@
 # Hall of Fame
 
-Recognizing learners who have put in the work. Completing this curriculum is a real achievement — these people earned it.
+Recognizing learners who have put in the work. Completing this curriculum is a real achievement. These people earned it.
 
 ---
 
@@ -44,4 +44,4 @@ Outstanding projects built by learners during the curriculum. If you built somet
    - Screenshot of your progress dashboard (if using the progress tracker)
    - Any other evidence of completed work
 
-Submissions are reviewed and merged on a rolling basis. There is no deadline — finish at your own pace and claim your spot when you are ready.
+Submissions are reviewed and merged on a rolling basis. There is no deadline. Finish at your own pace and claim your spot when you are ready.

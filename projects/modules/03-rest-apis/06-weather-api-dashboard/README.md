@@ -1,4 +1,4 @@
-# Module 03 / Project 06 — Weather API Dashboard
+# Module 03 / Project 06: Weather API Dashboard
 
 [README](../../../../README.md)
 
@@ -36,10 +36,10 @@ https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.01&current=t
 
 Key concepts:
 
-- **No authentication required** — no API keys, no signup, no tokens.
-- **Query parameters control everything** — you tell the API which location (latitude/longitude) and which weather variables you want (temperature, humidity, wind, etc.).
-- **The response is nested JSON** — the top level has metadata (timezone, location), and the `current` key holds the actual weather values.
-- **Units come in a separate key** — `current_units` tells you whether temperature is in Celsius or Fahrenheit, wind in km/h or mph, etc.
+- **No authentication required**: no API keys, no signup, no tokens.
+- **Query parameters control everything**: you tell the API which location (latitude/longitude) and which weather variables you want (temperature, humidity, wind, etc.).
+- **The response is nested JSON**: the top level has metadata (timezone, location), and the `current` key holds the actual weather values.
+- **Units come in a separate key**: `current_units` tells you whether temperature is in Celsius or Fahrenheit, wind in km/h or mph, etc.
 
 Example response (simplified):
 
@@ -167,4 +167,4 @@ You can move on when you can:
 
 ## Next
 
-Go back to the [Module 03 index](../README.md). If you are ready for more, continue to [Module 04 — FastAPI Web Apps](../../04-fastapi-web/).
+Go back to the [Module 03 index](../README.md). If you are ready for more, continue to [Module 04: FastAPI Web Apps](../../04-fastapi-web/).

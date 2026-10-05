@@ -18,7 +18,7 @@ Home: [README](../../../README.md)
 - Safety validation and rollback mechanisms
 
 ## Why this project exists
-Traditional "stop the world" migrations cause downtime. The expand-contract pattern adds new columns first, backfills data, then removes old columns. At every phase, both old and new code paths work — enabling zero-downtime rollout. This project simulates the entire lifecycle in Python.
+Traditional "stop the world" migrations cause downtime. The expand-contract pattern adds new columns first, backfills data, then removes old columns. At every phase, both old and new code paths work, enabling zero-downtime rollout. This project simulates the entire lifecycle in Python.
 
 ## Run (copy/paste)
 ```bash
@@ -44,12 +44,12 @@ History (3 entries):
 3. Add a step-level progress callback so callers can monitor migration progress.
 
 ## Break it (required)
-1. Try adding a duplicate column name — observe the `ValueError`.
+1. Try adding a duplicate column name: observe the `ValueError`.
 2. Create a contracting step without an expanding step and check the safety warning.
 3. Drop a non-existent column and see the error.
 
 ## Fix it (required)
-1. Make `add_column` idempotent — skip silently if the column already exists.
+1. Make `add_column` idempotent: skip silently if the column already exists.
 2. Add validation that migration steps are in the correct phase order (EXPANDING before MIGRATING before CONTRACTING).
 3. Test the phase order validation.
 

@@ -1,4 +1,4 @@
-# Notes — API Client Class
+# Notes: API Client Class
 
 ## What I learned
 

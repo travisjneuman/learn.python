@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 09 - Daily Checklist Writer
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -117,10 +117,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `format_checklist()` returns a string instead of printing directly | Returning a string makes the function testable (assert on the result) and reusable (save to file, send as email, etc.) | Print inside the function — ties it to terminal output, cannot reuse for file writing |
-| `[ ]` checkbox format | Standard plain-text convention used in Markdown, GitHub, and todo.txt. Universally recognised | `- [ ]` (Markdown style) — more specific to GitHub but less universal. `* ` bullet — no checkbox semantics |
-| Title underline uses `"=" * len(title)` | The underline automatically matches the title width, looking professional regardless of title length | Hard-code a fixed-width underline — looks wrong when the title is shorter or longer |
-| `checklist_summary()` includes `completed: 0` | The data structure is ready for a future enhancement where users can mark tasks complete. Designing for extensibility from the start | Omit it — simpler now but requires restructuring later |
+| `format_checklist()` returns a string instead of printing directly | Returning a string makes the function testable (assert on the result) and reusable (save to file, send as email, etc.) | Print inside the function: ties it to terminal output, cannot reuse for file writing |
+| `[ ]` checkbox format | Standard plain-text convention used in Markdown, GitHub, and todo.txt. Universally recognised | `- [ ]` (Markdown style): more specific to GitHub but less universal. `* ` bullet: no checkbox semantics |
+| Title underline uses `"=" * len(title)` | The underline automatically matches the title width, looking professional regardless of title length | Hard-code a fixed-width underline: looks wrong when the title is shorter or longer |
+| `checklist_summary()` includes `completed: 0` | The data structure is ready for a future enhancement where users can mark tasks complete. Designing for extensibility from the start | Omit it: simpler now but requires restructuring later |
 
 ## Alternative approaches
 
@@ -151,11 +151,11 @@ def write_checklist_from_list(title: str, tasks: list, filepath: str) -> None:
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| User enters no tasks (types "done" immediately) | `format_checklist()` returns `"title\n(no tasks)"` — clear message, no crash | Already handled by the `if not tasks` check |
+| User enters no tasks (types "done" immediately) | `format_checklist()` returns `"title\n(no tasks)"`: clear message, no crash | Already handled by the `if not tasks` check |
 | User enters tasks with only whitespace | The `if task.strip()` check skips blank entries, so they never make it into the list | Already handled |
 | User enters 100+ tasks | Numbering still works because `enumerate()` handles any count. But numbers might misalign if some are 2-digit and others 3-digit | For Level 0 this is fine. Could add right-justified numbering like the file reader project |
 | File write fails (read-only directory, disk full) | `open()` raises `PermissionError` or `OSError`. The program crashes with a traceback | Wrap the file write in try/except and show a friendly error message |
-| User enters a filename with path separators (e.g. `"../../../etc/hosts"`) | Python creates/overwrites the file at that path — potentially dangerous | Validate the filename: reject paths containing `/` or `\`, or write to a fixed directory |
+| User enters a filename with path separators (e.g. `"../../../etc/hosts"`) | Python creates/overwrites the file at that path: potentially dangerous | Validate the filename: reject paths containing `/` or `\`, or write to a fixed directory |
 
 ## Key takeaways
 

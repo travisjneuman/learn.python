@@ -1,4 +1,4 @@
-# Module 05 / Project 03 — Async File Processing
+# Module 05 / Project 03: Async File Processing
 
 Home: [README](../../../../README.md) · Module: [Async Python](../README.md)
 
@@ -57,7 +57,7 @@ Yielded line 2 from file_01.txt
 ## Alter it
 
 1. Process `.csv` files instead of `.txt` files. Parse them into rows.
-2. Add a file size filter — skip files under 100 bytes.
+2. Add a file size filter: skip files under 100 bytes.
 3. Write the summary results to an output file using `aiofiles`.
 
 ## Break it
@@ -99,4 +99,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 04 — Producer-Consumer](../04-producer-consumer/)
+[Project 04: Producer-Consumer](../04-producer-consumer/)

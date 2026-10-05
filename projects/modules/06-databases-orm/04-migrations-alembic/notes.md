@@ -1,4 +1,4 @@
-# Notes — Migrations with Alembic
+# Notes: Migrations with Alembic
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# Collections Deep Dive — Part 1: defaultdict, Counter, OrderedDict
+# Collections Deep Dive, Part 1: defaultdict, Counter, OrderedDict
 
 [← Back to Overview](./collections-deep-dive.md) · [Part 2: deque, namedtuple, ChainMap →](./collections-deep-dive-part2.md)
 
@@ -20,7 +20,7 @@ Python's `collections` module provides specialized container types that go beyon
 
 Every program needs to store and organize data. The built-in types handle most cases, but they have gaps. Need to count how often each word appears? `Counter`. Need a dict that automatically handles missing keys? `defaultdict`. Learning these tools saves you from writing (and debugging) boilerplate code.
 
-## `Counter` — count things
+## `Counter`: count things
 
 The most intuitive way to count occurrences:
 
@@ -55,9 +55,9 @@ a & b     # Counter({'a': 2, 'b': 2}) — minimum of each
 a | b     # Counter({'a': 2, 'b': 2, 'c': 2, 'd': 1}) — maximum of each
 ```
 
-## `defaultdict` — dicts with automatic defaults
+## `defaultdict`: dicts with automatic defaults
 
-A `defaultdict` never raises `KeyError` — it creates a default value automatically for missing keys:
+A `defaultdict` never raises `KeyError`; it creates a default value automatically for missing keys:
 
 ```python
 from collections import defaultdict
@@ -105,7 +105,7 @@ for word in "the cat sat on the mat".split():
 # {'the': 2, 'cat': 1, 'sat': 1, 'on': 1, 'mat': 1}
 ```
 
-## `OrderedDict` — dict that remembers insertion order
+## `OrderedDict`: dict that remembers insertion order
 
 Since Python 3.7, regular dicts maintain insertion order. So when is `OrderedDict` still useful?
 

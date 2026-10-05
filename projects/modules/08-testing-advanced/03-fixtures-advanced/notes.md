@@ -1,4 +1,4 @@
-# Notes — Fixtures Advanced
+# Notes: Fixtures Advanced
 
 ## What I learned
 

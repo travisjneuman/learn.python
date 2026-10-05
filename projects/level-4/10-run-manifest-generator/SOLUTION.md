@@ -1,4 +1,4 @@
-# Run Manifest Generator — Annotated Solution
+# Run Manifest Generator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 | Chunk-based checksum reading (8192 bytes at a time) | Keeps memory usage constant regardless of file size. A 10 GB file would consume 10 GB of RAM if read at once; chunked reading uses only 8 KB. |
 | MD5 as the default checksum algorithm | MD5 is fast and widely understood. It is sufficient for integrity checking (detecting accidental corruption). For security-sensitive contexts, SHA-256 should be used instead (see the Alter extension). |
 | Store relative paths in the manifest | Makes the manifest portable. If you move the output directory to another machine, the relative paths still work. Absolute paths would break. |
-| Auto-generated run_id from timestamp | Every run gets a unique identifier without requiring user input. This is important for auditing — you can trace any output file back to the exact run that created it. |
+| Auto-generated run_id from timestamp | Every run gets a unique identifier without requiring user input. This is important for auditing: you can trace any output file back to the exact run that created it. |
 
 ## Alternative Approaches
 
@@ -193,6 +193,6 @@ def scan_files_walk(directory: str) -> list[dict]:
 
 ## Common Pitfalls
 
-1. **Computing checksums on the manifest file itself** — If the manifest is written to the same directory being scanned, and you scan after writing, the manifest will include its own checksum. This creates a chicken-and-egg problem. Write the manifest to a separate location or exclude it from the scan.
-2. **Using MD5 for security purposes** — MD5 is cryptographically broken (collisions can be crafted). It is fine for detecting accidental corruption but should not be used to verify file authenticity. Use SHA-256 for security-sensitive applications.
-3. **Not handling permission errors** — Some files in a directory may be unreadable due to OS permissions. Without a try/except around the checksum computation, one unreadable file crashes the entire manifest generation.
+1. **Computing checksums on the manifest file itself**: If the manifest is written to the same directory being scanned, and you scan after writing, the manifest will include its own checksum. This creates a chicken-and-egg problem. Write the manifest to a separate location or exclude it from the scan.
+2. **Using MD5 for security purposes**: MD5 is cryptographically broken (collisions can be crafted). It is fine for detecting accidental corruption but should not be used to verify file authenticity. Use SHA-256 for security-sensitive applications.
+3. **Not handling permission errors**: Some files in a directory may be unreadable due to OS permissions. Without a try/except around the checksum computation, one unreadable file crashes the entire manifest generation.

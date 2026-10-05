@@ -1,4 +1,4 @@
-# Alert Threshold Monitor — Annotated Solution
+# Alert Threshold Monitor: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -182,6 +182,6 @@ A class-based approach encapsulates cooldown state alongside evaluation logic. T
 
 ## Common Pitfalls
 
-1. **Checking warning before critical** — If you write `if value >= warning` first and return immediately, a value that exceeds *both* thresholds is incorrectly classified as "warning" instead of "critical." Always check the most severe condition first.
-2. **No cooldown on alerts** — Without cooldown, a metric that stays above the threshold generates an alert on every evaluation cycle. This floods on-call channels and teaches engineers to ignore alerts.
-3. **Thresholds where warning >= critical** — If `warning=90` and `critical=80`, every value above 80 triggers as "critical" and the warning level is unreachable. Validate that `warning < critical` when loading configuration.
+1. **Checking warning before critical**: If you write `if value >= warning` first and return immediately, a value that exceeds *both* thresholds is incorrectly classified as "warning" instead of "critical." Always check the most severe condition first.
+2. **No cooldown on alerts**: Without cooldown, a metric that stays above the threshold generates an alert on every evaluation cycle. This floods on-call channels and teaches engineers to ignore alerts.
+3. **Thresholds where warning >= critical**: If `warning=90` and `critical=80`, every value above 80 triggers as "critical" and the warning level is unreachable. Validate that `warning < critical` when loading configuration.

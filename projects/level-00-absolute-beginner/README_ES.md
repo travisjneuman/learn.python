@@ -1,4 +1,4 @@
-# Nivel 00 — Principiante Absoluto (Versiones en Español)
+# Nivel 00: Principiante Absoluto (Versiones en Español)
 
 Inicio: [README](../../README.md) | [English version](./README.md)
 
@@ -53,8 +53,8 @@ python exercise_es.py
 
 ## Cómo trabajar cada ejercicio
 
-1. **Lee** el archivo `exercise_es.py` — cada línea tiene un comentario explicando qué hace
-2. **Ejecútalo** — `python exercise_es.py` y observa qué pasa
+1. **Lee** el archivo `exercise_es.py`: cada línea tiene un comentario explicando qué hace
+2. **Ejecútalo**: `python exercise_es.py` y observa qué pasa
 3. **Cambia** algo pequeño y ejecútalo de nuevo
 4. **Prueba** los desafíos en `TRY_THIS_ES.md`
 5. **Continúa** cuando puedas explicar qué hace el código sin leer los comentarios

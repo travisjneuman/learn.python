@@ -1,6 +1,6 @@
 # Solution: Level 7 / Project 01 - API Query Adapter
 
-> **STOP — Try it yourself first!**
+> **STOP: Try it yourself first!**
 >
 > You learn by building, not by reading answers. Spend at least 30 minutes
 > attempting this project before looking here.

@@ -1,6 +1,6 @@
 # Context Managers Explained
 
-A context manager is something that sets up a resource when you enter a block and cleans it up when you leave — even if an error occurs. The `with` statement is how you use them. If you have ever written `with open("file.txt") as f:`, you have already used one.
+A context manager is something that sets up a resource when you enter a block and cleans it up when you leave, even if an error occurs. The `with` statement is how you use them. If you have ever written `with open("file.txt") as f:`, you have already used one.
 
 <!-- modality-hub-start -->
 
@@ -14,14 +14,14 @@ A context manager is something that sets up a resource when you enter a block an
 
 ## Why This Matters
 
-Resources like files, database connections, and network sockets need to be properly closed when you are done with them. Forgetting to close a file can corrupt data. Forgetting to close a database connection can exhaust the connection pool and crash your server. Context managers make cleanup automatic — you cannot forget.
+Resources like files, database connections, and network sockets need to be properly closed when you are done with them. Forgetting to close a file can corrupt data. Forgetting to close a database connection can exhaust the connection pool and crash your server. Context managers make cleanup automatic, so you cannot forget.
 
 ## Visualize It
 
 Watch how `with` guarantees cleanup, even when an error is raised:
 [Open in Python Tutor](https://pythontutor.com/render.html#code=class%20ManagedFile%3A%0A%20%20%20%20def%20__init__%28self%2C%20name%29%3A%0A%20%20%20%20%20%20%20%20self.name%20%3D%20name%0A%20%20%20%20def%20__enter__%28self%29%3A%0A%20%20%20%20%20%20%20%20print%28f%22Opening%20%7Bself.name%7D%22%29%0A%20%20%20%20%20%20%20%20return%20self%0A%20%20%20%20def%20__exit__%28self%2C%20exc_type%2C%20exc_val%2C%20exc_tb%29%3A%0A%20%20%20%20%20%20%20%20print%28f%22Closing%20%7Bself.name%7D%22%29%0A%20%20%20%20%20%20%20%20return%20False%0A%0Awith%20ManagedFile%28%22data.txt%22%29%20as%20f%3A%0A%20%20%20%20print%28%22Working%20with%20file%22%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
 
-## The basic pattern — `with` and files
+## The basic pattern: `with` and files
 
 Without a context manager, you must remember to close the file yourself:
 
@@ -69,13 +69,13 @@ with ManagedFile("data.txt") as f:
 ```
 
 The three arguments to `__exit__` describe any exception that occurred:
-- `exc_type` — the exception class (e.g., `ValueError`), or `None` if no error
-- `exc_val` — the exception instance
-- `exc_tb` — the traceback object
+- `exc_type`: the exception class (e.g., `ValueError`), or `None` if no error
+- `exc_val`: the exception instance
+- `exc_tb`: the traceback object
 
 If `__exit__` returns `True`, the exception is suppressed (swallowed). If it returns `False` (the default), the exception propagates normally. Almost always return `False`.
 
-## The easy way — `contextlib.contextmanager`
+## The easy way: `contextlib.contextmanager`
 
 Writing a class with `__enter__` and `__exit__` is verbose. The `contextlib` module gives you a decorator that turns a generator function into a context manager:
 
@@ -99,9 +99,9 @@ with managed_file("data.txt") as f:
 ```
 
 The pattern is:
-1. **Before `yield`** — setup (like `__enter__`)
-2. **`yield value`** — the value assigned by `as`
-3. **After `yield`** — cleanup (like `__exit__`), usually in a `finally` block
+1. **Before `yield`**: setup (like `__enter__`)
+2. **`yield value`**: the value assigned by `as`
+3. **After `yield`**: cleanup (like `__exit__`), usually in a `finally` block
 
 ## Real-world examples
 
@@ -245,15 +245,15 @@ The resource is only valid inside the `with` block.
 
 ## Practice
 
-- [Module 06 Databases & ORM](../projects/modules/06-databases-orm/) — database connections with context managers
-- [Level 1 / 01 Text Stats](../projects/level-1/01-text-stats/README.md) — file reading with `with`
-- [Level 1 / 05 CSV First Reader](../projects/level-1/05-csv-first-reader/README.md) — CSV files with `with`
+- [Module 06 Databases & ORM](../projects/modules/06-databases-orm/): database connections with context managers
+- [Level 1 / 01 Text Stats](../projects/level-1/01-text-stats/README.md): file reading with `with`
+- [Level 1 / 05 CSV First Reader](../projects/level-1/05-csv-first-reader/README.md): CSV files with `with`
 
 ## Further Reading
 
-- [contextlib — Utilities for with-statement contexts](https://docs.python.org/3/library/contextlib.html)
+- [contextlib: Utilities for with-statement contexts](https://docs.python.org/3/library/contextlib.html)
 - [The with statement (Python docs)](https://docs.python.org/3/reference/compound_stmts.html#the-with-statement)
-- [PEP 343 — The "with" Statement](https://peps.python.org/pep-0343/)
+- [PEP 343: The "with" Statement](https://peps.python.org/pep-0343/)
 
 ---
 

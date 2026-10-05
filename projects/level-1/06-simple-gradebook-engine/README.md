@@ -49,17 +49,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--curve` flag that adds N points to every student's average before assigning letter grades.
 2. Add a "pass/fail" summary showing how many students scored above/below 60%.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a student row with non-numeric scores like `Alice,A,B,C` -- does `calculate_average()` crash?
 2. Add a student with no scores (just a name) -- does the parser handle it?
 3. Add a score above 100 like `Alice,105,98,92` -- does `letter_grade()` still work?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate that all scores are numeric in `parse_student_row()`.
 2. Handle students with no scores by assigning an average of 0.
 3. Add a test for the non-numeric-scores case.

@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 14
+# Prueba Esto: Ejercicio 14
 
 1. Crea tu propio archivo de datos llamado `data/mis_datos.txt` con nombres y edades (uno por línea, separados por comas). Modifica el ejercicio para leer e imprimir tu archivo en vez del original.
 

@@ -1,4 +1,4 @@
-# Module 11 / Project 01 — Package Structure
+# Module 11 / Project 01: Package Structure
 
 Home: [README](../../../../README.md) · Module: [Package Publishing](../README.md)
 
@@ -102,4 +102,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 02 — Build and Test](../02-build-and-test/)
+[Project 02: Build and Test](../02-build-and-test/)

@@ -1,4 +1,4 @@
-# Package Layout Starter — Annotated Solution
+# Package Layout Starter: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -242,7 +242,7 @@ if __name__ == "__main__":
 | Text parsing instead of `ast` module | The `ast` module would be more accurate, but text parsing is easier to understand at this level and teaches string manipulation. |
 | `field(default_factory=list)` for mutable defaults | Prevents the shared-mutable-default bug where all instances accidentally share the same list object. |
 | Subcommands via `argparse` | Each action (scan, validate, init) is a distinct operation, making the CLI discoverable and extensible. |
-| `__all__` in generated `__init__.py` | Controls public API surface — prevents accidental export of internal implementation details. |
+| `__all__` in generated `__init__.py` | Controls public API surface: prevents accidental export of internal implementation details. |
 
 ## Alternative Approaches
 
@@ -273,8 +273,8 @@ spec = importlib.util.spec_from_file_location("pkg", init_path)
 
 ## Common Pitfalls
 
-1. **Forgetting `__init__.py`** — Without it (pre-3.3), Python cannot import from the directory. Even in Python 3.3+ where namespace packages exist, omitting `__init__.py` breaks relative imports and makes the package harder to reason about. Always include it.
+1. **Forgetting `__init__.py`**: Without it (pre-3.3), Python cannot import from the directory. Even in Python 3.3+ where namespace packages exist, omitting `__init__.py` breaks relative imports and makes the package harder to reason about. Always include it.
 
-2. **Mutable default arguments** — Writing `modules: list = []` in a dataclass (or any function default) means every instance shares the same list. Always use `field(default_factory=list)` for mutable defaults.
+2. **Mutable default arguments**: Writing `modules: list = []` in a dataclass (or any function default) means every instance shares the same list. Always use `field(default_factory=list)` for mutable defaults.
 
-3. **Circular imports in `__init__.py`** — If `__init__.py` imports from a submodule that imports from `__init__.py`, Python raises `ImportError`. The fix is to either defer imports or restructure so `__init__.py` only re-exports, never defines core logic.
+3. **Circular imports in `__init__.py`**: If `__init__.py` imports from a submodule that imports from `__init__.py`, Python raises `ImportError`. The fix is to either defer imports or restructure so `__init__.py` only re-exports, never defines core logic.

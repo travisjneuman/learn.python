@@ -1,4 +1,4 @@
-# Try This — Project 06
+# Try This: Project 06
 
 1. Add a grade distribution summary that counts how many students got each letter grade. Print it as a simple bar chart using `#` characters:
    ```text

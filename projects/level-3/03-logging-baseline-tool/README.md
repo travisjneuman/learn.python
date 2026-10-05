@@ -1,7 +1,7 @@
 # Level 3 / Project 03 - Logging Baseline Tool
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=3) — browser exercises cover Level 2 topics
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=3): browser exercises cover Level 2 topics
 
 ## Before You Start
 
@@ -63,17 +63,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. What filtering or output options would make this tool more useful for a sysadmin?
-2. Try improving the output format — what information is missing?
+2. Try improving the output format: what information is missing?
 3. Can you redirect output to a file instead of the terminal?
 
-## Break it (required) — Core
+## Break it (required): Core
 1. What happens when the input data does not match the expected format?
-2. Try passing invalid arguments — how does the tool respond?
+2. Try passing invalid arguments: how does the tool respond?
 3. What edge case produces surprising output?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add validation for the issue you found most confusing.
 2. Make the tool handle empty or minimal input gracefully.
 3. Improve parsing to handle messy real-world log data.

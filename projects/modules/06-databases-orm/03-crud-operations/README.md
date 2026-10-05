@@ -1,4 +1,4 @@
-# Module 06 / Project 03 — CRUD Operations
+# Module 06 / Project 03: CRUD Operations
 
 Home: [README](../../../../README.md) · Module: [Databases & ORM](../README.md)
 
@@ -110,4 +110,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 04 — Migrations with Alembic](../04-migrations-alembic/)
+[Project 04: Migrations with Alembic](../04-migrations-alembic/)

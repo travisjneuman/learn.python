@@ -1,4 +1,4 @@
-# Async Event Loop Deep Dive — Diagrams
+# Async Event Loop Deep Dive: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 

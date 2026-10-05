@@ -1,4 +1,4 @@
-# Notes — Views & Templates
+# Notes: Views & Templates
 
 ## What I learned
 

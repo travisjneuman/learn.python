@@ -1,4 +1,4 @@
-# Try This — Exercise 01
+# Try This: Exercise 01
 
 1. In interactive mode (`python` then `>>>`), try calculating your age in days:
    ```

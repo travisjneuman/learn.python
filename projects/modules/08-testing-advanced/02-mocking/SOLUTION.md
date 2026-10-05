@@ -1,10 +1,10 @@
-# Solution: Module 08 / Project 02 — Mocking
+# Solution: Module 08 / Project 02 (Mocking)
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first. It guides
 > your thinking without giving away the answer.
 
 ---

@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 12 - Contact Card Builder
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -170,10 +170,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `parse_contact_line()` returns error dicts instead of raising exceptions | The program continues processing remaining lines. A batch of 100 contacts with 3 errors still produces 97 valid cards | Raise `ValueError` — stops processing at the first error, losing all subsequent contacts |
-| `format_card()` uses fixed-width alignment | `:<10` and `:<24` create uniform columns so all cards look the same regardless of content length | Variable-width cards — each card looks different, making them harder to scan visually |
-| `load_contacts()` skips blank lines | Real CSV files often have blank lines between sections or at the end. Skipping them avoids false errors | Parse blank lines — creates error entries for empty lines, cluttering the report |
-| CSV parsing with `split(",")` | Simplest possible approach for Level 0. No imports needed | Use the `csv` module — more robust (handles quoted fields, escaped commas) but introduces new concepts |
+| `parse_contact_line()` returns error dicts instead of raising exceptions | The program continues processing remaining lines. A batch of 100 contacts with 3 errors still produces 97 valid cards | Raise `ValueError`: stops processing at the first error, losing all subsequent contacts |
+| `format_card()` uses fixed-width alignment | `:<10` and `:<24` create uniform columns so all cards look the same regardless of content length | Variable-width cards: each card looks different, making them harder to scan visually |
+| `load_contacts()` skips blank lines | Real CSV files often have blank lines between sections or at the end. Skipping them avoids false errors | Parse blank lines: creates error entries for empty lines, cluttering the report |
+| CSV parsing with `split(",")` | Simplest possible approach for Level 0. No imports needed | Use the `csv` module: more robust (handles quoted fields, escaped commas) but introduces new concepts |
 
 ## Alternative approaches
 
@@ -214,7 +214,7 @@ def load_contacts_csv(text: str) -> list[dict]:
 | Email is missing @ (e.g. `"alice-at-test.com"`) | Returns error dict: `"Invalid email: alice-at-test.com"` | Already handled by the `"@" not in email` check |
 | Line has extra commas (e.g. `"Name, Role, email@x.com, , ,"`) | `split(",")` produces 6 parts. We take the first 3: name, phone (which is actually "Role"), email. The data is wrong but no crash | For robust parsing, use a proper CSV library or validate field content |
 | Name contains a comma (e.g. `"Smith, Jr."`) | `split(",")` breaks "Smith" and "Jr." into separate fields. The phone field gets "Jr." and parsing is wrong | Use the `csv` module which handles quoted fields, or choose a different delimiter (like `|`) |
-| File is entirely empty | `load_contacts()` returns `[]`. Summary shows 0 total, 0 valid, 0 errors | Already handled — the for loop simply does not execute |
+| File is entirely empty | `load_contacts()` returns `[]`. Summary shows 0 total, 0 valid, 0 errors | Already handled: the for loop simply does not execute |
 
 ## Key takeaways
 

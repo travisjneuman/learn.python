@@ -1,4 +1,4 @@
-# Module 04 — FastAPI Web Apps
+# Module 04: FastAPI Web Apps
 
 [README](../../../README.md)
 
@@ -10,7 +10,7 @@ FastAPI generates interactive API documentation automatically. Every project in 
 
 ## Prerequisites
 
-Complete **Level 3** and **Module 03 (REST APIs — Consuming)** before starting this module. You should be comfortable with:
+Complete **Level 3** and **Module 03 (REST APIs: Consuming)** before starting this module. You should be comfortable with:
 
 - Package structure and imports
 - Error handling with try/except
@@ -60,14 +60,14 @@ See [concepts/virtual-environments.md](../../../concepts/virtual-environments.md
 
 This module requires several packages (listed in `requirements.txt`):
 
-- **fastapi** — the web framework. You define routes with decorators and FastAPI handles request parsing, validation, and documentation.
-- **uvicorn** — an ASGI server that runs your FastAPI app. Think of it as the engine that listens for HTTP requests.
-- **pydantic** — data validation using Python type hints. FastAPI uses it automatically for request bodies and responses.
-- **sqlalchemy** — an ORM (Object-Relational Mapper) that lets you interact with databases using Python classes instead of raw SQL.
-- **python-jose** — creates and verifies JWT (JSON Web Token) tokens for authentication.
-- **passlib** — hashes passwords securely so you never store plaintext passwords.
-- **httpx** — an HTTP client used by FastAPI's TestClient for testing your endpoints.
-- **pytest** — the test runner you already know from Level 3.
+- **fastapi**: the web framework. You define routes with decorators and FastAPI handles request parsing, validation, and documentation.
+- **uvicorn**: an ASGI server that runs your FastAPI app. Think of it as the engine that listens for HTTP requests.
+- **pydantic**: data validation using Python type hints. FastAPI uses it automatically for request bodies and responses.
+- **sqlalchemy**: an ORM (Object-Relational Mapper) that lets you interact with databases using Python classes instead of raw SQL.
+- **python-jose**: creates and verifies JWT (JSON Web Token) tokens for authentication.
+- **passlib**: hashes passwords securely so you never store plaintext passwords.
+- **httpx**: an HTTP client used by FastAPI's TestClient for testing your endpoints.
+- **pytest**: the test runner you already know from Level 3.
 
 ## Security Considerations
 
@@ -114,7 +114,7 @@ class UserCreate(BaseModel):
 
 ### Authentication Best Practices
 
-- **Hash passwords** with bcrypt (via `passlib`) — never store plaintext passwords.
+- **Hash passwords** with bcrypt (via `passlib`). Never store plaintext passwords.
 - **Use short-lived JWT tokens** (15-30 minutes) with a refresh token flow.
 - **Rate-limit login endpoints** to prevent brute-force attacks (use a middleware or library like `slowapi`).
 - **Never log tokens or passwords**, even in debug mode.

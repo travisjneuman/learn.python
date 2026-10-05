@@ -18,7 +18,7 @@ Home: [README](../../../README.md)
 - Health scoring with subsystem-level breakdown
 
 ## Why this project exists
-Real enterprise platforms are compositions of specialized systems. This capstone integrates patterns from all 14 prior projects — tenant isolation, policy engine, change gates, readiness checks, and architecture fitness — into a coherent whole using dependency injection and protocol-based interfaces.
+Real enterprise platforms are compositions of specialized systems. This capstone integrates patterns from all 14 prior projects (tenant isolation, policy engine, change gates, readiness checks, and architecture fitness) into a coherent whole using dependency injection and protocol-based interfaces.
 
 ## Run (copy/paste)
 ```bash
@@ -45,13 +45,13 @@ pytest -v
 3. Add a dashboard-style output that shows each subsystem with a traffic-light status.
 
 ## Break it (required)
-1. Run an assessment with empty context — observe multiple policy failures cascading to UNHEALTHY.
-2. Submit a high-risk change with an unready service — observe both change gate and readiness failures.
-3. Create an architecture with 50 services and high coupling — verify fitness checks flag it.
+1. Run an assessment with empty context: observe multiple policy failures cascading to UNHEALTHY.
+2. Submit a high-risk change with an unready service: observe both change gate and readiness failures.
+3. Create an architecture with 50 services and high coupling: verify fitness checks flag it.
 
 ## Fix it (required)
 1. Add subsystem-level health scores so you can identify which subsystem is dragging down the overall score.
-2. Add a `minimum_checks_per_subsystem` threshold — the platform should warn if any subsystem has zero checks.
+2. Add a `minimum_checks_per_subsystem` threshold: the platform should warn if any subsystem has zero checks.
 3. Test both fixes.
 
 ## Explain it (teach-back)

@@ -1,4 +1,4 @@
-# Dashboard KPI Assembler — Step-by-Step Walkthrough
+# Dashboard KPI Assembler: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -8,9 +8,9 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Every operations team has a dashboard — a screen that shows whether the system is healthy at a glance. Green means good, yellow means watch it, red means something is wrong. Behind that dashboard is exactly the kind of code you are building here.
+Every operations team has a dashboard: a screen that shows whether the system is healthy at a glance. Green means good, yellow means watch it, red means something is wrong. Behind that dashboard is exactly the kind of code you are building here.
 
-The first challenge is aggregation. Metrics arrive as individual readings: "at 10:05, latency was 42ms, at 10:06 it was 38ms, at 10:07 it was 250ms." You need to summarize these into useful statistics. The mean (average) tells you the typical experience. The 95th percentile (p95) tells you the worst experience for all but the top 5% of requests. These two numbers together paint a much richer picture than either alone — a system with mean latency of 50ms but p95 of 2000ms has a serious tail latency problem.
+The first challenge is aggregation. Metrics arrive as individual readings: "at 10:05, latency was 42ms, at 10:06 it was 38ms, at 10:07 it was 250ms." You need to summarize these into useful statistics. The mean (average) tells you the typical experience. The 95th percentile (p95) tells you the worst experience for all but the top 5% of requests. These two numbers together paint a much richer picture than either alone: a system with mean latency of 50ms but p95 of 2000ms has a serious tail latency problem.
 
 The second challenge is threshold evaluation. Raw numbers are meaningless without context. Is 200ms good or bad? It depends on the KPI. For a homepage load time, 200ms is excellent. For a database health check, it is terrible. The `KPIDefinition` class carries the thresholds that give meaning to the numbers. The third challenge is trend detection: are things getting better or worse over time? This requires comparing the first half of the sample window to the second half.
 

@@ -1,4 +1,4 @@
-# Type Hints Explained — Video Resources
+# Type Hints Explained: Video Resources
 
 [← Back to Concept](../type-hints-explained.md)
 
@@ -9,12 +9,12 @@ Why: Covers the modern type hinting syntax introduced in Python 3.10 including u
 
 ## Alternatives
 
-- **[Python Typing - Type Hints & Annotations](https://youtube.com/watch?v=QORvB-_mbZ0)** by Tech With Tim (25 min) — Comprehensive tutorial covering the typing module, mypy, function annotations, and types like List, Dict, Optional, Any, and Callable. Good systematic walkthrough of the full typing landscape.
-- **[Goodbye, List! Type hinting standard collections - New in Python 3.9](https://youtube.com/watch?v=SMXsIX3PZ5w)** by mCoding (5 min) — Short and focused on the simplification that lets you write list[int] instead of List[int]. Quick win for cleaner code.
+- **[Python Typing - Type Hints & Annotations](https://youtube.com/watch?v=QORvB-_mbZ0)** by Tech With Tim (25 min). Comprehensive tutorial covering the typing module, mypy, function annotations, and types like List, Dict, Optional, Any, and Callable. Good systematic walkthrough of the full typing landscape.
+- **[Goodbye, List! Type hinting standard collections - New in Python 3.9](https://youtube.com/watch?v=SMXsIX3PZ5w)** by mCoding (5 min). Short and focused on the simplification that lets you write list[int] instead of List[int]. Quick win for cleaner code.
 
 ## Deep Dives
 
-- **[Python dataclasses will save you HOURS, also featuring attrs](https://youtube.com/watch?v=vBH6GRJ1REM)** by mCoding (12 min) — Shows how type hints combine with dataclasses to create self-documenting, validated data structures. Demonstrates type hints in practice rather than in isolation.
+- **[Python dataclasses will save you HOURS, also featuring attrs](https://youtube.com/watch?v=vBH6GRJ1REM)** by mCoding (12 min). Shows how type hints combine with dataclasses to create self-documenting, validated data structures. Demonstrates type hints in practice rather than in isolation.
 
 ---
 

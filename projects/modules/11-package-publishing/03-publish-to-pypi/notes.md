@@ -1,4 +1,4 @@
-# Notes — Publish to PyPI
+# Notes: Publish to PyPI
 
 ## What I learned
 

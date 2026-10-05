@@ -1,4 +1,4 @@
-# Module 01 — Web Scraping
+# Module 01: Web Scraping
 
 [README](../../../README.md)
 
@@ -58,9 +58,9 @@ See [concepts/virtual-environments.md](../../../concepts/virtual-environments.md
 
 This module requires three packages (listed in `requirements.txt`):
 
-- **requests** — makes HTTP requests simple. You call `requests.get(url)` and get a response object back.
-- **beautifulsoup4** — parses HTML into a tree you can search. The import name is `bs4`.
-- **lxml** — a fast HTML/XML parser that BeautifulSoup uses under the hood.
+- **requests**: makes HTTP requests simple. You call `requests.get(url)` and get a response object back.
+- **beautifulsoup4**: parses HTML into a tree you can search. The import name is `bs4`.
+- **lxml**: a fast HTML/XML parser that BeautifulSoup uses under the hood.
 
 ## A note on web scraping ethics
 

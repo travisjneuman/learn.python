@@ -1,4 +1,4 @@
-# Try This — Project 10
+# Try This: Project 10
 
 1. Add a `--stats` flag that prints a summary of the routing results as percentages:
    ```text

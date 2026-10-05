@@ -46,18 +46,18 @@ Aggregated 3 metrics: response_time, cpu_usage, error_rate
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--window` flag that computes moving averages over a configurable window size.
 2. Add standard deviation to the summary statistics for each metric.
 3. Add a `--format` flag that outputs either JSON or a human-readable table.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a metric with only one data point and check if percentile calculation breaks.
 2. Add a metric with an empty values list.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle single-value metrics gracefully (p50 = p99 = the single value).
 2. Return zeros or nulls for empty metrics with a clear warning.
 3. Add tests for single-value and empty-metric edge cases.

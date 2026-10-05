@@ -49,17 +49,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `remove_digits()` step that strips all numeric characters from the string.
 2. Add a `--steps` flag that lets the user choose which cleaning steps to apply (e.g. `--steps strip,lower`).
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Feed in a string that is already perfectly clean -- does `clean_string()` return it unchanged?
 2. Feed in a string of only special characters like `@#$%^&*` -- does the cleaner return an empty string?
 3. Feed in a string with tab characters (`\t`) -- does `collapse_spaces()` handle tabs or only spaces?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `collapse_spaces()` also collapses tabs and other whitespace, not just spaces.
 2. Handle the all-special-characters case gracefully (return empty string without error).
 3. Add a test for the tab-handling edge case.

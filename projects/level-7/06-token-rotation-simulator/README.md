@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `grace_period` parameter so old tokens remain valid for N seconds after rotation.
 2. Add a `list_active()` method that returns all non-revoked, non-expired tokens.
-3. Re-run script and tests — verify grace period and listing work correctly.
+3. Re-run script and tests: verify grace period and listing work correctly.
 
 ## Break it (required)
 1. Call `rotate()` when no token has been generated yet (empty manager).

@@ -1,4 +1,4 @@
-# Module 07 / Project 04 — Visualization
+# Module 07 / Project 04: Visualization
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -22,7 +22,7 @@
 
 ## Why this project exists
 
-Numbers in a table are hard to interpret. A chart makes patterns, outliers, and trends visible at a glance. This project teaches you how to create four common chart types with matplotlib — the standard Python plotting library. You will also learn how to combine multiple charts into a single figure and save the result to a file, which is how charts are shared in reports and presentations.
+Numbers in a table are hard to interpret. A chart makes patterns, outliers, and trends visible at a glance. This project teaches you how to create four common chart types with matplotlib, the standard Python plotting library. You will also learn how to combine multiple charts into a single figure and save the result to a file, which is how charts are shared in reports and presentations.
 
 ## Run
 
@@ -102,4 +102,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 05 — Analysis Report](../05-analysis-report/)
+[Project 05: Analysis Report](../05-analysis-report/)

@@ -41,7 +41,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — full pipeline results
+- `data/output_summary.json`: full pipeline results
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
@@ -52,7 +52,7 @@ pytest -q
 4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Feed a record with key `evt-003` and an older timestamp than the existing record — does the upsert overwrite with stale data?
+1. Feed a record with key `evt-003` and an older timestamp than the existing record: does the upsert overwrite with stale data?
 2. Feed only invalid records and observe that the pipeline handles an all-rejection batch gracefully.
 3. Corrupt the watermark table manually and observe the next run's behavior.
 

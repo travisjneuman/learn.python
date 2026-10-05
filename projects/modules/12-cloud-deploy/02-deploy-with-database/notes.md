@@ -1,4 +1,4 @@
-# Notes — Deploy with Database
+# Notes: Deploy with Database
 
 ## What I learned
 

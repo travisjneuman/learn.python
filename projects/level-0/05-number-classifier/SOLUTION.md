@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 05 - Number Classifier
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -145,10 +145,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `is_even()` and `is_prime()` return `bool` | Boolean returns integrate naturally with `if` statements and conditional expressions. `if is_prime(n)` reads like English | Return strings like `"even"` or `"prime"` — harder to combine with other logic |
-| `is_prime()` checks up to square root only | Reduces iterations dramatically: checking 97 requires 4 iterations instead of 95. For large numbers, this is the difference between instant and slow | Check every number from 2 to n-1 — works but is very slow for large numbers |
-| `classify_number()` bundles all checks in one dict | The caller gets a complete picture with one function call. Useful for both display and storage | Return three separate values — forces the caller to call three functions and manage three variables |
-| `classify_sign()` is its own function | Isolates the sign logic so it can be tested independently (`assert classify_sign(-5) == "negative"`) | Inline the if/elif/else inside `classify_number()` — works but mixes concerns |
+| `is_even()` and `is_prime()` return `bool` | Boolean returns integrate naturally with `if` statements and conditional expressions. `if is_prime(n)` reads like English | Return strings like `"even"` or `"prime"`: harder to combine with other logic |
+| `is_prime()` checks up to square root only | Reduces iterations dramatically: checking 97 requires 4 iterations instead of 95. For large numbers, this is the difference between instant and slow | Check every number from 2 to n-1: works but is very slow for large numbers |
+| `classify_number()` bundles all checks in one dict | The caller gets a complete picture with one function call. Useful for both display and storage | Return three separate values: forces the caller to call three functions and manage three variables |
+| `classify_sign()` is its own function | Isolates the sign logic so it can be tested independently (`assert classify_sign(-5) == "negative"`) | Inline the if/elif/else inside `classify_number()`: works but mixes concerns |
 
 ## Alternative approaches
 
@@ -163,17 +163,17 @@ def is_prime(n: int) -> bool:
     return all(n % i != 0 for i in range(2, int(n ** 0.5) + 1))
 ```
 
-**Trade-off:** The `all()` approach is more concise and Pythonic — it expresses the prime definition in a single line. However, it checks even divisors too (2, 4, 6...) which is redundant after checking 2, and it imports the concept of generator expressions, which may be unfamiliar at Level 0. The manual while loop in the primary solution makes every step visible and teaches the loop-with-early-return pattern.
+**Trade-off:** The `all()` approach is more concise and Pythonic: it expresses the prime definition in a single line. However, it checks even divisors too (2, 4, 6...) which is redundant after checking 2, and it imports the concept of generator expressions, which may be unfamiliar at Level 0. The manual while loop in the primary solution makes every step visible and teaches the loop-with-early-return pattern.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
 | User enters `0` | `classify_number(0)` returns `sign: "zero", parity: "even", prime: False`. But 0 is technically neither prime nor composite | Add a special label: `"neither"` for 0 and 1 instead of `"composite"` |
-| User enters `1` | `is_prime(1)` correctly returns `False` because 1 is not prime by definition. But labeling it "composite" is mathematically inaccurate | Same fix — treat 1 as "neither prime nor composite" |
-| User enters a negative number like `-7` | `is_prime(-7)` returns `False` (correct — primes are positive by definition). `is_even(-7)` returns `False` (correct — `-7 % 2` is `-1`, not 0 in Python... actually `-7 % 2` is `1` in Python) | Already handled correctly. Python's modulo always returns a non-negative result when the divisor is positive |
-| User enters a very large number like `999999999989` | `is_prime()` checks up to ~999999 — might be slow but will finish. No crash | For Level 0 this is acceptable. Production code would use probabilistic tests like Miller-Rabin |
-| User enters a float like `3.5` | `int("3.5")` raises `ValueError` — the program says "not a valid integer" | Already handled by the try/except. Could also accept floats and truncate, but that changes semantics |
+| User enters `1` | `is_prime(1)` correctly returns `False` because 1 is not prime by definition. But labeling it "composite" is mathematically inaccurate | Same fix: treat 1 as "neither prime nor composite" |
+| User enters a negative number like `-7` | `is_prime(-7)` returns `False` (correct: primes are positive by definition). `is_even(-7)` returns `False` (correct: `-7 % 2` is `-1`, not 0 in Python... actually `-7 % 2` is `1` in Python) | Already handled correctly. Python's modulo always returns a non-negative result when the divisor is positive |
+| User enters a very large number like `999999999989` | `is_prime()` checks up to ~999999: might be slow but will finish. No crash | For Level 0 this is acceptable. Production code would use probabilistic tests like Miller-Rabin |
+| User enters a float like `3.5` | `int("3.5")` raises `ValueError`: the program says "not a valid integer" | Already handled by the try/except. Could also accept floats and truncate, but that changes semantics |
 
 ## Key takeaways
 

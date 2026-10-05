@@ -1,6 +1,6 @@
 # Solution: Scope Confusion
 
-## Bug 1 — `add_item` creates local variables instead of modifying globals
+## Bug 1: `add_item` creates local variables instead of modifying globals
 
 **Lines:** `total = 0.0` and `cart = []` inside `add_item`
 
@@ -18,7 +18,7 @@ def add_item(name, price):
     total = total + price
 ```
 
-## Bug 2 — `apply_discount` reads `total` before assignment
+## Bug 2: `apply_discount` reads `total` before assignment
 
 **Lines:** `discount_applied = False` and `total = total * 0.8`
 
@@ -36,9 +36,9 @@ def apply_discount(code):
         total = total * 0.8
 ```
 
-## Bug 3 — `show_cart` reads globals but could also fail
+## Bug 3: `show_cart` reads globals but could also fail
 
 The `show_cart` function reads `cart`, `total`, and `discount_applied`. It
 works by accident because it never assigns to them. But if `add_item` and
 `apply_discount` are not fixed, `show_cart` will show an empty cart and $0.00
-total — correct Python, wrong results.
+total: correct Python, wrong results.

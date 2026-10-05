@@ -52,7 +52,7 @@ from helpers import greet
 print(greet("Alice"))
 ```
 
-## Packages — folders of modules
+## Packages: folders of modules
 
 A **package** is a folder that contains Python files and an `__init__.py`:
 
@@ -88,7 +88,7 @@ Without `__init__.py`, Python does not recognize the folder as a package.
 When you write `import something`, Python looks in this order:
 
 1. **Current directory** (the folder your script is in)
-2. **Installed packages** (`site-packages/` — things you installed with pip)
+2. **Installed packages** (`site-packages/`: things you installed with pip)
 3. **Standard library** (modules that come with Python, like `os`, `json`, `math`)
 
 You can see the full search path:

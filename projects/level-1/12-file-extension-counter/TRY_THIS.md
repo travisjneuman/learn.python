@@ -1,4 +1,4 @@
-# Try This — Project 12
+# Try This: Project 12
 
 1. Add a "size by extension" feature that shows not just how many files have each extension, but how much disk space they use in total. Add a `--dir` scan to get real file sizes, then print something like:
    ```text

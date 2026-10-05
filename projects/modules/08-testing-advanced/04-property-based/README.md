@@ -1,4 +1,4 @@
-# Module 08 / Project 04 — Property-Based Testing
+# Module 08 / Project 04: Property-Based Testing
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -21,7 +21,7 @@
 
 ## Why this project exists
 
-Normal tests check specific examples: "sort [3,1,2] and expect [1,2,3]". Property-based tests check general truths: "sorting any list should produce a list where every element is less than or equal to the next". Hypothesis generates hundreds of random inputs — including edge cases you would never think of — and checks that your properties hold for all of them. This is how you find the bugs that hide in unusual inputs like empty strings, negative numbers, and Unicode characters.
+Normal tests check specific examples: "sort [3,1,2] and expect [1,2,3]". Property-based tests check general truths: "sorting any list should produce a list where every element is less than or equal to the next". Hypothesis generates hundreds of random inputs (including edge cases you would never think of) and checks that your properties hold for all of them. This is how you find the bugs that hide in unusual inputs like empty strings, negative numbers, and Unicode characters.
 
 ## Run
 
@@ -55,7 +55,7 @@ Hypothesis runs each test with many different random inputs. If any input causes
 
 1. Introduce a subtle bug in `sort_list`: make it drop duplicate elements (use `list(set(lst))` before sorting). Run the property tests and see which one catches it.
 2. Break `encode_decode_json` by changing the encode step to strip whitespace. Hypothesis will find an input where the roundtrip fails.
-3. Remove the `@given` decorator from one test and run it. It becomes a normal test with no inputs — it will either error or do nothing.
+3. Remove the `@given` decorator from one test and run it. It becomes a normal test with no inputs; it will either error or do nothing.
 
 ## Fix it
 
@@ -91,4 +91,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 05 — Integration Testing](../05-integration-testing/)
+[Project 05: Integration Testing](../05-integration-testing/)

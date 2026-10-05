@@ -1,4 +1,4 @@
-# Docker Container Architecture — Diagrams
+# Docker Container Architecture: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 
@@ -120,7 +120,7 @@ flowchart TD
 
 **Key points:**
 - Services communicate by name: the app connects to `db:5432`, not `localhost:5432`
-- `depends_on` controls startup order (but not readiness — use healthchecks for that)
+- `depends_on` controls startup order (but not readiness; use healthchecks for that)
 - Named volumes persist data across container restarts; without them, data is lost on restart
 - `docker compose up` starts everything; `docker compose down` stops and removes containers
 

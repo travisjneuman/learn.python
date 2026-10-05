@@ -1,4 +1,4 @@
-# Try This — Project 01
+# Try This: Project 01
 
 1. Add a new validation type: `"username"`. A valid username should be 3-20 characters long, start with a letter, and contain only letters, digits, and underscores. Add a line like `username: cool_user99` to `data/sample_input.txt` and make sure your validator handles it.
 

@@ -1,7 +1,7 @@
 # Level 0 / Project 03 - Temperature Converter
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=3) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=3): no installation needed!
 
 ## Before You Start
 
@@ -101,17 +101,17 @@ def convert_distance(value, from_unit, to_unit):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add Rankine as a fourth temperature scale (Rankine = Fahrenheit + 459.67).
 2. Ask the user how many decimal places they want in results and round accordingly.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Enter `-300` as a Kelvin value -- this is below absolute zero. Does `convert_temperature()` catch it?
 2. Enter `X` as a unit -- what happens?
 3. Enter `hot` instead of a number -- does `float()` fail gracefully?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `celsius_to_kelvin()` and `kelvin_to_celsius()` reject temperatures below absolute zero.
 2. Add validation for unknown unit codes in `convert_temperature()`.
 3. Add a test that verifies the below-absolute-zero ValueError.

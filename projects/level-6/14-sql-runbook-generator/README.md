@@ -37,7 +37,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — generated runbook details with history
+- `data/output_summary.json`: generated runbook details with history
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 

@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `jitter` parameter that adds random variation (e.g. +/- 10%) to the interval to prevent thundering herd.
 2. Track and report the average interval across all polls in the simulation.
-3. Re-run script and tests — verify jitter and average interval appear in output.
+3. Re-run script and tests: verify jitter and average interval appear in output.
 
 ## Break it (required)
 1. Set `backoff_factor` to 0 or negative and observe what happens to the interval.

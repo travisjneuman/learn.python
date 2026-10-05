@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 05 - CSV First Reader
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -192,10 +192,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `csv.DictReader` instead of `csv.reader` | Accessing columns by name (`row["salary"]`) is self-documenting and resilient to column reordering | `csv.reader` with numeric indices — fragile and unreadable (`row[2]` means nothing without context) |
-| Auto-detect numeric columns | The script works on any CSV without the user specifying which columns are numeric | Require column names as arguments — less convenient, more error-prone |
-| Truncate long cell values | Preserves table alignment; long text would push columns out of line | Wrap text — much harder to implement in a plain-text terminal table |
-| Separate `column_stats` from `detect_numeric_columns` | Detection tells us which columns to analyse; stats computes the actual values — single responsibility | One function that does both — harder to test detection logic independently |
+| `csv.DictReader` instead of `csv.reader` | Accessing columns by name (`row["salary"]`) is self-documenting and resilient to column reordering | `csv.reader` with numeric indices: fragile and unreadable (`row[2]` means nothing without context) |
+| Auto-detect numeric columns | The script works on any CSV without the user specifying which columns are numeric | Require column names as arguments: less convenient, more error-prone |
+| Truncate long cell values | Preserves table alignment; long text would push columns out of line | Wrap text: much harder to implement in a plain-text terminal table |
+| Separate `column_stats` from `detect_numeric_columns` | Detection tells us which columns to analyse; stats computes the actual values: single responsibility | One function that does both: harder to test detection logic independently |
 
 ## Alternative approaches
 

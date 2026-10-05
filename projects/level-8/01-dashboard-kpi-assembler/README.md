@@ -18,9 +18,9 @@ Home: [README](../../../README.md)
 - Percentile-based statistical summaries
 
 ## Why this project exists
-Real dashboards pull metrics from many sources — API gateways, infrastructure agents, monitoring
+Real dashboards pull metrics from many sources: API gateways, infrastructure agents, monitoring
 systems. This project teaches you to aggregate those readings, evaluate them against thresholds,
-and produce a structured dashboard payload — the same pattern used in Grafana, Datadog, and custom BI tools.
+and produce a structured dashboard payload, the same pattern used in Grafana, Datadog, and custom BI tools.
 
 ## Run (copy/paste)
 ```bash
@@ -41,18 +41,18 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/dashboard_output.json` — full dashboard payload
+- `data/dashboard_output.json`: full dashboard payload
 - Passing tests
 - Updated `notes.md`
 
 ## Alter it (required)
-Extend this project in a meaningful way — add a feature that addresses a real use case.
+Extend this project in a meaningful way: add a feature that addresses a real use case.
 
 ## Break it (required)
 Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-Review your code critically — is there a design pattern that would improve it?
+Review your code critically: is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
 Could you explain the architectural trade-offs to a colleague?

@@ -1,4 +1,4 @@
-# Notes — First Dockerfile
+# Notes: First Dockerfile
 
 ## What I learned
 

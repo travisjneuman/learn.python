@@ -1,4 +1,4 @@
-# Notes — CRUD Operations
+# Notes: CRUD Operations
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# Operational Run Logger — Annotated Solution
+# Operational Run Logger: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -228,6 +228,6 @@ A context manager guarantees `finish()` is always called, even on exceptions. Th
 
 ## Common Pitfalls
 
-1. **Forgetting to call `finish()` on error** — If processing raises an exception and `finish()` is never called, the run log has no end time, duration, or status. Always use try/except to ensure `finish()` runs.
-2. **Using local time instead of UTC** — `datetime.now()` returns local time, which changes with timezones and daylight saving. `datetime.now(timezone.utc)` gives consistent timestamps that can be compared across machines.
-3. **Logging too much detail per item** — Logging every item works for small batches, but a 1-million-row ETL job would produce a 1-million-entry event list. In production, log summary events (every 1000 items) instead of per-item events.
+1. **Forgetting to call `finish()` on error**: If processing raises an exception and `finish()` is never called, the run log has no end time, duration, or status. Always use try/except to ensure `finish()` runs.
+2. **Using local time instead of UTC**: `datetime.now()` returns local time, which changes with timezones and daylight saving. `datetime.now(timezone.utc)` gives consistent timestamps that can be compared across machines.
+3. **Logging too much detail per item**: Logging every item works for small batches, but a 1-million-row ETL job would produce a 1-million-entry event list. In production, log summary events (every 1000 items) instead of per-item events.

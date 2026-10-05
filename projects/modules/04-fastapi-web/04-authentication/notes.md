@@ -1,4 +1,4 @@
-# Notes — Authentication
+# Notes: Authentication
 
 ## What I learned
 

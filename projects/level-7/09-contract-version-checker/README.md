@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `"nullable"` attribute to ContractField so a field can be present but None.
 2. Add a `backwards_compatible()` function that checks if new contract is safe to deploy.
-3. Re-run script and tests — verify nullable fields and compatibility check work.
+3. Re-run script and tests: verify nullable fields and compatibility check work.
 
 ## Break it (required)
 1. Pass a version string with only two parts (e.g. `"2.1"`) and watch `parse_version` crash.

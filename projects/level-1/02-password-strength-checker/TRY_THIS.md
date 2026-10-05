@@ -1,4 +1,4 @@
-# Try This — Project 02
+# Try This: Project 02
 
 1. Add a new scoring rule: check whether the password contains three or more consecutive identical characters (like `"aaa"` or `"111"`). If it does, subtract 1 point from the total score. Hint: loop through the password with `range(len(password) - 2)` and compare `password[i]`, `password[i+1]`, and `password[i+2]`.
 

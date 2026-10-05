@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 15
+# Prueba Esto: Ejercicio 15
 
 1. Agrega una funcionalidad que permita al usuario agregar un nuevo estudiante. Pide el nombre y la puntuación, luego vuelve a imprimir el reporte.
 

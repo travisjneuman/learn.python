@@ -1,7 +1,7 @@
 # Level 3 / Project 02 - CLI Arguments Workbench
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=2) — browser exercises cover Level 2 topics
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=2): browser exercises cover Level 2 topics
 
 ## Before You Start
 
@@ -101,17 +101,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
-1. Add a new conversion category — pick a domain that interests you.
+## Alter it (required): Extension
+1. Add a new conversion category: pick a domain that interests you.
 2. What output formatting options would make this tool more useful?
 3. Can you make the conversion direction configurable instead of hardcoded?
 
-## Break it (required) — Core
-1. Try feeding the tool unexpected input types — what happens?
+## Break it (required): Core
+1. Try feeding the tool unexpected input types: what happens?
 2. Can you find an edge case where validation fails silently?
 3. What happens when batch input is malformed?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Improve the error experience for the most confusing failure you found.
 2. Handle a data format edge case the tool currently misses.
 3. Add domain-appropriate input validation.

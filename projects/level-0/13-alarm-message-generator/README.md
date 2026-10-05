@@ -50,17 +50,17 @@ Output written to data/output.json
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--severity` filter flag that shows only alarms at or above a given severity level.
 2. Add timestamps to each alarm notification (use a hardcoded time for reproducibility).
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a line with an unknown severity like `unknown|server01|disk full` -- does `parse_alarm()` reject it?
 2. Add a line with missing fields like `critical|` -- does it crash or handle gracefully?
 3. Add a line with extra pipe characters -- does the parser split correctly?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `parse_alarm()` validates severity against the allowed list (critical, warning, info).
 2. Handle lines with fewer than 3 pipe-delimited fields by raising `ValueError`.
 3. Add a test for the unknown-severity edge case.

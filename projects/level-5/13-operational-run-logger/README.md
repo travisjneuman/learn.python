@@ -45,18 +45,18 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--verbose` flag that prints each event to stdout as it is logged.
 2. Add error counting: track how many errors occurred and include in the summary.
 3. Add a `log_warning` method to `RunLogger` for non-fatal issues.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Point `--input` at a file that does not exist and observe the error handling.
 2. Pass an empty input file (0 lines) and check the event count.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `RunLogger.finish` is always called even when exceptions occur.
 2. Handle empty input gracefully (0 items processed, status still "completed").
 3. Add tests for missing input and empty input.

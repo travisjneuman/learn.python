@@ -1,4 +1,4 @@
-# CSV to JSON Converter — Annotated Solution
+# CSV to JSON Converter: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -245,8 +245,8 @@ Pandas handles encoding detection, type inference, missing values, and quoted fi
 
 ## Common Pitfalls
 
-1. **Quoted fields with commas** — The CSV value `"Smith, Jr.",30` should be one field `Smith, Jr.` followed by `30`. Naive `split(",")` produces three fields: `"Smith`, ` Jr."`, `30`. Use the `csv` module for files with quoted fields.
+1. **Quoted fields with commas**: The CSV value `"Smith, Jr.",30` should be one field `Smith, Jr.` followed by `30`. Naive `split(",")` produces three fields: `"Smith`, ` Jr."`, `30`. Use the `csv` module for files with quoted fields.
 
-2. **Leading zeros lost in type inference** — ZIP code `"01234"` becomes `int(1234)`, losing the leading zero. Phone numbers, IDs, and codes should remain strings. The `--no-types` flag handles this, but a smarter approach would check if the leading character is `0` before converting to int.
+2. **Leading zeros lost in type inference**: ZIP code `"01234"` becomes `int(1234)`, losing the leading zero. Phone numbers, IDs, and codes should remain strings. The `--no-types` flag handles this, but a smarter approach would check if the leading character is `0` before converting to int.
 
-3. **Encoding mismatches** — A CSV file saved as UTF-8 with BOM (byte order mark) will have `\ufeff` at the start of the first header. This makes the first column name something like `\ufeffname` instead of `name`. Use `encoding="utf-8-sig"` in `read_text()` to handle BOMs automatically.
+3. **Encoding mismatches**: A CSV file saved as UTF-8 with BOM (byte order mark) will have `\ufeff` at the start of the first header. This makes the first column name something like `\ufeffname` instead of `name`. Use `encoding="utf-8-sig"` in `read_text()` to handle BOMs automatically.

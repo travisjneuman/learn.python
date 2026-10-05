@@ -1,4 +1,4 @@
-# List Search Benchmark — Annotated Solution
+# List Search Benchmark: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -239,8 +239,8 @@ time_us = timeit.timeit(
 
 ## Common Pitfalls
 
-1. **Running binary search on unsorted data** — Binary search assumes sorted input. On unsorted data it may return wrong answers or miss elements that are present. Always verify data is sorted before using binary search, or sort it first (but remember sorting itself is O(n log n)).
+1. **Running binary search on unsorted data**: Binary search assumes sorted input. On unsorted data it may return wrong answers or miss elements that are present. Always verify data is sorted before using binary search, or sort it first (but remember sorting itself is O(n log n)).
 
-2. **Forgetting set construction cost** — Set lookup is O(1), but building the set from a list is O(n). If you only search once, the total cost is O(n) + O(1) = O(n), same as linear search. Sets only win when you search the same data multiple times.
+2. **Forgetting set construction cost**: Set lookup is O(1), but building the set from a list is O(n). If you only search once, the total cost is O(n) + O(1) = O(n), same as linear search. Sets only win when you search the same data multiple times.
 
-3. **Benchmarking with too few iterations** — A single measurement on a microsecond-scale operation is dominated by noise. Use at least 50-100 iterations and report the average. For sub-microsecond operations, you may need thousands of iterations.
+3. **Benchmarking with too few iterations**: A single measurement on a microsecond-scale operation is dominated by noise. Use at least 50-100 iterations and report the average. For sub-microsecond operations, you may need thousands of iterations.

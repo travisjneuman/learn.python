@@ -1,4 +1,4 @@
-# Service Simulator — Annotated Solution
+# Service Simulator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -273,9 +273,9 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| `random.Random(seed)` instance vs global `random` | An instance-level RNG is isolated — setting a seed produces deterministic results without affecting other code that uses `random`. Essential for reproducible tests. |
+| `random.Random(seed)` instance vs global `random` | An instance-level RNG is isolated: setting a seed produces deterministic results without affecting other code that uses `random`. Essential for reproducible tests. |
 | Cumulative probability thresholds | One `random()` call determines the outcome by checking against cumulative boundaries (timeout, then +rate_limit, then +error). Simpler and faster than multiple independent random calls. |
-| Retry only on 5xx and 429 | 4xx errors (except 429) are client mistakes — retrying the same request will get the same error. 5xx and 429 are transient — the next attempt might succeed. |
+| Retry only on 5xx and 429 | 4xx errors (except 429) are client mistakes: retrying the same request will get the same error. 5xx and 429 are transient: the next attempt might succeed. |
 | Class for SimulatedService | Encapsulates state (config, RNG, counters) with behaviour (request, get_log). Each instance is an independent service, allowing tests to create multiple services with different configs. |
 | Status codes follow real HTTP conventions | 200=success, 429=rate limited, 500=server error, 504=timeout. Using real codes teaches the HTTP status code system in context. |
 
@@ -299,12 +299,12 @@ def retry_with_backoff(service, max_retries=3, base_delay=0.1):
     return response, max_retries
 ```
 
-**Trade-off:** Exponential backoff prevents overwhelming an already-struggling service. Real production code always uses it. But `time.sleep()` makes tests slow — the simulation approach (no actual sleeping) keeps tests fast while teaching the concept.
+**Trade-off:** Exponential backoff prevents overwhelming an already-struggling service. Real production code always uses it. But `time.sleep()` makes tests slow: the simulation approach (no actual sleeping) keeps tests fast while teaching the concept.
 
 ## Common Pitfalls
 
-1. **Rates summing to more than 1.0** — If `timeout_rate=0.5` and `error_rate=0.6`, no request would ever succeed because the failure thresholds cover the entire [0, 1) range. Validate that rates sum to at most 1.0.
+1. **Rates summing to more than 1.0**: If `timeout_rate=0.5` and `error_rate=0.6`, no request would ever succeed because the failure thresholds cover the entire [0, 1) range. Validate that rates sum to at most 1.0.
 
-2. **Using global `random` in tests** — `random.random()` depends on global state that other tests or libraries might change. Always use `random.Random(seed)` for an isolated, reproducible RNG in tests.
+2. **Using global `random` in tests**: `random.random()` depends on global state that other tests or libraries might change. Always use `random.Random(seed)` for an isolated, reproducible RNG in tests.
 
-3. **Retrying on 4xx client errors** — A 400 Bad Request or 403 Forbidden will return the same error every time you retry. Only retry on transient failures (5xx, 429). The `retry_request` function correctly skips 4xx errors.
+3. **Retrying on 4xx client errors**: A 400 Bad Request or 403 Forbidden will return the same error every time you retry. Only retry on transient failures (5xx, 429). The `retry_request` function correctly skips 4xx errors.

@@ -1,4 +1,4 @@
-# functools and itertools — Part 1: functools
+# functools and itertools, Part 1: functools
 
 [← Back to Overview](./functools-and-itertools.md) · [Part 2: itertools →](./functools-and-itertools-part2.md)
 
@@ -20,7 +20,7 @@ The `functools` module gives you tools to transform and optimize functions. Thes
 
 These tools save you from reinventing the wheel and produce code that is both faster and more readable. `lru_cache` alone can turn a function that takes minutes into one that returns instantly.
 
-## `functools.lru_cache` — automatic memoization
+## `functools.lru_cache`: automatic memoization
 
 Caches the results of a function so repeated calls with the same arguments are instant:
 
@@ -38,7 +38,7 @@ fibonacci(100)    # Returns instantly — without cache, this would take forever
 
 `maxsize=128` keeps the 128 most recent results. Use `maxsize=None` for unlimited cache (careful with memory). Arguments must be hashable (no lists or dicts).
 
-## `functools.partial` — pre-fill function arguments
+## `functools.partial`: pre-fill function arguments
 
 Creates a new function with some arguments already filled in:
 
@@ -70,7 +70,7 @@ print(pretty_json({"b": 2, "a": 1}))
 # }
 ```
 
-## `functools.reduce` — fold a sequence into one value
+## `functools.reduce`: fold a sequence into one value
 
 Applies a function cumulatively to items in a sequence, reducing it to a single value:
 
@@ -93,7 +93,7 @@ flat = reduce(lambda a, b: a + b, nested)    # [1, 2, 3, 4, 5]
 
 For simple operations, prefer built-in functions (`sum`, `max`, `min`). Use `reduce` when no built-in fits.
 
-## `functools.wraps` — preserve function metadata in decorators
+## `functools.wraps`: preserve function metadata in decorators
 
 ```python
 from functools import wraps

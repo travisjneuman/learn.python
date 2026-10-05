@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add an `"inactive_days"` rule that flags accounts not used within N days.
 2. Add a `remediation_suggestion` field to each Violation (e.g. "rotate key" or "reduce permissions").
-3. Re-run script and tests — verify new rule and suggestions appear in the compliance report.
+3. Re-run script and tests: verify new rule and suggestions appear in the compliance report.
 
 ## Break it (required)
 1. Provide a naming pattern with invalid regex syntax (e.g. `"[invalid"`) and observe the crash.

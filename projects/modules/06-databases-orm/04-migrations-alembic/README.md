@@ -1,4 +1,4 @@
-# Module 06 / Project 04 — Migrations with Alembic
+# Module 06 / Project 04: Migrations with Alembic
 
 Home: [README](../../../../README.md) · Module: [Databases & ORM](../README.md)
 
@@ -22,7 +22,7 @@ Home: [README](../../../../README.md) · Module: [Databases & ORM](../README.md)
 
 ## Why this project exists
 
-When your application is live and has real data, you cannot just drop and recreate tables. You need a way to evolve your schema safely — adding columns, changing types, creating indexes — without losing data. Alembic is SQLAlchemy's migration tool. It tracks every schema change as a versioned script that can be applied forward or rolled back.
+When your application is live and has real data, you cannot just drop and recreate tables. You need a way to evolve your schema safely (adding columns, changing types, creating indexes) without losing data. Alembic is SQLAlchemy's migration tool. It tracks every schema change as a versioned script that can be applied forward or rolled back.
 
 ## Setup
 
@@ -37,7 +37,7 @@ pip install -r ../requirements.txt
 
 ### Step 1: Understand the starting models
 
-Look at `project.py`. It defines `Author` and `Book` models — the same ones from Project 02, but without a `genre` column on Book. We will add that column via a migration.
+Look at `project.py`. It defines `Author` and `Book` models, the same ones from Project 02, but without a `genre` column on Book. We will add that column via a migration.
 
 ### Step 2: Create the initial database
 
@@ -50,8 +50,8 @@ This creates `library.db` with the initial schema (no genre column).
 ### Step 3: Examine the Alembic setup
 
 The project already has Alembic configured:
-- `alembic.ini` — points to the SQLite database
-- `alembic/env.py` — imports the models so Alembic can compare them to the database
+- `alembic.ini`: points to the SQLite database
+- `alembic/env.py`: imports the models so Alembic can compare them to the database
 
 ### Step 4: Create the first migration
 
@@ -152,4 +152,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 05 — Query Optimization](../05-query-optimization/)
+[Project 05: Query Optimization](../05-query-optimization/)

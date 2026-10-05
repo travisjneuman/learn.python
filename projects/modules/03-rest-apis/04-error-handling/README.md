@@ -1,4 +1,4 @@
-# Module 03 / Project 04 — Error Handling
+# Module 03 / Project 04: Error Handling
 
 [README](../../../../README.md)
 
@@ -56,7 +56,7 @@ Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderi
 
 1. Change the retry function to attempt 5 times instead of 3. Increase the base delay to 2 seconds.
 2. Add a test that uses `response.status_code` to check for a 200 before parsing JSON, without using `raise_for_status()`.
-3. Add a test that catches `requests.exceptions.JSONDecodeError` by requesting a URL that returns non-JSON content (try `https://jsonplaceholder.typicode.com/` — the homepage returns HTML).
+3. Add a test that catches `requests.exceptions.JSONDecodeError` by requesting a URL that returns non-JSON content (try `https://jsonplaceholder.typicode.com/`; the homepage returns HTML).
 
 ## Break it
 

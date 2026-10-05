@@ -46,17 +46,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `sqrt` operation that only uses the `--a` operand.
 2. Add a `--chain` mode: `--chain "add:5,multiply:2"` starting from `--a`.
 3. Use `settings.precision` from the config to control decimal places.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Pass a config file with missing "operations" key.
-2. Compute `2 ** 1000` — does the result overflow?
+2. Compute `2 ** 1000`: does the result overflow?
 3. Pass non-numeric values for `--a` or `--b`.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add `config.setdefault` for missing keys.
 2. Check for overflow/infinity in calculate results.
 3. Wrap float() conversion in try/except in batch mode.

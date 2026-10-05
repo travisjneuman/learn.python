@@ -1,4 +1,4 @@
-# Config Driven Calculator — Annotated Solution
+# Config Driven Calculator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -248,12 +248,12 @@ A dispatch dict is cleaner than if/elif chains and makes adding operations trivi
 
 ### Using `ast.literal_eval` for safe expression parsing
 
-For more complex config-driven calculations, `ast.literal_eval` can safely parse Python literals without the security risks of dynamic code execution. However, it cannot evaluate expressions — only literal values. For actual expression evaluation, use a purpose-built parser library, never unchecked dynamic execution.
+For more complex config-driven calculations, `ast.literal_eval` can safely parse Python literals without the security risks of dynamic code execution. However, it cannot evaluate expressions, only literal values. For actual expression evaluation, use a purpose-built parser library, never unchecked dynamic execution.
 
 ## Common Pitfalls
 
-1. **Missing "operations" key in config** — Without `setdefault`, a config file like `{"settings": {"precision": 4}}` would crash when the code tries to access `config["operations"]`. Always provide defaults for optional config keys.
+1. **Missing "operations" key in config**: Without `setdefault`, a config file like `{"settings": {"precision": 4}}` would crash when the code tries to access `config["operations"]`. Always provide defaults for optional config keys.
 
-2. **`2 ** 1000` does not overflow in Python** — Unlike C or Java, Python integers have arbitrary precision. `2 ** 1000` produces a very large integer, not an error. But `float(2 ** 1000)` raises `OverflowError` because floats have limited range. The `except OverflowError` clause catches this.
+2. **`2 ** 1000` does not overflow in Python**: Unlike C or Java, Python integers have arbitrary precision. `2 ** 1000` produces a very large integer, not an error. But `float(2 ** 1000)` raises `OverflowError` because floats have limited range. The `except OverflowError` clause catches this.
 
-3. **Non-numeric CLI arguments** — If `--a` receives a string like "abc", `argparse` catches it because `type=float` is specified. But in batch mode, the JSON values are not validated by argparse, so the `try/except` in `batch_calculate` is essential.
+3. **Non-numeric CLI arguments**: If `--a` receives a string like "abc", `argparse` catches it because `type=float` is specified. But in batch mode, the JSON values are not validated by argparse, so the `try/except` in `batch_calculate` is essential.

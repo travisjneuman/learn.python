@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 08 - Path Exists Checker
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -178,10 +178,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `pathlib.Path` instead of `os.path` | Path objects are more readable (`p.exists()` vs `os.path.exists(str)`) and work cross-platform with consistent slash handling | `os.path` functions — work fine but are string-based and less Pythonic |
-| Return "missing" type instead of None for non-existent paths | Uniform result structure — every path gets a dict with `exists` and `type`, so the display loop does not need special None handling | Return None — caller must check for None before accessing dict keys |
-| `format_size()` with a loop over units | Automatically scales to the right unit (B, KB, MB, GB); adding TB is just one more list item | If/elif chain with hardcoded thresholds — more repetitive, harder to extend |
-| PermissionError handling in directory counting | Prevents crashes on system directories (e.g., `/root`, `C:\System Volume Information`) that deny access | Let the error propagate — would crash the whole scan on one restricted directory |
+| `pathlib.Path` instead of `os.path` | Path objects are more readable (`p.exists()` vs `os.path.exists(str)`) and work cross-platform with consistent slash handling | `os.path` functions: work fine but are string-based and less Pythonic |
+| Return "missing" type instead of None for non-existent paths | Uniform result structure: every path gets a dict with `exists` and `type`, so the display loop does not need special None handling | Return None: caller must check for None before accessing dict keys |
+| `format_size()` with a loop over units | Automatically scales to the right unit (B, KB, MB, GB); adding TB is just one more list item | If/elif chain with hardcoded thresholds: more repetitive, harder to extend |
+| PermissionError handling in directory counting | Prevents crashes on system directories (e.g., `/root`, `C:\System Volume Information`) that deny access | Let the error propagate: would crash the whole scan on one restricted directory |
 
 ## Alternative approaches
 
@@ -213,7 +213,7 @@ def check_path_os(path_str: str) -> dict:
     return result
 ```
 
-**Trade-off:** `os.path` works on all Python versions including 2.x and is what many tutorials teach. `pathlib` is the modern approach — it is object-oriented, more readable, and handles cross-platform path separators automatically. Prefer `pathlib` for new code, but recognise `os.path` when reading older codebases.
+**Trade-off:** `os.path` works on all Python versions including 2.x and is what many tutorials teach. `pathlib` is the modern approach: it is object-oriented, more readable, and handles cross-platform path separators automatically. Prefer `pathlib` for new code, but recognise `os.path` when reading older codebases.
 
 ## What could go wrong
 

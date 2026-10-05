@@ -1,4 +1,4 @@
-# Module 03 / Project 05 — API Client Class
+# Module 03 / Project 05: API Client Class
 
 [README](../../../../README.md)
 
@@ -111,4 +111,4 @@ You can move on when you can:
 
 ## Next
 
-Go back to the [Module 03 index](../README.md). If you are ready for more, continue to [Module 04 — FastAPI Web Apps](../../04-fastapi-web/).
+Go back to the [Module 03 index](../README.md). If you are ready for more, continue to [Module 04: FastAPI Web Apps](../../04-fastapi-web/).

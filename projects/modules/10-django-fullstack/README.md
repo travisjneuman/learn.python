@@ -1,4 +1,4 @@
-# Module 10 — Django Full-Stack
+# Module 10: Django Full-Stack
 
 [README](../../../README.md) · Modules: [Index](../README.md)
 
@@ -61,8 +61,8 @@ See [concepts/virtual-environments.md](../../../concepts/virtual-environments.md
 
 This module requires two packages (listed in `requirements.txt`):
 
-- **django** — the web framework. It includes an ORM, template engine, form handling, authentication, admin interface, and development server. Django follows the MTV (Model-Template-View) pattern, which is similar to MVC but with different naming conventions.
-- **djangorestframework** — a toolkit for building REST APIs on top of Django. It adds serializers (like Pydantic models in FastAPI), viewsets, routers, and a browsable API interface. If you used FastAPI in Module 04, DRF is Django's equivalent approach to API building.
+- **django**: the web framework. It includes an ORM, template engine, form handling, authentication, admin interface, and development server. Django follows the MTV (Model-Template-View) pattern, which is similar to MVC but with different naming conventions.
+- **djangorestframework**: a toolkit for building REST APIs on top of Django. It adds serializers (like Pydantic models in FastAPI), viewsets, routers, and a browsable API interface. If you used FastAPI in Module 04, DRF is Django's equivalent approach to API building.
 
 ## Django vs FastAPI
 
@@ -114,7 +114,7 @@ Book.objects.raw(f"SELECT * FROM books WHERE title = '{user_input}'")
 Book.objects.raw("SELECT * FROM books WHERE title = %s", [user_input])
 ```
 
-If you must use `raw()` or `cursor.execute()`, always pass parameters as a list — never use f-strings or `.format()`.
+If you must use `raw()` or `cursor.execute()`, always pass parameters as a list. Never use f-strings or `.format()`.
 
 ### XSS Prevention
 

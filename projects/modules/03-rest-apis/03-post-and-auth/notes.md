@@ -1,4 +1,4 @@
-# Notes — POST and Auth
+# Notes: POST and Auth
 
 ## What I learned
 

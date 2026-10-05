@@ -18,7 +18,7 @@ Home: [README](../../../README.md)
 - Experiment rollback and recovery measurement
 
 ## Why this project exists
-Netflix's Chaos Monkey proved that systems must be tested against failure. This framework lets you define chaos experiments, inject faults into a service model, measure impact, and quantify resilience with letter grades — turning "we think it's reliable" into a measurable score.
+Netflix's Chaos Monkey proved that systems must be tested against failure. This framework lets you define chaos experiments, inject faults into a service model, measure impact, and quantify resilience with letter grades, turning "we think it's reliable" into a measurable score.
 
 ## Run (copy/paste)
 ```bash
@@ -39,7 +39,7 @@ pytest -v
 ```
 
 ## Alter it (required)
-1. Add a `NetworkPartition` chaos action that removes all dependencies at once — implement `apply` and `rollback`.
+1. Add a `NetworkPartition` chaos action that removes all dependencies at once: implement `apply` and `rollback`.
 2. Add a `CombinedFault` that applies multiple actions simultaneously (e.g., latency + errors).
 3. Add a "blast radius" metric to the scorecard based on impact severity.
 
@@ -55,7 +55,7 @@ pytest -v
 
 ## Explain it (teach-back)
 1. How does the Strategy pattern make it easy to add new fault types without modifying the experiment runner?
-2. Why is rollback essential in chaos engineering — what happens if you don't roll back?
+2. Why is rollback essential in chaos engineering: what happens if you don't roll back?
 3. How does the grading system translate recovery rates into actionable categories?
 4. How would you adapt this to test real distributed systems instead of a simulation?
 

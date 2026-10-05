@@ -1,4 +1,4 @@
-# Resilient JSON Loader — Annotated Solution
+# Resilient JSON Loader: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -226,6 +226,6 @@ Exception chaining (the `from e` syntax) preserves the original error while wrap
 
 ## Common Pitfalls
 
-1. **Trailing commas are valid in JavaScript but not JSON** — Many developers add trailing commas from habit. `[1, 2, 3,]` is invalid JSON. The repair heuristic strips these, but the best fix is to validate upstream data.
-2. **Assuming UTF-8 everywhere** — Files from legacy systems or Windows tools often use Latin-1, Windows-1252, or other encodings. Without the encoding fallback, `read_text(encoding="utf-8")` raises `UnicodeDecodeError` and the entire load fails.
-3. **Repairing corrupted data silently** — If repair succeeds, the loaded data may be subtly wrong (e.g., a truncated final record is missing). Always log when repair is used so operators know the data quality is degraded.
+1. **Trailing commas are valid in JavaScript but not JSON**: Many developers add trailing commas from habit. `[1, 2, 3,]` is invalid JSON. The repair heuristic strips these, but the best fix is to validate upstream data.
+2. **Assuming UTF-8 everywhere**: Files from legacy systems or Windows tools often use Latin-1, Windows-1252, or other encodings. Without the encoding fallback, `read_text(encoding="utf-8")` raises `UnicodeDecodeError` and the entire load fails.
+3. **Repairing corrupted data silently**: If repair succeeds, the loaded data may be subtly wrong (e.g., a truncated final record is missing). Always log when repair is used so operators know the data quality is degraded.

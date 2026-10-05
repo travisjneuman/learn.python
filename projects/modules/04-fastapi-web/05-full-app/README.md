@@ -1,4 +1,4 @@
-# Module 04 / Project 05 — Full App
+# Module 04 / Project 05: Full App
 
 Home: [README](../../../../README.md)
 
@@ -109,6 +109,6 @@ You have completed Module 04. You now know how to build, secure, and test a Fast
 
 Suggested next steps:
 
-- [Module 05 — Async Python](../../05-async-python/) to learn async/await patterns
-- [Module 06 — Databases & ORM](../../06-databases-orm/) to go deeper with SQLAlchemy and migrations
-- [Module 09 — Docker & Deployment](../../09-docker-deployment/) to containerize and deploy your API
+- [Module 05: Async Python](../../05-async-python/) to learn async/await patterns
+- [Module 06: Databases & ORM](../../06-databases-orm/) to go deeper with SQLAlchemy and migrations
+- [Module 09: Docker & Deployment](../../09-docker-deployment/) to containerize and deploy your API

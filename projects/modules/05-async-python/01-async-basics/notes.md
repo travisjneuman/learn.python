@@ -1,4 +1,4 @@
-# Notes — Async Basics
+# Notes: Async Basics
 
 ## What I learned
 

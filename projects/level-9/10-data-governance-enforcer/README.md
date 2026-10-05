@@ -22,7 +22,7 @@ Home: [README](../../../README.md)
 Data governance ensures that data is classified, retained appropriately, and accessed only
 by authorized roles. Without governance, sensitive customer data leaks through analyst
 exports, logs retain PII indefinitely, and intern accounts access production databases.
-This project builds a policy engine for data governance — classifying data assets, enforcing
+This project builds a policy engine for data governance: classifying data assets, enforcing
 retention windows, and validating access requests against role-based policies. These are
 the same patterns used in GDPR/CCPA compliance systems at every regulated organization.
 
@@ -50,14 +50,14 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-1. Add an `encryption_required` check — CONFIDENTIAL and RESTRICTED assets should require encryption.
+1. Add an `encryption_required` check: CONFIDENTIAL and RESTRICTED assets should require encryption.
 2. Add an audit log that records all access evaluations (granted and denied).
 3. Add a `--report` flag that outputs the full compliance summary as formatted JSON.
 
 ## Break it (required)
-1. Register an asset with a classification not covered by any retention policy — what happens?
-2. Request access with a role that has no access policy defined — what error occurs?
-3. Set `min_retention_days > max_retention_days` in a `RetentionPolicy` — does validation catch it?
+1. Register an asset with a classification not covered by any retention policy: what happens?
+2. Request access with a role that has no access policy defined: what error occurs?
+3. Set `min_retention_days > max_retention_days` in a `RetentionPolicy`: does validation catch it?
 
 ## Fix it (required)
 1. Add validation that `min_retention_days <= max_retention_days` in `RetentionPolicy.__post_init__`.
@@ -67,7 +67,7 @@ pytest -q
 ## Explain it (teach-back)
 1. What is data classification (PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED) and why does it matter?
 2. How does the access control matrix map roles to allowed classification levels?
-3. Why does PII access require a stated purpose — what regulation drives this?
+3. Why does PII access require a stated purpose: what regulation drives this?
 4. How do real organizations implement data governance for GDPR/CCPA compliance?
 
 ## Mastery check

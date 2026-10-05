@@ -1,4 +1,4 @@
-# Schema Validator Engine — Step-by-Step Walkthrough
+# Schema Validator Engine: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

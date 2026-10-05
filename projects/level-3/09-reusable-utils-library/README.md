@@ -48,17 +48,17 @@ myVariableName
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `deep_flatten` function that flattens arbitrarily nested lists.
 2. Add a `validate_phone` function similar to `validate_email`.
 3. Add a `pluralize` string utility (simple English rules: "cat" -> "cats").
 
-## Break it (required) — Core
-1. Call `chunk` with size 0 — what happens?
-2. Call `slugify` with only special characters — what is returned?
-3. Call `camel_to_snake` on an already-snake string — is the result correct?
+## Break it (required): Core
+1. Call `chunk` with size 0: what happens?
+2. Call `slugify` with only special characters: what is returned?
+3. Call `camel_to_snake` on an already-snake string: is the result correct?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `chunk` raises a clear error for non-positive sizes.
 2. Handle edge case where `slugify` produces an empty string.
 3. Add idempotency: `camel_to_snake(snake_to_camel(x))` should round-trip.

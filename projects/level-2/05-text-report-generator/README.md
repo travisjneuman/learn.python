@@ -1,7 +1,7 @@
 # Level 2 / Project 05 - Text Report Generator
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=5) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=5): no installation needed!
 
 ## Before You Start
 
@@ -57,17 +57,17 @@ Breakdown by department: ...
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--sort-by` flag to sort groups by total, mean, or count.
 2. Add a "Bottom 5" section alongside the "Top 5" section.
 3. Add a `--output` flag to save the report to a file.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Feed a CSV where the salary column has some non-numeric values (e.g. "N/A").
 2. Feed a CSV with mismatched column counts (some rows have more/fewer fields).
 3. Use a group field that does not exist in the header.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `extract_numeric` handles "N/A" and blank values without crashing.
 2. Handle rows with missing fields by padding with empty strings.
 3. Show "UNKNOWN" when a group field is missing from a record.

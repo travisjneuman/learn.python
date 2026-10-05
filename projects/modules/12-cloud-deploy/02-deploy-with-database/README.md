@@ -1,4 +1,4 @@
-# Module 12 / Project 02 — Deploy with Database
+# Module 12 / Project 02: Deploy with Database
 
 Home: [README](../../../../README.md) · Module: [Cloud Deployment](../README.md)
 
@@ -133,4 +133,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — Production Checklist](../03-production-checklist/)
+[Project 03: Production Checklist](../03-production-checklist/)

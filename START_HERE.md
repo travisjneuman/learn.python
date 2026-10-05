@@ -31,11 +31,11 @@ Try our browser-based exercises at [browser/index.html](./browser/index.html). T
 
 Beyond the main projects, the curriculum includes several ways to reinforce what you learn:
 
-- **Quizzes** — Test your understanding of each concept: [`concepts/quizzes/`](./concepts/quizzes/)
-- **Flashcards** — Quick-review decks for key terms and patterns: [`practice/flashcards/`](./practice/flashcards/)
-- **Challenges** — Standalone problems sorted by difficulty: [`practice/challenges/`](./practice/challenges/)
-- **Browser Exercises** — Run Python in your browser with no install: [`browser/`](./browser/index.html)
-- **Spaced Repetition** — SM-2 algorithm to schedule reviews: [`tools/spaced_repetition.py`](./tools/spaced_repetition.py)
+- **Quizzes**: Test your understanding of each concept: [`concepts/quizzes/`](./concepts/quizzes/)
+- **Flashcards**: Quick-review decks for key terms and patterns: [`practice/flashcards/`](./practice/flashcards/)
+- **Challenges**: Standalone problems sorted by difficulty: [`practice/challenges/`](./practice/challenges/)
+- **Browser Exercises**: Run Python in your browser with no install: [`browser/`](./browser/index.html)
+- **Spaced Repetition**: SM-2 algorithm to schedule reviews: [`tools/spaced_repetition.py`](./tools/spaced_repetition.py)
 
 ## Never done this before?
 Read [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md) first. It explains what a terminal, file, and program are.

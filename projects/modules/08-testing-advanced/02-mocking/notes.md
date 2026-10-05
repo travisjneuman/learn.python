@@ -1,4 +1,4 @@
-# Notes — Mocking
+# Notes: Mocking
 
 ## What I learned
 

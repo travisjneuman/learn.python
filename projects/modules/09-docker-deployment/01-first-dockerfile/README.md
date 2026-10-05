@@ -1,4 +1,4 @@
-# Module 09 / Project 01 — First Dockerfile
+# Module 09 / Project 01: First Dockerfile
 
 Home: [README](../../../../README.md)
 
@@ -33,7 +33,7 @@ Visit http://127.0.0.1:8000 to confirm it works, then stop the server with `Ctrl
 
 ### With Docker
 
-**Step 1 — Build the image.** This reads the Dockerfile and creates an image named `first-dockerfile`:
+**Step 1: Build the image.** This reads the Dockerfile and creates an image named `first-dockerfile`:
 
 ```bash
 docker build -t first-dockerfile .
@@ -41,7 +41,7 @@ docker build -t first-dockerfile .
 
 You will see Docker execute each instruction. The first build downloads the base image and installs dependencies (slow). Subsequent builds reuse cached layers (fast).
 
-**Step 2 — Run a container from the image:**
+**Step 2: Run a container from the image:**
 
 ```bash
 docker run -p 8000:8000 first-dockerfile
@@ -49,13 +49,13 @@ docker run -p 8000:8000 first-dockerfile
 
 The `-p 8000:8000` flag maps port 8000 on your machine to port 8000 inside the container.
 
-**Step 3 — Visit your app:**
+**Step 3: Visit your app:**
 
-- http://127.0.0.1:8000 — root endpoint
-- http://127.0.0.1:8000/health — health check
-- http://127.0.0.1:8000/docs — interactive API docs
+- http://127.0.0.1:8000 (root endpoint)
+- http://127.0.0.1:8000/health (health check)
+- http://127.0.0.1:8000/docs (interactive API docs)
 
-**Step 4 — Stop the container** with `Ctrl+C`.
+**Step 4: Stop the container** with `Ctrl+C`.
 
 ### Useful Docker commands
 

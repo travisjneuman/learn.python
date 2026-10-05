@@ -1,4 +1,4 @@
-# Module 09 / Project 02 — Multi-Stage Build
+# Module 09 / Project 02: Multi-Stage Build
 
 Home: [README](../../../../README.md)
 

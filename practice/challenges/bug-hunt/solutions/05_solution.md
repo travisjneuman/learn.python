@@ -1,6 +1,6 @@
 # Solution: File Handling Bugs
 
-## Bug 1 — `create_notes_file` opens file in read mode
+## Bug 1: `create_notes_file` opens file in read mode
 
 **Line:** `f = open(NOTES_FILE, "r")`
 
@@ -15,7 +15,7 @@ f.write("# My Notes\n")
 f.close()
 ```
 
-## Bug 2 — `add_note` opens file in write mode instead of append
+## Bug 2: `add_note` opens file in write mode instead of append
 
 **Line:** `f = open(NOTES_FILE, "w")`
 
@@ -28,7 +28,7 @@ Should be `"a"` for append.
 f = open(NOTES_FILE, "a")
 ```
 
-## Bug 3 — `add_note` never closes the file
+## Bug 3: `add_note` never closes the file
 
 **Problem:** The file handle `f` is opened but never closed. This can cause
 data loss (buffered writes never flushed) and resource leaks.
@@ -42,7 +42,7 @@ def add_note(text):
         f.write(f"[{timestamp}] {text}\n")
 ```
 
-## Bug 4 — `read_notes` uses ASCII encoding with emoji content
+## Bug 4: `read_notes` uses ASCII encoding with emoji content
 
 **Line:** `encoding="ascii"`
 
@@ -55,7 +55,7 @@ cannot decode non-ASCII bytes, raising `UnicodeDecodeError`.
 with open(NOTES_FILE, "r", encoding="utf-8") as f:
 ```
 
-## Bug 5 — `count_notes` leaks a file handle
+## Bug 5: `count_notes` leaks a file handle
 
 **Line:** `for line in open(NOTES_FILE):`
 

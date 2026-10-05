@@ -1,6 +1,6 @@
 # Solution: Off By One
 
-## Bug 1 — `print_roster` skips the first student
+## Bug 1: `print_roster` skips the first student
 
 **Line:** `for i in range(1, len(students)):`
 
@@ -15,13 +15,13 @@ for i in range(len(students)):
     print(f"{i + 1}. {students[i]['name']} — Grade: {students[i]['grade']}")
 ```
 
-## Bug 2 — `average_grade` divides by wrong number
+## Bug 2: `average_grade` divides by wrong number
 
 **Line:** `average = total / len(students) + 1`
 
 **Problem:** Operator precedence makes this `(total / len(students)) + 1`.
 The intent was probably `total / (len(students) + 1)`, but the real fix is
-simply `total / len(students)` — there is no reason to add 1 at all.
+simply `total / len(students)`; there is no reason to add 1 at all.
 
 **Fix:**
 
@@ -29,7 +29,7 @@ simply `total / len(students)` — there is no reason to add 1 at all.
 average = total / len(students)
 ```
 
-## Bug 3 — `top_student` uses wrong key access
+## Bug 3: `top_student` uses wrong key access
 
 **Line:** `return best[0]`
 

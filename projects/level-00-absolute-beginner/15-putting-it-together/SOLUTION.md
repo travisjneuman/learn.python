@@ -1,10 +1,10 @@
 # Solution: 15-putting-it-together
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -114,10 +114,10 @@ print("\nDone!")  # WHY: A clean exit message — the program is finished
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
 | Organize code into 4 separate functions | Each function does one job: load data, convert grade, calculate average, print report. This makes the code easy to understand, test, and reuse | Could write everything in one long script, but that becomes messy and hard to modify as the program grows |
-| Use a list of dictionaries for student data | Each student is a dictionary `{"name": "Alice", "score": 92}` — grouped data stays together and is accessed by label | Could use two parallel lists (names and scores) like Exercise 14, but dictionaries are cleaner when data belongs together |
-| Make the search case-insensitive with `.lower()` | Users should not have to worry about capitalization — "alice", "Alice", and "ALICE" should all find the same student | Could require exact case, but that frustrates users and is bad user experience |
-| Use string formatting (`:<10`, `:>3`, `:.1f`) | Aligned columns make the report professional and readable — without formatting, the output looks ragged | Could use plain `print()` without formatting, but the output would be harder to read |
-| Separate the main program from the function definitions | Functions at the top, main logic at the bottom is the standard Python file layout — it makes the flow clear | Could interleave definitions and calls, but that makes the code harder to follow |
+| Use a list of dictionaries for student data | Each student is a dictionary `{"name": "Alice", "score": 92}`: grouped data stays together and is accessed by label | Could use two parallel lists (names and scores) like Exercise 14, but dictionaries are cleaner when data belongs together |
+| Make the search case-insensitive with `.lower()` | Users should not have to worry about capitalization: "alice", "Alice", and "ALICE" should all find the same student | Could require exact case, but that frustrates users and is bad user experience |
+| Use string formatting (`:<10`, `:>3`, `:.1f`) | Aligned columns make the report professional and readable, without formatting, the output looks ragged | Could use plain `print()` without formatting, but the output would be harder to read |
+| Separate the main program from the function definitions | Functions at the top, main logic at the bottom is the standard Python file layout: it makes the flow clear | Could interleave definitions and calls, but that makes the code harder to follow |
 
 ## Alternative approaches
 
@@ -138,7 +138,7 @@ if add_more.lower() == "yes":
     print_report(students)                                 # WHY: Reprint the entire report — the new student now appears and the averages update automatically
 ```
 
-**Trade-off:** This extends the program with write capability. Notice how adding one student automatically updates all the statistics because `print_report()` recalculates everything. This is the power of functions — change the data, call the function again, and everything stays correct.
+**Trade-off:** This extends the program with write capability. Notice how adding one student automatically updates all the statistics because `print_report()` recalculates everything. This is the power of functions: change the data, call the function again, and everything stays correct.
 
 ### Approach C: Saving the report to a file
 
@@ -167,14 +167,14 @@ print("Report saved to report.txt")
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| The data file path is wrong | `FileNotFoundError` — Python cannot find `../14-reading-files/data/sample.txt` | Make sure you run the script from inside the `15-putting-it-together` folder. The `../` path assumes you are there |
-| A line in the data file has no comma | `IndexError: list index out of range` — `.split(",")` produces one item, and `parts[1]` does not exist | Ensure the data file follows the `name,score` format with exactly one comma per line |
-| The score in the file is not a number | `ValueError: invalid literal for int()` — `int("abc")` crashes | All scores must be whole numbers. Check your data file for typos |
-| The student list is empty (empty file) | `ZeroDivisionError` in `calculate_average()` — dividing by `len([])` which is 0 | Check `if len(students) > 0` before calculating the average. Real programs always handle empty data |
-| User types a name that does not exist in the data | The program prints "No student named 'xyz' found." — not a crash, but can confuse the user | The code already handles this with the `found` flag pattern — but showing available names would improve the experience |
+| The data file path is wrong | `FileNotFoundError`: Python cannot find `../14-reading-files/data/sample.txt` | Make sure you run the script from inside the `15-putting-it-together` folder. The `../` path assumes you are there |
+| A line in the data file has no comma | `IndexError: list index out of range`: `.split(",")` produces one item, and `parts[1]` does not exist | Ensure the data file follows the `name,score` format with exactly one comma per line |
+| The score in the file is not a number | `ValueError: invalid literal for int()`: `int("abc")` crashes | All scores must be whole numbers. Check your data file for typos |
+| The student list is empty (empty file) | `ZeroDivisionError` in `calculate_average()`: dividing by `len([])` which is 0 | Check `if len(students) > 0` before calculating the average. Real programs always handle empty data |
+| User types a name that does not exist in the data | The program prints "No student named 'xyz' found.", not a crash, but can confuse the user | The code already handles this with the `found` flag pattern, but showing available names would improve the experience |
 
 ## Key takeaways
 
-1. **This program demonstrates how everything connects** — variables store data, functions organize logic, if-statements make decisions, loops process collections, dictionaries group related data, and file reading brings in external information. Every concept from Exercises 01-14 plays a role here. This is what real programming looks like: small tools working together.
-2. **Functions are the architecture of programs** — `load_students()`, `get_letter_grade()`, `calculate_average()`, and `print_report()` each handle one responsibility. When you need to change how grades are calculated, you change ONE function. When you need to change the display, you change ONE function. This separation is the key to building programs that do not collapse under their own complexity.
-3. **You are ready for Level 0** — if you understood this exercise, you have the foundation to build real Python programs. Level 0 introduces testing, error handling, and more structured project organization, but the core concepts — variables, functions, loops, conditions, lists, dictionaries, and files — are the tools you just learned. Everything from here builds on top of what you already know.
+1. **This program demonstrates how everything connects**: variables store data, functions organize logic, if-statements make decisions, loops process collections, dictionaries group related data, and file reading brings in external information. Every concept from Exercises 01-14 plays a role here. This is what real programming looks like: small tools working together.
+2. **Functions are the architecture of programs**: `load_students()`, `get_letter_grade()`, `calculate_average()`, and `print_report()` each handle one responsibility. When you need to change how grades are calculated, you change ONE function. When you need to change the display, you change ONE function. This separation is the key to building programs that do not collapse under their own complexity.
+3. **You are ready for Level 0**: if you understood this exercise, you have the foundation to build real Python programs. Level 0 introduces testing, error handling, and more structured project organization, but the core concepts (variables, functions, loops, conditions, lists, dictionaries, and files) are the tools you just learned. Everything from here builds on top of what you already know.

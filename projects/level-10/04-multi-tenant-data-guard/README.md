@@ -18,7 +18,7 @@ Home: [README](../../../README.md)
 - Audit logging for every data access
 
 ## Why this project exists
-In SaaS systems, tenant data leakage is catastrophic. This project makes tenant context mandatory at the data-access layer — not optional middleware — so cross-tenant access is structurally impossible. The Proxy pattern wraps a raw store, injecting filtering on every operation.
+In SaaS systems, tenant data leakage is catastrophic. This project makes tenant context mandatory at the data-access layer, not optional middleware, so cross-tenant access is structurally impossible. The Proxy pattern wraps a raw store, injecting filtering on every operation.
 
 ## Run (copy/paste)
 ```bash
@@ -47,8 +47,8 @@ Audit log (4 entries):
 3. Re-run tests to verify isolation holds for bulk operations.
 
 ## Break it (required)
-1. Try to read a record from another tenant — observe the `TenantViolationError`.
-2. Use a `VIEWER` role to attempt an insert — observe `PermissionDeniedError`.
+1. Try to read a record from another tenant: observe the `TenantViolationError`.
+2. Use a `VIEWER` role to attempt an insert: observe `PermissionDeniedError`.
 3. Mutate a `TenantContext` after creation (it should fail because it is frozen).
 
 ## Fix it (required)

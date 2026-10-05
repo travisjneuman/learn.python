@@ -1,4 +1,4 @@
-# Try This — Exercise 07
+# Try This: Exercise 07
 
 1. Build a simple greeting program that asks for first name and last name separately, then prints the full name:
    ```python

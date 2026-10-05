@@ -34,7 +34,7 @@ If the tests break, your refactoring changed behavior. Undo and try again.
 
 - Functions should do one thing and be under 30 lines
 - Variable and function names should describe their purpose
-- No copy-pasted blocks — extract shared logic into functions
+- No copy-pasted blocks; extract shared logic into functions
 - Reduce nesting depth (aim for 2 levels max)
 - Add type hints to function signatures
 - Replace magic numbers and strings with named constants

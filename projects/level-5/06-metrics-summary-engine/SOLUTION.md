@@ -1,4 +1,4 @@
-# Metrics Summary Engine — Annotated Solution
+# Metrics Summary Engine: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -215,6 +215,6 @@ The standard library is more concise and handles edge cases. However, `statistic
 
 ## Common Pitfalls
 
-1. **Division by zero with empty values** — `sum(values) / len(values)` crashes when the list is empty. Always check `if not values` before computing aggregates.
-2. **Integer division in percentile** — In Python 3 `/` always returns float, but in Python 2 it was integer division. The `(p / 100)` expression is safe in Python 3 but would need `from __future__ import division` in Python 2.
-3. **Moving average with window=0** — A zero or negative window makes no mathematical sense. The function returns an empty list rather than crashing, but the caller should validate the input before calling.
+1. **Division by zero with empty values**: `sum(values) / len(values)` crashes when the list is empty. Always check `if not values` before computing aggregates.
+2. **Integer division in percentile**: In Python 3 `/` always returns float, but in Python 2 it was integer division. The `(p / 100)` expression is safe in Python 3 but would need `from __future__ import division` in Python 2.
+3. **Moving average with window=0**: A zero or negative window makes no mathematical sense. The function returns an empty list rather than crashing, but the caller should validate the input before calling.

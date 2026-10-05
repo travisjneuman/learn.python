@@ -14,7 +14,7 @@ A virtual environment is an isolated Python installation. Each project gets its 
 
 ## Visualize It
 
-See how Python finds packages via `sys.path` — the key to understanding environments:
+See how Python finds packages via `sys.path`, the key to understanding environments:
 [Open in Python Tutor](https://pythontutor.com/render.html#code=import%20sys%0Afor%20p%20in%20sys.path%5B%3A3%5D%3A%0A%20%20%20%20print%28p%29%0A%0Aimport%20os%0Aprint%28os.name%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
 
 ## Why virtual environments matter

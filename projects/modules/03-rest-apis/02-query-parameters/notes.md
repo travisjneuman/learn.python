@@ -1,4 +1,4 @@
-# Notes — Query Parameters
+# Notes: Query Parameters
 
 ## What I learned
 

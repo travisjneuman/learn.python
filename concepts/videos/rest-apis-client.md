@@ -1,4 +1,4 @@
-# REST API Consumption — Video Resources
+# REST API Consumption: Video Resources
 
 [<- Back to Video Index](../../guides/VIDEO_INDEX.md)
 
@@ -7,7 +7,7 @@
 **[Python Requests Tutorial: Request Web Pages, Download Images, POST Data, Read JSON]** by Corey Schafer (~25 min)
 `https://www.youtube.com/results?search_query=corey+schafer+python+requests+tutorial`
 
-*Why this one:* Covers every essential requests operation — GET, POST, headers, parameters, JSON parsing, authentication, and sessions — with clear examples against real APIs, giving you a complete toolkit for consuming any REST endpoint.
+*Why this one:* Covers every essential requests operation (GET, POST, headers, parameters, JSON parsing, authentication, and sessions) with clear examples against real APIs, giving you a complete toolkit for consuming any REST endpoint.
 
 ## Alternative Explanations
 
@@ -19,15 +19,15 @@
 
 ## Deep Dives
 
-- **Authentication Patterns:** Pretty Printed — API Authentication with Python (OAuth, API Keys, JWT) (~25 min) — `https://www.youtube.com/results?search_query=pretty+printed+python+api+authentication+oauth`
-- **Rate Limiting & Pagination:** sentdex — Handling API Pagination in Python (~15 min) — `https://www.youtube.com/results?search_query=sentdex+python+api+pagination+rate+limiting`
-- **Error Handling & Retries:** ArjanCodes — Robust API Calls in Python (~20 min) — `https://www.youtube.com/results?search_query=arjancodes+python+api+error+handling+retry`
+- **Authentication Patterns:** Pretty Printed, API Authentication with Python (OAuth, API Keys, JWT) (~25 min): `https://www.youtube.com/results?search_query=pretty+printed+python+api+authentication+oauth`
+- **Rate Limiting & Pagination:** sentdex, Handling API Pagination in Python (~15 min): `https://www.youtube.com/results?search_query=sentdex+python+api+pagination+rate+limiting`
+- **Error Handling & Retries:** ArjanCodes, Robust API Calls in Python (~20 min): `https://www.youtube.com/results?search_query=arjancodes+python+api+error+handling+retry`
 
 ## Interactive Practice
 
-- [JSONPlaceholder](https://jsonplaceholder.typicode.com/) — Free fake REST API for testing and prototyping
-- [httpbin.org](https://httpbin.org/) — Echo service that returns your request details back to you
-- [Public APIs List](https://github.com/public-apis/public-apis) — Curated list of free APIs to practice with
+- [JSONPlaceholder](https://jsonplaceholder.typicode.com/): Free fake REST API for testing and prototyping
+- [httpbin.org](https://httpbin.org/): Echo service that returns your request details back to you
+- [Public APIs List](https://github.com/public-apis/public-apis): Curated list of free APIs to practice with
 
 ---
 

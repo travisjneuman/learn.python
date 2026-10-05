@@ -1,4 +1,4 @@
-# Module 06 / Project 01 — SQLite Basics
+# Module 06 / Project 01: SQLite Basics
 
 Home: [README](../../../../README.md) · Module: [Databases & ORM](../README.md)
 
@@ -77,7 +77,7 @@ No books found (and the table still exists!).
 
 1. Use string formatting (`f"... WHERE author = '{author}'"`) instead of parameterized queries. Pass in `'; DROP TABLE books; --` and see what happens.
 2. Try to insert a row with the wrong number of values. Read the error message.
-3. Remove the `conn.commit()` call after inserts. Query the data — is it there? Restart and check again.
+3. Remove the `conn.commit()` call after inserts. Query the data. Is it there? Restart and check again.
 
 ## Fix it
 
@@ -112,4 +112,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 02 — SQLAlchemy Models](../02-sqlalchemy-models/)
+[Project 02: SQLAlchemy Models](../02-sqlalchemy-models/)

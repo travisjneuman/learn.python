@@ -47,17 +47,17 @@ Status: {'status': 200, 'category': 'success'}
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--filter` flag: `--filter active=true` to show only matching items.
 2. Add support for paginated responses (read `pagination.total_pages`).
 3. Add a `--status-only` flag that just checks and prints the status category.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Feed a file with a JSON array at the root instead of an object.
 2. Feed a response where `data` is a string instead of a list.
 3. Pass a response with no `status` field at all.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle non-object JSON roots (wrap arrays in a response dict).
 2. Guard against non-list data values in `extract_items`.
 3. Return a clear message when status code is missing.

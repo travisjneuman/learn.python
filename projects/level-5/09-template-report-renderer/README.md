@@ -46,18 +46,18 @@ Report rendered: 25 lines written
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add `{{IF NOT condition}}...{{END IF}}` blocks for negated conditionals.
 2. Add a `{{DATE}}` placeholder that inserts the current date.
 3. Support nested variable access like `{{config.max_retries}}`.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Use a template with `{{variable}}` that is not in the data JSON.
 2. Create an `{{EACH items}}` block where `items` is not a list.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Replace missing variables with `[MISSING: variable]` instead of crashing.
 2. Skip `EACH` blocks when the data is not iterable, with a warning.
 3. Add tests for missing variables and non-iterable EACH data.

@@ -1,4 +1,4 @@
-# Notes — Database-Backed API
+# Notes: Database-Backed API
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# Architecture Decision Log — Step-by-Step Walkthrough
+# Architecture Decision Log: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

@@ -39,7 +39,7 @@ pytest -v
 
 ## Alter it (required)
 1. Add a `BackupCheck` and `SLACheck` that evaluate the corresponding manifest fields.
-2. Add weighted categories — security failures should block launch regardless of pass rate.
+2. Add weighted categories: security failures should block launch regardless of pass rate.
 3. Add an override mechanism where a VP can force a "go" decision with an audit trail.
 
 ## Break it (required)
@@ -48,14 +48,14 @@ pytest -v
 3. Register no checks and observe a 0% pass rate.
 
 ## Fix it (required)
-1. Add a minimum check count requirement — `evaluate` should fail if fewer than 3 checks are registered.
+1. Add a minimum check count requirement: `evaluate` should fail if fewer than 3 checks are registered.
 2. Make security checks "hard blockers" that always produce NO_GO on failure.
 3. Test both safeguards.
 
 ## Explain it (teach-back)
 1. Why is the service manifest immutable (frozen dataclass)?
 2. How does the three-tier decision system (go/conditional/no-go) help operations teams?
-3. Why are checks categorized — what does grouping by observability/reliability/security enable?
+3. Why are checks categorized: what does grouping by observability/reliability/security enable?
 4. How would you integrate this into a CI/CD pipeline?
 
 ## Mastery check

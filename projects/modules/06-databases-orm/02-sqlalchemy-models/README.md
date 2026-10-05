@@ -1,4 +1,4 @@
-# Module 06 / Project 02 — SQLAlchemy Models
+# Module 06 / Project 02: SQLAlchemy Models
 
 Home: [README](../../../../README.md) · Module: [Databases & ORM](../README.md)
 
@@ -75,7 +75,7 @@ ORM query returned the same results as raw SQL.
 
 1. Try to create a book with a `author_id` that does not exist. What error do you get?
 2. Remove the `back_populates` argument from the relationship. Can you still navigate from author to books?
-3. Call `session.add()` without `session.commit()`. Query the data — is it in the database?
+3. Call `session.add()` without `session.commit()`. Query the data. Is it in the database?
 
 ## Fix it
 
@@ -110,4 +110,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — CRUD Operations](../03-crud-operations/)
+[Project 03: CRUD Operations](../03-crud-operations/)

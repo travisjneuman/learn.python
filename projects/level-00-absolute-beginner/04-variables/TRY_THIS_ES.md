@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 04
+# Prueba Esto: Ejercicio 04
 
 1. Crea variables para tu propio nombre, edad y color favorito. Imprime una oración usando las tres.
 
@@ -10,7 +10,7 @@
    # Pista: podrías necesitar una tercera variable como contenedor temporal.
    ```
 
-3. Intenta crear un nombre de variable que empiece con un número (como `1nombre = "prueba"`). ¿Qué error te sale? Lee el mensaje de error — Python te está diciendo exactamente qué salió mal.
+3. Intenta crear un nombre de variable que empiece con un número (como `1nombre = "prueba"`). ¿Qué error te sale? Lee el mensaje de error: Python te está diciendo exactamente qué salió mal.
 
 ---
 

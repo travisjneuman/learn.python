@@ -1,4 +1,4 @@
-# Try This — Exercise 10
+# Try This: Exercise 10
 
 1. Print a multiplication table for a number:
    ```python

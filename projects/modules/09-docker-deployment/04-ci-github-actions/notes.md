@@ -1,4 +1,4 @@
-# Notes — CI with GitHub Actions
+# Notes: CI with GitHub Actions
 
 ## What I learned
 

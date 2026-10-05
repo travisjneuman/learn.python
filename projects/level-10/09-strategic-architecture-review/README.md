@@ -18,7 +18,7 @@ Home: [README](../../../README.md)
 - Transitive dependency depth calculation
 
 ## Why this project exists
-Architecture erodes silently — each small shortcut seems harmless until the system becomes unmaintainable. Fitness functions make architectural constraints executable and measurable, so drift is detected in CI rather than discovered during a crisis. This project builds a review engine with pluggable checks.
+Architecture erodes silently: each small shortcut seems harmless until the system becomes unmaintainable. Fitness functions make architectural constraints executable and measurable, so drift is detected in CI rather than discovered during a crisis. This project builds a review engine with pluggable checks.
 
 ## Run (copy/paste)
 ```bash

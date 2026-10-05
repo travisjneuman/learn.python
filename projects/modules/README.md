@@ -17,7 +17,7 @@ These modules teach Python technologies beyond the enterprise operations ladder.
 |---|--------|----------|-------------|----------------|
 | 01 | [Web Scraping](./01-web-scraping/) | 5 | Level 2 | requests, BeautifulSoup, CSS selectors, pagination, CSV export |
 | 02 | [CLI Tools](./02-cli-tools/) | 5 | Level 2 | click, typer, subcommands, interactive prompts, progress bars |
-| 03 | [REST APIs — Consuming](./03-rest-apis/) | 5 | Level 2 | requests, JSON parsing, authentication, retries, API client design |
+| 03 | [REST APIs (Consuming)](./03-rest-apis/) | 5 | Level 2 | requests, JSON parsing, authentication, retries, API client design |
 | 04 | [FastAPI Web Apps](./04-fastapi-web/) | 5 | Level 3 + Module 03 | FastAPI, Pydantic, uvicorn, CRUD endpoints, JWT auth |
 | 05 | [Async Python](./05-async-python/) | 5 | Level 3 | async/await, asyncio, aiohttp, queues, concurrent tasks |
 | 06 | [Databases & ORM](./06-databases-orm/) | 5 | Level 3 | sqlite3, SQLAlchemy, Alembic migrations, query optimization |
@@ -31,22 +31,22 @@ These modules teach Python technologies beyond the enterprise operations ladder.
 ## Suggested order by learning phase
 
 **After Level 2** (you know functions, files, basic testing):
-- Module 01 — Web Scraping
-- Module 02 — CLI Tools
-- Module 03 — REST APIs
-- Module 07 — Data Analysis
+- Module 01: Web Scraping
+- Module 02: CLI Tools
+- Module 03: REST APIs
+- Module 07: Data Analysis
 
 **After Level 3** (you know packages, error handling, project structure):
-- Module 04 — FastAPI Web Apps
-- Module 05 — Async Python
-- Module 06 — Databases & ORM
-- Module 08 — Advanced Testing
-- Module 11 — Package Publishing
+- Module 04: FastAPI Web Apps
+- Module 05: Async Python
+- Module 06: Databases & ORM
+- Module 08: Advanced Testing
+- Module 11: Package Publishing
 
 **After Level 5** (you know architecture, reliability, CI patterns):
-- Module 09 — Docker & Deployment
-- Module 10 — Django Full-Stack
-- Module 12 — Cloud Deployment
+- Module 09: Docker & Deployment
+- Module 10: Django Full-Stack
+- Module 12: Cloud Deployment
 
 ## Virtual environments
 

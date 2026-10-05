@@ -22,11 +22,11 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 WARNING_BANNER = """\
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first. It guides
 > your thinking without giving away the answer.
 
 ---

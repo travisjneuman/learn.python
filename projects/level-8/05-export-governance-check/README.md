@@ -22,7 +22,7 @@ Home: [README](../../../README.md)
 Enterprise systems must enforce data governance before exporting data: PII detection,
 size limits, format validation, and access control. A single accidental CSV export
 containing Social Security numbers can trigger regulatory fines. This project builds
-a rule engine that validates export requests against configurable policies — the same
+a rule engine that validates export requests against configurable policies, the same
 pattern used in compliance-heavy industries like finance, healthcare, and government.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `check_data_freshness` rule that warns if sample timestamps are older than 30 days.
 
 ## Break it (required)
-1. Pass an export with 200,000 rows — does `check_row_limit` block it correctly?
-2. Submit a request with `classification="restricted"` — is the export blocked?
-3. Include a credit card pattern (`1234-5678-9012-3456`) in sample data — does content scanning find it?
+1. Pass an export with 200,000 rows: does `check_row_limit` block it correctly?
+2. Submit a request with `classification="restricted"`: is the export blocked?
+3. Include a credit card pattern (`1234-5678-9012-3456`) in sample data: does content scanning find it?
 
 ## Fix it (required)
 1. Add deduplication so the same PII field is not flagged twice (once by column name, once by content).

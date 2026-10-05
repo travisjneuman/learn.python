@@ -1,4 +1,4 @@
-# Collections Deep Dive — Part 2: deque, namedtuple, ChainMap
+# Collections Deep Dive, Part 2: deque, namedtuple, ChainMap
 
 [← Part 1: defaultdict, Counter, OrderedDict](./collections-deep-dive-part1.md) · [Back to Overview](./collections-deep-dive.md)
 
@@ -16,7 +16,7 @@
 
 This part covers the remaining `collections` types: `deque` for fast double-ended operations, `namedtuple` for lightweight immutable records, and `ChainMap` for layered dict lookups.
 
-## `deque` — double-ended queue
+## `deque`: double-ended queue
 
 A `deque` (pronounced "deck") is like a list, but optimized for adding and removing items from both ends:
 
@@ -51,7 +51,7 @@ for i in range(10):
 print(recent)    # deque([5, 6, 7, 8, 9], maxlen=5)
 ```
 
-## `namedtuple` — lightweight immutable objects
+## `namedtuple`: lightweight immutable objects
 
 A `namedtuple` is like a tuple, but with named fields. Great for simple data containers:
 
@@ -92,7 +92,7 @@ alicia = alice._replace(name="Alicia")
 
 For mutable named fields or more features, use `dataclasses` instead. See [Dataclasses Explained](./dataclasses-explained.md).
 
-## `ChainMap` — search multiple dicts as one
+## `ChainMap`: search multiple dicts as one
 
 A `ChainMap` groups multiple dictionaries together. Lookups search each dict in order until the key is found:
 

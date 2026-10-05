@@ -35,10 +35,10 @@ Each guide walks you through the complete setup: installing Python, choosing an 
 Mobile devices are fine for early fundamentals but you will need a desktop or laptop for advanced work (drivers, ETL jobs, dashboards, CI).
 
 **Android (Termux):**
-Install [Termux](https://termux.dev/en/), then run `pkg install -y python` and follow the Linux guide — most commands are identical.
+Install [Termux](https://termux.dev/en/), then run `pkg install -y python` and follow the Linux guide. Most commands are identical.
 
 **iOS:**
-Use a Python app such as [Pyto](https://pyto.app/) or [Pythonista](https://www.omz-software.com/pythonista/). These apps have built-in editors and consoles. Virtual environments are not fully supported on iOS — treat it as a learning-only path and transition to desktop before enterprise phases.
+Use a Python app such as [Pyto](https://pyto.app/) or [Pythonista](https://www.omz-software.com/pythonista/). These apps have built-in editors and consoles. Virtual environments are not fully supported on iOS. Treat it as a learning-only path and transition to desktop before enterprise phases.
 
 ## Expected output
 - A working `hello_sme` project with:

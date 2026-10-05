@@ -1,4 +1,4 @@
-# Module 11 — Package Publishing
+# Module 11: Package Publishing
 
 Home: [README](../../../README.md) · Modules: [Index](../README.md)
 

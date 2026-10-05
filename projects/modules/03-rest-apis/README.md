@@ -1,4 +1,4 @@
-# Module 03 — REST APIs: Consuming
+# Module 03: REST APIs (Consuming)
 
 [README](../../../README.md)
 
@@ -59,7 +59,7 @@ See [concepts/virtual-environments.md](../../../concepts/virtual-environments.md
 
 This module requires one package (listed in `requirements.txt`):
 
-- **requests** — makes HTTP requests simple. You call `requests.get(url)` and get a response object back with status code, headers, and body.
+- **requests**: makes HTTP requests simple. You call `requests.get(url)` and get a response object back with status code, headers, and body.
 
 ## A note on API usage
 

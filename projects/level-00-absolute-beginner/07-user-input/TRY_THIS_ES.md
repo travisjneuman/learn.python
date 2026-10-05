@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 07
+# Prueba Esto: Ejercicio 07
 
 1. Crea un programa de saludo simple que pida el nombre y el apellido por separado, y luego imprima el nombre completo:
    ```python

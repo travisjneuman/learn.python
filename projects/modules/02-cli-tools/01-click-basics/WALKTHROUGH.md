@@ -1,4 +1,4 @@
-# Click Basics — Step-by-Step Walkthrough
+# Click Basics: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -10,7 +10,7 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 A command-line interface (CLI) takes input from the terminal and produces output. You have already written scripts that use `input()` to ask questions. Click replaces that approach with something more professional: named options (`--shout`), positional arguments (`World`), and automatic help text (`--help`). Instead of a conversation ("What is your name?"), the user provides everything up front in one command.
 
-Click works through decorators — those `@` symbols you stack on top of a function. Each decorator adds a piece of CLI behavior. `@click.command()` turns the function into a CLI entry point. `@click.argument("name")` says "the first positional value on the command line becomes the `name` parameter." `@click.option("--shout")` says "if the user passes `--shout`, set this parameter to True." Click reads these decorators and does all the parsing for you.
+Click works through decorators: those `@` symbols you stack on top of a function. Each decorator adds a piece of CLI behavior. `@click.command()` turns the function into a CLI entry point. `@click.argument("name")` says "the first positional value on the command line becomes the `name` parameter." `@click.option("--shout")` says "if the user passes `--shout`, set this parameter to True." Click reads these decorators and does all the parsing for you.
 
 The mental model is a layer cake. Your function is the cake. Each decorator is a layer on top. When the user runs the script, Click peels off the layers from top to bottom, parsing the command line, and then calls your function with the parsed values.
 
@@ -18,7 +18,7 @@ The mental model is a layer cake. Your function is the cake. Each decorator is a
 
 **What to do:** Import the `click` library and decorate a function with `@click.command()`.
 
-**Why:** `@click.command()` transforms a regular Python function into a CLI program. Without it, your function is just a function — nobody can call it from the terminal with arguments. This decorator is the foundation that everything else builds on.
+**Why:** `@click.command()` transforms a regular Python function into a CLI program. Without it, your function is just a function; nobody can call it from the terminal with arguments. This decorator is the foundation that everything else builds on.
 
 ```python
 import click
@@ -37,7 +37,7 @@ Notice `click.echo()` instead of `print()`. They do the same thing most of the t
 
 **What to do:** Add `@click.argument("name")` and accept `name` as a function parameter.
 
-**Why:** A Click argument is a required positional value — the user must provide it. The decorator name `"name"` must match the function parameter name. When the user types `python project.py World`, Click assigns `"World"` to the `name` parameter.
+**Why:** A Click argument is a required positional value: the user must provide it. The decorator name `"name"` must match the function parameter name. When the user types `python project.py World`, Click assigns `"World"` to the `name` parameter.
 
 ```python
 @click.command()
@@ -75,13 +75,13 @@ Two details to notice:
 - **`show_default=True`** tells Click to display the default value in the `--help` text. Without it, the user has to guess what the default is.
 - **The parameter name** in the function (`greeting`) is derived from the option name (`--greeting`). Click strips the dashes and converts hyphens to underscores.
 
-**Predict:** If you run `python project.py World --greeting Howdy`, what will the output be? What about `python project.py --greeting Howdy World` — does the order matter for options?
+**Predict:** If you run `python project.py World --greeting Howdy`, what will the output be? What about `python project.py --greeting Howdy World`? Does the order matter for options?
 
 ## Step 4: Add a Boolean Flag
 
 **What to do:** Add a `--shout` option that is a boolean flag (present = True, absent = False).
 
-**Why:** A flag is an on/off switch. The user either passes `--shout` or does not. There is no value after it — its mere presence means True. This is different from `--greeting`, which expects a value after it. The `is_flag=True` parameter tells Click this distinction.
+**Why:** A flag is an on/off switch. The user either passes `--shout` or does not. There is no value after it; its mere presence means True. This is different from `--greeting`, which expects a value after it. The `is_flag=True` parameter tells Click this distinction.
 
 ```python
 @click.option(
@@ -103,7 +103,7 @@ def greet(name, greeting, shout):
 
 **What to do:** Add the `if __name__ == "__main__"` block and call the decorated function.
 
-**Why:** When you run `python project.py World`, Python sets `__name__` to `"__main__"`. The guard ensures the CLI only starts when the file is executed directly. If another file imports this module, the CLI will not run automatically. Inside the guard, you call `greet()` with no arguments — Click handles argument parsing internally.
+**Why:** When you run `python project.py World`, Python sets `__name__` to `"__main__"`. The guard ensures the CLI only starts when the file is executed directly. If another file imports this module, the CLI will not run automatically. Inside the guard, you call `greet()` with no arguments; Click handles argument parsing internally.
 
 ```python
 if __name__ == "__main__":
@@ -118,7 +118,7 @@ Notice that you call `greet()` with no arguments even though the function signat
 
 | Mistake | Why It Happens | Fix |
 |---------|---------------|-----|
-| `TypeError: greet() missing argument 'name'` | Calling the function directly instead of through Click | Call `greet()` with no args — Click parses the CLI |
+| `TypeError: greet() missing argument 'name'` | Calling the function directly instead of through Click | Call `greet()` with no args; Click parses the CLI |
 | Decorator order confusion | Decorators execute bottom-to-top | `@click.command()` goes on top, arguments and options below |
 | `--shout` expects a value | Forgot `is_flag=True` | Add `is_flag=True` to make it a boolean toggle |
 | Function parameter does not match option name | Click derives param names from option names | `--greeting` becomes `greeting`; `--my-flag` becomes `my_flag` |
@@ -147,5 +147,5 @@ Usage: project.py [OPTIONS] NAME
 
 - **`@click.command()`** turns a plain function into a CLI program that parses command-line arguments automatically.
 - **`@click.argument()`** defines required positional values, while **`@click.option()`** defines optional named flags and values with defaults.
-- **`is_flag=True`** creates a boolean toggle that is True when present and False when absent — no value needed after it.
+- **`is_flag=True`** creates a boolean toggle that is True when present and False when absent, with no value needed after it.
 - **`click.echo()`** is a safer alternative to `print()` that handles encoding differences across platforms.

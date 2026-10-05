@@ -51,17 +51,17 @@ Pipeline: FAIL (5.2ms)
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `check_docstrings` gate that verifies all functions have docstrings.
 2. Add a `--gate` flag to run only specific gates.
 3. Add `--strict` mode where any warning is treated as a failure.
 
-## Break it (required) — Core
-1. Run on a non-Python file — do syntax and print checks handle it?
-2. Run on a file that doesn't exist — does the pipeline still report all gates?
-3. Set `--max-lines 0` — does the size check handle the edge case?
+## Break it (required): Core
+1. Run on a non-Python file: do syntax and print checks handle it?
+2. Run on a file that doesn't exist: does the pipeline still report all gates?
+3. Set `--max-lines 0`: does the size check handle the edge case?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add file type detection (skip syntax check for non-.py files).
 2. Ensure all gates handle missing files consistently.
 3. Add a `--quiet` flag that only shows failures.

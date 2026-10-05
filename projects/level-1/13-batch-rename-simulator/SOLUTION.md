@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 13 - Batch Rename Simulator
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -209,10 +209,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Simulation (preview) instead of actual renaming | Preview-then-act is the safest pattern for destructive operations; the user sees exactly what would happen before committing | Direct rename — one mistake could overwrite or lose files with no undo |
-| RULES dict mapping names to functions | Same dispatch pattern as Projects 10 and 11; adding a new rule is one function + one dict entry | If/elif chain — does not integrate with argparse `choices=` as cleanly |
-| Conflict detection as a separate step | Decouples the "apply rule" step from the "check safety" step; each can be tested independently | Check conflicts inside `simulate_batch` — mixes concerns and makes testing harder |
-| `re.sub` for stripping numbers | Regex handles varied formats ("001_", "42-", "7 ") in one pattern; string methods would need multiple checks | Multiple `lstrip` calls — fragile, would not handle mixed separators |
+| Simulation (preview) instead of actual renaming | Preview-then-act is the safest pattern for destructive operations; the user sees exactly what would happen before committing | Direct rename: one mistake could overwrite or lose files with no undo |
+| RULES dict mapping names to functions | Same dispatch pattern as Projects 10 and 11; adding a new rule is one function + one dict entry | If/elif chain: does not integrate with argparse `choices=` as cleanly |
+| Conflict detection as a separate step | Decouples the "apply rule" step from the "check safety" step; each can be tested independently | Check conflicts inside `simulate_batch`: mixes concerns and makes testing harder |
+| `re.sub` for stripping numbers | Regex handles varied formats ("001_", "42-", "7 ") in one pattern; string methods would need multiple checks | Multiple `lstrip` calls: fragile, would not handle mixed separators |
 
 ## Alternative approaches
 
@@ -237,7 +237,7 @@ def simulate_chain(filename: str, rule_names: list[str]) -> dict:
 # Result: "my_file.txt"
 ```
 
-**Trade-off:** Chaining is more powerful — it lets users compose multiple transformations. The single-rule approach is simpler to understand and debug at Level 1. When you need chaining, the function-as-value pattern makes it trivial: just loop through the rule functions and apply each one.
+**Trade-off:** Chaining is more powerful: it lets users compose multiple transformations. The single-rule approach is simpler to understand and debug at Level 1. When you need chaining, the function-as-value pattern makes it trivial: just loop through the rule functions and apply each one.
 
 ## What could go wrong
 
@@ -252,4 +252,4 @@ def simulate_chain(filename: str, rule_names: list[str]) -> dict:
 
 1. **Always simulate before executing destructive operations.** The preview-then-commit pattern is used by `git diff` (before commit), `terraform plan` (before apply), database migration `--dry-run`, and `rsync --dry-run`. Building this habit early prevents data loss.
 2. **`re.sub()` replaces text matching a pattern.** `re.sub(r"^\d+[\-_ ]*", "", stem)` removes leading digits and separators. The `^` anchors to the start so it only strips from the beginning, not the middle. You will use `re.sub()` extensively for data cleaning.
-3. **Conflict detection is the key insight of this project.** Any batch operation that maps inputs to outputs can produce collisions. Database migrations, URL routing, and environment variable naming all need conflict detection. The pattern — count target names, flag duplicates — is universal.
+3. **Conflict detection is the key insight of this project.** Any batch operation that maps inputs to outputs can produce collisions. Database migrations, URL routing, and environment variable naming all need conflict detection. The pattern (count target names, flag duplicates) is universal.

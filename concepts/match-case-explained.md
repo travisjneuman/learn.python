@@ -1,6 +1,6 @@
 # Match/Case Explained
 
-Python 3.10 introduced **structural pattern matching** — the `match`/`case` statement. It is like `if`/`elif`, but designed for matching the shape and content of data.
+Python 3.10 introduced **structural pattern matching**: the `match`/`case` statement. It is like `if`/`elif`, but designed for matching the shape and content of data.
 
 <!-- modality-hub-start -->
 
@@ -28,11 +28,11 @@ match command:
         print(f"Unknown command: {command}")
 ```
 
-The `_` is a wildcard — it matches anything. Think of it as the `else` branch.
+The `_` is a wildcard: it matches anything. Think of it as the `else` branch.
 
 ## Why not just use if/elif?
 
-For simple string matching, `if`/`elif` works fine. `match`/`case` shines when you need to match the **structure** of data — not just its value.
+For simple string matching, `if`/`elif` works fine. `match`/`case` shines when you need to match the **structure** of data, not just its value.
 
 ```python
 # if/elif version — clunky for structured data

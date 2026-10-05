@@ -1,4 +1,4 @@
-# Notes — Integration Testing
+# Notes: Integration Testing
 
 ## What I learned
 

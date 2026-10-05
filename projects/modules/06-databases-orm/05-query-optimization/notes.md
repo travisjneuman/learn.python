@@ -1,4 +1,4 @@
-# Notes — Query Optimization
+# Notes: Query Optimization
 
 ## What I learned
 

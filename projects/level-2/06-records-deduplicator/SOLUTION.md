@@ -1,4 +1,4 @@
-# Records Deduplicator — Annotated Solution
+# Records Deduplicator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -221,8 +221,8 @@ Tuples are hashable and can be used as dict keys directly. This avoids the separ
 
 ## Common Pitfalls
 
-1. **Using a non-existent key field** — If `--keys department` is passed but "department" is not in the CSV headers, every record gets an empty string for that field, and all records appear to be duplicates of each other. Validate that key fields exist in headers before processing.
+1. **Using a non-existent key field**: If `--keys department` is passed but "department" is not in the CSV headers, every record gets an empty string for that field, and all records appear to be duplicates of each other. Validate that key fields exist in headers before processing.
 
-2. **Forgetting order stability** — In "last" mode, building the unique list from `key_to_record.values()` produces records in dict-insertion order, which may not match the original file order. Sorting by `_original_index` restores the expected order.
+2. **Forgetting order stability**: In "last" mode, building the unique list from `key_to_record.values()` produces records in dict-insertion order, which may not match the original file order. Sorting by `_original_index` restores the expected order.
 
-3. **Hash collisions with dedup keys** — If you use a hash function instead of the full key string, different records could produce the same hash and be incorrectly treated as duplicates. Always use the full composite key for correctness.
+3. **Hash collisions with dedup keys**: If you use a hash function instead of the full key string, different records could produce the same hash and be incorrectly treated as duplicates. Always use the full composite key for correctness.

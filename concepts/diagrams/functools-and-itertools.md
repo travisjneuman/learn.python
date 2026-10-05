@@ -82,7 +82,7 @@ flowchart TD
 
 ## itertools Pipeline Visualization
 
-`itertools` functions chain together to process sequences lazily — each element flows through the entire pipeline one at a time.
+`itertools` functions chain together to process sequences lazily: each element flows through the entire pipeline one at a time.
 
 ```mermaid
 flowchart LR

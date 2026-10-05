@@ -41,7 +41,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/enforcement_report.json` — per-row violation details
+- `data/enforcement_report.json`: per-row violation details
 - Passing tests
 - Updated `notes.md`
 
@@ -49,17 +49,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `"pattern"` rule (regex) to the contract for email-like fields.
 2. Add a `--strict` flag that also treats extra columns as violations.
-3. Re-run script and tests — add a test for pattern enforcement.
+3. Re-run script and tests: add a test for pattern enforcement.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Remove a required column entirely from the CSV and see what `missing_columns` reports.
 2. Feed a value that is technically the right type but fails range AND allowed-values checks simultaneously.
 3. Create a contract with contradictory rules (e.g., `min: 100, max: 50`) and observe the behavior.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add contract self-validation that catches contradictory rules before enforcement begins.
 2. Handle the case where a column exists in the contract but not in the CSV data headers.
 3. Re-run until all tests pass.

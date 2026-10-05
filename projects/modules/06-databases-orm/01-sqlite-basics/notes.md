@@ -1,4 +1,4 @@
-# Notes — SQLite Basics
+# Notes: SQLite Basics
 
 ## What I learned
 

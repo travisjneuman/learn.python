@@ -38,7 +38,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — before/after query plan analysis
+- `data/output_summary.json`: before/after query plan analysis
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
@@ -50,7 +50,7 @@ pytest -q
 
 ## Break it (required)
 1. Pass a syntactically invalid SQL query and observe the error.
-2. Create an index on a column that is never used in WHERE clauses — confirm it has no effect on query plans.
+2. Create an index on a column that is never used in WHERE clauses: confirm it has no effect on query plans.
 3. Run a query with `SELECT *` on a table with 10,000+ rows and observe the timing.
 
 ## Fix it (required)

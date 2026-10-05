@@ -1,4 +1,4 @@
-# Notes — Property-Based Testing
+# Notes: Property-Based Testing
 
 ## What I learned
 

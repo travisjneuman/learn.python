@@ -1,4 +1,4 @@
-# Level 3 Mini Capstone — Annotated Solution
+# Level 3 Mini Capstone: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -352,8 +352,8 @@ def analyse_complexity(source: str) -> list[dict]:
 
 ## Common Pitfalls
 
-1. **Binary files causing UnicodeDecodeError** — `rglob("*.py")` should only match Python files, but if someone names a binary file `.py`, `read_text()` will fail. The try/except in `analyse_directory` handles this gracefully with a logged warning.
+1. **Binary files causing UnicodeDecodeError**: `rglob("*.py")` should only match Python files, but if someone names a binary file `.py`, `read_text()` will fail. The try/except in `analyse_directory` handles this gracefully with a logged warning.
 
-2. **Empty directory causing ZeroDivisionError** — `sum(lines) / len(files)` crashes when `files` is empty. Always guard division with `if files else 0` or use a `safe_divide` utility (as built in project 09).
+2. **Empty directory causing ZeroDivisionError**: `sum(lines) / len(files)` crashes when `files` is empty. Always guard division with `if files else 0` or use a `safe_divide` utility (as built in project 09).
 
-3. **Score going negative** — Five warnings is -50 points, bringing the score to 50. Ten warnings would be -100, giving a score of 0. Without the `max(0, ...)` clamp, extreme cases would show confusing negative scores.
+3. **Score going negative**: Five warnings is -50 points, bringing the score to 50. Ten warnings would be -100, giving a score of 0. Without the `max(0, ...)` clamp, extreme cases would show confusing negative scores.

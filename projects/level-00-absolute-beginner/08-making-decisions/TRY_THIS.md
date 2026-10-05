@@ -1,4 +1,4 @@
-# Try This — Exercise 08
+# Try This: Exercise 08
 
 1. Build an age checker that uses `input()`:
    ```python

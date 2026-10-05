@@ -1,4 +1,4 @@
-# Level 10 Grand Capstone: Enterprise Platform — Step-by-Step Walkthrough
+# Level 10 Grand Capstone: Enterprise Platform (Step-by-Step Walkthrough)
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

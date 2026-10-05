@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 09 - JSON Settings Loader
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -187,10 +187,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `dict(defaults)` copy before merge | Prevents mutating the module-level DEFAULTS dict, which would silently corrupt future calls | `defaults.update(overrides)` — mutates in place, which is a common and subtle bug |
-| `json.loads()` (string) instead of `json.load()` (file) | Reading the file first with `read_text()` gives us control over encoding; then parsing the string separately isolates the two failure modes | `json.load(open(...))` — combines file I/O and parsing, making error handling less clear |
-| Return list of missing keys from `validate_settings()` | Shows all missing keys at once so the user can fix them all in one pass | Raise exception on first missing key — user has to fix one, re-run, discover the next |
-| Fallback to defaults on bad JSON | Application starts with safe defaults rather than crashing; the user sees a warning and can fix their config | Crash with traceback — appropriate for development, hostile for end users |
+| `dict(defaults)` copy before merge | Prevents mutating the module-level DEFAULTS dict, which would silently corrupt future calls | `defaults.update(overrides)`: mutates in place, which is a common and subtle bug |
+| `json.loads()` (string) instead of `json.load()` (file) | Reading the file first with `read_text()` gives us control over encoding; then parsing the string separately isolates the two failure modes | `json.load(open(...))`: combines file I/O and parsing, making error handling less clear |
+| Return list of missing keys from `validate_settings()` | Shows all missing keys at once so the user can fix them all in one pass | Raise exception on first missing key: user has to fix one, re-run, discover the next |
+| Fallback to defaults on bad JSON | Application starts with safe defaults rather than crashing; the user sees a warning and can fix their config | Crash with traceback: appropriate for development, hostile for end users |
 
 ## Alternative approaches
 
@@ -220,4 +220,4 @@ def merge_settings_unpacking(defaults: dict, overrides: dict) -> dict:
 
 1. **The "defaults + overrides" merge pattern is universal.** Every web framework (Django settings, Flask config), CLI tool (git config), and cloud service (Terraform variables) uses this pattern: define sensible defaults, let the user override what they need.
 2. **Never mutate shared data structures.** Copying the defaults dict before merging prevents a subtle bug where calling `merge_settings()` twice would accumulate overrides from both calls. This "defensive copy" pattern applies everywhere you pass dicts between functions.
-3. **`json.loads()` vs `json.load()` — know the difference.** `loads()` parses a string, `load()` reads from a file object. You will encounter both in real code: `loads()` when data comes from an API response or `read_text()`, and `load()` when reading directly from `open()`.
+3. **`json.loads()` vs `json.load()`: know the difference.** `loads()` parses a string, `load()` reads from a file object. You will encounter both in real code: `loads()` when data comes from an API response or `read_text()`, and `load()` when reading directly from `open()`.

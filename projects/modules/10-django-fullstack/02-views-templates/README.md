@@ -1,4 +1,4 @@
-# Module 10 / Project 02 — Views & Templates
+# Module 10 / Project 02: Views & Templates
 
 Home: [README](../../../../README.md)
 
@@ -32,9 +32,9 @@ python manage.py runserver
 
 Then open your browser to:
 
-- **http://127.0.0.1:8000/books/** — list of all books
-- **http://127.0.0.1:8000/books/1/** — detail view for book with ID 1
-- **http://127.0.0.1:8000/admin/** — admin interface to add books
+- **http://127.0.0.1:8000/books/**: list of all books
+- **http://127.0.0.1:8000/books/1/**: detail view for book with ID 1
+- **http://127.0.0.1:8000/admin/**: admin interface to add books
 
 Create a superuser first to add books through the admin:
 
@@ -64,7 +64,7 @@ Visiting `/books/` shows a page listing all books with their titles and authors.
 
 1. Add `int:` back. The `<int:pk>` converter ensures Django only matches numeric URLs and returns 404 for non-numeric ones. Without it, your view receives a string and the database lookup may fail.
 2. Fix the variable name back to `books`. Django templates fail silently on undefined variables, so you see an empty page instead of an error. This is intentional to prevent template errors from crashing your site.
-3. Move templates back to `bookstore/templates/bookstore/`. Django uses this nested structure to avoid name collisions between apps. Two apps could both have a `book_list.html` — the app subdirectory prevents conflicts.
+3. Move templates back to `bookstore/templates/bookstore/`. Django uses this nested structure to avoid name collisions between apps. Two apps could both have a `book_list.html`; the app subdirectory prevents conflicts.
 
 ## Explain it
 

@@ -1,4 +1,4 @@
-# Notes — Multi-Page Scraper
+# Notes: Multi-Page Scraper
 
 ## What I learned
 

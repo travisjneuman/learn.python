@@ -1,6 +1,6 @@
 # Type Hints Explained
 
-Type hints tell Python (and your editor) what kind of data a variable or function expects. They do not change how your code runs — Python ignores them at runtime. But they help you catch mistakes before you run anything.
+Type hints tell Python (and your editor) what kind of data a variable or function expects. They do not change how your code runs; Python ignores them at runtime. But they help you catch mistakes before you run anything.
 
 <!-- modality-hub-start -->
 
@@ -138,7 +138,7 @@ name = first_item(["Alice", "Bob"])   # name is str
 number = first_item([1, 2, 3])       # number is int
 ```
 
-## Protocol — structural typing
+## Protocol: structural typing
 
 A `Protocol` defines what methods an object must have, without requiring inheritance:
 

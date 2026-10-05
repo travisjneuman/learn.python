@@ -19,11 +19,11 @@ Home: [README](../../../README.md)
 - CQRS concepts: command and query separation
 
 ## Why this project exists
-Traditional CRUD systems overwrite data — once a record changes, the previous state is
+Traditional CRUD systems overwrite data: once a record changes, the previous state is
 gone. Event sourcing preserves the full history by storing every state change as an
 immutable event. You can replay events to rebuild any view, audit every change, and answer
 "what did the system look like at 3pm last Tuesday?" This project builds an event store
-with projections that materialize views from events — the foundational pattern behind
+with projections that materialize views from events, the foundational pattern behind
 CQRS, audit trails, and financial ledger systems.
 
 ## Run (copy/paste)
@@ -51,12 +51,12 @@ pytest -q
 ## Alter it (required)
 1. Add a `replay_from(event_id)` method that re-emits events from a specific point in the log.
 2. Add a new projection (e.g. `RevenueProjection`) that sums order totals by currency.
-3. Add event versioning — include a `schema_version` field and handle version migration.
+3. Add event versioning: include a `schema_version` field and handle version migration.
 
 ## Break it (required)
-1. Append an event with a duplicate `event_id` — does the store reject it?
-2. Subscribe a callback that modifies the event store during processing — what happens?
-3. Query events with a time range where `start > end` — does `query_by_time_range` handle it?
+1. Append an event with a duplicate `event_id`: does the store reject it?
+2. Subscribe a callback that modifies the event store during processing: what happens?
+3. Query events with a time range where `start > end`: does `query_by_time_range` handle it?
 
 ## Fix it (required)
 1. Add uniqueness validation on `event_id` in the event store.

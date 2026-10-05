@@ -28,7 +28,7 @@ def greet(name):
 
 - `def` means "I am defining a function"
 - `greet` is the name you chose
-- `name` is a parameter — a value the function expects to receive
+- `name` is a parameter, a value the function expects to receive
 - `return` sends a value back to whoever called the function
 
 ## Calling a function
@@ -78,10 +78,10 @@ greet("Alice", "Hey")    # Hey, Alice!
 
 ## Why functions matter
 
-1. **Reuse** — write code once, use it everywhere
-2. **Organize** — break big problems into named pieces
-3. **Test** — test each piece independently
-4. **Read** — `calculate_tax(price)` is clearer than 5 lines of math
+1. **Reuse**: write code once, use it everywhere
+2. **Organize**: break big problems into named pieces
+3. **Test**: test each piece independently
+4. **Read**: `calculate_tax(price)` is clearer than 5 lines of math
 
 ## Common mistakes
 

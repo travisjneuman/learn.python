@@ -1,4 +1,4 @@
-# FastAPI Request Lifecycle — Diagrams
+# FastAPI Request Lifecycle: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 

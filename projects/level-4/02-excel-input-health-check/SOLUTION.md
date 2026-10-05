@@ -1,4 +1,4 @@
-# Excel Input Health Check — Annotated Solution
+# Excel Input Health Check: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -234,7 +234,7 @@ def detect_delimiter_sniffer(sample: str) -> str:
         return ","  # fallback
 ```
 
-**Trade-off:** `csv.Sniffer` is built-in and handles more edge cases (like quoted fields containing delimiters), but it can fail on very short samples or unusual files. The manual counting approach in the main solution is more transparent and predictable — you can see exactly why it chose a particular delimiter.
+**Trade-off:** `csv.Sniffer` is built-in and handles more edge cases (like quoted fields containing delimiters), but it can fail on very short samples or unusual files. The manual counting approach in the main solution is more transparent and predictable: you can see exactly why it chose a particular delimiter.
 
 ### Using `chardet` for encoding detection
 
@@ -251,6 +251,6 @@ def detect_encoding(path: Path) -> str:
 
 ## Common Pitfalls
 
-1. **Using `average` instead of `min` for delimiter scoring** — Averages can be misleading when one row has many commas inside a text field. The minimum count is a better signal for consistency.
-2. **Forgetting to handle empty files** — An empty file has no lines, no headers, no rows. Every function must check for `len(rows) < 1` or `len(rows) < 2` before accessing indexes.
-3. **Not normalizing headers before duplicate detection** — "Name" and "name" look different as strings but will collide as dictionary keys, causing silent data loss when you use `csv.DictReader`.
+1. **Using `average` instead of `min` for delimiter scoring**: Averages can be misleading when one row has many commas inside a text field. The minimum count is a better signal for consistency.
+2. **Forgetting to handle empty files**: An empty file has no lines, no headers, no rows. Every function must check for `len(rows) < 1` or `len(rows) < 2` before accessing indexes.
+3. **Not normalizing headers before duplicate detection**: "Name" and "name" look different as strings but will collide as dictionary keys, causing silent data loss when you use `csv.DictReader`.

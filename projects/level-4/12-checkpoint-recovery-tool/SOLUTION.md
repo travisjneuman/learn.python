@@ -1,4 +1,4 @@
-# Checkpoint Recovery Tool — Annotated Solution
+# Checkpoint Recovery Tool: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -204,7 +204,7 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| Write-then-rename (atomic write) for checkpoints | If the process crashes mid-write, a partially written file would corrupt recovery. Atomic replacement ensures the checkpoint is always either the old valid version or the new valid version — never a broken intermediate state. |
+| Write-then-rename (atomic write) for checkpoints | If the process crashes mid-write, a partially written file would corrupt recovery. Atomic replacement ensures the checkpoint is always either the old valid version or the new valid version: never a broken intermediate state. |
 | Clear checkpoint on successful completion | A stale checkpoint from a completed run would cause the next run to skip all items, producing empty output. Clearing it signals "this run finished normally." |
 | Recover gracefully from corrupt checkpoint files | A corrupt checkpoint (invalid JSON) should not permanently block the pipeline. Starting fresh loses some progress but guarantees eventual completion. |
 | `batch_size` as a tuning parameter | Frequent checkpoints (batch_size=1) minimize re-work on crash but add I/O overhead. Infrequent checkpoints (batch_size=1000) are faster but risk more lost progress. The parameter lets users tune this tradeoff. |
@@ -226,7 +226,7 @@ def save_checkpoint_db(db_path: str, index: int, result: dict):
     conn.close()
 ```
 
-**Trade-off:** SQLite gives you ACID transactions (crash-safe by default), efficient querying, and per-item granularity. However, it adds complexity and a dependency. The JSON file approach is simpler to understand and debug — you can open the checkpoint in any text editor to inspect its contents.
+**Trade-off:** SQLite gives you ACID transactions (crash-safe by default), efficient querying, and per-item granularity. However, it adds complexity and a dependency. The JSON file approach is simpler to understand and debug: you can open the checkpoint in any text editor to inspect its contents.
 
 ### Using `signal` handlers for graceful shutdown
 
@@ -245,6 +245,6 @@ signal.signal(signal.SIGINT, handle_sigint)
 
 ## Common Pitfalls
 
-1. **Forgetting the final checkpoint** — If you only checkpoint every N items, the last partial batch (items after the last checkpoint) is lost on crash. The solution saves a final checkpoint after the loop completes.
-2. **Setting `batch_size` to 0** — This causes a `ZeroDivisionError` in `(i + 1) % batch_size`. Always validate that batch_size is positive before processing begins.
-3. **Not using atomic writes** — Writing directly to the checkpoint file means a crash during the write leaves a half-written file. On the next run, `json.loads()` fails on the corrupt data and the checkpoint is lost. The write-then-rename pattern prevents this.
+1. **Forgetting the final checkpoint**: If you only checkpoint every N items, the last partial batch (items after the last checkpoint) is lost on crash. The solution saves a final checkpoint after the loop completes.
+2. **Setting `batch_size` to 0**: This causes a `ZeroDivisionError` in `(i + 1) % batch_size`. Always validate that batch_size is positive before processing begins.
+3. **Not using atomic writes**: Writing directly to the checkpoint file means a crash during the write leaves a half-written file. On the next run, `json.loads()` fails on the corrupt data and the checkpoint is lost. The write-then-rename pattern prevents this.

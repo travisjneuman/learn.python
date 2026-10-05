@@ -40,7 +40,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — transfer results with account balances
+- `data/output_summary.json`: transfer results with account balances
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
@@ -51,8 +51,8 @@ pytest -q
 4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Transfer the exact full balance (e.g. 500.00 from an account with 500.00) — does the CHECK constraint allow balance = 0?
-2. Transfer between the same account (from=1, to=1) — what happens?
+1. Transfer the exact full balance (e.g. 500.00 from an account with 500.00): does the CHECK constraint allow balance = 0?
+2. Transfer between the same account (from=1, to=1): what happens?
 3. Remove the SAVEPOINT logic and observe what happens when a mid-batch transfer fails.
 
 ## Fix it (required)

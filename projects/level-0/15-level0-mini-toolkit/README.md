@@ -49,17 +49,17 @@ Output written to data/output.json
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a fourth tool: "reverse" that reverses the order of lines in the file.
 2. Add an `--all` flag that runs every tool and combines results into one report.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Pass `--tool unknown_tool` -- does `run_tool()` raise `ValueError` with a helpful message?
 2. Use an empty file as input -- do all three tools handle it without crashing?
 3. Pass no `--tool` flag at all -- what is the default behaviour?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `run_tool()` raises `ValueError` listing the valid tool names.
 2. Handle empty-file input gracefully for each tool (return zero counts, empty list, unchanged string).
 3. Add a test for the unknown-tool error message.

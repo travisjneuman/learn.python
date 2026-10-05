@@ -1,6 +1,6 @@
 # Jupyter Notebooks
 
-Jupyter notebooks let you mix code, text, and visualizations in a single document. They're the standard tool for data exploration, prototyping, and sharing analysis — widely used in data science, machine learning, and scientific computing.
+Jupyter notebooks let you mix code, text, and visualizations in a single document. They're the standard tool for data exploration, prototyping, and sharing analysis, widely used in data science, machine learning, and scientific computing.
 
 <!-- modality-hub-start -->
 
@@ -16,7 +16,7 @@ Jupyter notebooks let you mix code, text, and visualizations in a single documen
 
 ## Why Jupyter Matters
 
-When you're exploring data or testing ideas, you don't want to write a full script, run it, tweak it, and run it again. Notebooks let you run code in small chunks (cells) and see the output immediately — including charts, tables, and images. This interactive workflow is why data scientists live in Jupyter.
+When you're exploring data or testing ideas, you don't want to write a full script, run it, tweak it, and run it again. Notebooks let you run code in small chunks (cells) and see the output immediately, including charts, tables, and images. This interactive workflow is why data scientists live in Jupyter.
 
 ---
 
@@ -162,9 +162,9 @@ jupyter nbconvert --to pdf analysis.ipynb
 
 ---
 
-## JupyterLite — Browser-Based
+## JupyterLite: Browser-Based
 
-[JupyterLite](https://jupyter.org/try-jupyter/lab/) runs entirely in your browser — no installation needed. It uses Pyodide (Python compiled to WebAssembly). Great for:
+[JupyterLite](https://jupyter.org/try-jupyter/lab/) runs entirely in your browser, no installation needed. It uses Pyodide (Python compiled to WebAssembly). Great for:
 - Quick experiments without setup
 - Sharing interactive examples
 - Teaching in environments where installing software is difficult
@@ -183,4 +183,4 @@ jupyter nbconvert --to pdf analysis.ipynb
 - [JupyterLab Documentation](https://jupyterlab.readthedocs.io/)
 - [Jupyter Notebook Docs](https://jupyter-notebook.readthedocs.io/)
 - [Real Python: Jupyter Notebook Introduction](https://realpython.com/jupyter-notebook-introduction/)
-- [nbstripout](https://github.com/kynan/nbstripout) — Strip output from notebooks for clean git diffs
+- [nbstripout](https://github.com/kynan/nbstripout): Strip output from notebooks for clean git diffs

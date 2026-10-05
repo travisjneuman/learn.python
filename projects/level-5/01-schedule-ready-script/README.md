@@ -39,8 +39,8 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output.json` — processed results
-- `data/run.log` — execution log
+- `data/output.json`: processed results
+- `data/run.log`: execution log
 - Passing tests
 - Updated `notes.md`
 
@@ -97,17 +97,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. What resilience feature would make this script more production-ready?
 2. How could the script notify someone about its results?
 3. Write a test for the feature you added.
 
-## Break it (required) — Core
-1. Try running the script outside its intended conditions — what safeguards exist?
+## Break it (required): Core
+1. Try running the script outside its intended conditions: what safeguards exist?
 2. What happens when another instance is already running?
 3. What about missing or invalid input?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Address a concurrency or stale-state issue you discovered.
 2. Add a way to override the safety checks when needed.
 3. Re-run until all tests pass.

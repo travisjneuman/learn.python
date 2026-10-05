@@ -1,4 +1,4 @@
-# Retry Loop Practice — Annotated Solution
+# Retry Loop Practice: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -239,7 +239,7 @@ if __name__ == "__main__":
 | Configurable exception types | Not all exceptions should trigger a retry. A `ConnectionError` (network down) is worth retrying; a `ValueError` (bad input) will fail every time. Letting callers specify which exceptions to catch prevents wasteful retries. |
 | Separate `retry_no_sleep` for testing | Tests should be fast and deterministic. A retry function that sleeps 0.1s per attempt would make a test suite unbearably slow. The no-sleep version preserves retry logic without the wait. |
 | Closure pattern in `make_countdown_function` | The mutable `call_count = [0]` lets the inner function track state across calls without using a class. This is a lightweight alternative to creating a full class with `__init__` and `__call__`. |
-| Deterministic seed per operation | `seed + i` ensures each simulated operation has a unique but reproducible failure pattern. This makes debugging possible — you can re-run and get the same results. |
+| Deterministic seed per operation | `seed + i` ensures each simulated operation has a unique but reproducible failure pattern. This makes debugging possible: you can re-run and get the same results. |
 
 ## Alternative Approaches
 
@@ -270,7 +270,7 @@ def call_api():
     pass
 ```
 
-A decorator applies retry logic transparently — the caller does not even know retries happen. This is elegant for production code but harder to test and debug. The explicit function-call approach in this project makes the retry mechanics visible.
+A decorator applies retry logic transparently: the caller does not even know retries happen. This is elegant for production code but harder to test and debug. The explicit function-call approach in this project makes the retry mechanics visible.
 
 ### Using the `tenacity` library
 
@@ -278,8 +278,8 @@ For production retry logic, the `tenacity` library provides battle-tested retry 
 
 ## Common Pitfalls
 
-1. **Retrying non-transient errors** — Retrying a `ValueError` from bad input is pointless — it will fail the same way every time. Only retry errors that might succeed on the next attempt (network timeouts, rate limits, temporary server errors).
+1. **Retrying non-transient errors**: Retrying a `ValueError` from bad input is pointless, since it will fail the same way every time. Only retry errors that might succeed on the next attempt (network timeouts, rate limits, temporary server errors).
 
-2. **No backoff (constant delay)** — Retrying every 0.1 seconds puts constant pressure on a failing service. Exponential backoff gives the service progressively more recovery time. Adding random jitter (small random variation to the delay) further prevents multiple clients from retrying in sync.
+2. **No backoff (constant delay)**: Retrying every 0.1 seconds puts constant pressure on a failing service. Exponential backoff gives the service progressively more recovery time. Adding random jitter (small random variation to the delay) further prevents multiple clients from retrying in sync.
 
-3. **Closure variable reassignment trap** — Writing `count = 0` and then `count += 1` inside a closure causes `UnboundLocalError`. Python sees the assignment and treats `count` as a local variable. The fix is either `nonlocal count` (Python 3) or the mutable-container trick `count = [0]` used in this project.
+3. **Closure variable reassignment trap**: Writing `count = 0` and then `count += 1` inside a closure causes `UnboundLocalError`. Python sees the assignment and treats `count` as a local variable. The fix is either `nonlocal count` (Python 3) or the mutable-container trick `count = [0]` used in this project.

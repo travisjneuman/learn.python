@@ -1,4 +1,4 @@
-# Level 6 Mini Capstone — Step-by-Step Walkthrough
+# Level 6 Mini Capstone: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 

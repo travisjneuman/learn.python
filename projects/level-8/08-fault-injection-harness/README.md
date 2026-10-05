@@ -20,7 +20,7 @@ Home: [README](../../../README.md)
 
 ## Why this project exists
 Netflix's Chaos Monkey proved that injecting failures proactively builds more resilient
-systems. Error-handling code paths are the least tested in most codebases — they only run
+systems. Error-handling code paths are the least tested in most codebases: they only run
 during real outages when stakes are highest. This project creates a configurable fault
 injection framework that can introduce exceptions, delays, and data corruption into any
 function call, teaching how to test the code paths that rarely execute in normal operation.
@@ -54,9 +54,9 @@ pytest -q
 3. Add a `--report` flag that outputs all `FaultEvent` entries as a JSON summary.
 
 ## Break it (required)
-1. Set `probability` to a value > 1.0 — does `FaultConfig` validation catch it?
-2. Use the `scope()` context manager and raise inside it — are temporary rules still cleaned up?
-3. Apply the `@inject` decorator to a function that takes `**kwargs` — does `func.__name__` survive?
+1. Set `probability` to a value > 1.0: does `FaultConfig` validation catch it?
+2. Use the `scope()` context manager and raise inside it: are temporary rules still cleaned up?
+3. Apply the `@inject` decorator to a function that takes `**kwargs`: does `func.__name__` survive?
 
 ## Fix it (required)
 1. Ensure `scope()` uses a `try/finally` so rules are removed even on exceptions.

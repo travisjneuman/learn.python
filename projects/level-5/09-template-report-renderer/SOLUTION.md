@@ -1,4 +1,4 @@
-# Template Report Renderer — Annotated Solution
+# Template Report Renderer: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -233,6 +233,6 @@ Jinja2 is the production standard for Python templating. It supports inheritance
 
 ## Common Pitfalls
 
-1. **Forgetting `re.DOTALL` for multi-line blocks** — Without `re.DOTALL`, the `.` in `(.*?)` does not match newlines, so multi-line `{{#each}}` or `{{#if}}` blocks fail silently by matching nothing.
-2. **Greedy regex matching** — Using `(.*)` instead of `(.*?)` matches the first `{{#each}}` to the *last* `{{/each}}`, swallowing everything in between. Non-greedy `(.*?)` matches to the closest closing tag.
-3. **Nested blocks of the same type** — The simple regex approach does not handle `{{#if a}}...{{#if b}}...{{/if}}...{{/if}}`. The inner `{{/if}}` matches the outer opening tag. Production template engines use recursive descent parsers to handle nesting.
+1. **Forgetting `re.DOTALL` for multi-line blocks**: Without `re.DOTALL`, the `.` in `(.*?)` does not match newlines, so multi-line `{{#each}}` or `{{#if}}` blocks fail silently by matching nothing.
+2. **Greedy regex matching**: Using `(.*)` instead of `(.*?)` matches the first `{{#each}}` to the *last* `{{/each}}`, swallowing everything in between. Non-greedy `(.*?)` matches to the closest closing tag.
+3. **Nested blocks of the same type**: The simple regex approach does not handle `{{#if a}}...{{#if b}}...{{/if}}...{{/if}}`. The inner `{{/if}}` matches the outer opening tag. Production template engines use recursive descent parsers to handle nesting.

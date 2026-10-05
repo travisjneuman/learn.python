@@ -1,4 +1,4 @@
-# Refactoring 02 — Monolithic Report
+# Refactoring 02: Monolithic Report
 
 Open `messy.py`. This is a monthly sales report generator. It reads a CSV file, filters data by month, computes statistics, formats a text report, and writes it to a file.
 
@@ -11,11 +11,11 @@ Split `generate_report()` into small, focused functions. Each function should do
 ## Refactoring goals
 
 1. **Decompose into functions.** Extract at least these:
-   - `read_csv(filepath)` — reads and returns raw rows
-   - `filter_by_month(rows, year, month)` — returns matching rows
-   - `compute_statistics(rows)` — returns totals, averages, top products
-   - `format_report(stats, year, month)` — returns formatted text
-   - `write_report(text, filepath)` — writes to file
+   - `read_csv(filepath)`: reads and returns raw rows
+   - `filter_by_month(rows, year, month)`: returns matching rows
+   - `compute_statistics(rows)`: returns totals, averages, top products
+   - `format_report(stats, year, month)`: returns formatted text
+   - `write_report(text, filepath)`: writes to file
 
 2. **Add logging.** Replace silent processing with `logging` module calls at key stages (reading, filtering, computing, writing). Use `logging.info()`, not `print()`.
 

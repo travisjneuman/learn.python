@@ -1,4 +1,4 @@
-# Flashcards — Spaced Repetition Review
+# Flashcards: Spaced Repetition Review
 
 Flashcard decks for each curriculum level. Cards test recall of key concepts, syntax patterns, and common pitfalls.
 
@@ -75,7 +75,7 @@ Your review progress is saved to `practice/flashcards/.review-state.json` (git-i
 ## Tips
 
 - Review daily, even for just 5 minutes
-- Don't peek at the back — test yourself honestly
+- Don't peek at the back; test yourself honestly
 - If a card is too easy, you'll naturally see it less often
 - If you keep getting one wrong, go back to the concept doc
 

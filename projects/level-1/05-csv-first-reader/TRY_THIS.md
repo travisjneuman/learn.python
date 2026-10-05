@@ -1,4 +1,4 @@
-# Try This — Project 05
+# Try This: Project 05
 
 1. Add a `--sort` flag that sorts the table by a given column name. For example, `--sort salary` should display rows ordered by salary (highest first for numeric columns, alphabetical for text columns). Hint: use `sorted()` with a `key` function that checks whether the column is numeric.
 

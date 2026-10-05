@@ -1,4 +1,4 @@
-# Validation Rule Engine — Annotated Solution
+# Validation Rule Engine: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -258,7 +258,7 @@ if __name__ == "__main__":
 | Decision | Why |
 |----------|-----|
 | Rules as data (list of dicts) | Data-driven validation is extensible. Adding a new rule means adding a dict to the list, not writing new if/else logic. This is how production systems like JSON Schema and database constraints work. |
-| Dispatch pattern in `apply_rule` | The `if rule_type == ...` block maps rule types to checker functions. This is a simple Strategy pattern — the behavior changes based on the rule's "type" field without the caller needing to know which checker runs. |
+| Dispatch pattern in `apply_rule` | The `if rule_type == ...` block maps rule types to checker functions. This is a simple Strategy pattern: the behavior changes based on the rule's "type" field without the caller needing to know which checker runs. |
 | All rules checked per record | Reporting all failures at once (not stopping at the first) gives users a complete picture. Fixing one problem at a time and re-validating is frustrating when there are multiple issues. |
 | Failure counts sorted by frequency | The most common failures appear first, telling the data provider where to focus their fixes. If 80% of failures are bad emails, fixing the email column has the biggest impact. |
 | Separate checker functions | Each `check_*` function handles one rule type. This makes them independently testable and composable. Adding a new rule type means writing one new function and one new `elif` branch. |
@@ -305,8 +305,8 @@ Pydantic provides type validation, custom validators, and automatic error messag
 
 ## Common Pitfalls
 
-1. **Invalid regex patterns crashing the engine** — A rule with `"pattern": "[unclosed"` would cause `re.match` to raise `re.error`. The `try/except re.error` in `check_regex` prevents one bad rule from crashing validation for all records.
+1. **Invalid regex patterns crashing the engine**: A rule with `"pattern": "[unclosed"` would cause `re.match` to raise `re.error`. The `try/except re.error` in `check_regex` prevents one bad rule from crashing validation for all records.
 
-2. **Division by zero in pass rate** — If the records list is empty, `len(valid) / len(records)` divides by zero. The `if records else 0` guard handles this, but it is easy to forget when computing percentages.
+2. **Division by zero in pass rate**: If the records list is empty, `len(valid) / len(records)` divides by zero. The `if records else 0` guard handles this, but it is easy to forget when computing percentages.
 
-3. **Type mismatch in range checks** — A JSON record might have `"age": "twenty-five"` as a string. Calling `float("twenty-five")` raises ValueError. The `try/except` in `check_range` catches this, but without it the entire batch validation would crash on one bad record.
+3. **Type mismatch in range checks**: A JSON record might have `"age": "twenty-five"` as a string. Calling `float("twenty-five")` raises ValueError. The `try/except` in `check_range` catches this, but without it the entire batch validation would crash on one bad record.

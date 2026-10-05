@@ -1,4 +1,4 @@
-# Practice — Active Recall & Skill Building
+# Practice: Active Recall & Skill Building
 
 This directory contains practice tools that complement the main project ladder. Use these between projects to reinforce concepts and build fluency.
 
@@ -21,7 +21,7 @@ cd practice/code-reading/01_mystery_function
 ```
 
 ### Coding Challenges (`challenges/`)
-Short, focused exercises (10-30 minutes each) that reinforce specific patterns. Not full projects — just targeted practice reps.
+Short, focused exercises (10-30 minutes each) that reinforce specific patterns. Not full projects, just targeted practice reps.
 
 ```bash
 # Try a challenge
@@ -58,4 +58,4 @@ Read concept doc → Take quiz → Do projects → Review flashcards → Try cha
      └──────────── review when cards appear ────────┘
 ```
 
-The flashcards use a **Leitner box system** — cards you get right move to higher boxes and appear less often. Cards you get wrong drop back to box 1 for immediate review.
+The flashcards use a **Leitner box system**: cards you get right move to higher boxes and appear less often. Cards you get wrong drop back to box 1 for immediate review.

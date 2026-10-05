@@ -19,12 +19,12 @@ Home: [README](../../../README.md)
 - Optimal timeout analysis from matrix results
 
 ## Why this project exists
-Microservice systems depend on many external services — authentication, databases, caches,
-search indices, notification services — each with different latency profiles. Setting one
+Microservice systems depend on many external services: authentication, databases, caches,
+search indices, notification services, each with different latency profiles. Setting one
 global timeout (e.g. 30 seconds) is either too generous for fast services or too aggressive
 for slow ones. This project builds a dependency manager that tests per-service timeouts
 across a matrix of values, identifies the minimum viable timeout for each dependency, and
-recommends optimal settings — preventing the cascading failures that bring down entire
+recommends optimal settings, preventing the cascading failures that bring down entire
 distributed systems.
 
 ## Run (copy/paste)
@@ -54,9 +54,9 @@ pytest -q
 3. Add a `criticality` field to `DependencyConfig` and sort the matrix output by it.
 
 ## Break it (required)
-1. Set `timeout_seconds=0` for a dependency — does the check handle instant timeouts?
-2. Configure a dependency with `max_retries=-1` — does it retry forever?
-3. Pass a `health_check` function that hangs indefinitely — does the timeout work?
+1. Set `timeout_seconds=0` for a dependency: does the check handle instant timeouts?
+2. Configure a dependency with `max_retries=-1`: does it retry forever?
+3. Pass a `health_check` function that hangs indefinitely: does the timeout work?
 
 ## Fix it (required)
 1. Validate that `timeout_seconds > 0` and `max_retries >= 0` in `DependencyConfig`.

@@ -6,9 +6,9 @@ Thanks for your interest in improving this curriculum. Whether you are fixing a 
 
 Use the [issue templates](https://github.com/travisjneuman/learn.python/issues/new/choose) to report:
 
-- **Bug reports** — broken links, failing tests, code errors
-- **Feature requests** — new projects, modules, or curriculum improvements
-- **Curriculum feedback** — unclear explanations, typos, suggested rewrites
+- **Bug reports**: broken links, failing tests, code errors
+- **Feature requests**: new projects, modules, or curriculum improvements
+- **Curriculum feedback**: unclear explanations, typos, suggested rewrites
 
 ## Development Setup
 
@@ -19,7 +19,7 @@ pip install pre-commit
 pre-commit install
 ```
 
-This adds a Git hook that runs [ruff](https://docs.astral.sh/ruff/) (lint + format) before each commit. If ruff finds fixable issues it will apply the fixes automatically — just re-stage the changed files and commit again.
+This adds a Git hook that runs [ruff](https://docs.astral.sh/ruff/) (lint + format) before each commit. If ruff finds fixable issues it will apply the fixes automatically. Just re-stage the changed files and commit again.
 
 You can also run the hooks manually against all files at any time:
 
@@ -84,7 +84,7 @@ project-name/
 
 Every accepted pull request earns you a spot in [CONTRIBUTORS.md](./CONTRIBUTORS.md). When your PR is merged, add your name to the contributors table (or we will add it for you).
 
-Significant contributions — new projects, modules, or major curriculum improvements — are highlighted in the contributor notes.
+Significant contributions (new projects, modules, or major curriculum improvements) are highlighted in the contributor notes.
 
 ## Translations
 

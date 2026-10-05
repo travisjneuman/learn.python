@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 11
+# Prueba Esto: Ejercicio 11
 
 1. Escribe un ciclo while que duplique un número hasta que supere 1000:
    ```python
@@ -17,7 +17,7 @@
    print("¡Bienvenido!")
    ```
 
-3. Crea un ciclo infinito a propósito (un ciclo que nunca se detiene). Luego presiona Ctrl+C para detenerlo. Sentirte cómodo con Ctrl+C es importante — lo vas a necesitar cuando estés depurando.
+3. Crea un ciclo infinito a propósito (un ciclo que nunca se detiene). Luego presiona Ctrl+C para detenerlo. Sentirte cómodo con Ctrl+C es importante: lo vas a necesitar cuando estés depurando.
    ```python
    while True:
        print("¡Esto nunca se va a detener solo!")

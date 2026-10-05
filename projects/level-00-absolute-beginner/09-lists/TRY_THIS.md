@@ -1,4 +1,4 @@
-# Try This — Exercise 09
+# Try This: Exercise 09
 
 1. Create a list of 5 of your favorite foods. Print it, then add one more and print again.
 
@@ -9,7 +9,7 @@
    print(f"Average grade: {average}")
    ```
 
-3. Try accessing an index that does not exist (like `colors[99]`). Read the error message — it is called an IndexError and tells you the list is not that long.
+3. Try accessing an index that does not exist (like `colors[99]`). Read the error message: it is called an IndexError and tells you the list is not that long.
 
 ---
 

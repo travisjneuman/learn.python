@@ -1,7 +1,7 @@
 # Level 3 / Project 05 - Refactor Monolith Drill
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=5) — browser exercises cover Level 2 topics
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=5): browser exercises cover Level 2 topics
 
 ## Before You Start
 
@@ -58,17 +58,17 @@ Engineering (4 people)
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--sort-by` flag (headcount, salary, tenure) to order departments.
 2. Add a median salary calculation to `DepartmentStats`.
 3. Add a `--top-earners N` flag to show the top N earners across all departments.
 
-## Break it (required) — Core
-1. Use a CSV with a missing `salary` column — what error appears?
-2. Pass a non-numeric value in the salary column — does it crash or skip?
-3. Filter to a department that doesn't exist — what happens?
+## Break it (required): Core
+1. Use a CSV with a missing `salary` column: what error appears?
+2. Pass a non-numeric value in the salary column: does it crash or skip?
+3. Filter to a department that doesn't exist: what happens?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add validation that all required CSV columns exist before processing.
 2. Handle non-numeric salary/years values gracefully (skip with warning).
 3. Show a clear message when `--department` matches nothing.

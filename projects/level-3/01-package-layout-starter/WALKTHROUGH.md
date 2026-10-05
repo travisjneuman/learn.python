@@ -1,4 +1,4 @@
-# Package Layout Starter — Step-by-Step Walkthrough
+# Package Layout Starter: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

@@ -1,7 +1,7 @@
 # Level 2 / Project 04 - Error Safe Divider
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=4) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=4): no installation needed!
 
 ## Before You Start
 
@@ -55,17 +55,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add support for integer division (`//`) with a `--integer` flag.
 2. Add a `--precision` argument to control decimal places in results.
 3. Return results sorted by value (largest first) when `--sorted` is passed.
 
-## Break it (required) — Core
-1. Pass `float('inf')` as a numerator — what result do you get?
-2. Pass an extremely large number — does Python overflow?
-3. Use a file with no valid operations — does the summary crash?
+## Break it (required): Core
+1. Pass `float('inf')` as a numerator: what result do you get?
+2. Pass an extremely large number: does Python overflow?
+3. Use a file with no valid operations: does the summary crash?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a check for `float('inf')` and `float('nan')` results.
 2. Handle the empty-results case in `summarise_results`.
 3. Add tests for infinity and NaN edge cases.
@@ -77,7 +77,7 @@ pytest -q
 ## Explain it (teach-back)
 1. What is the difference between `except ValueError` and a bare `except`?
 2. Why is catching specific exceptions better than catching `Exception`?
-3. How does `try/except/else/finally` work — what runs when?
+3. How does `try/except/else/finally` work: what runs when?
 4. When would error-safe patterns like this be critical in production?
 
 ## Mastery check

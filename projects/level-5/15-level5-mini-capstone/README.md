@@ -44,19 +44,19 @@ Pipeline complete: 5 rows, 2 alerts, 12ms
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--dry-run` flag that runs extract and transform but skips the export step.
 2. Add env var overrides: `PIPELINE_THRESHOLD_WARN=80` should override the config file value.
 3. Add a retry wrapper around `extract_csv_files` so one bad file does not abort the pipeline.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Point `input_dir` in the config at a directory that does not exist.
 2. Add a CSV with no numeric columns and observe what `_numeric` defaults to.
 3. Set `threshold_warn` higher than `threshold_crit` in the config.
 4. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate that `input_dir` exists before starting extraction.
 2. Log a clear warning when no numeric column is found in a row.
 3. Validate that `warn < crit` at config load time.

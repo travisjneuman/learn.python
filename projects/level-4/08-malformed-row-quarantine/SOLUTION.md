@@ -1,4 +1,4 @@
-# Malformed Row Quarantine — Annotated Solution
+# Malformed Row Quarantine: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -197,9 +197,9 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| Individual rule functions instead of one big `if/else` block | Each rule is independently testable, reusable, and extensible. Adding a new check is just writing one function — no risk of breaking existing rules. |
-| Collect ALL reasons per row instead of stopping at the first | Batch error reporting gives users a complete picture. Fixing one error, re-running, finding the next — this cycle is slow. Showing all problems at once is faster. |
-| Quarantine file uses JSON instead of CSV | Reasons are a list of strings per row — a nested structure. JSON handles nesting naturally, while CSV would require awkward flattening or serialization. |
+| Individual rule functions instead of one big `if/else` block | Each rule is independently testable, reusable, and extensible. Adding a new check is just writing one function: no risk of breaking existing rules. |
+| Collect ALL reasons per row instead of stopping at the first | Batch error reporting gives users a complete picture. Fixing one error, re-running, finding the next: this cycle is slow. Showing all problems at once is faster. |
+| Quarantine file uses JSON instead of CSV | Reasons are a list of strings per row: a nested structure. JSON handles nesting naturally, while CSV would require awkward flattening or serialization. |
 | Use `str.split()` instead of `csv.reader` | Intentional choice for this project: we want to detect structural problems (wrong column count) that `csv.reader` might silently handle through quoting rules. |
 
 ## Alternative Approaches
@@ -231,6 +231,6 @@ def apply_all_rules(fields, expected, required):
 
 ## Common Pitfalls
 
-1. **Confusing "too few columns" with "all fields empty"** — A row with 2 fields out of 5 expected fails the column count rule. A row with 5 empty fields passes the column count rule but fails the empty-required rule. These are different problems with different fixes.
-2. **Forgetting to handle the header-only file** — A file with one line (just headers) has zero data rows. `lines[1:]` is empty, so the loop runs zero times, which is correct — but the summary must report `total_data_rows: 0`, not crash.
-3. **Not preserving the raw line for quarantined rows** — If you only store the split fields, information about the original delimiter and quoting is lost. Preserving the raw line text lets humans see exactly what the source data looked like.
+1. **Confusing "too few columns" with "all fields empty"**: A row with 2 fields out of 5 expected fails the column count rule. A row with 5 empty fields passes the column count rule but fails the empty-required rule. These are different problems with different fixes.
+2. **Forgetting to handle the header-only file**: A file with one line (just headers) has zero data rows. `lines[1:]` is empty, so the loop runs zero times, which is correct, but the summary must report `total_data_rows: 0`, not crash.
+3. **Not preserving the raw line for quarantined rows**: If you only store the split fields, information about the original delimiter and quoting is lost. Preserving the raw line text lets humans see exactly what the source data looked like.

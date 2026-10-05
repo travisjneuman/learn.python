@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 02 - Password Strength Checker
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -201,10 +201,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Separate scoring functions (`check_length`, `check_character_variety`, `check_common`) | Each function tests one criterion and returns a clear result, making the system composable and each piece independently testable | One monolithic `score_password()` function — harder to test and modify individual rules |
-| Return a detailed dict from `score_password()` | Callers can see the breakdown (length score, variety, common status) and display rich feedback | Return only the total score or strength label — loses diagnostic detail |
-| Case-insensitive common password check | "PASSWORD" and "Password" are just as weak as "password"; attackers try all case variations | Case-sensitive comparison — would miss obvious weak passwords |
-| Threshold-based strength labels | Clear, predictable boundaries that users can understand and reason about | Percentage-based scoring — harder to explain thresholds to users |
+| Separate scoring functions (`check_length`, `check_character_variety`, `check_common`) | Each function tests one criterion and returns a clear result, making the system composable and each piece independently testable | One monolithic `score_password()` function: harder to test and modify individual rules |
+| Return a detailed dict from `score_password()` | Callers can see the breakdown (length score, variety, common status) and display rich feedback | Return only the total score or strength label: loses diagnostic detail |
+| Case-insensitive common password check | "PASSWORD" and "Password" are just as weak as "password"; attackers try all case variations | Case-sensitive comparison: would miss obvious weak passwords |
+| Threshold-based strength labels | Clear, predictable boundaries that users can understand and reason about | Percentage-based scoring: harder to explain thresholds to users |
 
 ## Alternative approaches
 
@@ -224,19 +224,19 @@ def check_character_variety_pythonic(password: str) -> dict:
     }
 ```
 
-**Trade-off:** The `any()` approach is more Pythonic and concise — four lines instead of a loop with four flags. However, it iterates over the password up to four times (once per check), while the manual loop iterates only once. For short passwords this does not matter, but the manual loop is easier to trace through mentally when learning. Use `any()` once you are comfortable with generator expressions.
+**Trade-off:** The `any()` approach is more Pythonic and concise: four lines instead of a loop with four flags. However, it iterates over the password up to four times (once per check), while the manual loop iterates only once. For short passwords this does not matter, but the manual loop is easier to trace through mentally when learning. Use `any()` once you are comfortable with generator expressions.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Empty password (blank line in file) | `check_length` returns 0, `check_character_variety` returns all False, total score is 1 (not common) — labeled "very weak" | The list comprehension in `process_file()` skips blank lines; add an explicit empty-password guard if accepting interactive input |
-| Very long password (1000+ characters) | Works correctly — `len()`, `isupper()`, and `isdigit()` handle strings of any length | No special handling needed; Python strings have no practical length limit |
+| Empty password (blank line in file) | `check_length` returns 0, `check_character_variety` returns all False, total score is 1 (not common): labeled "very weak" | The list comprehension in `process_file()` skips blank lines; add an explicit empty-password guard if accepting interactive input |
+| Very long password (1000+ characters) | Works correctly: `len()`, `isupper()`, and `isdigit()` handle strings of any length | No special handling needed; Python strings have no practical length limit |
 | Password is literally `"password"` | `check_common()` catches it and withholds 1 point, pushing the score lower | The common password list is checked case-insensitively |
 | Password contains Unicode (e.g., emojis, accented letters) | `isupper()`/`islower()`/`isdigit()` work correctly on Unicode; emojis fall into "special" | No extra handling needed; Python 3 string methods are Unicode-aware |
 
 ## Key takeaways
 
-1. **Multi-criteria scoring systems decompose into independent checks.** Each check (length, variety, common) is a pure function that takes input and returns a result. Combining them in `score_password()` is just addition — this composable pattern appears in everything from credit scoring to search ranking.
+1. **Multi-criteria scoring systems decompose into independent checks.** Each check (length, variety, common) is a pure function that takes input and returns a result. Combining them in `score_password()` is just addition: this composable pattern appears in everything from credit scoring to search ranking.
 2. **Booleans are integers in Python.** `True == 1` and `False == 0`, so `sum(1 for v in variety.values() if v)` counts how many character classes are present. This shorthand appears constantly in Python codebases.
 3. **This scoring pattern connects to real-world password policies** used by registration forms and password managers. The next step would be adding sequential-character detection and dictionary word checks, which you will encounter in later levels.

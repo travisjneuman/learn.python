@@ -21,7 +21,7 @@ Home: [README](../../../README.md)
 ## Why this project exists
 This capstone integrates the core Level 9 concepts: architecture decisions, SLO
 management, cost estimation, reliability scoring, and governance checks into a unified
-platform engineering toolkit. Real platform teams do not run each of these in isolation —
+platform engineering toolkit. Real platform teams do not run each of these in isolation;
 they compose them into a single operational view that answers "how healthy is this
 service?" across every dimension. This project proves you can design systems that compose
 multiple domain engines into a coherent whole, the architectural skill that separates
@@ -52,13 +52,13 @@ pytest -q
 
 ## Alter it (required)
 1. Add a `top_risks()` method that returns the 3 services with the worst health status.
-2. Add cost trend analysis — flag services with SPIKING cost trends in the report.
+2. Add cost trend analysis: flag services with SPIKING cost trends in the report.
 3. Add a `--team` filter that generates a report scoped to a specific team's services.
 
 ## Break it (required)
-1. Register a service with no SLOs, no cost data, and no governance checks — what health status results?
-2. Set `budget_monthly=0` in `CostProfile` — does `over_budget` report correctly?
-3. Generate a report with zero registered services — does `generate_report()` handle division by zero?
+1. Register a service with no SLOs, no cost data, and no governance checks: what health status results?
+2. Set `budget_monthly=0` in `CostProfile`: does `over_budget` report correctly?
+3. Generate a report with zero registered services: does `generate_report()` handle division by zero?
 
 ## Fix it (required)
 1. Return `UNKNOWN` health status when a service has no subsystem data.

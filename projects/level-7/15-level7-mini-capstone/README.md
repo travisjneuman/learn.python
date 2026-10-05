@@ -41,10 +41,10 @@ pytest -q
 ## Alter it (required)
 1. Add a `"gamma"` source adapter that maps `{"ref": ..., "content": ...}` to the unified schema.
 2. Add a `dry_run` flag that runs the full pipeline but skips writing the output file.
-3. Re-run script and tests — verify the new adapter and dry-run mode work end-to-end.
+3. Re-run script and tests: verify the new adapter and dry-run mode work end-to-end.
 
 ## Break it (required)
-1. Disable the `adapt` flag while keeping other stages enabled — observe what happens with no records.
+1. Disable the `adapt` flag while keeping other stages enabled: observe what happens with no records.
 2. Provide a payload where `id` is None and watch contract validation behave unexpectedly.
 3. Add a source with records that conflict with another source on the same key.
 

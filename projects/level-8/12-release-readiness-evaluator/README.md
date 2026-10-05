@@ -22,7 +22,7 @@ Home: [README](../../../README.md)
 Shipping software requires checking many gates: test coverage, linting, security scans,
 documentation, and changelog entries. A manual checklist is error-prone and slows down
 releases. This project builds a configurable readiness evaluator that scores a release
-candidate against weighted criteria and produces a go/no-go decision — the same pattern
+candidate against weighted criteria and produces a go/no-go decision, the same pattern
 used in CI/CD release gates at companies like Google, GitHub, and Spotify.
 
 ## Run (copy/paste)
@@ -54,9 +54,9 @@ pytest -q
 3. Add a `--verbose` flag that prints each criterion's score and pass/fail status.
 
 ## Break it (required)
-1. Add a criterion with `weight=0` — does the weighted score calculation handle it?
-2. Set `go_threshold` lower than `conditional_threshold` — what readiness level results?
-3. Pass no criteria at all — does `evaluate()` return a valid report?
+1. Add a criterion with `weight=0`: does the weighted score calculation handle it?
+2. Set `go_threshold` lower than `conditional_threshold`: what readiness level results?
+3. Pass no criteria at all: does `evaluate()` return a valid report?
 
 ## Fix it (required)
 1. Validate that `go_threshold >= conditional_threshold` in `EvaluatorConfig`.
@@ -65,7 +65,7 @@ pytest -q
 
 ## Explain it (teach-back)
 1. How does weighted scoring differ from simple pass/fail gating?
-2. Why are some criteria marked `required=True` — what does that override?
+2. Why are some criteria marked `required=True`: what does that override?
 3. What is the difference between GO, CONDITIONAL, and NO_GO readiness levels?
 4. How do real CI/CD pipelines implement release gates similar to this evaluator?
 

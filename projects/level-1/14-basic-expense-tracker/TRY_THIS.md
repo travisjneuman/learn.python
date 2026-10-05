@@ -1,4 +1,4 @@
-# Try This — Project 14
+# Try This: Project 14
 
 1. Add a `--month` filter that shows expenses for a specific month only. For example, `--month 2024-01` should show only January 2024 expenses and their category totals. Compare the filtered total to the overall total and show a percentage:
    ```text

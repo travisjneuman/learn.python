@@ -1,4 +1,4 @@
-# Try This — Project 07
+# Try This: Project 07
 
 1. Add a `countdown` command that tells you how many days are left until a given date. If the date is in the past, it should say how many days ago it was:
    ```text

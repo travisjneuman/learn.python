@@ -23,7 +23,7 @@ Understanding how users flow through a system is essential for debugging, optimi
 and product analytics. Why do 40% of users abandon checkout at the payment step? Where
 do new users get stuck during onboarding? This project builds a journey tracer that
 reconstructs user sessions from raw event streams, identifies drop-off points, and
-computes conversion funnels — the same pattern used by Amplitude, Mixpanel, and
+computes conversion funnels, the same pattern used by Amplitude, Mixpanel, and
 custom product analytics systems.
 
 ## Run (copy/paste)
@@ -54,9 +54,9 @@ pytest -q
 3. Add a `--user` filter flag that traces only a specific user's journeys.
 
 ## Break it (required)
-1. Pass events with unsorted timestamps — does `reconstruct_journeys` produce correct sessions?
-2. Create a funnel with stages not present in any events — what does `analyze_funnel` return?
-3. Pass an empty event list — does the journey reconstruction handle it gracefully?
+1. Pass events with unsorted timestamps: does `reconstruct_journeys` produce correct sessions?
+2. Create a funnel with stages not present in any events: what does `analyze_funnel` return?
+3. Pass an empty event list: does the journey reconstruction handle it gracefully?
 
 ## Fix it (required)
 1. Sort events by timestamp inside `reconstruct_journeys` before grouping.

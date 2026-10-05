@@ -1,4 +1,4 @@
-# Fail-Safe Exporter — Annotated Solution
+# Fail-Safe Exporter: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -218,6 +218,6 @@ def atomic_write_safe(data: str, path: Path) -> None:
 
 ## Common Pitfalls
 
-1. **Atomic rename across filesystems** — `Path.replace()` only works atomically when source and target are on the same filesystem. Writing `.tmp` to `/tmp/` and renaming to `/data/` will copy-then-delete, which is not atomic. Always place the temp file in the same directory as the target.
-2. **CSV with inconsistent keys** — If row 1 has keys `["a", "b"]` and row 2 has `["a", "c"]`, a naive `DictWriter` using `rows[0].keys()` as headers will crash on row 2's extra key. Collecting all keys from all rows first prevents this.
-3. **No backup before overwrite** — Atomic writes protect against crashes, but not against bugs. If the new data is wrong, without a `.bak` file there is no way to recover the previous version.
+1. **Atomic rename across filesystems**: `Path.replace()` only works atomically when source and target are on the same filesystem. Writing `.tmp` to `/tmp/` and renaming to `/data/` will copy-then-delete, which is not atomic. Always place the temp file in the same directory as the target.
+2. **CSV with inconsistent keys**: If row 1 has keys `["a", "b"]` and row 2 has `["a", "c"]`, a naive `DictWriter` using `rows[0].keys()` as headers will crash on row 2's extra key. Collecting all keys from all rows first prevents this.
+3. **No backup before overwrite**: Atomic writes protect against crashes, but not against bugs. If the new data is wrong, without a `.bak` file there is no way to recover the previous version.

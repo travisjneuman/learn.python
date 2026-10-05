@@ -1,4 +1,4 @@
-# Notes — Hello FastAPI
+# Notes: Hello FastAPI
 
 ## What I learned
 

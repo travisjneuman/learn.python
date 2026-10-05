@@ -1,4 +1,4 @@
-# Level 5 Mini Capstone — Annotated Solution
+# Level 5 Mini Capstone: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -289,6 +289,6 @@ In production, pipelines with dependencies, retries, and scheduling are managed 
 
 ## Common Pitfalls
 
-1. **Threshold warn >= crit** — If `threshold_warn=90` and `threshold_crit=50`, every value above 50 is classified as "critical" and warnings are never generated. Validate that `warn < crit` at config load time.
-2. **No numeric column in CSV** — If the CSV has no column matching `("amount", "value", "score", "metric")`, all rows get `_numeric=0.0` and no thresholds are breached. The pipeline succeeds silently with misleading results. Log a warning when this happens.
-3. **Non-existent input directory** — If `input_dir` does not exist, `extract_csv_files` returns an empty list and the pipeline produces "0 rows extracted." This is technically correct but may mask a configuration error. Validate the directory exists at pipeline start.
+1. **Threshold warn >= crit**: If `threshold_warn=90` and `threshold_crit=50`, every value above 50 is classified as "critical" and warnings are never generated. Validate that `warn < crit` at config load time.
+2. **No numeric column in CSV**: If the CSV has no column matching `("amount", "value", "score", "metric")`, all rows get `_numeric=0.0` and no thresholds are breached. The pipeline succeeds silently with misleading results. Log a warning when this happens.
+3. **Non-existent input directory**: If `input_dir` does not exist, `extract_csv_files` returns an empty list and the pipeline produces "0 rows extracted." This is technically correct but may mask a configuration error. Validate the directory exists at pipeline start.

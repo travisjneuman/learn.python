@@ -1,4 +1,4 @@
-# Module 08 / Project 02 — Mocking
+# Module 08 / Project 02: Mocking
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -21,7 +21,7 @@
 
 ## Why this project exists
 
-Real applications talk to external services — APIs, databases, file systems. You cannot run tests that depend on a live weather API: the tests would be slow, flaky (what if the API is down?), and non-deterministic (weather changes). Mocking lets you replace the real API call with a fake one that returns exactly what you tell it to. Your tests run in milliseconds, work offline, and test your logic without testing someone else's server.
+Real applications talk to external services: APIs, databases, file systems. You cannot run tests that depend on a live weather API: the tests would be slow, flaky (what if the API is down?), and non-deterministic (weather changes). Mocking lets you replace the real API call with a fake one that returns exactly what you tell it to. Your tests run in milliseconds, work offline, and test your logic without testing someone else's server.
 
 ## Run
 
@@ -90,4 +90,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — Fixtures Advanced](../03-fixtures-advanced/)
+[Project 03: Fixtures Advanced](../03-fixtures-advanced/)

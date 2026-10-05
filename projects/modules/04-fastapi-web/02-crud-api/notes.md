@@ -1,4 +1,4 @@
-# Notes — CRUD API
+# Notes: CRUD API
 
 ## What I learned
 

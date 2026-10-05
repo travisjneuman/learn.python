@@ -1,10 +1,10 @@
 # Solution: 11-while-loops
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -67,10 +67,10 @@ print("Goodbye!")                          # WHY: Runs after break exits the loo
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Use `while count <= 5` instead of `for i in range` | While loops show the mechanics of repetition — you control the starting point, the condition, and the step yourself | A `for` loop would be simpler for counting, but the point is to learn how `while` works and when you would choose it |
-| Initialize `guess = 0` before the loop | The while condition `guess != secret` needs `guess` to exist before it is first checked — 0 is a safe "wrong" default | Could use `while True` with a `break`, but the condition-based approach teaches the standard while pattern |
-| Show `while True` with `break` | This is the most common real-world while loop pattern — "keep going until something specific happens" | Could always use a condition in the `while` line, but `while True` + `break` is cleaner when the exit condition happens in the middle of the loop |
-| Demonstrate the countdown separately | Counting down is a different mental model than counting up — both are important and common | Could combine both in one example, but separating them makes each pattern clearer |
+| Use `while count <= 5` instead of `for i in range` | While loops show the mechanics of repetition: you control the starting point, the condition, and the step yourself | A `for` loop would be simpler for counting, but the point is to learn how `while` works and when you would choose it |
+| Initialize `guess = 0` before the loop | The while condition `guess != secret` needs `guess` to exist before it is first checked: 0 is a safe "wrong" default | Could use `while True` with a `break`, but the condition-based approach teaches the standard while pattern |
+| Show `while True` with `break` | This is the most common real-world while loop pattern: "keep going until something specific happens" | Could always use a condition in the `while` line, but `while True` + `break` is cleaner when the exit condition happens in the middle of the loop |
+| Demonstrate the countdown separately | Counting down is a different mental model than counting up: both are important and common | Could combine both in one example, but separating them makes each pattern clearer |
 
 ## Alternative approaches
 
@@ -114,14 +114,14 @@ if attempts == max_attempts and attempt != correct:  # WHY: After the loop, chec
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Forgetting to update the counter: no `count = count + 1` | Infinite loop — the condition never becomes False, so the loop runs forever | Press Ctrl+C to stop it. Always make sure something inside the loop changes the condition variable |
+| Forgetting to update the counter: no `count = count + 1` | Infinite loop: the condition never becomes False, so the loop runs forever | Press Ctrl+C to stop it. Always make sure something inside the loop changes the condition variable |
 | Infinite loop from `while True` without a `break` | The program runs forever, printing or asking forever | Every `while True` loop MUST have a `break` somewhere inside it. Double-check before running |
-| Off-by-one error: using `<` instead of `<=` | `while count < 5` stops at 4 instead of 5 — you get one fewer repetition than expected | Decide whether you want "less than" or "less than or equal to." Trace through the values mentally: if count starts at 1 and you use `< 5`, the values are 1, 2, 3, 4 (not 5) |
-| User types a non-number in the guessing game | `ValueError` from `int()` — the program crashes | For now, just type valid numbers. Error handling (try/except) is a later topic |
-| Forgetting `break` exits only the innermost loop | If you have a loop inside a loop, `break` only exits the inner one | Be aware of which loop your `break` belongs to — indentation tells you |
+| Off-by-one error: using `<` instead of `<=` | `while count < 5` stops at 4 instead of 5: you get one fewer repetition than expected | Decide whether you want "less than" or "less than or equal to." Trace through the values mentally: if count starts at 1 and you use `< 5`, the values are 1, 2, 3, 4 (not 5) |
+| User types a non-number in the guessing game | `ValueError` from `int()`: the program crashes | For now, just type valid numbers. Error handling (try/except) is a later topic |
+| Forgetting `break` exits only the innermost loop | If you have a loop inside a loop, `break` only exits the inner one | Be aware of which loop your `break` belongs to: indentation tells you |
 
 ## Key takeaways
 
-1. **While loops repeat code until a condition becomes False** — unlike for loops which iterate through a fixed collection, while loops keep going until you tell them to stop. Use `for` when you know how many times to repeat. Use `while` when you do not know — you are waiting for something to happen.
-2. **Every while loop needs an exit strategy** — either the condition variable must change inside the loop (like `count = count + 1`), or there must be a `break` statement. Without one of these, you get an infinite loop. Ctrl+C is your emergency escape when that happens.
-3. **`while True` with `break` is the most common real-world pattern** — "run forever, checking inside the loop for a reason to stop" covers user menus, server loops, game loops, and input validation. You will see this pattern constantly in professional code.
+1. **While loops repeat code until a condition becomes False**: unlike for loops which iterate through a fixed collection, while loops keep going until you tell them to stop. Use `for` when you know how many times to repeat. Use `while` when you do not know: you are waiting for something to happen.
+2. **Every while loop needs an exit strategy**: either the condition variable must change inside the loop (like `count = count + 1`), or there must be a `break` statement. Without one of these, you get an infinite loop. Ctrl+C is your emergency escape when that happens.
+3. **`while True` with `break` is the most common real-world pattern**: "run forever, checking inside the loop for a reason to stop" covers user menus, server loops, game loops, and input validation. You will see this pattern constantly in professional code.

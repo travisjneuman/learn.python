@@ -1,4 +1,4 @@
-# Module 03 / Project 03 — POST and Auth
+# Module 03 / Project 03: POST and Auth
 
 [README](../../../../README.md)
 

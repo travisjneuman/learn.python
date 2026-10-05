@@ -40,7 +40,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/manifest.json` — file inventory with checksums and metadata
+- `data/manifest.json`: file inventory with checksums and metadata
 - Passing tests
 - Updated `notes.md`
 
@@ -48,17 +48,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--algorithm` flag supporting `sha256` in addition to `md5`.
 2. Add a `--exclude` glob pattern to skip certain files (e.g., `*.json`).
-3. Re-run script and tests — add a test for SHA-256 checksums.
+3. Re-run script and tests: add a test for SHA-256 checksums.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Point `--dir` at a non-existent directory and observe the error.
 2. Create a very large file (10 MB+) and verify the chunked checksum still works.
 3. Create a directory with symlinks and see if they are followed or skipped.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a `--no-follow-symlinks` option to skip symbolic links.
 2. Handle permission errors gracefully (log a warning, skip the file).
 3. Re-run until all tests pass.

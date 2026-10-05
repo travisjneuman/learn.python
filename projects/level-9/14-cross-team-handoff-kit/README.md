@@ -23,7 +23,7 @@ When ownership of a service transfers between teams, critical context gets lost.
 team discovers undocumented failure modes at 2am during an outage. A well-structured
 handoff captures architecture, operational knowledge, known issues, on-call contacts, and
 runbooks in a format that a receiving team can actually use. This project builds a handoff
-document generator with completeness scoring that incentivizes thorough documentation —
+document generator with completeness scoring that incentivizes thorough documentation,
 the same structured approach used by platform teams at companies with frequent
 organizational changes.
 
@@ -57,9 +57,9 @@ pytest -q
 3. Add a `--checklist` flag that outputs just the transition checklist as a printable list.
 
 ## Break it (required)
-1. Build a document with no `ServiceOverview.purpose` — how does completeness scoring respond?
-2. Add a runbook with empty steps list — does the checklist still mark it as testable?
-3. Create a contact with no email — does the serialization handle optional fields?
+1. Build a document with no `ServiceOverview.purpose`: how does completeness scoring respond?
+2. Add a runbook with empty steps list: does the checklist still mark it as testable?
+3. Create a contact with no email: does the serialization handle optional fields?
 
 ## Fix it (required)
 1. Validate that `ServiceOverview.purpose` is non-empty (warn if blank).
@@ -69,7 +69,7 @@ pytest -q
 ## Explain it (teach-back)
 1. Why are structured handoffs critical when service ownership transfers between teams?
 2. How does the builder pattern make document construction flexible and readable?
-3. What does completeness scoring incentivize — why not just a simple checklist?
+3. What does completeness scoring incentivize: why not just a simple checklist?
 4. How would you integrate this into an organization's service catalog or wiki?
 
 ## Mastery check

@@ -1,4 +1,4 @@
-# Module 05 / Project 02 — Concurrent Requests
+# Module 05 / Project 02: Concurrent Requests
 
 Home: [README](../../../../README.md) · Module: [Async Python](../README.md)
 
@@ -92,4 +92,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — Async File Processing](../03-async-file-processing/)
+[Project 03: Async File Processing](../03-async-file-processing/)

@@ -39,8 +39,8 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — aggregate metrics as JSON
-- `data/output_summary.txt` — human-readable formatted report
+- `data/output_summary.json`: aggregate metrics as JSON
+- `data/output_summary.txt`: human-readable formatted report
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 

@@ -46,11 +46,11 @@ pytest -v
 ## Break it (required)
 1. Pass a target of 0 to a "higher is better" metric and observe division-by-zero handling.
 2. Create a KPI with no previous value and verify the trend is STABLE.
-3. Register no sources and call `publish` — verify the report is empty but valid.
+3. Register no sources and call `publish`: verify the report is empty but valid.
 
 ## Fix it (required)
-1. Add a minimum KPI count validation — report should warn if fewer than 3 KPIs are collected.
-2. Handle the case where all KPIs are RED — add an "executive alert" section.
+1. Add a minimum KPI count validation: report should warn if fewer than 3 KPIs are collected.
+2. Handle the case where all KPIs are RED: add an "executive alert" section.
 3. Test both fixes.
 
 ## Explain it (teach-back)

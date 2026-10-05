@@ -1,4 +1,4 @@
-# Level 9 Mini Capstone: Platform Engineering Toolkit — Step-by-Step Walkthrough
+# Level 9 Mini Capstone: Platform Engineering Toolkit (Step-by-Step Walkthrough)
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

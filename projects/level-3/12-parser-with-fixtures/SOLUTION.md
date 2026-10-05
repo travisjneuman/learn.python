@@ -1,4 +1,4 @@
-# Parser With Fixtures — Annotated Solution
+# Parser With Fixtures: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -255,9 +255,9 @@ if __name__ == "__main__":
 |----------|-----|
 | Registry pattern (PARSERS dict) | Maps format names to parser functions. Adding YAML support is one function + one dict entry. No if/elif chains to modify. |
 | Heuristic format detection | Checking for `[section]` headers (INI) and comma counts (CSV) covers the common cases. The `--format` override exists for ambiguous input. |
-| `partition("=")` instead of `split("=")` | `"key=val=ue".split("=")` gives `["key", "val", "ue"]`. `partition("=")` gives `("key", "=", "val=ue")` — the value is preserved intact even if it contains the delimiter. |
+| `partition("=")` instead of `split("=")` | `"key=val=ue".split("=")` gives `["key", "val", "ue"]`. `partition("=")` gives `("key", "=", "val=ue")`: the value is preserved intact even if it contains the delimiter. |
 | Simple CSV parser (no csv module) | Teaching how parsing works mechanically. The csv module handles quoting, but using `.split(",")` makes the limitations visible and teaches why the csv module exists. |
-| Error list in ParseResult | Errors are collected, not raised. The parser processes as much as it can and reports problems at the end — same approach as the error handler project. |
+| Error list in ParseResult | Errors are collected, not raised. The parser processes as much as it can and reports problems at the end: same approach as the error handler project. |
 
 ## Alternative Approaches
 
@@ -277,8 +277,8 @@ def parse_ini_stdlib(text: str) -> dict:
 
 ## Common Pitfalls
 
-1. **Duplicate section names in INI** — If a file has two `[database]` sections, our parser creates two `ParsedSection` objects. `configparser` merges them, which silently overwrites values. Neither behaviour is universally correct — document your choice.
+1. **Duplicate section names in INI**: If a file has two `[database]` sections, our parser creates two `ParsedSection` objects. `configparser` merges them, which silently overwrites values. Neither behaviour is universally correct: document your choice.
 
-2. **CSV fields containing commas** — `"Alice, Inc.",42` splits into three fields with `.split(",")` but should be two. The `csv` module handles quoted fields correctly. Our simple parser explicitly does not — this is a documented limitation.
+2. **CSV fields containing commas**: `"Alice, Inc.",42` splits into three fields with `.split(",")` but should be two. The `csv` module handles quoted fields correctly. Our simple parser explicitly does not: this is a documented limitation.
 
-3. **Auto-detection guessing wrong** — A line like `key=a,b,c` has commas and an equals sign. `detect_format` might pick CSV when the user meant key-value. The `--format` override exists precisely for these ambiguous cases.
+3. **Auto-detection guessing wrong**: A line like `key=a,b,c` has commas and an equals sign. `detect_format` might pick CSV when the user meant key-value. The `--format` override exists precisely for these ambiguous cases.

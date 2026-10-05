@@ -1,4 +1,4 @@
-# Try This — Exercise 12
+# Try This: Exercise 12
 
 1. Create a dictionary for your favorite movie with keys: title, year, director, rating. Print each value.
 

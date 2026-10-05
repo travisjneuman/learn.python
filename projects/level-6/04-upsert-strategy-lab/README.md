@@ -40,13 +40,13 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — upsert results with insert/update counts
+- `data/output_summary.json`: upsert results with insert/update counts
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
 ## Alter it (required)
 1. Add a `last_updated_by` column that records which strategy performed the upsert.
-2. Run the same input with `--strategy replace` and `--strategy on_conflict` — compare the `products` output to see the difference.
+2. Run the same input with `--strategy replace` and `--strategy on_conflict`: compare the `products` output to see the difference.
 3. Add a `--dry-run` flag that validates and counts without actually writing to the database.
 4. Re-run script and tests after each change.
 

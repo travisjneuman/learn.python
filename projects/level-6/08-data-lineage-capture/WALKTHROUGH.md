@@ -1,4 +1,4 @@
-# Data Lineage Capture — Step-by-Step Walkthrough
+# Data Lineage Capture: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 

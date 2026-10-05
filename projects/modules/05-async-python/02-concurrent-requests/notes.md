@@ -1,4 +1,4 @@
-# Notes — Concurrent Requests
+# Notes: Concurrent Requests
 
 ## What I learned
 

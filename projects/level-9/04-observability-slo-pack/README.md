@@ -20,10 +20,10 @@ Home: [README](../../../README.md)
 
 ## Why this project exists
 SLOs (Service Level Objectives) are the foundation of Site Reliability Engineering.
-A team with a 99.9% availability SLO has an error budget of 0.1% — roughly 43 minutes
+A team with a 99.9% availability SLO has an error budget of 0.1%, roughly 43 minutes
 of downtime per month. When the budget is exhausted, feature work stops and reliability
 becomes the priority. This project builds an SLO management system that tracks SLIs,
-computes compliance, calculates burn rates, and manages error budgets — the same system
+computes compliance, calculates burn rates, and manages error budgets, the same system
 Google SRE teams use to balance reliability with feature velocity.
 
 ## Run (copy/paste)
@@ -55,9 +55,9 @@ pytest -q
 3. Add a `--dashboard` flag that outputs a formatted text dashboard of all SLO statuses.
 
 ## Break it (required)
-1. Set `target_pct=100.0` — what happens to the error budget (it becomes 0%)?
-2. Record zero events and check compliance — does the SLI value calculation divide by zero?
-3. Set a burn rate threshold of 0 — does every SLO trigger an alert?
+1. Set `target_pct=100.0`: what happens to the error budget (it becomes 0%)?
+2. Record zero events and check compliance: does the SLI value calculation divide by zero?
+3. Set a burn rate threshold of 0: does every SLO trigger an alert?
 
 ## Fix it (required)
 1. Validate that `target_pct < 100.0` (a 100% target has zero error budget).
@@ -65,9 +65,9 @@ pytest -q
 3. Validate burn rate thresholds are positive in `check_burn_rates`.
 
 ## Explain it (teach-back)
-1. What is an SLI, SLO, and error budget — how do they relate?
+1. What is an SLI, SLO, and error budget: how do they relate?
 2. How does burn rate indicate whether you will exhaust your error budget early?
-3. Why is a 100% availability target impractical — what is the "nines" system?
+3. Why is a 100% availability target impractical: what is the "nines" system?
 4. How do Google SRE teams use error budgets to balance reliability vs feature velocity?
 
 ## Mastery check

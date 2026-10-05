@@ -49,17 +49,17 @@ Format: ini, Lines: 15
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a YAML-like parser (indentation-based key: value pairs).
 2. Add `--validate` flag that checks all sections have at least one entry.
 3. Add line number tracking to each parsed record for error reporting.
 
-## Break it (required) — Core
-1. Parse an INI file with duplicate section names — what happens?
-2. Parse a CSV with quoted fields containing commas — does simple split work?
-3. Auto-detect format on ambiguous input (e.g., `a=b,c=d`) — which parser wins?
+## Break it (required): Core
+1. Parse an INI file with duplicate section names: what happens?
+2. Parse a CSV with quoted fields containing commas: does simple split work?
+3. Auto-detect format on ambiguous input (e.g., `a=b,c=d`), which parser wins?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle duplicate sections by merging entries (or warning).
 2. Document that the CSV parser doesn't handle quoted fields (limitation).
 3. Add a `--format` override so users can bypass auto-detection.

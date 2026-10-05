@@ -43,7 +43,7 @@ pytest -v
 - Passing tests (`pytest -v` shows ~16 passed)
 
 ## Alter it (required)
-1. Add a `RegexMatchRule` that validates a field against a regex pattern — register it in `load_policies_from_config`.
+1. Add a `RegexMatchRule` that validates a field against a regex pattern: register it in `load_policies_from_config`.
 2. Add AND/OR composite rules: `AllOfRule` (all sub-rules must pass) and `AnyOfRule` (at least one must pass).
 3. Re-run tests and add coverage for the new rule types.
 
@@ -59,7 +59,7 @@ pytest -v
 
 ## Explain it (teach-back)
 1. How does the `PolicyRule` Protocol enable adding new rule types without modifying the engine?
-2. Why is severity separate from verdict — when would a FAIL with WARNING severity be useful?
+2. Why is severity separate from verdict: when would a FAIL with WARNING severity be useful?
 3. How does `evaluate_batch` make it efficient to validate many resources against the same ruleset?
 4. What are the tradeoffs between policy-as-code (Python) vs policy-as-data (JSON/YAML)?
 

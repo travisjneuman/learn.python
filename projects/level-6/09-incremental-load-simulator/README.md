@@ -40,7 +40,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — load stats with watermark values
+- `data/output_summary.json`: load stats with watermark values
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
@@ -51,7 +51,7 @@ pytest -q
 4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Feed records with timestamps older than the current watermark — confirm they are all skipped.
+1. Feed records with timestamps older than the current watermark: confirm they are all skipped.
 2. Feed records with identical timestamps and observe whether the `<=` comparison causes off-by-one issues.
 3. Feed records out of chronological order and check whether the watermark is set correctly.
 

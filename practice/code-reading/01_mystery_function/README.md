@@ -1,4 +1,4 @@
-# Exercise 01 — Mystery Function
+# Exercise 01: Mystery Function
 
 Open `codebase.py`. Read it carefully. Do NOT run it yet.
 

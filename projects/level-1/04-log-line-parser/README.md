@@ -1,7 +1,7 @@
 # Level 1 / Project 04 - Log Line Parser
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=4) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=4): no installation needed!
 
 ## Before You Start
 
@@ -57,17 +57,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--after` flag that only shows log entries after a given timestamp.
 2. Add a "most active hour" metric that shows which hour had the most log entries.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a malformed line like `not a log entry at all` -- does `parse_log_line()` return `None` or crash?
 2. Add a line with an invalid timestamp like `9999-99-99 00:00:00` -- does `datetime.strptime()` fail?
 3. Use `--level CRITICAL` when no CRITICAL entries exist -- does `filter_by_level()` return an empty list?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `parse_log_line()` returns `None` for unparseable lines instead of crashing.
 2. Wrap `datetime.strptime()` in a try/except to handle invalid timestamps.
 3. Add a test for the malformed-line case.

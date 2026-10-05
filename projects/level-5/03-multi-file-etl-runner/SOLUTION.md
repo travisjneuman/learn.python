@@ -1,4 +1,4 @@
-# Multi-File ETL Runner — Annotated Solution
+# Multi-File ETL Runner: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -165,6 +165,6 @@ Pandas is far more powerful for complex transforms (groupby, pivots, type coerci
 
 ## Common Pitfalls
 
-1. **Inconsistent column names across files** — If one CSV has "Name" and another has "name", deduplication on "name" silently misses records from the first file. The `transform_row` function solves this by lowercasing all keys before merging.
-2. **Forgetting to sort source files** — `glob("*.csv")` returns files in filesystem order, which varies by OS. Using `sorted()` ensures deterministic processing order, which matters for "update" strategy (last file's values win).
-3. **Using "deduplicate" without specifying a key field** — If the key field does not exist in the data, `row.get(key_field)` returns `None` for every row, and all rows after the first are treated as duplicates and dropped.
+1. **Inconsistent column names across files**: If one CSV has "Name" and another has "name", deduplication on "name" silently misses records from the first file. The `transform_row` function solves this by lowercasing all keys before merging.
+2. **Forgetting to sort source files**: `glob("*.csv")` returns files in filesystem order, which varies by OS. Using `sorted()` ensures deterministic processing order, which matters for "update" strategy (last file's values win).
+3. **Using "deduplicate" without specifying a key field**: If the key field does not exist in the data, `row.get(key_field)` returns `None` for every row, and all rows after the first are treated as duplicates and dropped.

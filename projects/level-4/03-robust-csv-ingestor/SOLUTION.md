@@ -1,4 +1,4 @@
-# Robust CSV Ingestor — Annotated Solution
+# Robust CSV Ingestor: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
 | Decision | Why |
 |----------|-----|
 | Quarantine bad rows instead of skipping or crashing | Skipping loses data silently. Crashing stops the entire pipeline. Quarantining preserves the bad data for review while letting good data flow through. |
-| Prepend original row number to quarantined rows | Traceability — when a human reviews the quarantine file, they need to find the problem in the original file without recounting lines. |
+| Prepend original row number to quarantined rows | Traceability: when a human reviews the quarantine file, they need to find the problem in the original file without recounting lines. |
 | Write the quarantine file even if it is empty | Downstream tools can rely on the file always existing. Checking "does the quarantine file exist?" vs "is it empty?" are different questions with different answers. |
 | Return error strings instead of raising exceptions | Lets the caller accumulate all errors across all rows and decide what to do (log, abort, retry). Exceptions would stop at the first bad row. |
 
@@ -179,6 +179,6 @@ def ingest_with_dictreader(input_path: Path) -> tuple[list[dict], list[dict]]:
 
 ## Common Pitfalls
 
-1. **Using `newline=""` when opening CSV files for writing** — Without this, Python on Windows may add extra blank lines between rows. The `newline=""` parameter tells Python to let the `csv.writer` handle line endings.
-2. **Counting rows from 0 instead of 2** — Users see row 1 as the header in their spreadsheet. If you report "row 0 has an error," they will look at the wrong line. Using `start=2` in `enumerate` matches human expectations.
-3. **Not handling the empty-file case** — If the CSV has zero lines, `rows[0]` will raise an `IndexError`. Always check `if not rows` before accessing the header.
+1. **Using `newline=""` when opening CSV files for writing**: Without this, Python on Windows may add extra blank lines between rows. The `newline=""` parameter tells Python to let the `csv.writer` handle line endings.
+2. **Counting rows from 0 instead of 2**: Users see row 1 as the header in their spreadsheet. If you report "row 0 has an error," they will look at the wrong line. Using `start=2` in `enumerate` matches human expectations.
+3. **Not handling the empty-file case**: If the CSV has zero lines, `rows[0]` will raise an `IndexError`. Always check `if not rows` before accessing the header.

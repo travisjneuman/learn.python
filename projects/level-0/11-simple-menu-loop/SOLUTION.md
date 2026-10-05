@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 11 - Simple Menu Loop
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -199,10 +199,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Each action is a separate function | `action_greet()`, `action_reverse()`, etc. are independently testable. Adding a new action is one function + one elif | Inline all logic in `execute_choice()` — makes the function long and hard to test individual actions |
-| `execute_choice()` takes an `argument` parameter | Makes the function testable without `input()`. Tests pass `execute_choice("4", "hello")` directly | Use `input()` inside each action — requires mocking stdin for tests, which is complex at Level 0 |
-| `run_batch()` processes a list of command strings | Enables file-based testing and repeatable runs. The same commands produce the same results every time | Interactive-only mode — harder to test, cannot reproduce results |
-| `MENU_OPTIONS` is a module-level dict | Defines the menu structure in one place. Both `format_menu()` and documentation use the same source of truth | Hard-code the menu text in `format_menu()` — duplicates the option list |
+| Each action is a separate function | `action_greet()`, `action_reverse()`, etc. are independently testable. Adding a new action is one function + one elif | Inline all logic in `execute_choice()`: makes the function long and hard to test individual actions |
+| `execute_choice()` takes an `argument` parameter | Makes the function testable without `input()`. Tests pass `execute_choice("4", "hello")` directly | Use `input()` inside each action: requires mocking stdin for tests, which is complex at Level 0 |
+| `run_batch()` processes a list of command strings | Enables file-based testing and repeatable runs. The same commands produce the same results every time | Interactive-only mode: harder to test, cannot reproduce results |
+| `MENU_OPTIONS` is a module-level dict | Defines the menu structure in one place. Both `format_menu()` and documentation use the same source of truth | Hard-code the menu text in `format_menu()`: duplicates the option list |
 
 ## Alternative approaches
 
@@ -225,7 +225,7 @@ def execute_choice(choice: str, argument: str = "Python") -> str:
     return f"Unknown option: '{choice}'. Please choose 1-5."
 ```
 
-**Trade-off:** Dict dispatch eliminates the if/elif chain entirely. Adding a new action is one dict entry instead of a new branch. However, the `lambda` wrappers add complexity — some actions ignore the argument, others need type conversion. At Level 0, the if/elif chain makes the control flow explicit and easy to follow. Dict dispatch is the natural next step once you are comfortable with functions-as-values.
+**Trade-off:** Dict dispatch eliminates the if/elif chain entirely. Adding a new action is one dict entry instead of a new branch. However, the `lambda` wrappers add complexity: some actions ignore the argument, others need type conversion. At Level 0, the if/elif chain makes the control flow explicit and easy to follow. Dict dispatch is the natural next step once you are comfortable with functions-as-values.
 
 ## What could go wrong
 
@@ -234,12 +234,12 @@ def execute_choice(choice: str, argument: str = "Python") -> str:
 | User enters choice `99` | `execute_choice("99")` returns `"Unknown option: '99'. Please choose 1-5."` | Already handled by the else branch |
 | Batch file has `5` (quit) in the middle | `run_batch()` processes commands up to and including `5`, then stops. Later commands are ignored | Already handled by the `break` statement |
 | Action `2` receives a non-numeric argument | `int(argument)` raises `ValueError`, caught by try/except. Falls back to `n = 5` | Already handled |
-| Batch file is empty | `commands` is an empty list. `run_batch([])` returns `[]`. No crash | Already handled — the for loop simply does not execute |
+| Batch file is empty | `commands` is an empty list. `run_batch([])` returns `[]`. No crash | Already handled: the for loop simply does not execute |
 | Command has no argument (e.g. just `"3"`) | `parts` has length 1. `argument` defaults to `"Python"`. `action_count_letters("Python")` works fine | Already handled by the default argument |
 
 ## Key takeaways
 
 1. **Menu-driven programs follow the loop-dispatch-execute pattern.** Show options, get a choice, run the matching action, repeat. This is the architecture behind every CLI tool, game menu, and interactive console. Understanding it here prepares you for building real tools.
 2. **`split(maxsplit=1)` is essential for command parsing.** It splits on the first space only, keeping the rest of the string intact. `"3 hello world".split(maxsplit=1)` gives `["3", "hello world"]`. Without `maxsplit`, multi-word arguments would be split apart.
-3. **Batch mode makes programs testable.** Reading commands from a file instead of `input()` means you can run the same test scenario repeatedly. This is the foundation of automated testing — predictable inputs produce predictable outputs.
+3. **Batch mode makes programs testable.** Reading commands from a file instead of `input()` means you can run the same test scenario repeatedly. This is the foundation of automated testing: predictable inputs produce predictable outputs.
 4. **Functions as building blocks compose into programs.** `action_greet()`, `action_reverse()`, `execute_choice()`, `run_batch()`, and `main()` are layers. Each layer calls the one below it. This layered structure is how professional software is built.

@@ -1,4 +1,4 @@
-# Git Basics — Part 1: Local Git
+# Git Basics, Part 1: Local Git
 
 [← Back to Overview](./git-basics.md) · [Part 2: Remote Git →](./git-basics-part2.md)
 
@@ -14,16 +14,16 @@
 
 ---
 
-Git is a version control system — it tracks every change you make to your code, lets you undo mistakes, and makes it possible for multiple people to work on the same project. This part covers everything you need to work with git locally: init, add, commit, branch, and merge.
+Git is a version control system: it tracks every change you make to your code, lets you undo mistakes, and makes it possible for multiple people to work on the same project. This part covers everything you need to work with git locally: init, add, commit, branch, and merge.
 
 ## Core concepts
 
 Think of git like a checkpoint system in a video game:
 
-- **Repository (repo)** — your project folder, tracked by git
-- **Commit** — a saved checkpoint of your code at a specific moment
-- **Branch** — a parallel timeline where you can experiment without affecting the main code
-- **Remote** — a copy of your repo on a server (like GitHub)
+- **Repository (repo)**: your project folder, tracked by git
+- **Commit**: a saved checkpoint of your code at a specific moment
+- **Branch**: a parallel timeline where you can experiment without affecting the main code
+- **Remote**: a copy of your repo on a server (like GitHub)
 
 ## Setting up git
 
@@ -135,7 +135,7 @@ git merge feature-login
 git branch -d feature-login
 ```
 
-## `.gitignore` — files git should not track
+## `.gitignore`: files git should not track
 
 Create a file called `.gitignore` in your repo root:
 

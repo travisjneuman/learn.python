@@ -37,7 +37,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — drift reports per table
+- `data/output_summary.json`: drift reports per table
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
@@ -48,7 +48,7 @@ pytest -q
 4. Re-run script and tests after each change.
 
 ## Break it (required)
-1. Run twice with the same schema — confirm drift is not falsely detected.
+1. Run twice with the same schema: confirm drift is not falsely detected.
 2. Add a column via `ALTER TABLE` between runs and confirm drift IS detected.
 3. Pass a table name that does not exist and observe the error.
 

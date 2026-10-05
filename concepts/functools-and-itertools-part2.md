@@ -1,4 +1,4 @@
-# functools and itertools — Part 2: itertools
+# functools and itertools, Part 2: itertools
 
 [← Part 1: functools](./functools-and-itertools-part1.md) · [Back to Overview](./functools-and-itertools.md)
 
@@ -14,9 +14,9 @@
 
 ---
 
-The `itertools` module gives you building blocks for efficient iteration. These tools let you chain sequences, generate combinations, group data, and work with infinite iterators — all lazily and memory-efficiently.
+The `itertools` module gives you building blocks for efficient iteration. These tools let you chain sequences, generate combinations, group data, and work with infinite iterators, all lazily and memory-efficiently.
 
-## `itertools.chain` — combine multiple iterables
+## `itertools.chain`: combine multiple iterables
 
 ```python
 from itertools import chain
@@ -32,7 +32,7 @@ nested = [[1, 2], [3], [4, 5, 6]]
 list(chain.from_iterable(nested))    # [1, 2, 3, 4, 5, 6]
 ```
 
-## `itertools.groupby` — group consecutive items
+## `itertools.groupby`: group consecutive items
 
 Groups items that have the same key. **Important:** the data must be sorted by the key first.
 
@@ -50,7 +50,7 @@ for letter, group in groupby(words, key=lambda w: w[0]):
 # c: ['cherry']
 ```
 
-Real-world example — group log entries by date:
+Real-world example: group log entries by date:
 
 ```python
 from itertools import groupby
@@ -68,7 +68,7 @@ for date, entries in groupby(logs, key=lambda e: e["date"]):
         print(f"  {entry['msg']}")
 ```
 
-## `itertools.product` — cartesian product
+## `itertools.product`: cartesian product
 
 All combinations of items from multiple iterables:
 
@@ -97,7 +97,7 @@ list(permutations("ABC", 2))
 # [('A','B'), ('A','C'), ('B','A'), ('B','C'), ('C','A'), ('C','B')]
 ```
 
-## `itertools.islice` — slice a generator
+## `itertools.islice`: slice a generator
 
 You cannot use `[start:stop]` on generators. Use `islice` instead:
 
@@ -117,7 +117,7 @@ list(islice(infinite_counter(), 5))    # [0, 1, 2, 3, 4]
 list(islice(infinite_counter(), 10, 15))    # [10, 11, 12, 13, 14]
 ```
 
-## `itertools.count`, `cycle`, `repeat` — infinite iterators
+## `itertools.count`, `cycle`, `repeat`: infinite iterators
 
 ```python
 from itertools import count, cycle, repeat
@@ -137,7 +137,7 @@ for _, color in zip(range(6), colors):
 list(repeat("hello", 3))    # ["hello", "hello", "hello"]
 ```
 
-## `itertools.starmap` — map with unpacking
+## `itertools.starmap`: map with unpacking
 
 ```python
 from itertools import starmap

@@ -1,4 +1,4 @@
-# Notes — Weather API Dashboard
+# Notes: Weather API Dashboard
 
 ## What I learned
 

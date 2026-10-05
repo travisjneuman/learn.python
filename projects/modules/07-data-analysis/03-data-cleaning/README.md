@@ -1,4 +1,4 @@
-# Module 07 / Project 03 — Data Cleaning
+# Module 07 / Project 03: Data Cleaning
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -126,4 +126,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 04 — Visualization](../04-visualization/)
+[Project 04: Visualization](../04-visualization/)

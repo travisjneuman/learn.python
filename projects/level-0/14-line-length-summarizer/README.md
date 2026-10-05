@@ -52,17 +52,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a "median line length" metric to `compute_stats()`.
 2. Add a `--threshold` flag that customises the short/medium/long category boundaries.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Use an empty file -- does `compute_stats()` crash on `min([])` or `sum([]) / 0`?
 2. Use a file where every line is the same length -- does the histogram still display correctly?
 3. Use a file with one very long line (10,000+ characters) -- does the histogram bar overflow?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a guard for empty files that returns zero stats without crashing.
 2. Cap histogram bar length to a maximum width (e.g. 50 characters).
 3. Add a test for the empty-file edge case.

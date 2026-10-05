@@ -1,7 +1,7 @@
 # Level 2 / Project 01 - Dictionary Lookup Service
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=1) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=1): no installation needed!
 
 ## Before You Start
 
@@ -86,17 +86,17 @@ if not code or not code.strip():
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--case-sensitive` flag that disables lowercase normalisation.
-2. Change `get_close_matches` cutoff from 0.6 to 0.5 — observe more suggestions.
+2. Change `get_close_matches` cutoff from 0.6 to 0.5: observe more suggestions.
 3. Add a `--add` option that appends a new `key=value` line to the dictionary file.
 
-## Break it (required) — Core
-1. Create a dictionary file with duplicate keys — which value wins?
-2. Put a line with multiple `=` signs — does the definition split correctly?
-3. Search for an empty string `""` — what happens?
+## Break it (required): Core
+1. Create a dictionary file with duplicate keys, which value wins?
+2. Put a line with multiple `=` signs: does the definition split correctly?
+3. Search for an empty string `""`: what happens?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a guard for empty search terms in `lookup()`.
 2. Add a test that verifies duplicate-key behaviour is intentional.
 3. Ensure `=` inside definitions is preserved (split on first `=` only).

@@ -1,4 +1,4 @@
-# Notes — Package Structure
+# Notes: Package Structure
 
 ## What I learned
 

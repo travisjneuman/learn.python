@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `time_window` parameter so a flag is only active during specific hours (e.g. 09:00-17:00).
 2. Add a `toggle()` method that flips a flag's enabled state and records it in the audit log.
-3. Re-run script and tests — verify time-windowed flags and toggle work correctly.
+3. Re-run script and tests: verify time-windowed flags and toggle work correctly.
 
 ## Break it (required)
 1. Create a circular dependency (flag A requires B, flag B requires A) and observe infinite recursion.

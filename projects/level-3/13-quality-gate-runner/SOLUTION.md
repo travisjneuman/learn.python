@@ -1,4 +1,4 @@
-# Quality Gate Runner — Annotated Solution
+# Quality Gate Runner: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -276,8 +276,8 @@ def check_no_print_ast(path: Path) -> GateResult:
 
 ## Common Pitfalls
 
-1. **`compile()` does not catch runtime errors** — `compile("x = 1/0", ...)` succeeds because division-by-zero is a runtime error, not a syntax error. This gate only catches syntax issues like missing colons, bad indentation, or unmatched parentheses.
+1. **`compile()` does not catch runtime errors**: `compile("x = 1/0", ...)` succeeds because division-by-zero is a runtime error, not a syntax error. This gate only catches syntax issues like missing colons, bad indentation, or unmatched parentheses.
 
-2. **The print check is a heuristic, not a guarantee** — `stripped.startswith("print(")` misses `print (x)` (space before paren) and falsely flags `print_report()`. For real linting, use ruff or pylint which parse the AST.
+2. **The print check is a heuristic, not a guarantee**: `stripped.startswith("print(")` misses `print (x)` (space before paren) and falsely flags `print_report()`. For real linting, use ruff or pylint which parse the AST.
 
-3. **Reading the file multiple times** — Each gate reads the file independently. For large files, this is wasteful. An optimisation would read once and pass the content to all gates, but the current approach prioritises simplicity and gate independence.
+3. **Reading the file multiple times**: Each gate reads the file independently. For large files, this is wasteful. An optimisation would read once and pass the content to all gates, but the current approach prioritises simplicity and gate independence.

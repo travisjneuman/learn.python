@@ -1,10 +1,10 @@
 # Solution: 10-for-loops
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -60,10 +60,10 @@ for number in range(1, 11):                       # WHY: range(1, 11) generates 
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Name the loop variable descriptively: `fruit`, `score`, `number` | The variable name should describe what each item IS — `for fruit in fruits` reads like English | Could use `for x in fruits` or `for i in fruits`, but that makes the code harder to understand |
+| Name the loop variable descriptively: `fruit`, `score`, `number` | The variable name should describe what each item IS: `for fruit in fruits` reads like English | Could use `for x in fruits` or `for i in fruits`, but that makes the code harder to understand |
 | Use `range(5)` to demonstrate zero-based counting | Reinforces that Python starts counting at 0, which was introduced with list indices in Exercise 09 | Could use `range(1, 6)` to start at 1, but learners need to understand range(n) starts at 0 by default |
-| Show the accumulator pattern (total = 0, then add in loop) | This is one of the most important patterns in programming — building up a result one piece at a time | Could use `sum(scores)` (shown in Exercise 09), but understanding HOW sum works internally is more valuable |
-| Combine a loop with an if-statement | Shows that you can nest one concept inside another — this is where programming becomes powerful | Could keep them separate, but combining loop + if is such a common pattern that it needs early exposure |
+| Show the accumulator pattern (total = 0, then add in loop) | This is one of the most important patterns in programming: building up a result one piece at a time | Could use `sum(scores)` (shown in Exercise 09), but understanding HOW sum works internally is more valuable |
+| Combine a loop with an if-statement | Shows that you can nest one concept inside another: this is where programming becomes powerful | Could keep them separate, but combining loop + if is such a common pattern that it needs early exposure |
 
 ## Alternative approaches
 
@@ -84,7 +84,7 @@ Output:
 7 x 10 = 70
 ```
 
-**Trade-off:** This shows the practical power of loops — 10 lines of output from just 3 lines of code. Without a loop, you would need to write 10 separate print statements. The loop does the repetitive work for you.
+**Trade-off:** This shows the practical power of loops: 10 lines of output from just 3 lines of code. Without a loop, you would need to write 10 separate print statements. The loop does the repetitive work for you.
 
 ### Approach C: Counting backwards with range()
 
@@ -100,14 +100,14 @@ print("Liftoff!")                                  # WHY: This line is NOT inden
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Forgetting the colon after `for ... in ...:` | `SyntaxError: expected ':'` — the colon tells Python the loop header is done and the body starts next | Every `for` line must end with a colon, just like `if` statements |
-| Wrong indentation inside the loop | `IndentationError` — the code inside the loop must be indented by 4 spaces | Lines inside the loop must be indented consistently. Lines that should run after the loop should NOT be indented |
-| Expecting `range(5)` to include 5 | It gives 0, 1, 2, 3, 4 — it stops BEFORE the number you give it | `range(n)` produces n numbers starting from 0. If you want 1 to 5, use `range(1, 6)` |
+| Forgetting the colon after `for ... in ...:` | `SyntaxError: expected ':'`: the colon tells Python the loop header is done and the body starts next | Every `for` line must end with a colon, just like `if` statements |
+| Wrong indentation inside the loop | `IndentationError`: the code inside the loop must be indented by 4 spaces | Lines inside the loop must be indented consistently. Lines that should run after the loop should NOT be indented |
+| Expecting `range(5)` to include 5 | It gives 0, 1, 2, 3, 4: it stops BEFORE the number you give it | `range(n)` produces n numbers starting from 0. If you want 1 to 5, use `range(1, 6)` |
 | Modifying a list while looping through it | Items can be skipped or the program can behave unpredictably | Never add or remove items from a list you are currently looping through. Build a new list instead |
-| Forgetting to initialize the accumulator: jumping straight to `total = total + score` | `NameError: name 'total' is not defined` — you cannot add to a variable that does not exist yet | Always set your accumulator to a starting value before the loop: `total = 0` |
+| Forgetting to initialize the accumulator: jumping straight to `total = total + score` | `NameError: name 'total' is not defined`: you cannot add to a variable that does not exist yet | Always set your accumulator to a starting value before the loop: `total = 0` |
 
 ## Key takeaways
 
-1. **For loops eliminate repetition** — instead of writing the same code 10 or 100 or 1000 times, you write it once and let the loop repeat it. This is the single most powerful idea you have learned so far. Any time you find yourself copying and pasting lines, a loop should replace them.
-2. **`range()` generates sequences of numbers on demand** — `range(n)` gives 0 to n-1, `range(start, stop)` gives start to stop-1, and `range(start, stop, step)` lets you control the step size. Combined with a for loop, range() lets you count, iterate, and repeat with precision.
-3. **Loops + conditions = smart automation** — nesting an `if` inside a `for` lets you process data selectively. "For each student, if their score is below 70, print a warning" is a pattern you will use in every data-driven program. This combination of loops and conditions is the foundation of data processing.
+1. **For loops eliminate repetition**: instead of writing the same code 10 or 100 or 1000 times, you write it once and let the loop repeat it. This is the single most powerful idea you have learned so far. Any time you find yourself copying and pasting lines, a loop should replace them.
+2. **`range()` generates sequences of numbers on demand**: `range(n)` gives 0 to n-1, `range(start, stop)` gives start to stop-1, and `range(start, stop, step)` lets you control the step size. Combined with a for loop, range() lets you count, iterate, and repeat with precision.
+3. **Loops + conditions = smart automation**: nesting an `if` inside a `for` lets you process data selectively. "For each student, if their score is below 70, print a warning" is a pattern you will use in every data-driven program. This combination of loops and conditions is the foundation of data processing.

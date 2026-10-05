@@ -19,10 +19,10 @@ Home: [README](../../../README.md)
 - JSON persistence and structured querying
 
 ## Why this project exists
-Architecture decisions are the most expensive decisions in software engineering — yet
+Architecture decisions are the most expensive decisions in software engineering, yet
 most teams make them informally and forget the reasoning within months. ADRs capture the
 context, alternatives considered, and consequences of each decision. This project builds
-a structured ADR system with status tracking, observer notifications, and search — teaching
+a structured ADR system with status tracking, observer notifications, and search, teaching
 documentation as a first-class engineering practice used at Spotify, AWS, and Google.
 
 ## Run (copy/paste)
@@ -53,9 +53,9 @@ pytest -q
 3. Add a `--status` CLI filter that lists only ADRs in a given status (proposed, accepted, etc.).
 
 ## Break it (required)
-1. Try to supersede an ADR that is already deprecated — what status transition occurs?
-2. Register an observer callback that raises an exception — does the log still function?
-3. Add two ADRs with the same ID — what happens to the internal dictionary?
+1. Try to supersede an ADR that is already deprecated: what status transition occurs?
+2. Register an observer callback that raises an exception: does the log still function?
+3. Add two ADRs with the same ID: what happens to the internal dictionary?
 
 ## Fix it (required)
 1. Add status transition validation (e.g. deprecated ADRs cannot be superseded).

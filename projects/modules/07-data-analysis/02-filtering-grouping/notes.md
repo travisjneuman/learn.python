@@ -1,4 +1,4 @@
-# Notes — Filtering & Grouping
+# Notes: Filtering & Grouping
 
 ## What I learned
 

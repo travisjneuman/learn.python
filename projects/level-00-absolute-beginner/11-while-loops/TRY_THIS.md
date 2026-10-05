@@ -1,4 +1,4 @@
-# Try This — Exercise 11
+# Try This: Exercise 11
 
 1. Write a while loop that doubles a number until it exceeds 1000:
    ```python
@@ -17,7 +17,7 @@
    print("Welcome!")
    ```
 
-3. Intentionally create an infinite loop (a loop that never stops). Then press Ctrl+C to stop it. Getting comfortable with Ctrl+C is important — you will need it when debugging.
+3. Intentionally create an infinite loop (a loop that never stops). Then press Ctrl+C to stop it. Getting comfortable with Ctrl+C is important: you will need it when debugging.
    ```python
    while True:
        print("This will never stop on its own!")

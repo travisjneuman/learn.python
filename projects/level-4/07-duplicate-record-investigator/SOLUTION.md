@@ -1,4 +1,4 @@
-# Duplicate Record Investigator — Annotated Solution
+# Duplicate Record Investigator: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -223,6 +223,6 @@ def levenshtein_similarity(a: str, b: str) -> float:
 
 ## Common Pitfalls
 
-1. **Setting the threshold too low** — A threshold of 0.1 will flag almost every pair as duplicates. Short strings share bigrams easily ("Al" and "Alice" share "al"). Start with 0.8 and tune down only if you are missing real duplicates.
-2. **Not validating that key fields exist in the CSV** — If a key field name is misspelled or absent from the headers, `row.get(field, "")` silently returns empty strings and every row will appear identical on that field, causing a flood of false positives.
-3. **Forgetting the single-record edge case** — A CSV with only one data row should produce zero duplicate pairs. The nested loop naturally handles this (the inner loop range is empty), but it is worth testing explicitly.
+1. **Setting the threshold too low**: A threshold of 0.1 will flag almost every pair as duplicates. Short strings share bigrams easily ("Al" and "Alice" share "al"). Start with 0.8 and tune down only if you are missing real duplicates.
+2. **Not validating that key fields exist in the CSV**: If a key field name is misspelled or absent from the headers, `row.get(field, "")` silently returns empty strings and every row will appear identical on that field, causing a flood of false positives.
+3. **Forgetting the single-record edge case**: A CSV with only one data row should produce zero duplicate pairs. The nested loop naturally handles this (the inner loop range is empty), but it is worth testing explicitly.

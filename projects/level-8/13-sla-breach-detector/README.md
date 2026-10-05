@@ -19,12 +19,12 @@ Home: [README](../../../README.md)
 - Burn-rate analysis for error budget consumption tracking
 
 ## Why this project exists
-Service Level Agreements define contractual performance guarantees — "99.9% uptime" or
+Service Level Agreements define contractual performance guarantees: "99.9% uptime" or
 "p95 latency under 200ms." Detecting breaches early prevents penalty payments and customer
 churn. A service running at 99.85% might look fine to a dashboard, but it is silently
 burning through its error budget. This project builds an SLA monitoring engine that tracks
 metrics against SLA targets, detects breaches in sliding time windows, calculates burn
-rates, and generates alerts — the pattern behind every uptime monitoring tool.
+rates, and generates alerts, the pattern behind every uptime monitoring tool.
 
 ## Run (copy/paste)
 ```bash
@@ -52,13 +52,13 @@ pytest -q
 
 ## Alter it (required)
 1. Add a `warning_threshold` to `SLADefinition` that fires before the actual breach.
-2. Add burn-rate calculation — how fast is the error budget being consumed?
+2. Add burn-rate calculation: how fast is the error budget being consumed?
 3. Add a `--watch` mode that simulates continuous metric ingestion and alerts in real time.
 
 ## Break it (required)
-1. Set `target_value=0` for an availability SLA — does the tracker compute valid percentages?
-2. Record no events and call `check_all()` — what happens with zero denominators?
-3. Set `window_hours=0` on the sliding window — does breach detection still work?
+1. Set `target_value=0` for an availability SLA: does the tracker compute valid percentages?
+2. Record no events and call `check_all()`: what happens with zero denominators?
+3. Set `window_hours=0` on the sliding window: does breach detection still work?
 
 ## Fix it (required)
 1. Validate that `target_value > 0` for percentage-based SLAs.
@@ -66,7 +66,7 @@ pytest -q
 3. Add a test for the warning threshold alert.
 
 ## Explain it (teach-back)
-1. What is an SLA vs SLO vs SLI — how do they relate to each other?
+1. What is an SLA vs SLO vs SLI: how do they relate to each other?
 2. How does the sliding window ensure that old data does not affect current breach detection?
 3. What is an error budget and why is burn rate important?
 4. How do real services like AWS/GCP calculate SLA compliance?

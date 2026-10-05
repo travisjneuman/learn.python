@@ -1,4 +1,4 @@
-# Decorators Explained — Video Resources
+# Decorators Explained: Video Resources
 
 [← Back to Concept](../decorators-explained.md)
 
@@ -9,12 +9,12 @@ Why: Starts from first principles with closures, builds up to decorators step by
 
 ## Alternatives
 
-- **[Python Decorators: The Complete Guide](https://youtube.com/watch?v=QH5fw9kxDQA)** by ArjanCodes (22 min) — Covers both functional and class-based decorators, functools.wraps, and decorators with arguments. More modern approach with software design perspective.
-- **[The Single Most Useful Decorator in Python](https://youtube.com/watch?v=DnKxKFXB4NQ)** by mCoding (8 min) — Focused deep dive on functools.wraps and why every decorator should use it. Short and immediately actionable.
+- **[Python Decorators: The Complete Guide](https://youtube.com/watch?v=QH5fw9kxDQA)** by ArjanCodes (22 min). Covers both functional and class-based decorators, functools.wraps, and decorators with arguments. More modern approach with software design perspective.
+- **[The Single Most Useful Decorator in Python](https://youtube.com/watch?v=DnKxKFXB4NQ)** by mCoding (8 min). Focused deep dive on functools.wraps and why every decorator should use it. Short and immediately actionable.
 
 ## Deep Dives
 
-- **[Python OOP Tutorial 6: Property Decorators - Getters, Setters, and Deleters](https://youtube.com/watch?v=jCzT9XFZ5bw)** by Corey Schafer (10 min) — Shows how the @property decorator turns methods into attribute-like access, an essential OOP pattern in Python.
+- **[Python OOP Tutorial 6: Property Decorators - Getters, Setters, and Deleters](https://youtube.com/watch?v=jCzT9XFZ5bw)** by Corey Schafer (10 min). Shows how the @property decorator turns methods into attribute-like access, an essential OOP pattern in Python.
 
 ---
 

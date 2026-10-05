@@ -68,7 +68,7 @@ Each diagram page includes: an overview map, step-by-step execution flow, decisi
 
 Mermaid diagrams render automatically on GitHub. If you are viewing these files locally in a text editor, you will see the raw Mermaid syntax. To render them:
 
-1. **GitHub:** Just open the file — diagrams render automatically
+1. **GitHub:** Just open the file; diagrams render automatically
 2. **VS Code:** Install the "Mermaid Markdown Syntax Highlighting" extension
 3. **mkdocs site:** Visit the [documentation site](https://travisjneuman.github.io/learn.python)
 4. **Mermaid Live Editor:** Paste the code at [mermaid.live](https://mermaid.live)

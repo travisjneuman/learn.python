@@ -39,7 +39,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — load results with accept/reject counts
+- `data/output_summary.json`: load results with accept/reject counts
 - Passing tests (`pytest -q` → 7+ passed)
 - Updated `notes.md`
 
@@ -63,7 +63,7 @@ pytest -q
 1. Why do we insert row-by-row instead of using `executemany` for this use case?
 2. What is the advantage of a staging table vs inserting directly into the final table?
 3. How does the `CHECK` constraint in the DDL differ from Python-side validation?
-4. In production ETL, what happens to rejected rows — are they just logged?
+4. In production ETL, what happens to rejected rows: are they just logged?
 
 ## Mastery check
 You can move on when you can:

@@ -40,7 +40,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/duplicates_report.json` — exact and fuzzy duplicate pairs
+- `data/duplicates_report.json`: exact and fuzzy duplicate pairs
 - Passing tests
 - Updated `notes.md`
 
@@ -48,17 +48,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--method` flag supporting both `bigram` (current) and `levenshtein` similarity.
 2. Add a `--group` mode that clusters duplicates into groups instead of listing pairs.
-3. Re-run script and tests — add a parametrized test for the new method.
+3. Re-run script and tests: add a parametrized test for the new method.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Use a very low threshold (0.1) and observe how many false positives appear.
-2. Feed it a CSV with only one row — verify no crash on the single-record case.
+2. Feed it a CSV with only one row: verify no crash on the single-record case.
 3. Use key fields that do not exist in the CSV and observe the behavior.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Validate that key fields exist in the CSV headers before comparing.
 2. Add a warning when the threshold produces more than 50% of records as duplicates.
 3. Re-run until all tests pass.
@@ -70,7 +70,7 @@ pytest -q
 ## Explain it (teach-back)
 1. What are character bigrams and why are they useful for fuzzy matching?
 2. Why does Jaccard similarity use set intersection/union instead of comparing characters directly?
-3. What is the time complexity of the nested-loop comparison — how would you optimize it?
+3. What is the time complexity of the nested-loop comparison: how would you optimize it?
 4. When would fuzzy matching produce false positives, and how would you handle them?
 
 ## Mastery check

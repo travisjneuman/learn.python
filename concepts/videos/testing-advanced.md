@@ -1,4 +1,4 @@
-# Advanced Testing — Video Resources
+# Advanced Testing: Video Resources
 
 [<- Back to Video Index](../../guides/VIDEO_INDEX.md)
 
@@ -7,7 +7,7 @@
 **[Python Testing with pytest (Full Course)]** by ArjanCodes (~40 min)
 `https://www.youtube.com/results?search_query=arjancodes+python+testing+pytest+full`
 
-*Why this one:* Goes beyond basic assertions into parametrize, fixtures, mocking, conftest patterns, and test architecture — with a focus on writing tests that actually catch bugs rather than just increasing coverage numbers.
+*Why this one:* Goes beyond basic assertions into parametrize, fixtures, mocking, conftest patterns, and test architecture, with a focus on writing tests that actually catch bugs rather than just increasing coverage numbers.
 
 ## Alternative Explanations
 
@@ -19,16 +19,16 @@
 
 ## Deep Dives
 
-- **Mocking & Patching:** ArjanCodes — How to Use Mocking in Python (~25 min) — `https://www.youtube.com/results?search_query=arjancodes+python+mocking+unittest+mock`
-- **Parametrize Patterns:** Corey Schafer — pytest Parametrize (~15 min) — `https://www.youtube.com/results?search_query=corey+schafer+pytest+parametrize+tutorial`
-- **Property-Based Testing with Hypothesis:** ArjanCodes — Property-Based Testing in Python (~20 min) — `https://www.youtube.com/results?search_query=arjancodes+python+hypothesis+property+based+testing`
-- **Test Architecture & Fixtures:** Tech With Tim — pytest Fixtures and Conftest (~20 min) — `https://www.youtube.com/results?search_query=tech+with+tim+pytest+fixtures+conftest`
+- **Mocking & Patching:** ArjanCodes, How to Use Mocking in Python (~25 min): `https://www.youtube.com/results?search_query=arjancodes+python+mocking+unittest+mock`
+- **Parametrize Patterns:** Corey Schafer, pytest Parametrize (~15 min): `https://www.youtube.com/results?search_query=corey+schafer+pytest+parametrize+tutorial`
+- **Property-Based Testing with Hypothesis:** ArjanCodes, Property-Based Testing in Python (~20 min): `https://www.youtube.com/results?search_query=arjancodes+python+hypothesis+property+based+testing`
+- **Test Architecture & Fixtures:** Tech With Tim, pytest Fixtures and Conftest (~20 min): `https://www.youtube.com/results?search_query=tech+with+tim+pytest+fixtures+conftest`
 
 ## Interactive Practice
 
-- [pytest Official Documentation](https://docs.pytest.org/en/stable/getting-started.html) — Best-in-class docs with runnable examples
-- [Hypothesis Quickstart](https://hypothesis.readthedocs.io/en/latest/quickstart.html) — Property-based testing tutorial
-- [Real Python: Effective Python Testing with pytest](https://realpython.com/pytest-python-testing/) — Comprehensive guide with exercises
+- [pytest Official Documentation](https://docs.pytest.org/en/stable/getting-started.html): Best-in-class docs with runnable examples
+- [Hypothesis Quickstart](https://hypothesis.readthedocs.io/en/latest/quickstart.html): Property-based testing tutorial
+- [Real Python: Effective Python Testing with pytest](https://realpython.com/pytest-python-testing/): Comprehensive guide with exercises
 
 ---
 

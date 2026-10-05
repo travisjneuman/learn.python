@@ -1,4 +1,4 @@
-# Notes — Error Handling
+# Notes: Error Handling
 
 ## What I learned
 

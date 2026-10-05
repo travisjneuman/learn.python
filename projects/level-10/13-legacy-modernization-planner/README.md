@@ -45,13 +45,13 @@ pytest -v
 3. Add a RETIRE strategy for components with zero monthly traffic.
 
 ## Break it (required)
-1. Set `business_criticality` to 0 — observe the validation error.
+1. Set `business_criticality` to 0: observe the validation error.
 2. Create a component with zero effort and watch how priority calculation handles division.
 3. Score a tiny well-documented component and verify it recommends REFACTOR.
 
 ## Fix it (required)
 1. Add a minimum effort floor of 1 to prevent division-by-zero in priority calculation.
-2. Handle the edge case where all components have the same priority — add a tiebreaker.
+2. Handle the edge case where all components have the same priority: add a tiebreaker.
 3. Test both fixes.
 
 ## Explain it (teach-back)

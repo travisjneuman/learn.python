@@ -112,7 +112,7 @@ result = await task
 - Scraping multiple pages
 
 **Bad fit:**
-- CPU-heavy work (math, image processing) — use `multiprocessing` instead
+- CPU-heavy work (math, image processing): use `multiprocessing` instead
 - Simple scripts that do one thing at a time
 - When you don't need concurrency
 

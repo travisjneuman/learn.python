@@ -1,6 +1,6 @@
 # Solution: Comparison Traps
 
-## Bug 1 — `is_empty` uses `is` instead of `==` for strings and lists
+## Bug 1: `is_empty` uses `is` instead of `==` for strings and lists
 
 **Lines:** `if value is ""` and `if value is []`
 
@@ -23,7 +23,7 @@ def is_empty(value):
 
 Or more concisely: `return value is None or value == "" or value == []`
 
-## Bug 2 — `prices_match` fails for floating point comparison
+## Bug 2: `prices_match` fails for floating point comparison
 
 **Problem:** `0.1 + 0.2` does not equal `0.3` in floating point arithmetic.
 `0.1 + 0.2 == 0.30000000000000004`. Direct `==` comparison fails.
@@ -37,7 +37,7 @@ def prices_match(price_a, price_b):
 
 Or use `math.isclose(price_a, price_b)`.
 
-## Bug 3 — `categorize_values` uses `==` which conflates types
+## Bug 3: `categorize_values` uses `==` which conflates types
 
 **Lines:** `if v == True` and `elif v == False`
 
@@ -61,7 +61,7 @@ def categorize_values(values):
     return truthy, falsy
 ```
 
-## Bug 4 — `validate_age` excludes boundary values 0 and 150
+## Bug 4: `validate_age` excludes boundary values 0 and 150
 
 **Line:** `if age is not None and 0 < age < 150:`
 

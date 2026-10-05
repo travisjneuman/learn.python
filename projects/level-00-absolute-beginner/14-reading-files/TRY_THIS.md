@@ -1,4 +1,4 @@
-# Try This — Exercise 14
+# Try This: Exercise 14
 
 1. Create your own data file called `data/my_data.txt` with names and ages (one per line, comma-separated). Modify the exercise to read and print your file instead.
 

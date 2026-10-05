@@ -1,4 +1,4 @@
-# Template Driven Reporter — Annotated Solution
+# Template Driven Reporter: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -233,7 +233,7 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| `string.Template` instead of f-strings | f-strings execute arbitrary Python code inside `{}`, making them dangerous with untrusted input. `string.Template` only does variable substitution — safe for user-provided templates. |
+| `string.Template` instead of f-strings | f-strings execute arbitrary Python code inside `{}`, making them dangerous with untrusted input. `string.Template` only does variable substitution: safe for user-provided templates. |
 | Two render modes: safe and strict | `safe_substitute` is forgiving (good for previews), `substitute` is strict (good for production output). Different use cases need different trade-offs. |
 | `discover_variables` as a standalone function | Pre-flight validation: check which variables a template needs before attempting to render. Prevents surprises at render time. |
 | Flattening nested data to one level | `string.Template` cannot handle `$user.name` syntax. Flattening is the simplest bridge between nested JSON and flat template variables. |
@@ -251,12 +251,12 @@ template = env.from_string("Hello {{ user.name }}, you have {{ count }} items.")
 output = template.render(user={"name": "Alice"}, count=5)
 ```
 
-**Trade-off:** Jinja2 supports conditionals, loops, filters, and nested access — far more powerful than `string.Template`. But it is a third-party dependency and introduces a full template language. `string.Template` is in the standard library and covers the 80% case (simple variable substitution) with zero dependencies.
+**Trade-off:** Jinja2 supports conditionals, loops, filters, and nested access: far more powerful than `string.Template`. But it is a third-party dependency and introduces a full template language. `string.Template` is in the standard library and covers the 80% case (simple variable substitution) with zero dependencies.
 
 ## Common Pitfalls
 
-1. **Confusing `substitute` and `safe_substitute`** — `substitute` raises `KeyError` on missing variables; `safe_substitute` leaves them as `$variable` in the output. Using the wrong one either crashes your program or silently produces incomplete output.
+1. **Confusing `substitute` and `safe_substitute`**: `substitute` raises `KeyError` on missing variables; `safe_substitute` leaves them as `$variable` in the output. Using the wrong one either crashes your program or silently produces incomplete output.
 
-2. **Dollar signs in template text** — A literal `$` in the template (e.g., "Price: $50") confuses the parser. Use `$$` to escape a literal dollar sign: `"Price: $$50"` renders as `"Price: $50"`.
+2. **Dollar signs in template text**: A literal `$` in the template (e.g., "Price: $50") confuses the parser. Use `$$` to escape a literal dollar sign: `"Price: $$50"` renders as `"Price: $50"`.
 
-3. **Nested data without flattening** — Passing `{"user": {"name": "Alice"}}` directly to Template and using `$user` renders as the string representation of the dict: `"{'name': 'Alice'}"`. Always flatten or use a template engine that supports nested access.
+3. **Nested data without flattening**: Passing `{"user": {"name": "Alice"}}` directly to Template and using `$user` renders as the string representation of the dict: `"{'name': 'Alice'}"`. Always flatten or use a template engine that supports nested access.

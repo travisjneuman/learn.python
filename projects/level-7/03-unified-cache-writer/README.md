@@ -39,13 +39,13 @@ pytest -q
 - Updated `notes.md`
 
 ## Alter it (required)
-Extend this project in a meaningful way — add a feature that addresses a real use case.
+Extend this project in a meaningful way: add a feature that addresses a real use case.
 
 ## Break it (required)
 Introduce a subtle bug and see if your tests catch it. If they don't, write a test that would.
 
 ## Fix it (required)
-Review your code critically — is there a design pattern that would improve it?
+Review your code critically: is there a design pattern that would improve it?
 
 ## Explain it (teach-back)
 Could you explain the architectural trade-offs to a colleague?

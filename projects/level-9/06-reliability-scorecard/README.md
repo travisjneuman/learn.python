@@ -23,7 +23,7 @@ Reliability is multi-dimensional: uptime, mean time to recovery (MTTR), change f
 rate, deployment frequency, and incident response all contribute. A service with 99.99%
 uptime but 8-hour MTTR is not truly reliable. This project builds a weighted scorecard
 that evaluates reliability across these dimensions, normalizes different units to a
-comparable scale, assigns letter grades, and generates improvement recommendations — the
+comparable scale, assigns letter grades, and generates improvement recommendations, the
 same framework SRE teams use to compare service reliability across an organization.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `--compare` flag that shows side-by-side scores for two services.
 
 ## Break it (required)
-1. Set all dimension weights to 0 — does the weighted score calculation handle it?
-2. Pass a raw value outside the normalizer's expected range (e.g. negative uptime) — what score results?
-3. Create a scorecard with zero dimensions — does grading still work?
+1. Set all dimension weights to 0: does the weighted score calculation handle it?
+2. Pass a raw value outside the normalizer's expected range (e.g. negative uptime): what score results?
+3. Create a scorecard with zero dimensions: does grading still work?
 
 ## Fix it (required)
 1. Validate that total weight is > 0 before computing the weighted average.
@@ -68,7 +68,7 @@ pytest -q
 ## Explain it (teach-back)
 1. What is a reliability scorecard and how do SRE teams use them?
 2. How does weighted scoring prioritize some dimensions over others?
-3. Why is score normalization needed — what problem does it solve?
+3. Why is score normalization needed: what problem does it solve?
 4. How do letter grades (A/B/C/D/F) help communicate reliability status to non-technical stakeholders?
 
 ## Mastery check

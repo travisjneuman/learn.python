@@ -1,4 +1,4 @@
-# Module 04 / Project 03 — Database-Backed API
+# Module 04 / Project 03: Database-Backed API
 
 Home: [README](../../../../README.md)
 

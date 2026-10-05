@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 06 - Simple Gradebook Engine
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -208,10 +208,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| If/elif chain with descending thresholds for grades | Order matters: checking highest first ensures 95 gets "A", not "D" (which 95 also satisfies since 95 >= 60) | Dict mapping of ranges — more flexible but harder to read at Level 1 |
-| Dynamic score column detection (`key.startswith("score")`) | Works with any number of score columns without code changes | Hardcode column names like `score1, score2, score3` — breaks if the CSV adds `score4` |
-| Skip non-numeric scores with `continue` | One bad cell in a row does not crash the entire gradebook; the student's average is computed from valid scores | Raise ValueError — would lose all students after the first bad row |
-| Separate `class_summary()` from individual grades | Class-wide stats are a different concern from individual grades; separating them makes each function simpler and independently testable | Compute class stats inside `format_report()` — mixes computation with presentation |
+| If/elif chain with descending thresholds for grades | Order matters: checking highest first ensures 95 gets "A", not "D" (which 95 also satisfies since 95 >= 60) | Dict mapping of ranges: more flexible but harder to read at Level 1 |
+| Dynamic score column detection (`key.startswith("score")`) | Works with any number of score columns without code changes | Hardcode column names like `score1, score2, score3`: breaks if the CSV adds `score4` |
+| Skip non-numeric scores with `continue` | One bad cell in a row does not crash the entire gradebook; the student's average is computed from valid scores | Raise ValueError: would lose all students after the first bad row |
+| Separate `class_summary()` from individual grades | Class-wide stats are a different concern from individual grades; separating them makes each function simpler and independently testable | Compute class stats inside `format_report()`: mixes computation with presentation |
 
 ## Alternative approaches
 

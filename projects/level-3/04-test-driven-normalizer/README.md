@@ -1,7 +1,7 @@
 # Level 3 / Project 04 - Test Driven Normalizer
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=4) — browser exercises cover Level 2 topics
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=4): browser exercises cover Level 2 topics
 
 ## Before You Start
 
@@ -45,24 +45,24 @@ python project.py contacts.json --fields "email:email,name:name,phone:phone" --j
 
 ## Expected artifacts
 - Normalised records on stdout
-- All tests passing (written before implementation — TDD)
+- All tests passing (written before implementation, TDD style)
 - Updated `notes.md`
 
 ---
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `normalise_zip_code` function that pads US ZIP codes to 5 digits.
 2. Add a `--report` flag that shows which fields were changed.
 3. Add support for nested field types: `"address.zip:zip_code"`.
 
-## Break it (required) — Core
-1. Pass a phone number with letters ("555-HELP") — what happens?
-2. Pass a date in an unsupported format ("Jan 15, 2024") — does it error or pass through?
-3. Pass an empty JSON array — does the batch normaliser handle it?
+## Break it (required): Core
+1. Pass a phone number with letters ("555-HELP"): what happens?
+2. Pass a date in an unsupported format ("Jan 15, 2024"): does it error or pass through?
+3. Pass an empty JSON array: does the batch normaliser handle it?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add graceful handling for unparseable phone numbers.
 2. Add a fallback for unrecognised date formats (return as-is with a warning).
 3. Validate that field_types reference real normaliser keys.

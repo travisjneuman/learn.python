@@ -1,4 +1,4 @@
-# Plugin-Style Transformer — Annotated Solution
+# Plugin-Style Transformer: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -183,6 +183,6 @@ Plain functions are simpler when plugins have no configuration or metadata. Clas
 
 ## Common Pitfalls
 
-1. **Plugin order dependency** — Applying `filter_empty` before `strip` might keep records that have only whitespace, because they are not technically "empty" yet. Always consider the interaction between plugins in the chain.
-2. **Mutating the input list** — If a plugin modifies records in place instead of returning new dicts, later plugins in the chain (or the original data) see unexpected changes. Always return new lists/dicts from `transform()`.
-3. **Missing the `isinstance` check on string operations** — Calling `.upper()` or `.strip()` on an integer crashes with `AttributeError`. Always guard string methods with `isinstance(v, str)`.
+1. **Plugin order dependency**: Applying `filter_empty` before `strip` might keep records that have only whitespace, because they are not technically "empty" yet. Always consider the interaction between plugins in the chain.
+2. **Mutating the input list**: If a plugin modifies records in place instead of returning new dicts, later plugins in the chain (or the original data) see unexpected changes. Always return new lists/dicts from `transform()`.
+3. **Missing the `isinstance` check on string operations**: Calling `.upper()` or `.strip()` on an integer crashes with `AttributeError`. Always guard string methods with `isinstance(v, str)`.

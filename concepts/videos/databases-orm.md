@@ -1,4 +1,4 @@
-# Databases & ORM — Video Resources
+# Databases & ORM: Video Resources
 
 [<- Back to Video Index](../../guides/VIDEO_INDEX.md)
 
@@ -7,7 +7,7 @@
 **[SQLAlchemy Tutorial - Build Database-Driven Python Apps]** by Corey Schafer (~45 min)
 `https://www.youtube.com/results?search_query=corey+schafer+python+sqlalchemy+tutorial`
 
-*Why this one:* Covers both SQLAlchemy Core and ORM patterns — engine creation, session management, model definition, relationships, and querying — with a real project that shows how Python objects map to database rows without writing raw SQL.
+*Why this one:* Covers both SQLAlchemy Core and ORM patterns (engine creation, session management, model definition, relationships, and querying) with a real project that shows how Python objects map to database rows without writing raw SQL.
 
 ## Alternative Explanations
 
@@ -19,16 +19,16 @@
 
 ## Deep Dives
 
-- **SQLite Fundamentals:** Corey Schafer — Python SQLite Tutorial (~30 min) — `https://www.youtube.com/results?search_query=corey+schafer+python+sqlite+tutorial`
-- **Database Migrations with Alembic:** Pretty Printed — Alembic Migrations with SQLAlchemy (~20 min) — `https://www.youtube.com/results?search_query=pretty+printed+alembic+sqlalchemy+migrations`
-- **Relationships & Joins:** ArjanCodes — SQLAlchemy Relationships Explained (~25 min) — `https://www.youtube.com/results?search_query=arjancodes+sqlalchemy+relationships+joins`
-- **Database Design Principles:** freeCodeCamp — Database Design Course (~8 hrs) — `https://www.youtube.com/results?search_query=freecodecamp+database+design+course`
+- **SQLite Fundamentals:** Corey Schafer, Python SQLite Tutorial (~30 min): `https://www.youtube.com/results?search_query=corey+schafer+python+sqlite+tutorial`
+- **Database Migrations with Alembic:** Pretty Printed, Alembic Migrations with SQLAlchemy (~20 min): `https://www.youtube.com/results?search_query=pretty+printed+alembic+sqlalchemy+migrations`
+- **Relationships & Joins:** ArjanCodes, SQLAlchemy Relationships Explained (~25 min): `https://www.youtube.com/results?search_query=arjancodes+sqlalchemy+relationships+joins`
+- **Database Design Principles:** freeCodeCamp, Database Design Course (~8 hrs): `https://www.youtube.com/results?search_query=freecodecamp+database+design+course`
 
 ## Interactive Practice
 
-- [SQLAlchemy Official Tutorial](https://docs.sqlalchemy.org/en/20/tutorial/) — The unified tutorial for SQLAlchemy 2.0 Core + ORM
-- [SQLBolt](https://sqlbolt.com/) — Interactive SQL lessons in the browser before adding an ORM
-- [Alembic Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html) — Official migration walkthrough
+- [SQLAlchemy Official Tutorial](https://docs.sqlalchemy.org/en/20/tutorial/): The unified tutorial for SQLAlchemy 2.0 Core + ORM
+- [SQLBolt](https://sqlbolt.com/): Interactive SQL lessons in the browser before adding an ORM
+- [Alembic Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html): Official migration walkthrough
 
 ---
 

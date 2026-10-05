@@ -1,4 +1,4 @@
-# CLI Tools — Video Resources
+# CLI Tools: Video Resources
 
 [<- Back to Video Index](../../guides/VIDEO_INDEX.md)
 
@@ -7,7 +7,7 @@
 **[Build CLI Apps with Python Typer]** by ArjanCodes (~25 min)
 `https://www.youtube.com/results?search_query=arjancodes+python+typer+cli`
 
-*Why this one:* ArjanCodes builds a real CLI tool from scratch with Typer, covering commands, arguments, options, help text generation, and testing — all with clean software design principles that transfer to any CLI framework.
+*Why this one:* ArjanCodes builds a real CLI tool from scratch with Typer, covering commands, arguments, options, help text generation, and testing, all with clean software design principles that transfer to any CLI framework.
 
 ## Alternative Explanations
 
@@ -19,15 +19,15 @@
 
 ## Deep Dives
 
-- **Rich Terminal Output:** Will McGugan — Building Beautiful Terminal Apps with Rich (~30 min) — `https://www.youtube.com/results?search_query=will+mcgugan+rich+python+terminal`
-- **argparse Internals:** Corey Schafer — Python argparse Deep Dive (~25 min) — `https://www.youtube.com/results?search_query=corey+schafer+python+argparse+tutorial`
-- **Click Advanced Patterns:** Pretty Printed — Python Click Advanced Features (~20 min) — `https://www.youtube.com/results?search_query=pretty+printed+python+click+advanced`
+- **Rich Terminal Output:** Will McGugan, Building Beautiful Terminal Apps with Rich (~30 min): `https://www.youtube.com/results?search_query=will+mcgugan+rich+python+terminal`
+- **argparse Internals:** Corey Schafer, Python argparse Deep Dive (~25 min): `https://www.youtube.com/results?search_query=corey+schafer+python+argparse+tutorial`
+- **Click Advanced Patterns:** Pretty Printed, Python Click Advanced Features (~20 min): `https://www.youtube.com/results?search_query=pretty+printed+python+click+advanced`
 
 ## Interactive Practice
 
-- [Typer Official Tutorial](https://typer.tiangolo.com/tutorial/) — Guided walkthrough building a CLI app step by step
-- [Click Documentation Tutorial](https://click.palletsprojects.com/en/stable/quickstart/) — Official Click quickstart with examples
-- [Rich Documentation](https://rich.readthedocs.io/en/stable/) — Interactive examples of tables, progress bars, and formatted output
+- [Typer Official Tutorial](https://typer.tiangolo.com/tutorial/): Guided walkthrough building a CLI app step by step
+- [Click Documentation Tutorial](https://click.palletsprojects.com/en/stable/quickstart/): Official Click quickstart with examples
+- [Rich Documentation](https://rich.readthedocs.io/en/stable/): Interactive examples of tables, progress bars, and formatted output
 
 ---
 

@@ -1,4 +1,4 @@
-# Transformation Pipeline V1 — Annotated Solution
+# Transformation Pipeline V1: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -210,7 +210,7 @@ if __name__ == "__main__":
 | Decision | Why |
 |----------|-----|
 | Pure functions (no mutation, return new lists) | Composability, testability, and retry safety. If a step fails, the original data is untouched. You can also test each transform independently with simple input/output assertions. |
-| `TRANSFORMS` registry mapping names to functions | Decouples configuration from code. Users specify steps as strings in a CLI argument or config file — no need to edit Python code to change the pipeline. This is the Strategy pattern. |
+| `TRANSFORMS` registry mapping names to functions | Decouples configuration from code. Users specify steps as strings in a CLI argument or config file: no need to edit Python code to change the pipeline. This is the Strategy pattern. |
 | Step log tracks `records_before` and `records_after` | Makes data flow visible. If `filter_empty_rows` drops 50% of your data, the step log tells you immediately without inspecting the full output. |
 | Unknown steps are skipped, not fatal | Resilience. A typo in one step name should not crash the entire pipeline. The step log records the skip so it is not silent. |
 
@@ -238,7 +238,7 @@ class Pipeline:
 result, log = Pipeline(records).strip_whitespace().lowercase_keys().run()
 ```
 
-**Trade-off:** Method chaining reads nicely in code but ties transforms to the Pipeline class. The function-based approach lets you use transforms anywhere — in a pipeline, in a test, in a one-off script — without importing a class.
+**Trade-off:** Method chaining reads nicely in code but ties transforms to the Pipeline class. The function-based approach lets you use transforms anywhere (in a pipeline, in a test, in a one-off script) without importing a class.
 
 ### Using `functools.reduce` to compose transforms
 
@@ -253,6 +253,6 @@ def compose_pipeline(records, steps):
 
 ## Common Pitfalls
 
-1. **Step ordering matters** — Running `add_row_id` before `filter_empty_rows` assigns IDs to rows that will be filtered out, creating gaps in the sequence. The recommended order is: strip -> normalize -> filter -> coerce -> add_id.
-2. **Mutating records instead of returning new lists** — If a transform modifies records in place, earlier transforms' results are retroactively changed. This causes subtle bugs that are hard to reproduce. Always return a new list.
-3. **Forgetting that `int("3.14")` raises ValueError** — The `coerce_numbers` transform tries int first and falls through to float. If you only try int, decimal values will remain as strings and break downstream numeric operations.
+1. **Step ordering matters**: Running `add_row_id` before `filter_empty_rows` assigns IDs to rows that will be filtered out, creating gaps in the sequence. The recommended order is: strip -> normalize -> filter -> coerce -> add_id.
+2. **Mutating records instead of returning new lists**: If a transform modifies records in place, earlier transforms' results are retroactively changed. This causes subtle bugs that are hard to reproduce. Always return a new list.
+3. **Forgetting that `int("3.14")` raises ValueError**: The `coerce_numbers` transform tries int first and falls through to float. If you only try int, decimal values will remain as strings and break downstream numeric operations.

@@ -20,9 +20,9 @@ Home: [README](../../../README.md)
 
 ## Why this project exists
 Dashboard and search UIs maintain complex filter states: date ranges, multi-select dropdowns,
-text queries, sort orders. Users expect to undo a filter change instantly — yet the filter
+text queries, sort orders. Users expect to undo a filter change instantly, yet the filter
 itself must also apply correctly to data. This project builds a `FilterStateManager` with
-undo/redo, immutable snapshots, and multi-operator filtering — the same state-management
+undo/redo, immutable snapshots, and multi-operator filtering, the same state-management
 pattern used in every non-trivial React, Vue, or Angular application.
 
 ## Run (copy/paste)
@@ -53,9 +53,9 @@ pytest -q
 3. Add a `to_query_string()` method that serialises filter state as URL query parameters.
 
 ## Break it (required)
-1. Call `undo()` when the undo stack is empty — does it raise `RuntimeError`?
-2. Add a condition, undo, then add a different condition — verify the redo stack was cleared.
-3. Create two `FilterState` objects and mutate a list inside `value` — does `frozen=True` protect deep objects?
+1. Call `undo()` when the undo stack is empty: does it raise `RuntimeError`?
+2. Add a condition, undo, then add a different condition: verify the redo stack was cleared.
+3. Create two `FilterState` objects and mutate a list inside `value`: does `frozen=True` protect deep objects?
 
 ## Fix it (required)
 1. Add deep-copy protection so that list values inside `FilterCondition` cannot be mutated externally.

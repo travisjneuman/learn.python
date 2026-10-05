@@ -1,4 +1,4 @@
-# Notes — Complete App
+# Notes: Complete App
 
 ## What I learned
 

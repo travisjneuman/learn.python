@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 12
+# Prueba Esto: Ejercicio 12
 
 1. Crea un diccionario para tu película favorita con las claves: titulo, anio, director, calificacion. Imprime cada valor.
 

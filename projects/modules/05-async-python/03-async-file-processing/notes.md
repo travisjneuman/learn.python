@@ -1,4 +1,4 @@
-# Notes — Async File Processing
+# Notes: Async File Processing
 
 ## What I learned
 

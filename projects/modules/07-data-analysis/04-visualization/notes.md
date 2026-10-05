@@ -1,4 +1,4 @@
-# Notes — Visualization
+# Notes: Visualization
 
 ## What I learned
 

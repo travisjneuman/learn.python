@@ -1,7 +1,7 @@
 # Level 2 / Project 02 - Nested Data Flattener
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=2) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-2.html?ex=2): no installation needed!
 
 ## Before You Start
 
@@ -83,17 +83,17 @@ def flatten_list(nested):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--max-depth` flag that stops flattening beyond N levels.
 2. Change the separator to `__` (double underscore) and observe the output.
 3. Add a `--keys-only` flag that prints just the flattened key names.
 
-## Break it (required) — Core
-1. Pass a JSON file whose root is a list `[1, 2, 3]` — what error appears?
-2. Create a key that already contains a dot, e.g. `{"a.b": 1}` — what happens?
-3. Flatten then unflatten a structure with lists — is the roundtrip perfect?
+## Break it (required): Core
+1. Pass a JSON file whose root is a list `[1, 2, 3]`: what error appears?
+2. Create a key that already contains a dot, e.g. `{"a.b": 1}`: what happens?
+3. Flatten then unflatten a structure with lists: is the roundtrip perfect?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a guard in `flatten_from_file` for non-dict JSON roots.
 2. Handle keys that contain the separator character (escape or warn).
 3. Add a test for empty dict input `{}`.

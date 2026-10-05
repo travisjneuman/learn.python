@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `max_backfills` limit so the cache only auto-backfills N times before requiring manual intervention.
 2. Add an `evict_oldest()` method that removes the least-recently-added cache entry when at capacity.
-3. Re-run script and tests — verify backfill limiting and eviction work.
+3. Re-run script and tests: verify backfill limiting and eviction work.
 
 ## Break it (required)
 1. Set `miss_threshold` to 0.0 so every single miss triggers a backfill.

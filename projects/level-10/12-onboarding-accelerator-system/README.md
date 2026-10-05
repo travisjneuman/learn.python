@@ -41,11 +41,11 @@ pytest -v
 
 ## Alter it (required)
 1. Add a `data_engineer_template` with tasks specific to data engineering (SQL, ETL, Spark).
-2. Add task dependency enforcement — a task cannot be completed if its `depends_on` tasks are not done.
+2. Add task dependency enforcement: a task cannot be completed if its `depends_on` tasks are not done.
 3. Add an estimated duration field to each task and compute total onboarding time.
 
 ## Break it (required)
-1. Try building a plan with an unknown role — observe the `ValueError`.
+1. Try building a plan with an unknown role: observe the `ValueError`.
 2. Complete a non-existent task ID and verify it returns `False`.
 3. Create circular task dependencies and see how the system handles it.
 

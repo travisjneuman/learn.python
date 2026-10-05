@@ -1,4 +1,4 @@
-# Module 05 / Project 06 — WebSocket Chat Server
+# Module 05 / Project 06: WebSocket Chat Server
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -22,7 +22,7 @@
 
 ## Why this project exists
 
-HTTP is request-response: the client asks, the server answers. But real-time applications — chat, live dashboards, multiplayer games, collaborative editing — need the server to push data to clients without being asked. WebSockets provide a persistent, bidirectional connection that stays open. This project teaches you to build a WebSocket server from scratch, evolving from a simple echo server to a multi-user chat room.
+HTTP is request-response: the client asks, the server answers. But real-time applications (chat, live dashboards, multiplayer games, collaborative editing) need the server to push data to clients without being asked. WebSockets provide a persistent, bidirectional connection that stays open. This project teaches you to build a WebSocket server from scratch, evolving from a simple echo server to a multi-user chat room.
 
 ## Prerequisites
 

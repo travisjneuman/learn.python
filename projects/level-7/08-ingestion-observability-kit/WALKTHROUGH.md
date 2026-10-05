@@ -1,4 +1,4 @@
-# Ingestion Observability Kit — Step-by-Step Walkthrough
+# Ingestion Observability Kit: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -10,7 +10,7 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 Consider what happens when a data pipeline fails at 3 AM. The on-call engineer gets paged and needs to answer three questions fast: What failed? Which records were affected? How long had it been failing? Without structured observability, the answer is "grep through a mess of print statements and hope for the best."
 
-Observability is about instrumenting your code so that when things go wrong (and they will), you have the information you need to diagnose the problem quickly. This project builds three key instruments. First, structured log entries that include a correlation ID, a stage name, a severity level, and a message — not just free-form text strings. Second, per-stage metrics that count rows in, rows out, errors, and duration. Third, a summary function that aggregates everything into a report.
+Observability is about instrumenting your code so that when things go wrong (and they will), you have the information you need to diagnose the problem quickly. This project builds three key instruments. First, structured log entries that include a correlation ID, a stage name, a severity level, and a message, not just free-form text strings. Second, per-stage metrics that count rows in, rows out, errors, and duration. Third, a summary function that aggregates everything into a report.
 
 The correlation ID is the most important concept here. Imagine a pipeline processing 10,000 records. Record #7,432 fails during the transform stage. Without a correlation ID, you know "something failed somewhere." With a correlation ID, you know "record `abc-123` failed at the transform stage with error: missing value field." That specificity is the difference between a 5-minute fix and a 2-hour investigation.
 

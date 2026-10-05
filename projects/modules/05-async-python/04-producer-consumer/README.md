@@ -1,4 +1,4 @@
-# Module 05 / Project 04 — Producer-Consumer
+# Module 05 / Project 04: Producer-Consumer
 
 Home: [README](../../../../README.md) · Module: [Async Python](../README.md)
 
@@ -50,7 +50,7 @@ Processed 20 jobs in ~X seconds with 3 workers
 ## Alter it
 
 1. Change the number of workers from 3 to 1, then to 10. How does speed change?
-2. Add a priority queue — high priority jobs get processed first.
+2. Add a priority queue: high priority jobs get processed first.
 3. Add a "dead letter queue" for jobs that fail, so they can be retried.
 
 ## Break it
@@ -92,4 +92,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 05 — Async Web Server](../05-async-web-server/)
+[Project 05: Async Web Server](../05-async-web-server/)

@@ -44,18 +44,18 @@ Applied 3 plugins to 4 records
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Write a new plugin class that reverses string values and register it in the registry.
 2. Add a `--list-plugins` flag that prints all registered plugin names and exits.
 3. Add execution order tracking so each record shows which plugins were applied.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Request a plugin name that does not exist in the registry (e.g. `--plugins nonexistent`).
 2. Pass an input file where a record is missing the fields your plugins expect.
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Raise a clear error listing available plugins when a requested one is not found.
 2. Make plugins skip fields that are missing rather than crashing.
 3. Add tests for unknown plugin names and missing fields.

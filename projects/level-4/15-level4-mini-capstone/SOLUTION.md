@@ -1,4 +1,4 @@
-# Level 4 Mini Capstone — Annotated Solution
+# Level 4 Mini Capstone: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -291,6 +291,6 @@ transformed = [transform_row(row) for row in valid_rows]
 
 ## Common Pitfalls
 
-1. **Not clearing the checkpoint on success** — If the checkpoint file persists after a successful run, the next run will resume from the end and produce empty output. Always delete the checkpoint when the pipeline completes normally.
-2. **Building the manifest before writing all output files** — The manifest must reflect the final state. If you generate it before writing `quarantined.json`, that file's checksum will be missing from the manifest.
-3. **Forgetting that this capstone combines skills from projects 01-14** — Do not try to implement this from scratch. The validation logic comes from project 01/08, the quarantine pattern from project 03/08, the transformation from project 09, the checkpoint from project 12, and the manifest from project 10. Recognize and reuse these patterns.
+1. **Not clearing the checkpoint on success**: If the checkpoint file persists after a successful run, the next run will resume from the end and produce empty output. Always delete the checkpoint when the pipeline completes normally.
+2. **Building the manifest before writing all output files**: The manifest must reflect the final state. If you generate it before writing `quarantined.json`, that file's checksum will be missing from the manifest.
+3. **Forgetting that this capstone combines skills from projects 01-14**: Do not try to implement this from scratch. The validation logic comes from project 01/08, the quarantine pattern from project 03/08, the transformation from project 09, the checkpoint from project 12, and the manifest from project 10. Recognize and reuse these patterns.

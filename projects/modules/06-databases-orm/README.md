@@ -1,4 +1,4 @@
-# Module 06 — Databases & ORM
+# Module 06: Databases & ORM
 
 Home: [README](../../../README.md) · Modules: [Index](../README.md)
 
@@ -39,7 +39,7 @@ Project 01 uses only the built-in `sqlite3` module, so it works without installi
 | 01 | [SQLite Basics](./01-sqlite-basics/) | sqlite3 module, CREATE TABLE, INSERT, SELECT, parameterized queries |
 | 02 | [SQLAlchemy Models](./02-sqlalchemy-models/) | Declarative models, engine, Session, Base, relationships |
 | 03 | [CRUD Operations](./03-crud-operations/) | Create/Read/Update/Delete with SQLAlchemy, interactive CLI |
-| 04 | [Migrations with Alembic](./04-migrations-alembic/) | Schema migrations — init, autogenerate, upgrade, downgrade |
+| 04 | [Migrations with Alembic](./04-migrations-alembic/) | Schema migrations: init, autogenerate, upgrade, downgrade |
 | 05 | [Query Optimization](./05-query-optimization/) | Indexes, eager/lazy loading, N+1 problem, EXPLAIN |
 
 ## Related concepts

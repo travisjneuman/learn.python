@@ -46,18 +46,18 @@ Exported 4 records to data/exported.csv (atomic write)
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--validate` flag that checks each record has required fields before exporting.
 2. Add a backup: before overwriting, copy the existing file to `.bak`.
 3. Add a `--dry-run` flag that validates and reports but does not write.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Pass an output path to a read-only directory (or a path with invalid characters).
 2. Pass input data where records have inconsistent keys (some missing columns).
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Catch `OSError` / `PermissionError` during atomic write and report clearly.
 2. Pad missing keys with empty strings during CSV export.
 3. Add tests for write failures and inconsistent records.

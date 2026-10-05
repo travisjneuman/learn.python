@@ -52,17 +52,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add case-insensitive duplicate detection (so "Hello" and "hello" count as duplicates).
 2. Add a `--ignore-blank` flag that skips empty lines when checking for duplicates.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Use a file with no duplicates at all -- does `find_duplicates()` return an empty dict?
 2. Use a file where every line is identical -- does the report show the correct count?
 3. Use a file with trailing spaces -- are `"hello"` and `"hello "` treated as duplicates?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `load_lines()` strips trailing whitespace so `"hello "` matches `"hello"`.
 2. Handle the no-duplicates case by printing a clear "No duplicates found" message.
 3. Add a test for the all-unique-lines case.

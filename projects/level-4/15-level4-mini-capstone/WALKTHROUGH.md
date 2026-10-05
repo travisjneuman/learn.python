@@ -1,4 +1,4 @@
-# Level 4 Mini Capstone: Data Ingestion Pipeline — Step-by-Step Walkthrough
+# Level 4 Mini Capstone: Data Ingestion Pipeline (Step-by-Step Walkthrough)
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

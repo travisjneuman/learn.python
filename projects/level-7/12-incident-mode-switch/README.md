@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add an `auto_recover` feature: if all active stages succeed, automatically transition back to normal.
 2. Add a `duration()` method to IncidentEvent that calculates how long the system stayed in each mode.
-3. Re-run script and tests — verify auto-recovery and duration tracking work.
+3. Re-run script and tests: verify auto-recovery and duration tracking work.
 
 ## Break it (required)
 1. Attempt an invalid transition (e.g. maintenance to degraded) and observe the rejection.

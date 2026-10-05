@@ -52,17 +52,17 @@ Anomalies found:   1
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--rules` flag to load validation rules from a separate JSON file.
 2. Add an `--output` flag to save valid records as a new CSV.
 3. Add deduplication as a pipeline stage between cleaning and validation.
 
-## Break it (required) — Core
-1. Feed a CSV where every record is invalid — does the report handle 0% pass rate?
-2. Feed a CSV with no numeric column — does anomaly detection crash?
-3. Feed an empty CSV (header only) — does the pipeline handle zero records?
+## Break it (required): Core
+1. Feed a CSV where every record is invalid: does the report handle 0% pass rate?
+2. Feed a CSV with no numeric column: does anomaly detection crash?
+3. Feed an empty CSV (header only): does the pipeline handle zero records?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Guard against zero-record pass rate calculations.
 2. Handle missing numeric fields in anomaly detection gracefully.
 3. Add a test for empty/header-only CSV files.

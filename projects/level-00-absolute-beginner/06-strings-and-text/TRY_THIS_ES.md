@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 06
+# Prueba Esto: Ejercicio 06
 
 1. Crea un f-string que te presente con tu nombre, edad y ciudad:
    ```python

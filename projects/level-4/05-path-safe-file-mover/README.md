@@ -43,8 +43,8 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/dest/` — moved files
-- `data/move_log.json` — detailed move log with timestamps
+- `data/dest/`: moved files
+- `data/move_log.json`: detailed move log with timestamps
 - Passing tests
 - Updated `notes.md`
 
@@ -52,17 +52,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--pattern` flag to only move files matching a glob (e.g., `*.csv`).
 2. Add a `--backup` flag that copies instead of moves, preserving the originals.
-3. Re-run script and tests — add a test for the glob filter.
+3. Re-run script and tests: add a test for the glob filter.
 
-## Break it (required) — Core
-1. Try to move files from a non-existent source directory — observe the error.
+## Break it (required): Core
+1. Try to move files from a non-existent source directory: observe the error.
 2. Create a situation where a move fails mid-batch (e.g., read-only destination) and verify rollback.
 3. Run the same move twice and confirm collision handling works.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a pre-check that validates source and destination directories before planning.
 2. Ensure the move log records both successes and rollbacks clearly.
 3. Re-run until all tests pass.
@@ -73,7 +73,7 @@ pytest -q
 
 ## Explain it (teach-back)
 1. Why does the mover use a two-phase approach (plan then execute) instead of moving immediately?
-2. How does `resolve_collision` avoid infinite loops — what guarantees it terminates?
+2. How does `resolve_collision` avoid infinite loops: what guarantees it terminates?
 3. Why does `_rollback` iterate in reverse order?
 4. What are the risks of `shutil.move` across different filesystems?
 

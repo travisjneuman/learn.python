@@ -1,4 +1,4 @@
-# Schedule Ready Script — Annotated Solution
+# Schedule Ready Script: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -223,6 +223,6 @@ Operating-system-level file locks are more robust than lock files because the OS
 
 ## Common Pitfalls
 
-1. **Forgetting to release the lock on error** — If the lock is acquired but the script crashes before `release_lock`, all future runs are blocked until the stale timeout expires. Always use try/finally or a context manager.
-2. **Using `input()` in a scheduled script** — Any call that waits for user input will cause the script to hang indefinitely when run by cron or Task Scheduler. All configuration must come from arguments, config files, or environment variables.
-3. **Not logging to a file** — When a script runs unattended, stdout/stderr may be discarded. Without file-based logging, debugging production failures becomes nearly impossible.
+1. **Forgetting to release the lock on error**: If the lock is acquired but the script crashes before `release_lock`, all future runs are blocked until the stale timeout expires. Always use try/finally or a context manager.
+2. **Using `input()` in a scheduled script**: Any call that waits for user input will cause the script to hang indefinitely when run by cron or Task Scheduler. All configuration must come from arguments, config files, or environment variables.
+3. **Not logging to a file**: When a script runs unattended, stdout/stderr may be discarded. Without file-based logging, debugging production failures becomes nearly impossible.

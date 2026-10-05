@@ -1,10 +1,10 @@
 # Solution: 05-numbers-and-math
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -58,9 +58,9 @@ print("Total (rounded):", round(total, 2))  # WHY: round(32.3892, 2) gives 32.39
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
 | Show all 7 math operators in one exercise | Giving a complete reference means you can come back to this file whenever you forget an operator | Could introduce them one at a time across multiple exercises, but having them together is more useful as a reference |
-| Use a real-world tax calculation | Practical examples make abstract math feel useful — everyone understands prices and taxes | Could use purely abstract math, but connecting to real life helps motivation |
-| Show `round()` for the tax example | Money with 4+ decimal places looks wrong — `round()` is essential for real-world number formatting | Could ignore rounding, but then the output looks broken and learners think they did something wrong |
-| Demonstrate order of operations | Parentheses changing the result is a common source of bugs — better to learn now than debug later | Could skip this, but math order errors are one of the most common beginner mistakes |
+| Use a real-world tax calculation | Practical examples make abstract math feel useful: everyone understands prices and taxes | Could use purely abstract math, but connecting to real life helps motivation |
+| Show `round()` for the tax example | Money with 4+ decimal places looks wrong: `round()` is essential for real-world number formatting | Could ignore rounding, but then the output looks broken and learners think they did something wrong |
+| Demonstrate order of operations | Parentheses changing the result is a common source of bugs: better to learn now than debug later | Could skip this, but math order errors are one of the most common beginner mistakes |
 
 ## Alternative approaches
 
@@ -80,7 +80,7 @@ print(f"There are {seconds_per_year:,} seconds in a year.")
 # WHY: The :, inside the f-string adds commas to large numbers — 31536000 becomes 31,536,000
 ```
 
-**Trade-off:** This approach emphasizes using descriptive variable names for every number, which makes complex calculations readable. The exercise version shows the operators directly, which is better for learning what each operator does. Both are valid — in real code, you would use variables.
+**Trade-off:** This approach emphasizes using descriptive variable names for every number, which makes complex calculations readable. The exercise version shows the operators directly, which is better for learning what each operator does. Both are valid: in real code, you would use variables.
 
 ### Approach C: Using modulo (%) for practical even/odd checking
 
@@ -97,20 +97,20 @@ for n in [2, 5, 10, 13, 100]:       # WHY: Test multiple numbers to see the patt
         print(f"{n} is odd")
 ```
 
-**Trade-off:** This previews loops (Exercise 10) and if/else (Exercise 08), so it goes beyond the current lesson. But seeing a practical use of `%` shows why it exists — it is not just abstract math.
+**Trade-off:** This previews loops (Exercise 10) and if/else (Exercise 08), so it goes beyond the current lesson. But seeing a practical use of `%` shows why it exists: it is not just abstract math.
 
 ## What could go wrong
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| Dividing by zero: `10 / 0` | `ZeroDivisionError` — Python crashes because division by zero is mathematically undefined | Never divide by a variable without checking it is not zero first. You will learn how to check in Exercise 08 |
-| Expecting `10 / 2` to give `5` | It gives `5.0` (a float, not an integer) — the `/` operator always produces a decimal number | Use `10 // 2` if you need a whole number result (gives `5`). This catches many beginners off guard |
-| Forgetting parentheses in a calculation | `2 + 3 * 4` gives 14, not 20 — multiplication happens before addition, just like in school | Use parentheses to make your intent clear: `(2 + 3) * 4` gives 20. When in doubt, add parentheses |
-| Floating-point weirdness: `0.1 + 0.2` | Gives `0.30000000000000004` instead of `0.3` — this is how all computers store decimal numbers | Use `round()` when you need exact decimals. This is not a Python bug — it happens in every programming language |
-| Confusing `*` and `**` | `2 * 8` gives 16 (multiplication) but `2 ** 8` gives 256 (exponent) — very different results | `*` is multiply, `**` is "to the power of." Double-check which one you mean |
+| Dividing by zero: `10 / 0` | `ZeroDivisionError`: Python crashes because division by zero is mathematically undefined | Never divide by a variable without checking it is not zero first. You will learn how to check in Exercise 08 |
+| Expecting `10 / 2` to give `5` | It gives `5.0` (a float, not an integer): the `/` operator always produces a decimal number | Use `10 // 2` if you need a whole number result (gives `5`). This catches many beginners off guard |
+| Forgetting parentheses in a calculation | `2 + 3 * 4` gives 14, not 20: multiplication happens before addition, just like in school | Use parentheses to make your intent clear: `(2 + 3) * 4` gives 20. When in doubt, add parentheses |
+| Floating-point weirdness: `0.1 + 0.2` | Gives `0.30000000000000004` instead of `0.3`: this is how all computers store decimal numbers | Use `round()` when you need exact decimals. This is not a Python bug: it happens in every programming language |
+| Confusing `*` and `**` | `2 * 8` gives 16 (multiplication) but `2 ** 8` gives 256 (exponent): very different results | `*` is multiply, `**` is "to the power of." Double-check which one you mean |
 
 ## Key takeaways
 
-1. **Python has 7 math operators and you now know all of them** — `+` `-` `*` `/` `//` `%` `**`. These cover addition, subtraction, multiplication, division, integer division, remainder, and exponents. Every calculation you will ever write uses some combination of these.
-2. **There are two types of numbers: integers (whole) and floats (decimal)** — Python usually handles the difference automatically, but division with `/` always produces a float. Understanding this prevents surprise results in your calculations.
-3. **`round()` and parentheses are your friends** — `round()` cleans up messy decimal numbers, and parentheses control the order of math operations. These two tools will save you from the most common number-related bugs in your future programs.
+1. **Python has 7 math operators and you now know all of them**: `+` `-` `*` `/` `//` `%` `**`. These cover addition, subtraction, multiplication, division, integer division, remainder, and exponents. Every calculation you will ever write uses some combination of these.
+2. **There are two types of numbers: integers (whole) and floats (decimal)**: Python usually handles the difference automatically, but division with `/` always produces a float. Understanding this prevents surprise results in your calculations.
+3. **`round()` and parentheses are your friends**: `round()` cleans up messy decimal numbers, and parentheses control the order of math operations. These two tools will save you from the most common number-related bugs in your future programs.

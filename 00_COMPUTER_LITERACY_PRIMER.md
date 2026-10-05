@@ -16,9 +16,9 @@ Python is one language you can use to write those instructions. It was designed 
 A file is a container for data stored on your computer. Every document, photo, song, and program is a file.
 
 Files have names and extensions. The extension is the part after the dot:
-- `report.docx` — a Word document
-- `photo.jpg` — an image
-- `hello.py` — a Python script
+- `report.docx`: a Word document
+- `photo.jpg`: an image
+- `hello.py`: a Python script
 
 The `.py` extension tells your computer "this is a Python file." When you write Python code, you will create `.py` files.
 
@@ -44,8 +44,8 @@ The "path" is the address of a file or folder. It tells the computer exactly whe
 ## What is a text editor?
 
 A text editor is a program for writing plain text files. It is different from Microsoft Word:
-- Word saves formatted text (bold, fonts, margins) — computers cannot run this as code
-- A text editor saves plain text — just characters, no formatting
+- Word saves formatted text (bold, fonts, margins). Computers cannot run this as code
+- A text editor saves plain text: just characters, no formatting
 
 **VS Code** (Visual Studio Code) is the text editor recommended in this course. It is free, made by Microsoft, and specifically designed for writing code. It highlights your code in different colors to make it easier to read, catches mistakes as you type, and has a built-in terminal.
 
@@ -105,7 +105,7 @@ That is it. Your file does not change. The computer just read it and followed th
 
 ## What is an error message?
 
-When Python cannot understand or execute your instructions, it shows an error message. Error messages are not punishment — they are Python telling you exactly what went wrong and where.
+When Python cannot understand or execute your instructions, it shows an error message. Error messages are not punishment. They are Python telling you exactly what went wrong and where.
 
 Example:
 ```
@@ -128,7 +128,7 @@ Read error messages carefully. They almost always tell you what to fix.
 2. Python reads those instructions top to bottom
 3. The terminal is where you tell the computer to run your program
 4. Errors are helpful clues, not failures
-5. You do not need to memorize anything — understanding the pattern is enough
+5. You do not need to memorize anything. Understanding the pattern is enough
 
 ## Next
 

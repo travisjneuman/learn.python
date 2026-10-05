@@ -1,4 +1,4 @@
-# Configurable Batch Runner — Annotated Solution
+# Configurable Batch Runner: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| `ACTIONS` registry instead of `if/elif` chains | Adding a new action is a two-step process: write the function, add it to the dict. No need to touch the runner logic. This is the Open/Closed Principle — open for extension, closed for modification. |
+| `ACTIONS` registry instead of `if/elif` chains | Adding a new action is a two-step process: write the function, add it to the dict. No need to touch the runner logic. This is the Open/Closed Principle: open for extension, closed for modification. |
 | Per-job error handling (try/except around each job) | One failing job should not prevent the other 99 from running. Each job's result includes its own status, so you can see exactly which jobs succeeded and which failed. |
 | Resolve paths relative to config file directory | Makes the config portable. If you move the config and its data directory to another machine, relative paths still work. Using the current working directory would break this. |
 | Three-tier status: ok / error / skipped | "Error" means the job was attempted but failed (e.g., bad input). "Skipped" means the job was not attempted (e.g., unknown action). Different problems require different fixes. |
@@ -209,7 +209,7 @@ def load_action(module_path: str, func_name: str):
 func = load_action("my_actions", "count_lines")
 ```
 
-**Trade-off:** Dynamic imports let users add new actions without modifying the runner's source code — they just drop a Python file in a directory and reference it in the config. However, this introduces security risks (arbitrary code execution from config) and debugging difficulty (import errors at runtime). The static registry is safer and simpler for a learning project.
+**Trade-off:** Dynamic imports let users add new actions without modifying the runner's source code: they just drop a Python file in a directory and reference it in the config. However, this introduces security risks (arbitrary code execution from config) and debugging difficulty (import errors at runtime). The static registry is safer and simpler for a learning project.
 
 ### Using `subprocess` to run external scripts as jobs
 
@@ -222,10 +222,10 @@ def action_run_script(input_path: Path, params: dict) -> dict:
     return {"returncode": result.returncode, "stdout": result.stdout}
 ```
 
-**Trade-off:** Running external scripts gives maximum flexibility — any language, any tool. But `shell=True` is a security risk, subprocess management is complex, and error handling is harder. For a data processing batch runner, keeping actions as Python functions is safer and more debuggable.
+**Trade-off:** Running external scripts gives maximum flexibility: any language, any tool. But `shell=True` is a security risk, subprocess management is complex, and error handling is harder. For a data processing batch runner, keeping actions as Python functions is safer and more debuggable.
 
 ## Common Pitfalls
 
-1. **Using `if/elif` chains for action dispatch** — Adding the 10th action means editing a growing chain of conditionals. If you misspell an action name in the chain, you get a silent bug. The registry pattern catches unknown actions explicitly.
-2. **Not handling the empty config case** — A config with `"jobs": []` should produce a valid report with zero jobs, not crash. The loop simply runs zero times, which is correct, but the report should still be written.
-3. **Broad `except Exception` hiding bugs** — Catching all exceptions per job is necessary for resilience, but it can hide programming errors (like typos in variable names). In development, consider logging the full traceback with `logging.exception()` to preserve debugging context.
+1. **Using `if/elif` chains for action dispatch**: Adding the 10th action means editing a growing chain of conditionals. If you misspell an action name in the chain, you get a silent bug. The registry pattern catches unknown actions explicitly.
+2. **Not handling the empty config case**: A config with `"jobs": []` should produce a valid report with zero jobs, not crash. The loop simply runs zero times, which is correct, but the report should still be written.
+3. **Broad `except Exception` hiding bugs**: Catching all exceptions per job is necessary for resilience, but it can hide programming errors (like typos in variable names). In development, consider logging the full traceback with `logging.exception()` to preserve debugging context.

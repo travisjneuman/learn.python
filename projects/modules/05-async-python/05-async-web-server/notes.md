@@ -1,4 +1,4 @@
-# Notes — Async Web Server
+# Notes: Async Web Server
 
 ## What I learned
 

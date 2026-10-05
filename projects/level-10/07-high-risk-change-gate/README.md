@@ -39,7 +39,7 @@ pytest -v
 3. Re-run tests and verify the new factor integrates into the scoring pipeline.
 
 ## Break it (required)
-1. Create a change that hits every risk factor — observe how scores accumulate to CRITICAL.
+1. Create a change that hits every risk factor: observe how scores accumulate to CRITICAL.
 2. Register no factors and observe a zero-score auto-approval for a clearly risky change.
 3. Set `is_rollback=True` with many other risk factors and see if it still reduces risk.
 

@@ -38,7 +38,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — full run results with pool stats
+- `data/output_summary.json`: full run results with pool stats
 - Passing tests (`pytest -q` → 8+ passed)
 - Updated `notes.md`
 
@@ -51,7 +51,7 @@ pytest -q
 ## Break it (required)
 1. Set `pool_size=0` and observe what happens when connections cannot be pooled.
 2. Pass an invalid database path (e.g. `/nonexistent/dir/db.sqlite`) and observe the retry/failure behaviour.
-3. Close a connection manually, then return it to the pool — what happens on the next acquire?
+3. Close a connection manually, then return it to the pool: what happens on the next acquire?
 
 ## Fix it (required)
 1. Add a guard in `release()` that pings the connection before returning it to the pool (discard broken ones).

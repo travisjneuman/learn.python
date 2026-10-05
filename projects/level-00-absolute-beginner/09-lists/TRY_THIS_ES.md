@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 09
+# Prueba Esto: Ejercicio 09
 
 1. Crea una lista de 5 de tus comidas favoritas. Imprímela, luego agrega una más e imprime de nuevo.
 
@@ -9,7 +9,7 @@
    print(f"Promedio de calificaciones: {average}")
    ```
 
-3. Intenta acceder a un índice que no existe (como `colors[99]`). Lee el mensaje de error — se llama IndexError y te dice que la lista no es tan larga.
+3. Intenta acceder a un índice que no existe (como `colors[99]`). Lee el mensaje de error: se llama IndexError y te dice que la lista no es tan larga.
 
 ---
 

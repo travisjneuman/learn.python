@@ -18,7 +18,7 @@ Home: [README](../../../README.md)
 - Enterprise project scaffolding automation
 
 ## Why this project exists
-Every new microservice in an organization should start from the same standards — logging format, config schema, test harness, CI pipeline. This project builds a code-driven blueprint generator so teams get consistent scaffolding automatically, eliminating "snowflake services" that drift from organizational norms.
+Every new microservice in an organization should start from the same standards: logging format, config schema, test harness, CI pipeline. This project builds a code-driven blueprint generator so teams get consistent scaffolding automatically, eliminating "snowflake services" that drift from organizational norms.
 
 ## Run (copy/paste)
 ```bash
@@ -44,12 +44,12 @@ Generated 6 files for 'my-service' (tier=STANDARD):
 - Passing tests (`pytest -v` shows ~14 passed)
 
 ## Alter it (required)
-1. Add a new generator (e.g., `DockerfileGenerator`) that produces a `Dockerfile` — register it in `build_default_registry` and verify the manifest grows by one entry.
-2. Make the `STRICT` tier require a `CODEOWNERS` file — add a generator that only emits output for strict-tier specs.
+1. Add a new generator (e.g., `DockerfileGenerator`) that produces a `Dockerfile`: register it in `build_default_registry` and verify the manifest grows by one entry.
+2. Make the `STRICT` tier require a `CODEOWNERS` file: add a generator that only emits output for strict-tier specs.
 3. Re-run tests after each change to ensure nothing regresses.
 
 ## Break it (required)
-1. Pass a project name containing spaces or special characters — observe the `ValueError`.
+1. Pass a project name containing spaces or special characters: observe the `ValueError`.
 2. Remove a generator from the registry and watch downstream tests that expect its output fail.
 3. Change `ComplianceTier` enum values and see how `generate_project("x", tier="nonexistent")` raises `KeyError`.
 

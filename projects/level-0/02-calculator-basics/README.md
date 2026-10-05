@@ -1,7 +1,7 @@
 # Level 0 / Project 02 - Calculator Basics
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=2) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-0.html?ex=2): no installation needed!
 
 ## Before You Start
 
@@ -102,17 +102,17 @@ def parse_power(text):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add support for modulo (`%`) and exponentiation (`**`) operations.
 2. After each calculation, ask the user "Round to how many decimal places? (Enter to skip): " and round accordingly.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Type `10 / 0` -- does it raise `ValueError` or crash with `ZeroDivisionError`?
 2. Type just one number like `5` -- what happens when there is no operator or second operand?
 3. Type text instead of numbers like `hello + world` -- does `float()` fail gracefully?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `divide()` raises `ValueError` with a clear message for zero divisors.
 2. Add validation in `calculate()` that checks for exactly two numeric operands.
 3. Add a test for the malformed-expression case.

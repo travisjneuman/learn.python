@@ -1,4 +1,4 @@
-# Context Managers Explained — Video Resources
+# Context Managers Explained: Video Resources
 
 [← Back to Concept](../context-managers-explained.md)
 
@@ -9,12 +9,12 @@ Why: Thorough coverage of both the __enter__/__exit__ protocol and the @contextm
 
 ## Alternatives
 
-- **[Python Tutorial: Context Managers - Efficiently Managing Resources](https://youtube.com/watch?v=-aKFBoZpiqA)** by Corey Schafer (20 min) — Covers writing your own context managers using both classes and generators, with practical examples for file handling and database connections. Clear, methodical, beginner-friendly.
-- **[10 Python Tips and Tricks For Writing Better Code](https://youtube.com/watch?v=C-gEQdGVXbk)** by Corey Schafer (39 min) — Context managers are tip #3 in this collection. Watch the first 10 minutes for a quick practical overview alongside other useful Python patterns.
+- **[Python Tutorial: Context Managers - Efficiently Managing Resources](https://youtube.com/watch?v=-aKFBoZpiqA)** by Corey Schafer (20 min). Covers writing your own context managers using both classes and generators, with practical examples for file handling and database connections. Clear, methodical, beginner-friendly.
+- **[10 Python Tips and Tricks For Writing Better Code](https://youtube.com/watch?v=C-gEQdGVXbk)** by Corey Schafer (39 min). Context managers are tip #3 in this collection. Watch the first 10 minutes for a quick practical overview alongside other useful Python patterns.
 
 ## Deep Dives
 
-- **[Python Tutorial: Decorators - Dynamically Alter The Functionality Of Your Functions](https://youtube.com/watch?v=FsAPt_9Bf3U)** by Corey Schafer (30 min) — Understanding decorators helps you appreciate contextlib.contextmanager, which turns a generator function into a context manager using a decorator.
+- **[Python Tutorial: Decorators - Dynamically Alter The Functionality Of Your Functions](https://youtube.com/watch?v=FsAPt_9Bf3U)** by Corey Schafer (30 min). Understanding decorators helps you appreciate contextlib.contextmanager, which turns a generator function into a context manager using a decorator.
 
 ---
 

@@ -1,4 +1,4 @@
-# Modern Python Tooling — Part 1: uv and ruff
+# Modern Python Tooling, Part 1: uv and ruff
 
 [← Back to Overview](./modern-python-tooling.md) · [Part 2: pyproject.toml and Ecosystem →](./modern-python-tooling-part2.md)
 
@@ -14,11 +14,11 @@
 
 ---
 
-The Python ecosystem has modernized significantly. This part covers **uv** and **ruff** — the two tools that replace most of the older pip/venv/black/flake8 toolchain.
+The Python ecosystem has modernized significantly. This part covers **uv** and **ruff**: the two tools that replace most of the older pip/venv/black/flake8 toolchain.
 
-## uv — the fast Python package manager
+## uv: the fast Python package manager
 
-**uv** is a single tool that replaces pip, venv, pip-tools, and pyenv. It is written in Rust, and it is extremely fast — often 10-100x faster than pip.
+**uv** is a single tool that replaces pip, venv, pip-tools, and pyenv. It is written in Rust, and it is extremely fast, often 10-100x faster than pip.
 
 ### Installing uv
 
@@ -81,7 +81,7 @@ uv pip freeze > requirements.txt
 deactivate
 ```
 
-Notice this is almost identical to the pip workflow — just replace `pip` with `uv pip` and `python -m venv` with `uv venv`.
+Notice this is almost identical to the pip workflow: just replace `pip` with `uv pip` and `python -m venv` with `uv venv`.
 
 ### Why uv over pip?
 
@@ -105,7 +105,7 @@ uv pip freeze     →  pip freeze
 
 The rest of the workflow stays the same.
 
-## ruff — the fast linter and formatter
+## ruff: the fast linter and formatter
 
 **ruff** replaces flake8 (linter), black (formatter), and isort (import sorter) in a single tool.
 

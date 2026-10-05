@@ -1,4 +1,4 @@
-# Module 12 / Project 03 — Production Checklist
+# Module 12 / Project 03: Production Checklist
 
 Home: [README](../../../../README.md) · Module: [Cloud Deployment](../README.md)
 
@@ -39,8 +39,8 @@ Deploying code is only half the battle. A production app needs monitoring, loggi
 ### Monitoring
 
 - [ ] Health check endpoint (`/health`) returns database status
-- [ ] Uptime monitoring set up (UptimeRobot, Better Uptime — free tiers)
-- [ ] Error tracking configured (Sentry — free tier for small projects)
+- [ ] Uptime monitoring set up (free tiers: UptimeRobot, Better Uptime)
+- [ ] Error tracking configured (Sentry, free tier for small projects)
 - [ ] Response time monitoring
 
 ### Logging

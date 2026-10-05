@@ -38,7 +38,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output_summary.json` — processing results with dead-letter details
+- `data/output_summary.json`: processing results with dead-letter details
 - Passing tests (`pytest -q` → 6+ passed)
 - Updated `notes.md`
 
@@ -50,7 +50,7 @@ pytest -q
 
 ## Break it (required)
 1. Process a record with `value: null` and observe the error path.
-2. Retry a dead-letter row that still has the same validation issue — confirm retry_count increments.
+2. Retry a dead-letter row that still has the same validation issue: confirm retry_count increments.
 3. Delete the dead_letters table mid-run and observe the crash.
 
 ## Fix it (required)

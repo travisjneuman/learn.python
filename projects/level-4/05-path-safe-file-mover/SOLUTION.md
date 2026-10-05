@@ -1,4 +1,4 @@
-# Path Safe File Mover — Annotated Solution
+# Path Safe File Mover: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -214,10 +214,10 @@ def safe_move(src: Path, dst: Path) -> None:
     os.remove(str(src))               # only delete after copy succeeds
 ```
 
-**Trade-off:** This approach is maximally safe — the original is only deleted after the copy is verified. But it uses more disk space temporarily (both copies exist at once) and is slower for large files.
+**Trade-off:** This approach is maximally safe: the original is only deleted after the copy is verified. But it uses more disk space temporarily (both copies exist at once) and is slower for large files.
 
 ## Common Pitfalls
 
-1. **Not handling cross-filesystem moves** — `os.rename()` and `Path.rename()` silently fail when source and destination are on different drives or mount points. Always use `shutil.move()` for robustness.
-2. **Race conditions in collision detection** — Between checking `dest.exists()` and actually moving the file, another process could create a file with the same name. In high-concurrency environments, use file locks or atomic temp-file-then-rename strategies.
-3. **Forgetting to skip subdirectories** — `source_dir.iterdir()` yields both files and directories. Without the `is_file()` check, you would try to "move" a directory, which has different semantics and can cause unexpected results.
+1. **Not handling cross-filesystem moves**: `os.rename()` and `Path.rename()` silently fail when source and destination are on different drives or mount points. Always use `shutil.move()` for robustness.
+2. **Race conditions in collision detection**: Between checking `dest.exists()` and actually moving the file, another process could create a file with the same name. In high-concurrency environments, use file locks or atomic temp-file-then-rename strategies.
+3. **Forgetting to skip subdirectories**: `source_dir.iterdir()` yields both files and directories. Without the `is_file()` check, you would try to "move" a directory, which has different semantics and can cause unexpected results.

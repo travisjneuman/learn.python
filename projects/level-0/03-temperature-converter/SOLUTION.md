@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 03 - Temperature Converter
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -132,10 +132,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Hub-and-spoke through Celsius | With 3 units, direct conversion needs 6 functions. Hub-and-spoke needs only 4. Adding a 4th unit (Rankine) adds 2 functions, not 6 | Direct conversion functions for every pair — works but duplicates math and gets unwieldy as units grow |
-| `kelvin_to_celsius()` rejects negative Kelvin | Negative Kelvin is physically impossible. Catching it early prevents silently producing nonsensical results | Allow any value and let the caller validate — pushes responsibility to code that may forget to check |
-| `round(result, 2)` on all outputs | Floating-point math produces tiny errors (e.g., `99.99999997`). Rounding keeps displayed values clean | Return raw floats — more precise but confusing when `100.0 C` shows as `99.99999999997 C` |
-| `convert_temperature()` raises `ValueError` for unknown units | The function signals clearly that something is wrong. The caller decides how to handle it (print error, log, etc.) | Return an error dict like the calculator project — valid but inconsistent since temperature functions already raise `ValueError` |
+| Hub-and-spoke through Celsius | With 3 units, direct conversion needs 6 functions. Hub-and-spoke needs only 4. Adding a 4th unit (Rankine) adds 2 functions, not 6 | Direct conversion functions for every pair: works but duplicates math and gets unwieldy as units grow |
+| `kelvin_to_celsius()` rejects negative Kelvin | Negative Kelvin is physically impossible. Catching it early prevents silently producing nonsensical results | Allow any value and let the caller validate: pushes responsibility to code that may forget to check |
+| `round(result, 2)` on all outputs | Floating-point math produces tiny errors (e.g., `99.99999997`). Rounding keeps displayed values clean | Return raw floats: more precise but confusing when `100.0 C` shows as `99.99999999997 C` |
+| `convert_temperature()` raises `ValueError` for unknown units | The function signals clearly that something is wrong. The caller decides how to handle it (print error, log, etc.) | Return an error dict like the calculator project: valid but inconsistent since temperature functions already raise `ValueError` |
 
 ## Alternative approaches
 
@@ -175,7 +175,7 @@ def convert_temperature(value: float, from_unit: str, to_unit: str) -> float:
 | User enters `X` as a unit code | `convert_temperature()` raises `ValueError("Unknown unit: X")` | Already handled by the else branches in the if/elif chain |
 | User enters `hot` instead of a number | `float("hot")` raises `ValueError`, caught by the try/except around `float()` | Already handled in the input loop |
 | Round-trip precision loss (C to F to C) | `100.0 -> 212.0 -> 100.0` works, but some values may drift by 0.01 due to floating-point math | `round(..., 2)` keeps drift below visible thresholds. The test allows `abs(back - original) < 0.01` |
-| User enters `-460` Fahrenheit (below absolute zero) | Converts to Celsius successfully (about `-273.33`), then to Kelvin gives `-0.18` — not caught | Add a check in `convert_temperature()` that the Celsius intermediate value is >= -273.15 |
+| User enters `-460` Fahrenheit (below absolute zero) | Converts to Celsius successfully (about `-273.33`), then to Kelvin gives `-0.18`, not caught | Add a check in `convert_temperature()` that the Celsius intermediate value is >= -273.15 |
 
 ## Key takeaways
 

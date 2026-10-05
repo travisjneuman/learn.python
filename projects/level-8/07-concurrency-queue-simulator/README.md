@@ -19,11 +19,11 @@ Home: [README](../../../README.md)
 - Simulation statistics: throughput, queue depth, failure rates
 
 ## Why this project exists
-Concurrent processing is fundamental to scalable systems — from web servers handling
+Concurrent processing is fundamental to scalable systems: from web servers handling
 multiple requests to data pipelines processing millions of events. The producer-consumer
 pattern coordinates work between threads without explicit locks. This project simulates
 producers pushing work items into a bounded queue and consumers processing them with
-configurable failure rates — teaching thread coordination, backpressure, and safe
+configurable failure rates, teaching thread coordination, backpressure, and safe
 shutdown, the same architecture behind task workers like Celery, RabbitMQ consumers,
 and Kafka pipelines.
 
@@ -55,9 +55,9 @@ pytest -q
 3. Change `SimulationStats` to track average processing time per consumer thread.
 
 ## Break it (required)
-1. Set `num_consumers=0` — does the simulation hang or raise an error?
-2. Make a producer add items faster than consumers can process — observe queue growth.
-3. Remove the sentinel `None` value from the producer — what happens to consumer threads?
+1. Set `num_consumers=0`: does the simulation hang or raise an error?
+2. Make a producer add items faster than consumers can process: observe queue growth.
+3. Remove the sentinel `None` value from the producer: what happens to consumer threads?
 
 ## Fix it (required)
 1. Validate that `num_consumers >= 1` before starting the simulation.
@@ -66,7 +66,7 @@ pytest -q
 
 ## Explain it (teach-back)
 1. What is the producer-consumer pattern and why is `threading.Queue` thread-safe?
-2. How does the sentinel value (`None`) signal consumers to stop — why not just join threads?
+2. How does the sentinel value (`None`) signal consumers to stop: why not just join threads?
 3. What is the GIL and how does it affect this threading simulation?
 4. When would you use `multiprocessing` instead of `threading` in Python?
 

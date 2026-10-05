@@ -1,4 +1,4 @@
-# Try This — Exercise 02
+# Try This: Exercise 02
 
 1. Change the message inside `print()` to say your own name:
    ```python

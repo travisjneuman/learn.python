@@ -1,7 +1,7 @@
 # Level 1 / Project 01 - Input Validator Lab
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=1) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=1): no installation needed!
 
 ## Before You Start
 
@@ -85,17 +85,17 @@ def validate_date(text):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a new validation type: "url" that checks for `http://` or `https://` prefix and a dot in the domain.
 2. Add a `--strict` flag that rejects emails without a TLD of at least 2 characters.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Add a line with an unknown type like `ssn: 123-45-6789` -- does `validate_input()` handle it or crash?
 2. Add a line with no colon separator like `just some text` -- does parsing fail gracefully?
 3. Add an email like `user@` -- does `validate_email()` accept it when it should not?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `validate_input()` returns an "unknown type" result for unrecognised types instead of crashing.
 2. Handle lines without the `type: value` format by skipping them with a warning.
 3. Add a test for the unknown-type case.

@@ -1,4 +1,4 @@
-# Module 04 / Project 01 — Hello FastAPI
+# Module 04 / Project 01: Hello FastAPI
 
 Home: [README](../../../../README.md)
 
@@ -29,9 +29,9 @@ python app.py
 
 Then open your browser to:
 
-- **http://127.0.0.1:8000** — your root endpoint
-- **http://127.0.0.1:8000/docs** — interactive Swagger UI documentation
-- **http://127.0.0.1:8000/items/42?q=hello** — path and query parameters in action
+- **http://127.0.0.1:8000**: your root endpoint
+- **http://127.0.0.1:8000/docs**: interactive Swagger UI documentation
+- **http://127.0.0.1:8000/items/42?q=hello**: path and query parameters in action
 
 Press `Ctrl+C` in the terminal to stop the server.
 

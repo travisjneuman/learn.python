@@ -49,17 +49,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a new command: `replace old new text` that replaces all occurrences of `old` with `new` in the text.
 2. Add a `--list` flag that prints all available commands and exits.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Send a command with no arguments like just `upper` (no text) -- does `dispatch()` handle it?
 2. Send an unknown command like `fly to the moon` -- does the error dict include the command name?
 3. Send an empty line -- does the dispatcher skip it or crash?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Ensure `dispatch()` returns an error dict when no arguments are provided.
 2. Include the attempted command name in the "Unknown command" error message.
 3. Add a test for the no-arguments case.

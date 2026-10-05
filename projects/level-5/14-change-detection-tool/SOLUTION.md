@@ -1,4 +1,4 @@
-# Change Detection Tool — Annotated Solution
+# Change Detection Tool: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -215,6 +215,6 @@ def ordered_diff(old_lines, new_lines):
 
 ## Common Pitfalls
 
-1. **Comparing binary files as text** — Reading a PNG file with `read_text()` produces garbage lines. The binary detection check prevents this, but forgetting it leads to massive, meaningless diffs.
-2. **Duplicate lines break set-based diff** — If a file has the same line repeated 5 times, the set only sees it once. Adding a 6th occurrence of that line would not appear in the "added" set. For production diffing, use `collections.Counter` or `difflib`.
-3. **Same path for --old and --new** — Without the `resolve()` short-circuit, the tool would hash the file twice and report "unchanged," which is correct but wasteful. The short-circuit also prevents confusing output when someone accidentally passes the same file for both arguments.
+1. **Comparing binary files as text**: Reading a PNG file with `read_text()` produces garbage lines. The binary detection check prevents this, but forgetting it leads to massive, meaningless diffs.
+2. **Duplicate lines break set-based diff**: If a file has the same line repeated 5 times, the set only sees it once. Adding a 6th occurrence of that line would not appear in the "added" set. For production diffing, use `collections.Counter` or `difflib`.
+3. **Same path for --old and --new**: Without the `resolve()` short-circuit, the tool would hash the file twice and report "unchanged," which is correct but wasteful. The short-circuit also prevents confusing output when someone accidentally passes the same file for both arguments.

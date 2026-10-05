@@ -1,4 +1,4 @@
-# Module 10 / Project 01 — Django Setup
+# Module 10 / Project 01: Django Setup
 
 Home: [README](../../../../README.md)
 
@@ -42,8 +42,8 @@ python manage.py runserver
 
 Then open your browser to:
 
-- **http://127.0.0.1:8000** — Django welcome page
-- **http://127.0.0.1:8000/admin** — Django admin interface (log in with the superuser you created)
+- **http://127.0.0.1:8000**: Django welcome page
+- **http://127.0.0.1:8000/admin**: Django admin interface (log in with the superuser you created)
 
 Press `Ctrl+C` to stop the server.
 

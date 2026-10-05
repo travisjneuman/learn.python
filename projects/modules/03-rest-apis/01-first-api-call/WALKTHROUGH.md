@@ -1,4 +1,4 @@
-# First API Call — Step-by-Step Walkthrough
+# First API Call: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md)
 
@@ -10,7 +10,7 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 An API (Application Programming Interface) is a way for programs to talk to each other over the internet. Instead of getting back HTML (a webpage for humans), you get back JSON (structured data for programs). JSON looks like a Python dictionary: keys and values wrapped in curly braces. The `requests` library fetches the JSON just like it fetches HTML, and then `.json()` converts it into a real Python dict you can work with.
 
-The workflow has three stages. First, send a GET request to the API endpoint. Second, check the status code to make sure it worked. Third, parse the JSON response and pull out the fields you care about. This is the exact same pattern you will use when working with any API — weather data, stock prices, social media, anything.
+The workflow has three stages. First, send a GET request to the API endpoint. Second, check the status code to make sure it worked. Third, parse the JSON response and pull out the fields you care about. This is the exact same pattern you will use when working with any API: weather data, stock prices, social media, anything.
 
 JSONPlaceholder is a free test API that returns fake blog posts, comments, and users. It exists specifically for learning. You cannot break it, and it always returns the same data, which makes it perfect for practicing.
 
@@ -18,7 +18,7 @@ JSONPlaceholder is a free test API that returns fake blog posts, comments, and u
 
 **What to do:** Import `requests` for making HTTP requests and `json` for pretty-printing.
 
-**Why:** `requests` handles the HTTP request. `json` is a standard library module — you only need it here for `json.dumps()`, which formats a dictionary as a nicely indented string. The actual JSON parsing is done by `response.json()`, which is a `requests` method.
+**Why:** `requests` handles the HTTP request. `json` is a standard library module; you only need it here for `json.dumps()`, which formats a dictionary as a nicely indented string. The actual JSON parsing is done by `response.json()`, which is a `requests` method.
 
 ```python
 import requests
@@ -31,7 +31,7 @@ import json
 
 **What to do:** Call `requests.get()` with the JSONPlaceholder URL and store the response.
 
-**Why:** This is identical to fetching a webpage — the only difference is that the server sends back JSON instead of HTML. The URL `https://jsonplaceholder.typicode.com/posts/1` returns a single blog post as JSON. The `/posts/1` part tells the API "give me post number 1."
+**Why:** This is identical to fetching a webpage. The only difference is that the server sends back JSON instead of HTML. The URL `https://jsonplaceholder.typicode.com/posts/1` returns a single blog post as JSON. The `/posts/1` part tells the API "give me post number 1."
 
 ```python
 url = "https://jsonplaceholder.typicode.com/posts/1"
@@ -44,7 +44,7 @@ response = requests.get(url)
 
 **What to do:** Call `response.json()` to convert the JSON string into a Python dict.
 
-**Why:** The response body arrives as a string of JSON text. `response.json()` parses that string and returns a Python dictionary (or list, depending on the API). Once you have a dict, you can access fields with square brackets just like any other dictionary. This is the key moment — raw text becomes structured data you can work with programmatically.
+**Why:** The response body arrives as a string of JSON text. `response.json()` parses that string and returns a Python dictionary (or list, depending on the API). Once you have a dict, you can access fields with square brackets just like any other dictionary. This is the key moment: raw text becomes structured data you can work with programmatically.
 
 ```python
 data = response.json()
@@ -53,7 +53,7 @@ print("--- Raw JSON response ---")
 print(json.dumps(data, indent=2))
 ```
 
-`json.dumps()` converts the dictionary back into a formatted JSON string for display. The `indent=2` argument adds line breaks and indentation so you can actually read it. This is just for printing — `data` is still a regular Python dict.
+`json.dumps()` converts the dictionary back into a formatted JSON string for display. The `indent=2` argument adds line breaks and indentation so you can actually read it. This is just for printing; `data` is still a regular Python dict.
 
 **Predict:** What type is `data` after calling `.json()`? Is it a string, a list, or a dictionary? Try `print(type(data))`.
 
@@ -102,7 +102,7 @@ print("Content-Type:", response.headers.get("Content-Type"))
 
 ## Testing Your Solution
 
-There are no pytest tests for this project — it makes live API calls. Run it and check the output:
+There are no pytest tests for this project. It makes live API calls. Run it and check the output:
 
 ```bash
 python project.py
@@ -128,7 +128,7 @@ The data comes from JSONPlaceholder's fixed dataset, so the values should match 
 
 ## What You Learned
 
-- **`response.json()`** parses a JSON response body into a Python dictionary — this is how you turn API data into something your code can work with.
+- **`response.json()`** parses a JSON response body into a Python dictionary. This is how you turn API data into something your code can work with.
 - **JSON and Python dicts** are structurally similar (keys, values, nesting), which is why JSON is the default format for most APIs.
-- **`json.dumps(data, indent=2)`** formats a dictionary as a readable JSON string — useful for debugging, not for data processing.
+- **`json.dumps(data, indent=2)`** formats a dictionary as a readable JSON string, useful for debugging, not for data processing.
 - **Response headers** like `Content-Type` tell you the format of the data before you try to parse it.

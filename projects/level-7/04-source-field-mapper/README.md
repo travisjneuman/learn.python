@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `"datetime"` cast type that parses ISO-format strings into Unix timestamps.
 2. Add a `drop_unmapped` option that removes source fields not in the mapping rules.
-3. Re-run script and tests — verify new cast and drop behavior work correctly.
+3. Re-run script and tests: verify new cast and drop behavior work correctly.
 
 ## Break it (required)
 1. Map a field with `cast: "int"` but provide a non-numeric string (e.g. `"abc"`).

@@ -1,4 +1,4 @@
-# Notes — Production Config
+# Notes: Production Config
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# Testing Strategies — Part 1: Unit Testing and Integration Testing
+# Testing Strategies, Part 1: Unit Testing and Integration Testing
 
 [← Back to Overview](./testing-strategies.md) · [Part 2: Advanced Testing →](./testing-strategies-part2.md)
 
@@ -14,11 +14,11 @@
 
 ---
 
-Testing is how you prove your code works — and keep it working as you make changes. A good test suite catches bugs before users do, gives you confidence to refactor, and serves as living documentation of how your code should behave.
+Testing is how you prove your code works, and keep it working as you make changes. A good test suite catches bugs before users do, gives you confidence to refactor, and serves as living documentation of how your code should behave.
 
 ## Why This Matters
 
-Without tests, every change is a gamble. You fix one bug and introduce two more. With tests, you can change code boldly — if something breaks, a test will tell you immediately. Professional codebases have hundreds or thousands of tests that run automatically on every commit.
+Without tests, every change is a gamble. You fix one bug and introduce two more. With tests, you can change code boldly: if something breaks, a test will tell you immediately. Professional codebases have hundreds or thousands of tests that run automatically on every commit.
 
 ## The test pyramid
 
@@ -33,9 +33,9 @@ The test pyramid is a model for how many of each type of test you should have:
    ----------------------
 ```
 
-- **Unit tests** — test a single function or class in isolation. Fast, cheap, write lots of them.
-- **Integration tests** — test how components work together (e.g., your code + database).
-- **End-to-end (E2E) tests** — test the whole system from the user's perspective (e.g., browser tests).
+- **Unit tests**: test a single function or class in isolation. Fast, cheap, write lots of them.
+- **Integration tests**: test how components work together (e.g., your code + database).
+- **End-to-end (E2E) tests**: test the whole system from the user's perspective (e.g., browser tests).
 
 Most of your tests should be unit tests. Integration and E2E tests are important but slower and harder to maintain.
 
@@ -85,7 +85,7 @@ pytest test_calculator.py
 pytest test_calculator.py::test_add
 ```
 
-## Fixtures — shared setup
+## Fixtures: shared setup
 
 Fixtures provide reusable setup for tests:
 
@@ -113,17 +113,17 @@ def test_find_user(db):
     assert cursor.fetchone()[0] == "Alice"
 ```
 
-Each test gets a fresh database — tests do not affect each other.
+Each test gets a fresh database; tests do not affect each other.
 
-## TDD — Test-Driven Development
+## TDD: Test-Driven Development
 
 Write the test first, then write the code to make it pass:
 
 ### The Red-Green-Refactor cycle
 
-1. **Red** — Write a failing test for the feature you want
-2. **Green** — Write the minimum code to make the test pass
-3. **Refactor** — Clean up the code while keeping tests green
+1. **Red**: Write a failing test for the feature you want
+2. **Green**: Write the minimum code to make the test pass
+3. **Refactor**: Clean up the code while keeping tests green
 
 ```python
 # Step 1: RED — write the test (it fails because fizzbuzz does not exist)

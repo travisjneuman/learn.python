@@ -1,4 +1,4 @@
-# Retry Backoff Runner — Annotated Solution
+# Retry Backoff Runner: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -216,6 +216,6 @@ def call_api():
 
 ## Common Pitfalls
 
-1. **Retrying on `KeyboardInterrupt`** — If `retry_on=(Exception,)`, pressing Ctrl+C during a retry loop is caught and retried. Use `retry_on=(ConnectionError, TimeoutError)` to only retry transient errors.
-2. **No maximum delay cap** — Without `max_delay`, exponential growth produces absurd waits. With `factor=2` and `base=1`: attempt 20 would wait 2^19 = 524,288 seconds (6 days). Always cap the delay.
-3. **Sleeping after the last attempt** — If all retries fail, sleeping before re-raising the exception wastes time. The `if attempt < max_retries` guard skips the final sleep.
+1. **Retrying on `KeyboardInterrupt`**: If `retry_on=(Exception,)`, pressing Ctrl+C during a retry loop is caught and retried. Use `retry_on=(ConnectionError, TimeoutError)` to only retry transient errors.
+2. **No maximum delay cap**: Without `max_delay`, exponential growth produces absurd waits. With `factor=2` and `base=1`: attempt 20 would wait 2^19 = 524,288 seconds (6 days). Always cap the delay.
+3. **Sleeping after the last attempt**: If all retries fail, sleeping before re-raising the exception wastes time. The `if attempt < max_retries` guard skips the final sleep.

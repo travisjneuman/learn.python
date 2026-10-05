@@ -1,4 +1,4 @@
-# Notes — Parametrize
+# Notes: Parametrize
 
 ## What I learned
 

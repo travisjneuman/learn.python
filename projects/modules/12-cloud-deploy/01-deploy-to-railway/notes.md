@@ -1,4 +1,4 @@
-# Notes — Deploy to Railway
+# Notes: Deploy to Railway
 
 ## What I learned
 

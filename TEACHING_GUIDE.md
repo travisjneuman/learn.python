@@ -1,4 +1,4 @@
-# Teaching Guide — Using This Curriculum in a Classroom
+# Teaching Guide: Using This Curriculum in a Classroom
 
 Home: [README](./README.md)
 
@@ -14,19 +14,19 @@ This guide helps instructors adapt the learn.python curriculum for classroom use
 |------|---------|-------------------|-------------|
 | 1 | Computer Literacy Primer (Doc 00), Setup (Doc 03) | Level 00: exercises 01–05 | Python installed, first script runs |
 | 2 | Roadmap + Glossary (Docs 01–02), begin Foundations (Doc 04) | Level 00: exercises 06–15 | All absolute beginner exercises complete |
-| 3 | Foundations continued — variables, loops, functions | Level 0: projects 01–05 | First passing test |
-| 4 | Foundations continued — files, errors, collections | Level 0: projects 06–10 | File I/O project working |
+| 3 | Foundations continued: variables, loops, functions | Level 0: projects 01–05 | First passing test |
+| 4 | Foundations continued: files, errors, collections | Level 0: projects 06–10 | File I/O project working |
 | 5 | Foundations wrap-up, Level 0 capstone | Level 0: projects 11–15 | **Gate A: Setup + first test** |
-| 6 | Quality & Testing (Doc 09) — pytest, ruff, black | Level 1: projects 01–08 | Tests written for own code |
+| 6 | Quality & Testing (Doc 09): pytest, ruff, black | Level 1: projects 01–08 | Tests written for own code |
 | 7 | Input validation, CSV, JSON | Level 1: projects 09–15 | CSV reader handles malformed input |
-| 8 | **Midterm** — practical exam (timed project) | Midterm project | Working solution under time pressure |
+| 8 | **Midterm**: practical exam (timed project) | Midterm project | Working solution under time pressure |
 | 9 | Data structures, cleaning, error handling | Level 2: projects 01–08 | Data cleaning pipeline |
 | 10 | Level 2 completion + Module 01 (Web Scraping) intro | Level 2: projects 09–15 | **Gate B: Resilient data tools** |
 | 11 | Packages, logging, TDD | Level 3: projects 01–08 | Package with tests |
 | 12 | Level 3 completion + Module 02 or 03 | Level 3: projects 09–15 | CLI tool or API client |
 | 13 | Schema validation, data contracts | Level 4: projects 01–08 | Schema-validated pipeline |
 | 14 | Level 4 completion, begin Level 5 | Level 4: projects 09–15 | Transformation pipeline |
-| 15 | Level 5 — scheduling, monitoring, resilience | Level 5: projects 01–10 | Retry-enabled system |
+| 15 | Level 5: scheduling, monitoring, resilience | Level 5: projects 01–10 | Retry-enabled system |
 | 16 | **Final project** + oral defense | Capstone selection | **Gate C or D** |
 
 ### 10-Week Bootcamp (Intensive)
@@ -42,7 +42,7 @@ This guide helps instructors adapt the learn.python curriculum for classroom use
 | 7 | Level 4 (11–15), Level 5 (01–08) | Operations |
 | 8 | Level 5 (09–15), Module 04 or 07 | Applied skills |
 | 9 | Level 6 (selected projects) | SQL + ETL |
-| 10 | **Capstone week** — final project + presentations | Demo day |
+| 10 | **Capstone week**: final project + presentations | Demo day |
 
 ### Weekend Workshop (2 Days)
 
@@ -79,13 +79,13 @@ source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 
 ### Collecting Assignments
 
-Option A — **Pull Requests:** Students submit projects as PRs to your fork. Review inline.
+Option A (**Pull Requests**): Students submit projects as PRs to your fork. Review inline.
 
-Option B — **Branch per student:** Each student works on their own branch. You review branches.
+Option B (**Branch per student**): Each student works on their own branch. You review branches.
 
-Option C — **Separate repos:** Students clone the curriculum, work locally, push to their own GitHub. You review by visiting their repos.
+Option C (**Separate repos**): Students clone the curriculum, work locally, push to their own GitHub. You review by visiting their repos.
 
-Option D — **GitHub Classroom** (see section below).
+Option D: **GitHub Classroom** (see section below).
 
 Recommendation: Option A for small classes (under 20), Option D for classes with automated grading needs, Option C for larger classes without GitHub Classroom.
 
@@ -163,7 +163,7 @@ Combine this with the curriculum's built-in `PROGRESS.md` for a comprehensive vi
 
 ### Grading Rubrics by Level
 
-#### Level 00 — Absolute Beginner (Pass/Fail)
+#### Level 00: Absolute Beginner (Pass/Fail)
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
@@ -171,7 +171,7 @@ Combine this with the curriculum's built-in `PROGRESS.md` for a comprehensive vi
 | Output matches expected | Yes | No |
 | Code was written by student (not copied) | Evidence of iteration | Exact match to solution |
 
-#### Levels 0–2 — Foundations (4-Point Scale)
+#### Levels 0–2: Foundations (4-Point Scale)
 
 | Points | Criterion |
 |--------|-----------|
@@ -181,7 +181,7 @@ Combine this with the curriculum's built-in `PROGRESS.md` for a comprehensive vi
 | 1 | Partial attempt, some tests pass |
 | 0 | Not submitted or clearly copied |
 
-#### Levels 3–5 — Intermediate (4-Point Scale + Code Review)
+#### Levels 3–5: Intermediate (4-Point Scale + Code Review)
 
 | Points | Criterion |
 |--------|-----------|
@@ -192,7 +192,7 @@ Combine this with the curriculum's built-in `PROGRESS.md` for a comprehensive vi
 
 Add 1 bonus point for: meaningful git history (multiple commits showing iteration).
 
-#### Levels 6–10 — Advanced (Rubric + Oral Defense)
+#### Levels 6–10: Advanced (Rubric + Oral Defense)
 
 | Component | Weight | Criteria |
 |-----------|--------|----------|
@@ -226,7 +226,7 @@ Award full credit for thoughtful wrong answers that show reasoning. Deduct for c
 | Tuesday | In-class coding: first 2–3 projects from the level |
 | Wednesday | Quiz on the concept (use the built-in quizzes) |
 | Thursday | Independent project work (remaining projects) |
-| Friday | Code review session — students present one project to a partner |
+| Friday | Code review session: students present one project to a partner |
 
 ### Project Submission Checklist (Give to Students)
 
@@ -314,7 +314,7 @@ The Level 00 exercises assume zero knowledge. Let students spend a full week her
 
 - Advanced students: assign expansion modules as bonus work
 - Struggling students: pair with advanced students for code review sessions
-- Everyone benefits from explaining code out loud — make this a regular activity
+- Everyone benefits from explaining code out loud. Make this a regular activity
 
 ### Common Student Mistakes
 
@@ -335,7 +335,7 @@ This curriculum includes AI tutoring guidelines (see CLAUDE.md). If you allow AI
 3. Use the "predict before running" technique: ask students what code will do before executing
 4. Grade understanding, not just output
 
-If you prohibit AI tools, the curriculum works equally well — every concept is explained in the docs, and the project READMEs provide sufficient guidance.
+If you prohibit AI tools, the curriculum works equally well: every concept is explained in the docs, and the project READMEs provide sufficient guidance.
 
 ---
 

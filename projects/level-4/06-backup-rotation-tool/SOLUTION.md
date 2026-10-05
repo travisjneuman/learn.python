@@ -1,4 +1,4 @@
-# Backup Rotation Tool — Annotated Solution
+# Backup Rotation Tool: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -232,6 +232,6 @@ def classify_single_pass(dated, now, daily, weekly, monthly):
 
 ## Common Pitfalls
 
-1. **Using `timedelta(months=N)` — it does not exist** — Python's `timedelta` supports days, weeks, hours, minutes, and seconds, but not months (because months have variable lengths). The solution approximates with `days=N*31`.
-2. **Not handling unparseable filenames** — Not every file in a backup directory has a date in its name (think `README.txt` or `.DS_Store`). These must be reported separately rather than crashing the classifier.
-3. **Setting all retention values to 0** — This would mark every backup for deletion, which is dangerous. Production tools should enforce a `--min-keep` safety net that refuses to delete below a threshold.
+1. **Using `timedelta(months=N)`, which does not exist**: Python's `timedelta` supports days, weeks, hours, minutes, and seconds, but not months (because months have variable lengths). The solution approximates with `days=N*31`.
+2. **Not handling unparseable filenames**: Not every file in a backup directory has a date in its name (think `README.txt` or `.DS_Store`). These must be reported separately rather than crashing the classifier.
+3. **Setting all retention values to 0**: This would mark every backup for deletion, which is dangerous. Production tools should enforce a `--min-keep` safety net that refuses to delete below a threshold.

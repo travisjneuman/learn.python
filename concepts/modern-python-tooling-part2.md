@@ -1,4 +1,4 @@
-# Modern Python Tooling — Part 2: pyproject.toml, Ecosystem, and Python Version Highlights
+# Modern Python Tooling, Part 2: pyproject.toml, Ecosystem, and Python Version Highlights
 
 [← Part 1: uv and ruff](./modern-python-tooling-part1.md) · [Back to Overview](./modern-python-tooling.md)
 
@@ -16,7 +16,7 @@
 
 This part covers the modern config file (`pyproject.toml`), the old-to-new toolchain mapping, and quality-of-life improvements in recent Python releases.
 
-## pyproject.toml — the modern config file
+## pyproject.toml: the modern config file
 
 Modern Python projects use `pyproject.toml` instead of `setup.py`, `setup.cfg`, and separate config files:
 
@@ -70,7 +70,7 @@ Traceback (most recent call last):
 KeyError: 'email'
 ```
 
-Before 3.11, you would only get the line number — now Python underlines the exact problematic expression.
+Before 3.11, you would only get the line number; now Python underlines the exact problematic expression.
 
 ### `f"{x=}"` debugging (3.8+)
 
@@ -86,7 +86,7 @@ print(f"{name=}")         # name='Alice'
 print(f"{len(items)=}")   # len(items)=3
 ```
 
-### `tomllib` — built-in TOML parser (3.11+)
+### `tomllib`: built-in TOML parser (3.11+)
 
 Read `pyproject.toml` and other TOML files without a third-party library:
 
@@ -101,7 +101,7 @@ print(config["project"]["name"])
 
 ### `StrEnum` (3.11+)
 
-Enum members that behave like strings — no need for `.value`:
+Enum members that behave like strings, no need for `.value`:
 
 ```python
 from enum import StrEnum
@@ -116,7 +116,7 @@ print(f"Color is {Color.RED}")    # "Color is red"
 
 See [Enums Explained](./enums-explained.md) for more.
 
-### `pip audit` — dependency vulnerability scanning
+### `pip audit`: dependency vulnerability scanning
 
 Check your installed packages for known security vulnerabilities:
 

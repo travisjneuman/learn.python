@@ -44,17 +44,17 @@ Collected 4 evidence items
 
 ## Alter it (required)
 1. Add a `LogSampleCollector` that reads recent log entries and packages them as evidence for monitoring controls.
-2. Add evidence deduplication — if two collectors produce evidence with the same `content_hash`, keep only one.
+2. Add evidence deduplication: if two collectors produce evidence with the same `content_hash`, keep only one.
 3. Re-run tests and add coverage for deduplication logic.
 
 ## Break it (required)
-1. Register no collectors and call `collect_all` — observe that all controls show NOT_ASSESSED.
-2. Create evidence that maps to a non-existent control ID — verify it is collected but does not affect assessment.
+1. Register no collectors and call `collect_all`: observe that all controls show NOT_ASSESSED.
+2. Create evidence that maps to a non-existent control ID: verify it is collected but does not affect assessment.
 3. Pass empty content to `Evidence` and check the hash behavior.
 
 ## Fix it (required)
 1. Add validation that `control_ids` is non-empty when creating Evidence.
-2. Make `collect_all` idempotent — calling it twice should not double the evidence list.
+2. Make `collect_all` idempotent: calling it twice should not double the evidence list.
 3. Add tests for both fixes.
 
 ## Explain it (teach-back)

@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 15 - Level 1 Mini Automation
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -215,10 +215,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Five separate `step_*` functions | Each step has a single responsibility and is independently testable; the pipeline is composable and extensible | One large function — would mix parsing, filtering, transforming, and summarising, making debugging difficult |
-| `run_pipeline()` as single orchestrator | One entry point for the whole pipeline makes end-to-end testing trivial (`run_pipeline(path)` returns everything) | Call steps individually from `main()` — works but scatters the pipeline logic |
-| Track record counts at each stage | Pipeline debugging requires knowing where data dropped off; the funnel report (3 parsed, 2 active, 2 summarised) pinpoints filter losses | Only report final counts — hides where data was filtered, making debugging harder |
-| Default to 0.0 for non-numeric values | Keeps the pipeline running even with dirty data; the record is not lost, just given a safe default value | Raise ValueError — would stop the pipeline at the first bad value |
+| Five separate `step_*` functions | Each step has a single responsibility and is independently testable; the pipeline is composable and extensible | One large function: would mix parsing, filtering, transforming, and summarising, making debugging difficult |
+| `run_pipeline()` as single orchestrator | One entry point for the whole pipeline makes end-to-end testing trivial (`run_pipeline(path)` returns everything) | Call steps individually from `main()`: works but scatters the pipeline logic |
+| Track record counts at each stage | Pipeline debugging requires knowing where data dropped off; the funnel report (3 parsed, 2 active, 2 summarised) pinpoints filter losses | Only report final counts: hides where data was filtered, making debugging harder |
+| Default to 0.0 for non-numeric values | Keeps the pipeline running even with dirty data; the record is not lost, just given a safe default value | Raise ValueError: would stop the pipeline at the first bad value |
 
 ## Alternative approaches
 

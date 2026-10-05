@@ -1,8 +1,8 @@
-site_name: "learn.python — Zero to Full-Stack Python Mastery"
+site_name: "learn.python: Zero to Full-Stack Python Mastery"
 site_description: >-
-  A comprehensive Python curriculum from zero tech experience to world-class
-  full-stack mastery. 50+ sequenced documents, 175+ hands-on projects across
-  12 levels, 56 expansion modules across 12 technology domains.
+  A hands-on Python curriculum from zero tech experience to full-stack work.
+  50+ sequenced documents, 175+ projects across 12 levels, and 59 projects
+  in 12 expansion modules.
 site_url: https://travisjneuman.github.io/learn.python
 repo_url: https://github.com/travisjneuman/learn.python
 repo_name: travisjneuman/learn.python
@@ -122,65 +122,65 @@ nav:
       - FAQ: FAQ.md
       - Curriculum Map: CURRICULUM_MAP.md
   - Foundations:
-      - "00 — Computer Literacy Primer": 00_COMPUTER_LITERACY_PRIMER.md
-      - "01 — Roadmap": 01_ROADMAP.md
-      - "02 — Glossary": 02_GLOSSARY.md
-      - "03 — Setup (All Platforms)": 03_SETUP_ALL_PLATFORMS.md
-      - "04 — Foundations": 04_FOUNDATIONS.md
+      - "00: Computer Literacy Primer": 00_COMPUTER_LITERACY_PRIMER.md
+      - "01: Roadmap": 01_ROADMAP.md
+      - "02: Glossary": 02_GLOSSARY.md
+      - "03: Setup (All Platforms)": 03_SETUP_ALL_PLATFORMS.md
+      - "04: Foundations": 04_FOUNDATIONS.md
   - Domain Skills:
-      - "05 — Automation, Files & Excel": 05_AUTOMATION_FILES_EXCEL.md
-      - "06 — SQL": 06_SQL.md
-      - "07 — Monitoring & API Integration": 07_MONITORING_API_INTEGRATION.md
-      - "08 — Dashboards": 08_DASHBOARDS.md
-      - "09 — Quality & Tooling": 09_QUALITY_TOOLING.md
-      - "10 — Capstone Projects": 10_CAPSTONE_PROJECTS.md
+      - "05: Automation, Files & Excel": 05_AUTOMATION_FILES_EXCEL.md
+      - "06: SQL": 06_SQL.md
+      - "07: Monitoring & API Integration": 07_MONITORING_API_INTEGRATION.md
+      - "08: Dashboards": 08_DASHBOARDS.md
+      - "09: Quality & Tooling": 09_QUALITY_TOOLING.md
+      - "10: Capstone Projects": 10_CAPSTONE_PROJECTS.md
   - Support Infrastructure:
-      - "11 — Checklists": 11_CHECKLISTS.md
-      - "12 — Screenshot Checkpoints": 12_SCREENSHOT_CHECKPOINTS.md
-      - "13 — Sample Database Schemas": 13_SAMPLE_DATABASE_SCHEMAS.md
-      - "14 — Navigation & Study Workflow": 14_NAVIGATION_AND_STUDY_WORKFLOW.md
-      - "15 — Expansion Plan": 15_NEXT_LEVEL_EXPANSION_PLAN.md
+      - "11: Checklists": 11_CHECKLISTS.md
+      - "12: Screenshot Checkpoints": 12_SCREENSHOT_CHECKPOINTS.md
+      - "13: Sample Database Schemas": 13_SAMPLE_DATABASE_SCHEMAS.md
+      - "14: Navigation & Study Workflow": 14_NAVIGATION_AND_STUDY_WORKFLOW.md
+      - "15: Expansion Plan": 15_NEXT_LEVEL_EXPANSION_PLAN.md
   - Advanced Curriculum:
       - Assessment & Mastery:
-          - "16 — Learner Profile & Placement": curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md
-          - "17 — Assessment & Rubrics": curriculum/17_ASSESSMENT_AND_RUBRICS.md
-          - "18 — Remediation Playbook": curriculum/18_REMEDIATION_PLAYBOOK.md
-          - "19 — Mentor Guide": curriculum/19_MENTOR_GUIDE.md
-          - "20 — Curriculum Changelog": curriculum/20_CURRICULUM_CHANGELOG.md
+          - "16: Learner Profile & Placement": curriculum/16_LEARNER_PROFILE_AND_PLACEMENT.md
+          - "17: Assessment & Rubrics": curriculum/17_ASSESSMENT_AND_RUBRICS.md
+          - "18: Remediation Playbook": curriculum/18_REMEDIATION_PLAYBOOK.md
+          - "19: Mentor Guide": curriculum/19_MENTOR_GUIDE.md
+          - "20: Curriculum Changelog": curriculum/20_CURRICULUM_CHANGELOG.md
       - Mastery Path:
-          - "21 — Full-Stack Mastery": curriculum/21_FULL_STACK_MASTERY_PATH.md
-          - "22 — Specialization Tracks": curriculum/22_SPECIALIZATION_TRACKS.md
-          - "23 — Resource & Curriculum Map": curriculum/23_RESOURCE_AND_CURRICULUM_MAP.md
-          - "24 — Mastery Scoring & Gates": curriculum/24_MASTERY_SCORING_AND_GATES.md
-          - "25 — Infinity Mastery Loop": curriculum/25_INFINITY_MASTERY_LOOP.md
+          - "21: Full-Stack Mastery": curriculum/21_FULL_STACK_MASTERY_PATH.md
+          - "22: Specialization Tracks": curriculum/22_SPECIALIZATION_TRACKS.md
+          - "23: Resource & Curriculum Map": curriculum/23_RESOURCE_AND_CURRICULUM_MAP.md
+          - "24: Mastery Scoring & Gates": curriculum/24_MASTERY_SCORING_AND_GATES.md
+          - "25: Infinity Mastery Loop": curriculum/25_INFINITY_MASTERY_LOOP.md
       - Zero-to-Master Execution:
-          - "26 — Zero-to-Master Playbook": curriculum/26_ZERO_TO_MASTER_PLAYBOOK.md
-          - "27 — Day 0 to Day 30 Bootstrap": curriculum/27_DAY_0_TO_DAY_30_BOOTSTRAP.md
-          - "28 — Levels 0–2 Deep Guide": curriculum/28_LEVEL_0_TO_2_DEEP_GUIDE.md
-          - "29 — Levels 3–5 Deep Guide": curriculum/29_LEVEL_3_TO_5_DEEP_GUIDE.md
-          - "30 — Levels 6–8 Deep Guide": curriculum/30_LEVEL_6_TO_8_DEEP_GUIDE.md
-          - "31 — Levels 9–10 & Beyond": curriculum/31_LEVEL_9_TO_10_AND_BEYOND.md
-          - "32 — Daily Session Script": curriculum/32_DAILY_SESSION_SCRIPT.md
-          - "33 — Weekly Review Template": curriculum/33_WEEKLY_REVIEW_TEMPLATE.md
-          - "34 — Failure Recovery Atlas": curriculum/34_FAILURE_RECOVERY_ATLAS.md
-          - "35 — Capstone Blueprints": curriculum/35_CAPSTONE_BLUEPRINTS.md
+          - "26: Zero-to-Master Playbook": curriculum/26_ZERO_TO_MASTER_PLAYBOOK.md
+          - "27: Day 0 to Day 30 Bootstrap": curriculum/27_DAY_0_TO_DAY_30_BOOTSTRAP.md
+          - "28: Levels 0–2 Deep Guide": curriculum/28_LEVEL_0_TO_2_DEEP_GUIDE.md
+          - "29: Levels 3–5 Deep Guide": curriculum/29_LEVEL_3_TO_5_DEEP_GUIDE.md
+          - "30: Levels 6–8 Deep Guide": curriculum/30_LEVEL_6_TO_8_DEEP_GUIDE.md
+          - "31: Levels 9–10 & Beyond": curriculum/31_LEVEL_9_TO_10_AND_BEYOND.md
+          - "32: Daily Session Script": curriculum/32_DAILY_SESSION_SCRIPT.md
+          - "33: Weekly Review Template": curriculum/33_WEEKLY_REVIEW_TEMPLATE.md
+          - "34: Failure Recovery Atlas": curriculum/34_FAILURE_RECOVERY_ATLAS.md
+          - "35: Capstone Blueprints": curriculum/35_CAPSTONE_BLUEPRINTS.md
       - Elite Engineering:
-          - "36 — Elite Engineering Track": curriculum/36_ELITE_ENGINEERING_TRACK.md
-          - "37 — Quarterly Exams & Defenses": curriculum/37_QUARTERLY_EXAMS_AND_DEFENSES.md
-          - "38 — System Design & RFCs": curriculum/38_SYSTEM_DESIGN_AND_RFCS.md
-          - "39 — Production Platform Lab": curriculum/39_PRODUCTION_PLATFORM_LAB.md
-          - "40 — Security & Compliance": curriculum/40_SECURITY_COMPLIANCE_HARDENING.md
-          - "41 — Performance Engineering": curriculum/41_PERFORMANCE_ENGINEERING_LAB.md
-          - "42 — Open Source Contribution": curriculum/42_OPEN_SOURCE_CONTRIBUTION_LANE.md
-          - "43 — Public Portfolio": curriculum/43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md
-          - "44 — SME Interview & Debate Bank": curriculum/44_SME_INTERVIEW_AND_DEBATE_BANK.md
-          - "45 — Mastery Telemetry": curriculum/45_MASTERY_TELEMETRY_AND_REMEDIATION.md
+          - "36: Elite Engineering Track": curriculum/36_ELITE_ENGINEERING_TRACK.md
+          - "37: Quarterly Exams & Defenses": curriculum/37_QUARTERLY_EXAMS_AND_DEFENSES.md
+          - "38: System Design & RFCs": curriculum/38_SYSTEM_DESIGN_AND_RFCS.md
+          - "39: Production Platform Lab": curriculum/39_PRODUCTION_PLATFORM_LAB.md
+          - "40: Security & Compliance": curriculum/40_SECURITY_COMPLIANCE_HARDENING.md
+          - "41: Performance Engineering": curriculum/41_PERFORMANCE_ENGINEERING_LAB.md
+          - "42: Open Source Contribution": curriculum/42_OPEN_SOURCE_CONTRIBUTION_LANE.md
+          - "43: Public Portfolio": curriculum/43_PUBLIC_PROOF_OF_WORK_PORTFOLIO.md
+          - "44: SME Interview & Debate Bank": curriculum/44_SME_INTERVIEW_AND_DEBATE_BANK.md
+          - "45: Mastery Telemetry": curriculum/45_MASTERY_TELEMETRY_AND_REMEDIATION.md
       - Adaptive Learning:
-          - "46 — Accessibility & Learning Profiles": curriculum/46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md
-          - "47 — Diagnostic & Study Engine": curriculum/47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md
-          - "48 — Misconception Atlas": curriculum/48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md
-          - "49 — Competency Coverage Matrix": curriculum/49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md
-          - "50 — Certification Protocol": curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md
+          - "46: Accessibility & Learning Profiles": curriculum/46_ACCESSIBILITY_AND_LEARNING_PROFILE_PLAYBOOK.md
+          - "47: Diagnostic & Study Engine": curriculum/47_DIAGNOSTIC_AND_PERSONALIZED_STUDY_ENGINE.md
+          - "48: Misconception Atlas": curriculum/48_MISCONCEPTION_AND_FAILURE_ATLAS_EXPANDED.md
+          - "49: Competency Coverage Matrix": curriculum/49_COMPETENCY_COVERAGE_AND_GAP_CLOSURE_MATRIX.md
+          - "50: Certification Protocol": curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md
   - Concepts:
       - concepts/README.md
       - Variables: concepts/what-is-a-variable.md

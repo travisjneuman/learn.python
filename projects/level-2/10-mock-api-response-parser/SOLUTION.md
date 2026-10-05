@@ -1,4 +1,4 @@
-# Mock API Response Parser — Annotated Solution
+# Mock API Response Parser: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -242,8 +242,8 @@ if __name__ == "__main__":
 | Decision | Why |
 |----------|-----|
 | Structured result dicts from `parse_response` | Returning `{"success": True/False, ...}` instead of raising exceptions mirrors how real API responses work. The caller checks `success` and handles errors uniformly. |
-| Multiple status code key names | Real APIs are inconsistent — some use `"status"`, others use `"status_code"` or `"code"`. Checking all three makes the parser work with more APIs without configuration. |
-| `extract_items` wraps single objects in a list | Normalising the return type to always be a list means callers never need to check `isinstance` before iterating. This is the "robustness principle" — be liberal in what you accept. |
+| Multiple status code key names | Real APIs are inconsistent: some use `"status"`, others use `"status_code"` or `"code"`. Checking all three makes the parser work with more APIs without configuration. |
+| `extract_items` wraps single objects in a list | Normalising the return type to always be a list means callers never need to check `isinstance` before iterating. This is the "robustness principle": be liberal in what you accept. |
 | Set operations for field discovery | `set.update()` and set difference (`-`) are the natural tools for collecting unique fields and finding extras. They run in O(1) per operation, making them efficient for large responses. |
 | `_process_single` as a private helper | The underscore prefix convention signals "internal use only." This keeps the public API clean (`process_api_file`) while extracting reusable logic into a helper. |
 
@@ -288,8 +288,8 @@ Typed models catch structural problems at parse time and provide IDE autocomplet
 
 ## Common Pitfalls
 
-1. **Assuming the `data` key always contains a list** — Some APIs return `"data": {"user": {...}}` (a single object) or even `"data": "OK"` (a string). Always check the type before iterating, or use `extract_items` which handles this safely.
+1. **Assuming the `data` key always contains a list**: Some APIs return `"data": {"user": {...}}` (a single object) or even `"data": "OK"` (a string). Always check the type before iterating, or use `extract_items` which handles this safely.
 
-2. **Trusting the status code alone** — A response with `"status": 200` can still contain an error in the body (e.g., `"data": [], "error": "No results"`). Always validate the response body in addition to checking the status code.
+2. **Trusting the status code alone**: A response with `"status": 200` can still contain an error in the body (e.g., `"data": [], "error": "No results"`). Always validate the response body in addition to checking the status code.
 
-3. **Forgetting to handle non-dict JSON roots** — A file containing `[1, 2, 3]` is valid JSON but not a valid API response object. Without the `isinstance(data, dict)` check in `parse_response`, the code would crash when trying to access `.get()` on a list.
+3. **Forgetting to handle non-dict JSON roots**: A file containing `[1, 2, 3]` is valid JSON but not a valid API response object. Without the `isinstance(data, dict)` check in `parse_response`, the code would crash when trying to access `.get()` on a list.

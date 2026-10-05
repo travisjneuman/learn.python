@@ -1,4 +1,4 @@
-# Module 05 — Async Python
+# Module 05: Async Python
 
 Home: [README](../../../README.md) · Modules: [Index](../README.md)
 

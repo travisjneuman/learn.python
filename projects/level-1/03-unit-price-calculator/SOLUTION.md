@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 03 - Unit Price Calculator
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -180,10 +180,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Round to 4 decimal places | Enough precision to distinguish similar prices without cluttering output with floating-point noise | Round to 2 — loses precision when comparing very similar unit prices (e.g., $0.0312 vs $0.0318) |
-| Error dicts instead of exceptions in `parse_product_row()` | Lets the program continue processing valid rows instead of stopping at the first bad row | Raise ValueError — would require try/except in the caller and stop on first error |
-| `csv.DictReader` instead of `csv.reader` | Column access by name (`row["price"]`) is self-documenting; column reordering does not break the code | `csv.reader` with index access (`row[1]`) — fragile if CSV columns are reordered |
-| Separate `find_best_deal` and `rank_products` | Different use cases: quick answer ("what is cheapest?") vs full comparison table | One function that sorts and returns `sorted[0]` — conflates two concerns |
+| Round to 4 decimal places | Enough precision to distinguish similar prices without cluttering output with floating-point noise | Round to 2: loses precision when comparing very similar unit prices (e.g., $0.0312 vs $0.0318) |
+| Error dicts instead of exceptions in `parse_product_row()` | Lets the program continue processing valid rows instead of stopping at the first bad row | Raise ValueError: would require try/except in the caller and stop on first error |
+| `csv.DictReader` instead of `csv.reader` | Column access by name (`row["price"]`) is self-documenting; column reordering does not break the code | `csv.reader` with index access (`row[1]`): fragile if CSV columns are reordered |
+| Separate `find_best_deal` and `rank_products` | Different use cases: quick answer ("what is cheapest?") vs full comparison table | One function that sorts and returns `sorted[0]`: conflates two concerns |
 
 ## Alternative approaches
 
@@ -214,6 +214,6 @@ def find_best_deal_min(products: list[dict]) -> dict | None:
 
 ## Key takeaways
 
-1. **CSV data is always strings.** Every value from `csv.DictReader` is a string — you must convert to `float()` or `int()` explicitly, and handle conversion failures. This is true for all external data sources (files, APIs, databases).
+1. **CSV data is always strings.** Every value from `csv.DictReader` is a string: you must convert to `float()` or `int()` explicitly, and handle conversion failures. This is true for all external data sources (files, APIs, databases).
 2. **`sorted()` with `key=lambda` is how Python sorts complex data.** You will use this pattern constantly: `sorted(items, key=lambda x: x["field"])`. The `key` function tells Python what value to compare.
 3. **This project connects to real-world price comparison engines.** Grocery apps, procurement systems, and e-commerce platforms all compute unit prices to help users find the best deal. The same CSV-parse-compute-sort pipeline applies to any tabular data analysis.

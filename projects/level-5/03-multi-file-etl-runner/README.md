@@ -51,17 +51,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
-1. How could you make the tool more observable — what progress information would help?
+## Alter it (required): Extension
+1. How could you make the tool more observable: what progress information would help?
 2. What should happen when one file in the batch fails?
 3. Add a summary report with the statistics you think matter most.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. What happens when source files do not share the same structure?
 2. Try running with no input files at all.
 3. Find the first failure and capture it.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add validation for the structural consistency issue you found.
 2. Handle the empty-input case with a clear message.
 3. Write tests for both edge cases and re-run until deterministic.

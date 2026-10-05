@@ -1,4 +1,4 @@
-# Prueba Esto — Ejercicio 08
+# Prueba Esto: Ejercicio 08
 
 1. Crea un verificador de edad que use `input()`:
    ```python

@@ -19,12 +19,12 @@ Home: [README](../../../README.md)
 - Deterministic simulation with seeded random number generation
 
 ## Why this project exists
-Deploying new code to 100% of traffic at once is a gamble — a bug hits everyone
+Deploying new code to 100% of traffic at once is a gamble: a bug hits everyone
 simultaneously. Canary deployments route a small percentage (1%, then 5%, then 25%)
 to the new version, comparing its error rate and latency against the stable baseline.
 If metrics degrade, traffic is automatically rolled back. This project simulates the
 full canary rollout process with configurable stages, automatic promotion/rollback
-triggers, and metric comparison — the same pattern used by Kubernetes, Argo Rollouts,
+triggers, and metric comparison, the same pattern used by Kubernetes, Argo Rollouts,
 and AWS CodeDeploy.
 
 ## Run (copy/paste)
@@ -56,9 +56,9 @@ pytest -q
 3. Add a `--seed` CLI flag for deterministic simulation results.
 
 ## Break it (required)
-1. Define stages with non-increasing traffic percentages (e.g. 50%, 25%, 100%) — what happens?
-2. Set `error_rate_threshold=0.0` — does every stage trigger a rollback?
-3. Call `advance()` after the rollout has already completed — does it handle the terminal state?
+1. Define stages with non-increasing traffic percentages (e.g. 50%, 25%, 100%): what happens?
+2. Set `error_rate_threshold=0.0`: does every stage trigger a rollback?
+3. Call `advance()` after the rollout has already completed: does it handle the terminal state?
 
 ## Fix it (required)
 1. Validate that stage traffic percentages are strictly increasing.

@@ -52,17 +52,17 @@ Code lines: 180
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `check_type_hints` function that flags functions missing type annotations.
 2. Add a `--compare` flag that compares two directories side by side.
 3. Add a trend tracker that saves scores to a JSON file and shows improvement over time.
 
-## Break it (required) — Core
-1. Point it at a file instead of a directory — what error appears?
-2. Scan a directory with binary files (.pyc, .jpg) — do they cause errors?
-3. Run on an empty directory — does the score calculation handle division by zero?
+## Break it (required): Core
+1. Point it at a file instead of a directory: what error appears?
+2. Scan a directory with binary files (.pyc, .jpg): do they cause errors?
+3. Run on an empty directory: does the score calculation handle division by zero?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add clear error handling for non-directory input.
 2. Skip binary files gracefully with a warning.
 3. Handle empty directories without crashing.

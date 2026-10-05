@@ -16,7 +16,7 @@ Errors are not failures. They are Python telling you exactly what went wrong and
 
 ## Visualize It
 
-See what happens when Python hits an error — watch the execution stop:
+See what happens when Python hits an error. Watch the execution stop:
 [Open in Python Tutor](https://pythontutor.com/render.html#code=x%20%3D%2010%0Ay%20%3D%200%0Aprint%28%22before%22%29%0Aresult%20%3D%20x%20%2F%20y%0Aprint%28%22after%22%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
 
 ## Anatomy of an error message
@@ -29,9 +29,9 @@ NameError: name 'score' is not defined
 ```
 
 Read it bottom-up:
-1. **`NameError: name 'score' is not defined`** — what went wrong
-2. **`File "exercise.py", line 5`** — where it happened
-3. **`print(score)`** — the exact line that caused it
+1. **`NameError: name 'score' is not defined`**: what went wrong
+2. **`File "exercise.py", line 5`**: where it happened
+3. **`print(score)`**: the exact line that caused it
 
 ## Common error types
 
@@ -72,7 +72,7 @@ for item in data:
 
 ## Common mistakes and fixes
 
-**SyntaxError — missing colon:**
+**SyntaxError (missing colon):**
 ```python
 if x > 5       # Missing colon!
     print("big")
@@ -81,7 +81,7 @@ if x > 5:      # Fixed
     print("big")
 ```
 
-**TypeError — mixing strings and numbers:**
+**TypeError (mixing strings and numbers):**
 ```python
 age = 30
 print("I am " + age)           # Error! Cannot add string + int
@@ -102,7 +102,7 @@ if True:
 
 These five mistakes account for the vast majority of errors new programmers hit. Learning to spot them quickly will save you hours of frustration.
 
-### 1. IndentationError — your code is not lined up
+### 1. IndentationError: your code is not lined up
 
 Python uses indentation (spaces at the start of a line) to know which code belongs inside an `if`, `for`, or function. If the spacing is off, Python refuses to run your code at all.
 
@@ -123,11 +123,11 @@ if temperature > 100:
     print("Too hot!")    # 4 spaces in — now Python knows this is inside the if
 ```
 
-**Why it happens:** Unlike most languages, Python does not use curly braces `{}` to group code. It uses indentation instead. Every line inside an `if`, `for`, `while`, or `def` must be indented by the same amount (use 4 spaces — not tabs).
+**Why it happens:** Unlike most languages, Python does not use curly braces `{}` to group code. It uses indentation instead. Every line inside an `if`, `for`, `while`, or `def` must be indented by the same amount (use 4 spaces, not tabs).
 
 ---
 
-### 2. NameError — Python does not recognize a name
+### 2. NameError: Python does not recognize a name
 
 This usually means you misspelled a variable name, or you tried to use a variable before creating it.
 
@@ -152,7 +152,7 @@ print(message)           # Spelling matches — Python finds the variable
 
 ---
 
-### 3. SyntaxError — missing colon after if/for/while/def
+### 3. SyntaxError: missing colon after if/for/while/def
 
 Every `if`, `elif`, `else`, `for`, `while`, and `def` line must end with a colon `:`. Forget it, and Python cannot understand your code.
 
@@ -177,7 +177,7 @@ for name in guest_list:   # Colon at the end
 
 ---
 
-### 4. SyntaxError — mismatched parentheses or brackets
+### 4. SyntaxError: mismatched parentheses or brackets
 
 Every opening `(`, `[`, or `{` needs a matching closing `)`, `]`, or `}`. Miss one and Python gets confused, sometimes pointing to a line that looks perfectly fine.
 
@@ -204,7 +204,7 @@ print(scores)            # Now the list is properly closed
 
 ---
 
-### 5. TypeError — forgetting to convert types
+### 5. TypeError: forgetting to convert types
 
 Python will not automatically turn a number into a string or vice versa. If you try to combine them, you get a `TypeError`.
 
@@ -233,7 +233,7 @@ print(f"I am {age} years old")
 print("I am", age, "years old")
 ```
 
-**Why it happens:** Python keeps types strict on purpose. A number `25` and the text `"25"` look the same to us, but Python stores them differently. Requiring you to convert explicitly prevents subtle bugs — for example, `"2" + "5"` gives `"25"` (text joined together), while `2 + 5` gives `7` (math). Python wants you to be clear about which one you mean.
+**Why it happens:** Python keeps types strict on purpose. A number `25` and the text `"25"` look the same to us, but Python stores them differently. Requiring you to convert explicitly prevents subtle bugs. For example, `"2" + "5"` gives `"25"` (text joined together), while `2 + 5` gives `7` (math). Python wants you to be clear about which one you mean.
 
 ## Practice
 

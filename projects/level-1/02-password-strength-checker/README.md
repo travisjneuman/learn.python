@@ -1,7 +1,7 @@
 # Level 1 / Project 02 - Password Strength Checker
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=2) — no installation needed!
+> **Try in Browser:** [Run this exercise online](../../browser/level-1.html?ex=2): no installation needed!
 
 ## Before You Start
 
@@ -99,17 +99,17 @@ if not username:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a "sequential characters" penalty (e.g. "abc", "123" lose a point).
 2. Add a `--min-score` flag that only shows passwords scoring at or above the threshold.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Test an empty password (blank line) -- does `score_password()` crash or return 0?
 2. Test a password that is the string `"password"` -- does the common-password check catch it?
 3. Test a 1000-character password -- does any check break with very long input?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle empty passwords by returning a score of 0 with label "empty".
 2. Ensure the common-password list comparison is case-insensitive.
 3. Add a test for the empty-password edge case.

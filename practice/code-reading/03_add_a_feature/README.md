@@ -1,10 +1,10 @@
-# Exercise 03 — Add a Feature
+# Exercise 03: Add a Feature
 
 This module (`codebase.py`) is a working TODO application. It supports adding, removing, toggling, and listing tasks, with JSON file persistence.
 
 Your job is to understand the existing code and then extend it.
 
-## Step 1 — Read and understand
+## Step 1: Read and understand
 
 Before writing any code:
 1. Read every function. What data structure represents a todo item?
@@ -13,9 +13,9 @@ Before writing any code:
 4. What prevents duplicate IDs?
 5. Run the app (`python codebase.py`) and use it for a few minutes.
 
-## Step 2 — Add these features
+## Step 2: Add these features
 
-Add all three features below. For each one, modify the existing code — do not rewrite from scratch.
+Add all three features below. For each one, modify the existing code; do not rewrite from scratch.
 
 ### Feature A: Priority levels
 
@@ -37,7 +37,7 @@ Add all three features below. For each one, modify the existing code — do not 
 - Add a `list done` command that shows only completed items
 - Add a `list pending` command that shows only incomplete items
 
-## Step 3 — Write tests
+## Step 3: Write tests
 
 Run the existing tests first: `python -m pytest tests/`
 

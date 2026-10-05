@@ -1,4 +1,4 @@
-# Refactoring 01 — Spaghetti Calculator
+# Refactoring 01: Spaghetti Calculator
 
 Open `messy.py`. This is a working arithmetic expression evaluator. It parses strings like `"3 + 4 * (2 - 1)"` and returns the correct result.
 

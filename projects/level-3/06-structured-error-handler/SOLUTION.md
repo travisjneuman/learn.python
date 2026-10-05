@@ -1,4 +1,4 @@
-# Structured Error Handler — Annotated Solution
+# Structured Error Handler: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -285,7 +285,7 @@ if __name__ == "__main__":
 | Decision | Why |
 |----------|-----|
 | Custom exception hierarchy (AppError base) | Callers can catch `AppError` for all app errors or `ValidationError` for just validation. Built-in exceptions like `ValueError` do not carry error codes or structured context. |
-| `OperationResult` (Result pattern) | Avoids scattering try/except throughout calling code. The caller checks `.success` and iterates `.errors` — no exception handling needed at the call site. |
+| `OperationResult` (Result pattern) | Avoids scattering try/except throughout calling code. The caller checks `.success` and iterates `.errors`: no exception handling needed at the call site. |
 | `capture_error` bridge function | Converts exceptions (control flow) into ErrorRecords (data). Once captured, errors are just dicts that can be serialised, aggregated, or displayed. |
 | Collect ALL errors, not just the first | Users strongly prefer seeing "5 fields are wrong" over fixing one field, resubmitting, and discovering the next one. |
 | Machine-readable error codes | Codes like "REQUIRED" and "INVALID_FORMAT" are filterable and countable. Human-readable messages are for display only. |
@@ -313,8 +313,8 @@ class ContactRecord(BaseModel):
 
 ## Common Pitfalls
 
-1. **Catching bare `Exception` too broadly** — The `safe_process` function catches `Exception` as a safety net, but individual validators should raise specific errors. If everything is caught as "UNEXPECTED", you lose the ability to distinguish bugs from validation failures.
+1. **Catching bare `Exception` too broadly**: The `safe_process` function catches `Exception` as a safety net, but individual validators should raise specific errors. If everything is caught as "UNEXPECTED", you lose the ability to distinguish bugs from validation failures.
 
-2. **Not validating the schema itself** — If the schema JSON has a typo (e.g., "requird" instead of "required"), the rule is silently ignored and validation passes. Add a schema validation step before processing.
+2. **Not validating the schema itself**: If the schema JSON has a typo (e.g., "requird" instead of "required"), the rule is silently ignored and validation passes. Add a schema validation step before processing.
 
-3. **Forgetting that `record.get(field_name, "")` hides missing fields** — A missing field and an empty field both produce `""`. If you need to distinguish "not provided" from "provided but empty", use a sentinel value or check `field_name in record` separately.
+3. **Forgetting that `record.get(field_name, "")` hides missing fields**: A missing field and an empty field both produce `""`. If you need to distinguish "not provided" from "provided but empty", use a sentinel value or check `field_name in record` separately.

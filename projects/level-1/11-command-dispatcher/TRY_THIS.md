@@ -1,4 +1,4 @@
-# Try This — Project 11
+# Try This: Project 11
 
 1. Add three new commands to the dispatcher: `snake` (converts text to snake_case), `length` (returns the character count), and `initials` (returns the first letter of each word). Register them in the `COMMANDS` dict:
    ```python

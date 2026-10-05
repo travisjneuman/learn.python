@@ -43,7 +43,7 @@ Total: 1ms
 - Passing tests (`pytest -v` shows ~11 passed)
 
 ## Alter it (required)
-1. Add a `timeout_ms` enforcement to `_execute_with_retry` — if a step exceeds its timeout, treat it as failed.
+1. Add a `timeout_ms` enforcement to `_execute_with_retry`: if a step exceeds its timeout, treat it as failed.
 2. Add a `parallel_groups` feature: steps with no dependency between them could run in the same "tier". Compute the tiers from the topological sort.
 3. Re-run tests to confirm no regressions.
 

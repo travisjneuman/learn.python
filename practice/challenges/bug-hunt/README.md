@@ -1,6 +1,6 @@
 # Bug Hunt Challenges
 
-Welcome to Bug Hunt — exercises where you become the debugger.
+Welcome to Bug Hunt: exercises where you become the debugger.
 
 ## How It Works
 
@@ -9,7 +9,7 @@ hidden bugs. Your job:
 
 1. **Read the code** and the description of what it should do.
 2. **Run the program** and observe the output (or the crash).
-3. **Find every bug** — each file has 3-5 intentional mistakes.
+3. **Find every bug**: each file has 3-5 intentional mistakes.
 4. **Fix the bugs** so the program works correctly.
 5. **Check your work** against the solution in `solutions/`.
 
@@ -33,7 +33,7 @@ projects.
 
 ## Tips
 
-- Read the error messages carefully — Python tells you exactly what went wrong.
+- Read the error messages carefully; Python tells you exactly what went wrong.
 - Run the code in small pieces if a file is long.
 - Add `print()` statements to inspect variables.
 - Compare your fixes with the solutions only after you have tried on your own.

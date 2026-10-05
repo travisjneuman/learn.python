@@ -1,4 +1,4 @@
-# Career Readiness — Mapping Curriculum Levels to Job Roles
+# Career Readiness: Mapping Curriculum Levels to Job Roles
 
 Home: [README](./README.md)
 
@@ -106,14 +106,14 @@ These are guidelines, not hard rules. Employers vary. Some junior roles expect L
 
 ## Interview Prep by Level
 
-### Level 3 — Intern Interviews
+### Level 3: Intern Interviews
 
 **Topics to review:**
 
 - Variables, types, and type conversion
 - Loops (for, while) and when to use each
 - Functions: parameters, return values, scope
-- Lists, dicts, sets, tuples — when to use each
+- Lists, dicts, sets, tuples: when to use each
 - File I/O basics
 - String methods and formatting
 
@@ -127,7 +127,7 @@ These are guidelines, not hard rules. Employers vary. Some junior roles expect L
 
 **Practice:** The beginner coding challenges in `practice/challenges/beginner/` cover all of these.
 
-### Level 5 — Junior Interviews
+### Level 5: Junior Interviews
 
 **Topics to review:**
 
@@ -151,7 +151,7 @@ Everything from Level 3, plus:
 
 **Practice:** The intermediate coding challenges in `practice/challenges/intermediate/` target this level.
 
-### Level 7 — Mid-Level Interviews
+### Level 7: Mid-Level Interviews
 
 **Topics to review:**
 
@@ -160,7 +160,7 @@ Everything from Level 5, plus:
 - Database design (normalization, indexing, queries)
 - API design (REST principles, status codes, authentication)
 - Concurrency (async/await, threading basics)
-- Design patterns (strategy, observer, factory — practical applications)
+- Design patterns (strategy, observer, factory), with practical applications
 - System design basics (caching, load balancing, queues)
 - Performance profiling and optimization
 
@@ -172,7 +172,7 @@ Everything from Level 5, plus:
 4. Write an ETL pipeline for a given data source
 5. Debug a performance issue in a given code sample
 
-### Level 9+ — Senior Interviews
+### Level 9+: Senior Interviews
 
 **Topics to review:**
 
@@ -200,10 +200,10 @@ Everything from Level 7, plus:
 
 ### At Every Level
 
-1. **Can you solve problems?** — Not memorize solutions, but think through new problems
-2. **Can you communicate?** — Explain your reasoning, ask clarifying questions
-3. **Can you learn?** — Show evidence of growth over time
-4. **Do you test your code?** — This alone puts you ahead of most candidates
+1. **Can you solve problems?** Not memorize solutions, but think through new problems
+2. **Can you communicate?** Explain your reasoning, ask clarifying questions
+3. **Can you learn?** Show evidence of growth over time
+4. **Do you test your code?** This alone puts you ahead of most candidates
 
 ### The Uncomfortable Truth
 
@@ -259,9 +259,9 @@ Remote roles, FAANG companies, and high cost-of-living areas shift these ranges 
 
 ## Related Documents
 
-- [Portfolio Guide](./PORTFOLIO_GUIDE.md) — How to present your projects
-- [Fast Track](./FAST_TRACK.md) — Accelerated path for experienced developers
-- [Certification Protocol](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md) — Formal completion standard
+- [Portfolio Guide](./PORTFOLIO_GUIDE.md): How to present your projects
+- [Fast Track](./FAST_TRACK.md): Accelerated path for experienced developers
+- [Certification Protocol](./curriculum/50_CERTIFICATION_GRADE_COMPLETION_PROTOCOL.md): Formal completion standard
 
 ---
 

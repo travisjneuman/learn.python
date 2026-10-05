@@ -41,7 +41,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/validation_report.json` — structured report with per-record errors
+- `data/validation_report.json`: structured report with per-record errors
 - Passing tests
 - Updated `notes.md`
 
@@ -92,18 +92,18 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. What additional validation rule would make the schema more useful? Implement it.
 2. How could the CLI be more configurable for strict vs lenient validation?
 3. Write a test for your new feature.
 
-## Break it (required) — Core
-1. Try feeding the validator data with subtle type mismatches — what slips through?
+## Break it (required): Core
+1. Try feeding the validator data with subtle type mismatches: what slips through?
 2. What happens when the schema itself contains something unexpected?
-3. Test with minimal or empty input — does the tool handle it?
+3. Test with minimal or empty input: does the tool handle it?
 
-## Fix it (required) — Core
-1. Address the most surprising failure you found — make it produce a clear message instead.
+## Fix it (required): Core
+1. Address the most surprising failure you found: make it produce a clear message instead.
 2. Add a test for an edge case the original code misses.
 3. Re-run until all tests pass deterministically.
 
@@ -113,7 +113,7 @@ Before writing code, sketch your approach in `notes.md`:
 
 ## Explain it (teach-back)
 1. Why does `validate_record` collect all errors instead of stopping at the first one?
-2. What happens if a field is optional AND absent — trace through the code path.
+2. What happens if a field is optional AND absent: trace through the code path.
 3. Why is `TYPE_MAP` defined as a module-level constant instead of inside the function?
 4. How would you extend this to validate nested objects (dicts inside dicts)?
 

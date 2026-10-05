@@ -1,4 +1,4 @@
-# Try This — Exercise 15
+# Try This: Exercise 15
 
 1. Add a feature that lets the user add a new student. Ask for name and score, then reprint the report.
 

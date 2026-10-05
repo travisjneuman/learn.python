@@ -1,4 +1,4 @@
-# Debugging Methodology — Part 2: Tools and Techniques
+# Debugging Methodology, Part 2: Tools and Techniques
 
 [← Part 1: Approach and Mental Models](./debugging-methodology-part1.md) · [Back to Overview](./debugging-methodology.md)
 
@@ -18,7 +18,7 @@ This part covers the practical debugging tools available in Python: print debugg
 
 ## Python debugging tools
 
-### `print()` — the simplest debugger
+### `print()`: the simplest debugger
 
 ```python
 def process_data(items):
@@ -42,7 +42,7 @@ print(f"{name=}")     # "name='Alice'"
 print(f"{len(name)=}")  # "len(name)=5"
 ```
 
-### `breakpoint()` — drop into the debugger
+### `breakpoint()`: drop into the debugger
 
 ```python
 def process_data(items):
@@ -75,7 +75,7 @@ None
 > process.py(6)process_data()
 ```
 
-### `pdb` — the Python debugger
+### `pdb`: the Python debugger
 
 `breakpoint()` uses `pdb` by default. You can also run a script under the debugger:
 
@@ -87,7 +87,7 @@ python -m pdb my_script.py
 python -c "import pdb; pdb.pm()"
 ```
 
-### `icecream` — better print debugging
+### `icecream`: better print debugging
 
 The `icecream` library makes print debugging cleaner:
 
@@ -110,9 +110,9 @@ result = add(3, 5)
 ic(result)             # ic| result: 8
 ```
 
-`ic()` automatically prints the variable name and value — no more writing `print(f"x={x}")`.
+`ic()` automatically prints the variable name and value, no more writing `print(f"x={x}")`.
 
-### `snoop` — trace function execution
+### `snoop`: trace function execution
 
 ```bash
 pip install snoop
@@ -151,7 +151,7 @@ Output shows every line as it executes, with variable values:
 Random changes waste time and can introduce new bugs. Always hypothesize first.
 
 **Not reading the full error message:**
-The traceback shows the entire chain of function calls. Read from the bottom up — the last line is where the error occurred, and the lines above show how you got there.
+The traceback shows the entire chain of function calls. Read from the bottom up: the last line is where the error occurred, and the lines above show how you got there.
 
 **Removing debug prints and losing your work:**
 Use a consistent prefix like `DEBUG:` so you can find and remove them all:

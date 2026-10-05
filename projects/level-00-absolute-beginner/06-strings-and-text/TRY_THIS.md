@@ -1,4 +1,4 @@
-# Try This — Exercise 06
+# Try This: Exercise 06
 
 1. Create an f-string that introduces yourself with your name, age, and city:
    ```python

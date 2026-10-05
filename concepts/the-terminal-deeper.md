@@ -1,4 +1,4 @@
-# The Terminal — Going Deeper
+# The Terminal: Going Deeper
 
 This builds on [00_COMPUTER_LITERACY_PRIMER.md](../00_COMPUTER_LITERACY_PRIMER.md). Here we cover pipes, redirects, environment variables, and other terminal skills you need for real development.
 
@@ -17,7 +17,7 @@ This builds on [00_COMPUTER_LITERACY_PRIMER.md](../00_COMPUTER_LITERACY_PRIMER.m
 See how Python interacts with the operating system via `os` and `sys`:
 [Open in Python Tutor](https://pythontutor.com/render.html#code=import%20os%0Aprint%28os.getcwd%28%29%29%0A%0Aimport%20sys%0Aprint%28sys.platform%29%0Aprint%28sys.version_info%5B%3A2%5D%29&cumulative=false&curInstr=0&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D)
 
-## Pipes — connecting commands
+## Pipes: connecting commands
 
 The `|` (pipe) sends the output of one command into another:
 
@@ -32,7 +32,7 @@ cat app.log | grep "error" | sort | uniq
 du -sh * | sort -rh | head -5
 ```
 
-## Redirects — saving output to files
+## Redirects: saving output to files
 
 ```bash
 # > writes output to a file (overwrites).

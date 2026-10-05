@@ -1,10 +1,10 @@
 # Solution: Level 1 / Project 10 - Ticket Priority Router
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try first — it guides
+> If you are stuck, try first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -156,10 +156,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Dict mapping priority levels to keyword lists | Data-driven rules are easy to modify without touching logic; adding a keyword is one list item | If/elif chain with hardcoded keywords — works but mixes data with logic |
-| Check priorities in descending severity order | Ensures a ticket mentioning both "crash" and "slow" is classified as "critical", not "medium" | Check all priorities and pick the highest match — more complex, same result |
-| Substring matching (`keyword in text`) | Catches keywords in any context ("the server crashed" matches "crash") | Word-boundary matching with regex — more precise but overkill at Level 1 |
-| Pre-initialise group dict with all priority keys | Guarantees all priority levels appear in output even when empty, simplifying display logic | Build groups dynamically with `setdefault` — works but might miss empty levels |
+| Dict mapping priority levels to keyword lists | Data-driven rules are easy to modify without touching logic; adding a keyword is one list item | If/elif chain with hardcoded keywords: works but mixes data with logic |
+| Check priorities in descending severity order | Ensures a ticket mentioning both "crash" and "slow" is classified as "critical", not "medium" | Check all priorities and pick the highest match: more complex, same result |
+| Substring matching (`keyword in text`) | Catches keywords in any context ("the server crashed" matches "crash") | Word-boundary matching with regex: more precise but overkill at Level 1 |
+| Pre-initialise group dict with all priority keys | Guarantees all priority levels appear in output even when empty, simplifying display logic | Build groups dynamically with `setdefault`: works but might miss empty levels |
 
 ## Alternative approaches
 
@@ -184,7 +184,7 @@ def classify_ticket_scored(text: str) -> str:
     return best
 ```
 
-**Trade-off:** The scoring approach is more nuanced — a ticket mentioning three "medium" keywords but only one "critical" keyword would be classified as "medium" instead of "critical". The first-match approach in the primary solution always picks the highest-severity match, which is the safer default for incident response (you would rather over-escalate than under-escalate). Use scoring when you want to weight the evidence rather than escalate on a single keyword.
+**Trade-off:** The scoring approach is more nuanced: a ticket mentioning three "medium" keywords but only one "critical" keyword would be classified as "medium" instead of "critical". The first-match approach in the primary solution always picks the highest-severity match, which is the safer default for incident response (you would rather over-escalate than under-escalate). Use scoring when you want to weight the evidence rather than escalate on a single keyword.
 
 ## What could go wrong
 
@@ -193,7 +193,7 @@ def classify_ticket_scored(text: str) -> str:
 | Ticket with no matching keywords ("Everything is fine") | `classify_ticket()` returns "low" as the default, which is the correct behaviour | The final `return "low"` handles this case |
 | Ticket matching keywords from multiple levels | The first-match approach returns the highest severity (critical > high > medium > low) because we iterate in priority order | The explicit `for priority in ["critical", "high", ...]` loop ensures this ordering |
 | Empty line in ticket file | `process_tickets()` skips it because of the `if not stripped: continue` guard | The blank-line check is already in place |
-| Multi-word keyword like "data loss" | Substring matching handles it correctly — `"data loss" in "We experienced data loss"` is True | Multi-word keywords work naturally with `in` operator |
+| Multi-word keyword like "data loss" | Substring matching handles it correctly: `"data loss" in "We experienced data loss"` is True | Multi-word keywords work naturally with `in` operator |
 
 ## Key takeaways
 

@@ -1,4 +1,4 @@
-# Module 08 / Project 01 — Parametrize
+# Module 08 / Project 01: Parametrize
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -59,7 +59,7 @@ Each parametrized case appears as a separate test with a readable name. All shou
 
 ## Break it
 
-1. Change one of the expected values in `test_celsius_to_fahrenheit` to be wrong (e.g., change 32.0 to 33.0). Run the tests and read the failure output carefully — pytest shows you exactly which parametrize case failed and what the actual vs expected values were.
+1. Change one of the expected values in `test_celsius_to_fahrenheit` to be wrong (e.g., change 32.0 to 33.0). Run the tests and read the failure output carefully: pytest shows you exactly which parametrize case failed and what the actual vs expected values were.
 2. Remove the `ids` parameter from one of the parametrize decorators and run with `-v`. Notice how the test names become less readable.
 3. Add a duplicate test ID and see what pytest does.
 
@@ -97,4 +97,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 02 — Mocking](../02-mocking/)
+[Project 02: Mocking](../02-mocking/)

@@ -1,4 +1,4 @@
-# Template Driven Reporter — Step-by-Step Walkthrough
+# Template Driven Reporter: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

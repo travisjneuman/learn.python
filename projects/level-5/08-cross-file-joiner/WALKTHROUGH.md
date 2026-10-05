@@ -1,4 +1,4 @@
-# Cross-File Joiner — Step-by-Step Walkthrough
+# Cross-File Joiner: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

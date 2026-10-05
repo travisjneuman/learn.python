@@ -1,6 +1,6 @@
 # Walkthrough Index
 
-Step-by-step build guides that show the **thinking process** for key projects at every level. Walkthroughs do not give you the answer — they guide your thinking so you can build the solution yourself.
+Step-by-step build guides that show the **thinking process** for key projects at every level. Walkthroughs do not give you the answer; they guide your thinking so you can build the solution yourself.
 
 Each walkthrough covers: understanding the problem, planning before code, building incrementally, common mistakes, and testing strategies.
 
@@ -15,7 +15,7 @@ Each walkthrough covers: understanding the problem, planning before code, buildi
 
 ---
 
-## Level 00 — Absolute Beginner
+## Level 00: Absolute Beginner
 
 | Project | Walkthrough | Focus |
 |---------|------------|-------|

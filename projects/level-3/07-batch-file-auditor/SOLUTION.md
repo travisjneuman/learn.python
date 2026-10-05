@@ -1,4 +1,4 @@
-# Batch File Auditor — Annotated Solution
+# Batch File Auditor: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -269,7 +269,7 @@ if __name__ == "__main__":
 | Composable check functions (`check_empty_files`, `check_large_files`, etc.) | Each check is independently testable and can be enabled/disabled without modifying others. This is the "plugin" pattern. |
 | `Path.stat()` for metadata instead of reading file content | `stat()` is a single OS call that returns size, timestamps, and permissions. Reading the entire file just to check emptiness would be wasteful for large files. |
 | `Path.glob()` (non-recursive) by default | Recursive scanning can be slow on large directory trees. The user opts in to recursion explicitly. |
-| Set difference for naming convention check | `set(filename) - set(allowed)` is concise and runs in O(n) time. The alternative — looping through each character with `if c not in allowed` — is equivalent but less Pythonic. |
+| Set difference for naming convention check | `set(filename) - set(allowed)` is concise and runs in O(n) time. The alternative, looping through each character with `if c not in allowed`, is equivalent but less Pythonic. |
 | Severity levels ("error", "warning", "info") | Matches the logging convention developers already know. Makes it natural to filter by severity. |
 
 ## Alternative Approaches
@@ -298,8 +298,8 @@ def scan_recursive(root: str) -> list[FileInfo]:
 
 ## Common Pitfalls
 
-1. **Not handling permission errors** — Directories with restricted permissions raise `PermissionError` when you call `stat()` or `read_text()`. Wrap file operations in try/except and log a warning instead of crashing the entire audit.
+1. **Not handling permission errors**: Directories with restricted permissions raise `PermissionError` when you call `stat()` or `read_text()`. Wrap file operations in try/except and log a warning instead of crashing the entire audit.
 
-2. **Glob pattern matching nothing** — `root.glob("*.xyz")` returns an empty iterator, not an error. The audit will report "0 files, no issues" which looks like success. Add a warning when the scan finds zero files.
+2. **Glob pattern matching nothing**: `root.glob("*.xyz")` returns an empty iterator, not an error. The audit will report "0 files, no issues" which looks like success. Add a warning when the scan finds zero files.
 
-3. **Binary files breaking text analysis** — If you later add checks that read file content (like encoding detection), binary files (.pyc, .jpg) will raise `UnicodeDecodeError`. Always catch encoding errors when reading files, or filter to known text extensions first.
+3. **Binary files breaking text analysis**: If you later add checks that read file content (like encoding detection), binary files (.pyc, .jpg) will raise `UnicodeDecodeError`. Always catch encoding errors when reading files, or filter to known text extensions first.

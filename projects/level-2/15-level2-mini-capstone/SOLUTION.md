@@ -1,4 +1,4 @@
-# Level 2 Mini Capstone — Annotated Solution
+# Level 2 Mini Capstone: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -369,8 +369,8 @@ Pandas performs all five stages in a few lines with optimized C code. The manual
 
 ## Common Pitfalls
 
-1. **Zero records after validation** — If every record is invalid, the anomaly detection and statistics stages receive empty lists. Without guards, `sum(values) / len(values)` and `min(values)` would crash. Every stage must handle empty inputs gracefully.
+1. **Zero records after validation**: If every record is invalid, the anomaly detection and statistics stages receive empty lists. Without guards, `sum(values) / len(values)` and `min(values)` would crash. Every stage must handle empty inputs gracefully.
 
-2. **Numeric field does not exist** — If `--numeric-field` specifies a column that is not in the CSV, `detect_anomalies` gets no values and returns an empty list. This is correct behavior, but the user may not realize their field name was wrong. A warning message would improve the experience.
+2. **Numeric field does not exist**: If `--numeric-field` specifies a column that is not in the CSV, `detect_anomalies` gets no values and returns an empty list. This is correct behavior, but the user may not realize their field name was wrong. A warning message would improve the experience.
 
-3. **Pipeline stage ordering matters** — Running anomaly detection before validation would include invalid records in the statistical calculations, potentially flagging valid records as anomalous or missing real anomalies. The pipeline order (load, clean, validate, analyse, report) is deliberate and should not be reordered without understanding the consequences.
+3. **Pipeline stage ordering matters**: Running anomaly detection before validation would include invalid records in the statistical calculations, potentially flagging valid records as anomalous or missing real anomalies. The pipeline order (load, clean, validate, analyse, report) is deliberate and should not be reordered without understanding the consequences.

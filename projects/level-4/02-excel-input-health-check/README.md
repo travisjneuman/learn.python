@@ -41,7 +41,7 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/health_report.json` — structured quality report
+- `data/health_report.json`: structured quality report
 - Passing tests
 - Updated `notes.md`
 
@@ -87,17 +87,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. What additional quality check would catch problems the current tool misses?
 2. Can you make the tool support more than one input format?
 3. Write a test to verify your new check works.
 
-## Break it (required) — Core
-1. Create messy input data — what quality issues does the tool miss?
+## Break it (required): Core
+1. Create messy input data: what quality issues does the tool miss?
 2. What happens with files that use unexpected encodings?
-3. Try extreme cases (huge headers, wildly inconsistent rows) — where does it struggle?
+3. Try extreme cases (huge headers, wildly inconsistent rows), where does it struggle?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a safeguard so the report stays manageable even with very messy input.
 2. Handle the encoding issue you discovered.
 3. Re-run until all tests pass.
@@ -108,7 +108,7 @@ Before writing code, sketch your approach in `notes.md`:
 
 ## Explain it (teach-back)
 1. Why does `detect_delimiter` use the *minimum* count across rows instead of the *average*?
-2. What is the difference between `check_headers` and `check_row_completeness` — could they be merged?
+2. What is the difference between `check_headers` and `check_row_completeness`: could they be merged?
 3. Why does the health check return early when encoding fails instead of continuing?
 4. How would you extend this to support Excel `.xlsx` files?
 

@@ -62,17 +62,17 @@ Python is powerful and fun.
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add an "average word length" metric to `analyse_text()`.
 2. Ask the user "How many top words to show? " and use that number instead of the default 5.
 3. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Enter no text (just press Enter immediately) -- does `analyse_text()` crash?
 2. Enter only punctuation like `!!! ??? ...` -- are those counted as words?
 3. Enter unicode characters like emojis -- does `count_characters()` count them correctly?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a guard for empty text that returns zero counts without dividing.
 2. Ensure `word_frequencies()` strips punctuation before counting so `"hello!"` and `"hello"` are the same word.
 3. Add a test for the empty-text edge case.

@@ -46,18 +46,18 @@ Loaded 3 records via primary
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--strict` flag that fails immediately instead of trying fallbacks.
 2. Add repair support for JSON with single quotes instead of double quotes.
 3. Log a detailed report of which sources were tried, in order, and which succeeded.
 4. Re-run script and tests.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. Corrupt `primary.json` by adding a trailing comma and delete `backup.json`.
 2. Create a `primary.json` that is valid JSON but not a list (e.g. a plain string).
 3. Capture the first failing test or visible bad output.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Make `try_repair_json` handle the trailing-comma case and restore the data.
 2. Validate that loaded data is a list; wrap non-list data in a list with a warning.
 3. Add tests for repair and type-mismatch cases.

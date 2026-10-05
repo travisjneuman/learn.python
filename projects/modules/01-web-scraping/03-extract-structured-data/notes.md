@@ -1,4 +1,4 @@
-# Notes — Extract Structured Data
+# Notes: Extract Structured Data
 
 ## What I learned
 

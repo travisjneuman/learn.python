@@ -1,4 +1,4 @@
-# Module 07 / Project 02 — Filtering & Grouping
+# Module 07 / Project 02: Filtering & Grouping
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -22,7 +22,7 @@
 
 ## Why this project exists
 
-Loading data is only the first step. Real analysis requires answering questions: "Which students scored above 80?" or "What is the average grade per subject?" This project teaches you how to filter rows based on conditions and group rows to compute summary statistics — the two most common operations in data analysis.
+Loading data is only the first step. Real analysis requires answering questions: "Which students scored above 80?" or "What is the average grade per subject?" This project teaches you how to filter rows based on conditions and group rows to compute summary statistics, the two most common operations in data analysis.
 
 ## Run
 
@@ -121,4 +121,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 03 — Data Cleaning](../03-data-cleaning/)
+[Project 03: Data Cleaning](../03-data-cleaning/)

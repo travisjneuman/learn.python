@@ -1,4 +1,4 @@
-# Fault Injection Harness — Step-by-Step Walkthrough
+# Fault Injection Harness: Step-by-Step Walkthrough
 
 [<- Back to Project README](./README.md) | [Solution](./SOLUTION.md)
 
@@ -8,17 +8,17 @@ Read the [project README](./README.md) first. Try to solve it on your own before
 
 ## Thinking Process
 
-Most bugs hide in error-handling code. The happy path gets tested every day by normal usage. But the code that runs when the database is down, when the API returns garbage, or when a network timeout strikes? That code might run once a year in production — and when it does, it is the most critical moment possible. Chaos engineering flips this by deliberately injecting failures so your error-handling paths get exercised regularly.
+Most bugs hide in error-handling code. The happy path gets tested every day by normal usage. But the code that runs when the database is down, when the API returns garbage, or when a network timeout strikes? That code might run once a year in production, and when it does, it is the most critical moment possible. Chaos engineering flips this by deliberately injecting failures so your error-handling paths get exercised regularly.
 
 The design has three layers. At the bottom, `FaultConfig` dataclasses define what kind of fault to inject, how often (probability), and which functions to target. In the middle, the `FaultInjector` engine checks rules on every intercepted call and decides whether to trigger a fault based on the configured probability. At the top, two entry points let you apply injection: the `@inject` decorator for permanent wrapping, and the `scope()` context manager for temporary rules during testing.
 
-The probability-based approach is what makes this realistic rather than just a test tool. Setting probability to 0.3 means roughly 30% of calls will fail, simulating the kind of intermittent failures that are hardest to debug in production. A deterministic "fail every time" mode would be too simple — real failures are stochastic, and your code needs to handle them gracefully.
+The probability-based approach is what makes this realistic rather than just a test tool. Setting probability to 0.3 means roughly 30% of calls will fail, simulating the kind of intermittent failures that are hardest to debug in production. A deterministic "fail every time" mode would be too simple: real failures are stochastic, and your code needs to handle them gracefully.
 
 ## Step 1: Define the Domain Types
 
 **What to do:** Create a `FaultType` enum with EXCEPTION, DELAY, CORRUPTION, and TIMEOUT. Create a `FaultConfig` dataclass with fields for name, fault type, probability (0.0 to 1.0), target function, and type-specific settings. Add `__post_init__` validation to ensure probability is valid. Create `FaultEvent` and `HarnessStats` dataclasses for tracking what happened.
 
-**Why:** The enum constrains fault types to known values — you cannot accidentally specify "exeption" (typo). The `FaultConfig` dataclass is the rule definition: it says "when function X is called, inject fault type Y with probability Z." Validation in `__post_init__` catches configuration errors at creation time rather than at runtime.
+**Why:** The enum constrains fault types to known values: you cannot accidentally specify "exeption" (typo). The `FaultConfig` dataclass is the rule definition: it says "when function X is called, inject fault type Y with probability Z." Validation in `__post_init__` catches configuration errors at creation time rather than at runtime.
 
 ```python
 class FaultType(Enum):
@@ -43,7 +43,7 @@ class FaultConfig:
             raise ValueError(f"Probability must be 0.0-1.0, got {self.probability}")
 ```
 
-**Predict:** What happens if you create `FaultConfig(name="test", fault_type=FaultType.DELAY, probability=1.5)`? At what point does the error occur — when you construct the object, or when you use it?
+**Predict:** What happens if you create `FaultConfig(name="test", fault_type=FaultType.DELAY, probability=1.5)`? At what point does the error occur: when you construct the object, or when you use it?
 
 ## Step 2: Build the FaultInjector Engine
 
@@ -100,7 +100,7 @@ def _apply_fault(self, rule: FaultConfig, func_name: str) -> None:
         raise TimeoutError(f"[FAULT:{rule.name}] Operation timed out")
 ```
 
-**Predict:** If a function has two matching rules — one with probability 0.5 and one with probability 1.0 — and the first one does not trigger, will the second one always trigger? Look at the `check_and_inject` method to verify.
+**Predict:** If a function has two matching rules (one with probability 0.5 and one with probability 1.0) and the first one does not trigger, will the second one always trigger? Look at the `check_and_inject` method to verify.
 
 ## Step 4: Create the Decorator and Context Manager
 
@@ -217,5 +217,5 @@ You should see 7+ tests pass. The tests verify fault configuration validation, p
 ## What You Learned
 
 - **Chaos engineering** is the practice of deliberately injecting failures to find weaknesses before they cause real outages. Netflix's Chaos Monkey randomly terminates production instances; your harness does the same at the function level.
-- **Probability-based injection** creates realistic failure scenarios. Real systems do not fail 100% of the time — they fail intermittently, which is harder to handle and debug. Testing at 30% failure rate reveals whether your retry logic, circuit breakers, and fallbacks actually work.
+- **Probability-based injection** creates realistic failure scenarios. Real systems do not fail 100% of the time: they fail intermittently, which is harder to handle and debug. Testing at 30% failure rate reveals whether your retry logic, circuit breakers, and fallbacks actually work.
 - **Decorators and context managers** are powerful composition tools. The `@inject` decorator permanently wraps a function with fault injection. The `scope()` context manager temporarily adds rules and guarantees cleanup. Together, they provide both permanent and temporary injection without modifying the target functions.

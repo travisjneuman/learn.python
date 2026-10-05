@@ -23,7 +23,7 @@ As codebases grow, uncontrolled cross-module dependencies create "Big Ball of Mu
 architectures where everything depends on everything. A small change in one module
 breaks 15 others. This project builds a dependency rule engine that defines
 allowed/forbidden imports between domains, detects cycles, and validates layering
-rules — the same pattern used by tools like ArchUnit, deptry, and import-linter
+rules, the same pattern used by tools like ArchUnit, deptry, and import-linter
 to enforce architectural boundaries in real Python and Java projects.
 
 ## Run (copy/paste)
@@ -55,9 +55,9 @@ pytest -q
 3. Add a `--strict` flag that treats layer violations as errors (exit code 1).
 
 ## Break it (required)
-1. Add a circular dependency (A -> B -> C -> A) — does `detect_cycles` catch it?
-2. Add a dependency from a lower layer to a higher layer — does the layer rule catch it?
-3. Remove a module that others depend on — what happens during `enforce()`?
+1. Add a circular dependency (A -> B -> C -> A): does `detect_cycles` catch it?
+2. Add a dependency from a lower layer to a higher layer: does the layer rule catch it?
+3. Remove a module that others depend on: what happens during `enforce()`?
 
 ## Fix it (required)
 1. Improve the cycle detection error message to show the full cycle path.

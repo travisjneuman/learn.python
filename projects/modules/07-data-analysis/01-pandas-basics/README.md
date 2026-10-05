@@ -1,4 +1,4 @@
-# Module 07 / Project 01 — Pandas Basics
+# Module 07 / Project 01: Pandas Basics
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -21,7 +21,7 @@
 
 ## Why this project exists
 
-Before you can analyze data, you need to know how to load it and look at it. This project teaches you how to get a CSV file into a pandas DataFrame and use built-in methods to understand what the data looks like — how many rows, what columns exist, what types the values are, and what the basic statistics tell you. These exploration steps are the first thing every data analyst does with a new data set.
+Before you can analyze data, you need to know how to load it and look at it. This project teaches you how to get a CSV file into a pandas DataFrame and use built-in methods to understand what the data looks like: how many rows, what columns exist, what types the values are, and what the basic statistics tell you. These exploration steps are the first thing every data analyst does with a new data set.
 
 ## Run
 
@@ -76,14 +76,14 @@ mean   80.100000  17.000000
 Done.
 ```
 
-The exact numbers will match the CSV data. The `...` sections are abbreviated here — your output will show all rows and statistics.
+The exact numbers will match the CSV data. The `...` sections are abbreviated here; your output will show all rows and statistics.
 
 ## Alter it
 
 1. Change `head()` to `head(10)` and see what happens. Try `tail(3)`.
 2. Sort by `age` instead of `grade`. What happens when two students have the same age?
 3. Select three columns instead of two. What does `df[["name", "subject", "grade"]]` return?
-4. Try `df["grade"].mean()` and `df["grade"].max()` — what do they return?
+4. Try `df["grade"].mean()` and `df["grade"].max()`. What do they return?
 
 ## Break it
 
@@ -125,4 +125,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 02 — Filtering & Grouping](../02-filtering-grouping/)
+[Project 02: Filtering & Grouping](../02-filtering-grouping/)

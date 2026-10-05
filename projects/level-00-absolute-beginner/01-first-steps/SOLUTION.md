@@ -1,10 +1,10 @@
 # Solution: 01-first-steps
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -49,9 +49,9 @@ print("You are off to a great start.")  # WHY: Encouragement — learning to cod
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| Use interactive mode first | Seeing instant results builds confidence — you type something, Python responds immediately | Could have started with writing a file, but that adds extra steps before seeing results |
-| Show math before text | Numbers are familiar to everyone — math gives instant proof that Python works | Could have started with print(), but math is more concrete and universal |
-| Use `*` for multiply and `/` for divide | These are the standard symbols in all programming languages — your keyboard does not have a x or / key for math | None — this is universal across programming |
+| Use interactive mode first | Seeing instant results builds confidence: you type something, Python responds immediately | Could have started with writing a file, but that adds extra steps before seeing results |
+| Show math before text | Numbers are familiar to everyone: math gives instant proof that Python works | Could have started with print(), but math is more concrete and universal |
+| Use `*` for multiply and `/` for divide | These are the standard symbols in all programming languages: your keyboard does not have a x or / key for math | None: this is universal across programming |
 | Include `exit()` instruction | New users often get stuck in interactive mode, not knowing how to get back to their terminal | Could use Ctrl+D (Mac/Linux) or Ctrl+Z (Windows), but exit() works everywhere |
 
 ## Alternative approaches
@@ -74,13 +74,13 @@ print("Hello, I am learning Python!")  # WHY: Files let you save and re-run your
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
 | Typing `python` and getting "command not found" | Python is not installed, or your terminal cannot find it | Revisit the setup guide (03_SETUP_ALL_PLATFORMS.md) and make sure Python is on your PATH |
-| Seeing `>>>` but not knowing what to do | You are in interactive mode — Python is waiting for you to type something | Type any math like `2 + 2` and press Enter. Type `exit()` to leave |
+| Seeing `>>>` but not knowing what to do | You are in interactive mode: Python is waiting for you to type something | Type any math like `2 + 2` and press Enter. Type `exit()` to leave |
 | Forgetting the quotes around text in print() | You get a `NameError` because Python thinks the words are variable names, not text | Always wrap text in quotes: `print("Hello")` not `print(Hello)` |
-| Typing `print "Hello"` without parentheses | You get a `SyntaxError` — Python 3 requires parentheses around print | Always use `print("Hello")` with parentheses |
-| Pressing Enter after `python exercise.py` and nothing happens | You might be in the wrong folder — your terminal cannot find the file | Use `cd` to navigate to the folder containing exercise.py first |
+| Typing `print "Hello"` without parentheses | You get a `SyntaxError`: Python 3 requires parentheses around print | Always use `print("Hello")` with parentheses |
+| Pressing Enter after `python exercise.py` and nothing happens | You might be in the wrong folder: your terminal cannot find the file | Use `cd` to navigate to the folder containing exercise.py first |
 
 ## Key takeaways
 
-1. **Python's interactive mode (`>>>`) is your playground** — use it to experiment, test ideas, and see instant results. You will use it throughout your learning.
-2. **Python does math with symbols you mostly know** — `+` for add, `-` for subtract, `*` for multiply (not x), `/` for divide.
-3. **`print()` is how you make Python talk to you** — everything you want to display on screen goes inside `print()`. This is the foundation of every program you will write from here on.
+1. **Python's interactive mode (`>>>`) is your playground**: use it to experiment, test ideas, and see instant results. You will use it throughout your learning.
+2. **Python does math with symbols you mostly know**: `+` for add, `-` for subtract, `*` for multiply (not x), `/` for divide.
+3. **`print()` is how you make Python talk to you**: everything you want to display on screen goes inside `print()`. This is the foundation of every program you will write from here on.

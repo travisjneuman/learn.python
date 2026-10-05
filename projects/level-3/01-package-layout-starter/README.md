@@ -1,7 +1,7 @@
 # Level 3 / Project 01 - Package Layout Starter
 Home: [README](../../../README.md)
 
-> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=1) — browser exercises cover Level 2 topics
+> **Try in Browser:** [Practice similar concepts online](../../browser/level-2.html?ex=1): browser exercises cover Level 2 topics
 
 ## Before You Start
 
@@ -92,17 +92,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
-1. Try adding support for nested packages — what flag or argument would make sense?
+## Alter it (required): Extension
+1. Try adding support for nested packages: what flag or argument would make sense?
 2. What other metadata could the scanner generate beyond what it already does?
 3. Add a useful metric to the report output.
 
-## Break it (required) — Core
-1. Try pointing the scanner at something unexpected — what breaks first?
+## Break it (required): Core
+1. Try pointing the scanner at something unexpected: what breaks first?
 2. Can you create a situation where imports get confused?
 3. What happens when the input is not what the tool expects?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add input validation for the most obvious failure case you found.
 2. Improve how the tool handles the import issue you discovered.
 3. Make the tool resilient to permission problems.

@@ -1,6 +1,6 @@
-# Refactoring 03 — Copy-Paste API Client
+# Refactoring 03: Copy-Paste API Client
 
-Open `messy.py`. This module fetches data from five endpoints of a JSON API. Each function is nearly identical — classic copy-paste programming.
+Open `messy.py`. This module fetches data from five endpoints of a JSON API. Each function is nearly identical: classic copy-paste programming.
 
 The code works. But it has five copies of the same logic, no retry mechanism, a hardcoded base URL, and uses `print` for error reporting.
 

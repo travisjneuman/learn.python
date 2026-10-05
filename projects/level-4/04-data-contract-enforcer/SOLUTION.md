@@ -1,4 +1,4 @@
-# Data Contract Enforcer — Annotated Solution
+# Data Contract Enforcer: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -214,7 +214,7 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| Coerce CSV strings to typed values before checking constraints | CSV fields are always strings. You cannot compare `"42" < 150` meaningfully — you need the actual integer `42`. Coercion makes range and type checks correct. |
+| Coerce CSV strings to typed values before checking constraints | CSV fields are always strings. You cannot compare `"42" < 150` meaningfully: you need the actual integer `42`. Coercion makes range and type checks correct. |
 | Report missing/extra columns separately from row violations | A missing column is a structural problem (schema drift), not a per-row problem. Reporting it once at the top level is cleaner than generating N identical violations. |
 | Collect violations per-row with column name and issue text | Granular violation reporting lets humans or tools pinpoint exactly which cell in which row failed which rule, making fixes targeted. |
 | Accept multiple boolean representations ("true", "1", "yes") | Real-world data comes from many sources. Being flexible on boolean input reduces friction without sacrificing correctness. |
@@ -248,6 +248,6 @@ def enforce_typed(row: dict, rules: list[ColumnRule]) -> list[str]:
 
 ## Common Pitfalls
 
-1. **Comparing coerced values with string-typed allowed lists** — If the contract says `"allowed": ["active", "inactive"]` and the coerced value is a string, the comparison works. But if allowed lists contain integers (like `[1, 2, 3]`) and the coerced value is `int`, you need to normalize both sides with `str()` or the check will miss matches.
-2. **Forgetting that `DictReader` returns `None` for missing columns** — If a column exists in the contract but not in the CSV headers, `row.get("missing_col")` returns `None`, not `""`. You must handle both.
-3. **Not validating the contract itself** — A contract with `"min": 100, "max": 50` is contradictory and will flag every value as a violation. Adding contract self-validation catches this before enforcement begins.
+1. **Comparing coerced values with string-typed allowed lists**: If the contract says `"allowed": ["active", "inactive"]` and the coerced value is a string, the comparison works. But if allowed lists contain integers (like `[1, 2, 3]`) and the coerced value is `int`, you need to normalize both sides with `str()` or the check will miss matches.
+2. **Forgetting that `DictReader` returns `None` for missing columns**: If a column exists in the contract but not in the CSV headers, `row.get("missing_col")` returns `None`, not `""`. You must handle both.
+3. **Not validating the contract itself**: A contract with `"min": 100, "max": 50` is contradictory and will flag every value as a violation. Adding contract self-validation catches this before enforcement begins.

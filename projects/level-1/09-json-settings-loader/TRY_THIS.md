@@ -1,4 +1,4 @@
-# Try This — Project 09
+# Try This: Project 09
 
 1. Add type validation to `validate_settings()`. Right now it only checks whether required keys exist. Extend it to also check that values have the expected type. Define a schema like this and validate against it:
    ```python

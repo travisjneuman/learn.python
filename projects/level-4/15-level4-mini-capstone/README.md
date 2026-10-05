@@ -41,9 +41,9 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output/valid_data.json` — validated and transformed rows
-- `data/output/quarantined.json` — rejected rows with reasons
-- `data/output/manifest.json` — file inventory with checksums
+- `data/output/valid_data.json`: validated and transformed rows
+- `data/output/quarantined.json`: rejected rows with reasons
+- `data/output/manifest.json`: file inventory with checksums
 - Passing tests
 - Updated `notes.md`
 
@@ -51,17 +51,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a `--schema` flag that loads validation rules from a JSON file (like project 01).
 2. Add a `--report` flag that generates a human-readable summary alongside the JSON.
-3. Re-run script and tests — verify the schema-based validation works.
+3. Re-run script and tests: verify the schema-based validation works.
 
-## Break it (required) — Core
-1. Kill the process mid-run (Ctrl+C after 2 rows) and restart — verify it resumes from checkpoint.
+## Break it (required): Core
+1. Kill the process mid-run (Ctrl+C after 2 rows) and restart: verify it resumes from checkpoint.
 2. Feed it a CSV with headers but no data rows.
 3. Remove the output directory and verify it is created automatically.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle keyboard interrupts gracefully (save checkpoint before exiting).
 2. Add total processing time to the manifest.
 3. Re-run until all tests pass.
@@ -73,7 +73,7 @@ pytest -q
 ## Explain it (teach-back)
 1. How does this project combine skills from projects 01-14?
 2. Why is checkpoint recovery important for data pipelines?
-3. What is the purpose of the manifest — when would you use it?
+3. What is the purpose of the manifest: when would you use it?
 4. If this pipeline processed 1 million rows, what would be the bottleneck and how would you optimize?
 
 ## Mastery check

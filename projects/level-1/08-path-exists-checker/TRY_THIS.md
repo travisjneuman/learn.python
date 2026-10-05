@@ -1,4 +1,4 @@
-# Try This — Project 08
+# Try This: Project 08
 
 1. Add a "total size" summary that adds up the sizes of all files found and prints it in a human-readable format at the bottom of the report. Use the `format_size()` function that already exists in the project:
    ```text

@@ -1,4 +1,4 @@
-# Module 06 / Project 05 — Query Optimization
+# Module 06 / Project 05: Query Optimization
 
 Home: [README](../../../../README.md) · Module: [Databases & ORM](../README.md)
 

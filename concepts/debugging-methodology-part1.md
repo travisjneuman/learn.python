@@ -1,4 +1,4 @@
-# Debugging Methodology — Part 1: Approach and Mental Models
+# Debugging Methodology, Part 1: Approach and Mental Models
 
 [← Back to Overview](./debugging-methodology.md) · [Part 2: Tools and Techniques →](./debugging-methodology-part2.md)
 
@@ -14,15 +14,15 @@
 
 ---
 
-Debugging is the systematic process of finding and fixing bugs. It is not about staring at code until you see the problem — it is a repeatable method that works on any bug, in any language. The best debuggers are not the smartest programmers; they are the most methodical.
+Debugging is the systematic process of finding and fixing bugs. It is not about staring at code until you see the problem. It is a repeatable method that works on any bug, in any language. The best debuggers are not the smartest programmers; they are the most methodical.
 
 ## Why This Matters
 
-You will spend more time debugging than writing new code. A systematic approach turns frustrating hours of "why does this not work?" into a predictable process. The method described here — Reproduce, Isolate, Hypothesize, Test, Fix, Verify, Prevent — works for everything from a typo to a race condition.
+You will spend more time debugging than writing new code. A systematic approach turns frustrating hours of "why does this not work?" into a predictable process. The method described here (Reproduce, Isolate, Hypothesize, Test, Fix, Verify, Prevent) works for everything from a typo to a race condition.
 
 ## The 7-step method
 
-### 1. Reproduce — make the bug happen reliably
+### 1. Reproduce: make the bug happen reliably
 
 Before fixing anything, you need to see the bug yourself. Write down the exact steps:
 
@@ -36,7 +36,7 @@ Before fixing anything, you need to see the bug yourself. Write down the exact s
 
 If you cannot reproduce the bug, you cannot verify you fixed it. Ask: "Does this happen every time? Only with certain inputs? Only on certain machines?"
 
-### 2. Isolate — narrow down where the bug is
+### 2. Isolate: narrow down where the bug is
 
 Remove variables until you find the smallest piece of code that still has the bug:
 
@@ -56,7 +56,7 @@ print("DEBUG: got to step 2")
 # 3. Repeat until you find the exact line
 ```
 
-### 3. Hypothesize — form a theory
+### 3. Hypothesize: form a theory
 
 Based on the error and where it occurs, make a specific guess:
 
@@ -66,7 +66,7 @@ Based on the error and where it occurs, make a specific guess:
 
 Do NOT start changing code randomly. Have a theory first.
 
-### 4. Test — verify your hypothesis
+### 4. Test: verify your hypothesis
 
 Test your theory with the smallest possible experiment:
 
@@ -82,7 +82,7 @@ print(f"DEBUG: response = {response.json()}")
 
 If your hypothesis was wrong, go back to step 3 with new information.
 
-### 5. Fix — make the minimum change
+### 5. Fix: make the minimum change
 
 Fix only the bug. Do not refactor surrounding code, add features, or "improve" things. Keep the change as small as possible:
 
@@ -94,11 +94,11 @@ email = user_data["email"]
 email = user_data.get("email", "no-email@example.com")
 ```
 
-### 6. Verify — confirm the fix works
+### 6. Verify: confirm the fix works
 
-Run the same reproduction steps from step 1. The bug should be gone. Also check that you did not break anything else — run the test suite.
+Run the same reproduction steps from step 1. The bug should be gone. Also check that you did not break anything else: run the test suite.
 
-### 7. Prevent — stop this bug from coming back
+### 7. Prevent: stop this bug from coming back
 
 Write a test that catches this specific bug:
 

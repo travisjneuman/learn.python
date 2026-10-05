@@ -40,9 +40,9 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output/valid_rows.txt` — clean rows that passed all rules
-- `data/output/quarantined_rows.json` — rejected rows with reasons
-- `data/output/quarantine_report.json` — summary counts
+- `data/output/valid_rows.txt`: clean rows that passed all rules
+- `data/output/quarantined_rows.json`: rejected rows with reasons
+- `data/output/quarantine_report.json`: summary counts
 - Passing tests
 - Updated `notes.md`
 
@@ -50,17 +50,17 @@ pytest -q
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add a new rule: `rule_no_duplicate_values` that rejects rows where a key field repeats a value seen in a prior row.
 2. Add a `--delimiter` CLI flag to handle TSV or pipe-delimited files.
-3. Re-run script and tests — add a parametrized test for the new rule.
+3. Re-run script and tests: add a parametrized test for the new rule.
 
-## Break it (required) — Core
-1. Feed it a file with only a header and no data rows — observe the counts.
+## Break it (required): Core
+1. Feed it a file with only a header and no data rows: observe the counts.
 2. Create a row with a field containing 10,000+ characters and see if `rule_max_field_length` catches it.
 3. Remove the header row entirely and observe what happens to column-count validation.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Handle the no-data-rows case gracefully (valid output, zero counts).
 2. Add a `--has-header` flag for header-less files.
 3. Re-run until all tests pass.

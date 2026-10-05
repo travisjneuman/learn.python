@@ -87,17 +87,17 @@ def csv_line_to_tr_safe(line):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add support for ordered lists (`1. item`, `2. item`) producing `<ol>` and `<li>` tags.
 2. Add support for horizontal rules (`---` on its own line) producing `<hr>` tags.
 3. Wrap the output in a complete HTML document with `<html>`, `<head>`, and `<body>` tags.
 
-## Break it (required) — Core
-1. Feed a file with nested bold inside italic (`*some **bold** here*`) — does it render correctly?
-2. Feed a file with an unclosed code block (opening ``` but no closing ```) — what happens?
-3. Feed a line that starts with `#` but has no space after it (`#NoSpace`) — does it parse as a heading?
+## Break it (required): Core
+1. Feed a file with nested bold inside italic (`*some **bold** here*`): does it render correctly?
+2. Feed a file with an unclosed code block (opening ``` but no closing ```): what happens?
+3. Feed a line that starts with `#` but has no space after it (`#NoSpace`): does it parse as a heading?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a guard so `#NoSpace` is treated as a paragraph, not a heading (require space after `#`).
 2. Handle unclosed code blocks gracefully by closing them at end of document.
 3. Add a test that verifies the unclosed code block behaviour.

@@ -80,21 +80,21 @@ add(3, 5)
 
 ## Real-world examples
 
-**Flask / FastAPI — route registration:**
+**Flask / FastAPI route registration:**
 ```python
 @app.get("/users/{user_id}")
 def get_user(user_id: int):
     return {"id": user_id}
 ```
 
-**pytest — parametrized tests:**
+**pytest parametrized tests:**
 ```python
 @pytest.mark.parametrize("input,expected", [(1, 1), (2, 4), (3, 9)])
 def test_square(input, expected):
     assert input ** 2 == expected
 ```
 
-**Click — CLI commands:**
+**Click CLI commands:**
 ```python
 @click.command()
 @click.option("--name", default="World")

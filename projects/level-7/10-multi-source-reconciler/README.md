@@ -41,7 +41,7 @@ pytest -q
 ## Alter it (required)
 1. Add a `tolerance` parameter for numeric comparisons (e.g. prices within 0.01 count as matching).
 2. Add a `reconcile_three()` function that compares three sources simultaneously.
-3. Re-run script and tests — verify tolerance and three-way reconciliation work.
+3. Re-run script and tests: verify tolerance and three-way reconciliation work.
 
 ## Break it (required)
 1. Use a key field that does not exist in any records (e.g. `"nonexistent_id"`).

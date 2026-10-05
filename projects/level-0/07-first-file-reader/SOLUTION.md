@@ -1,10 +1,10 @@
 # Solution: Level 0 / Project 07 - First File Reader
 
-> **STOP** — Have you attempted this project yourself first?
+> **STOP**: Have you attempted this project yourself first?
 >
 > Learning happens in the struggle, not in reading answers.
 > Spend at least 20 minutes trying before reading this solution.
-> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first — it guides
+> If you are stuck, try the [Walkthrough](./WALKTHROUGH.md) first: it guides
 > your thinking without giving away the answer.
 
 ---
@@ -128,10 +128,10 @@ if __name__ == "__main__":
 
 | Decision | Why | Alternative considered |
 |----------|-----|----------------------|
-| `read_file_lines()` uses `open()` with `encoding="utf-8"` | Explicit encoding prevents platform-dependent behaviour. On Windows, the default encoding might not be UTF-8 | Omit encoding — works on many files but silently mangles special characters on some systems |
-| `format_with_line_numbers()` dynamically calculates number width | A 10-line file uses 2-digit numbers, a 1000-line file uses 4-digit numbers. Numbers always align cleanly | Hard-code width to 4 — wastes space for small files and breaks for files over 9999 lines |
-| `file_summary()` takes `lines` as a parameter instead of reading the file itself | Avoids reading the file twice. `read_file_lines()` handles I/O; `file_summary()` handles analysis | Read the file inside `file_summary()` — duplicates I/O logic and reads the file a second time |
-| Returns `"(empty file)"` for empty input | A clear message is better than blank output, which might make the user think something is broken | Return an empty string — technically correct but confusing for beginners |
+| `read_file_lines()` uses `open()` with `encoding="utf-8"` | Explicit encoding prevents platform-dependent behaviour. On Windows, the default encoding might not be UTF-8 | Omit encoding: works on many files but silently mangles special characters on some systems |
+| `format_with_line_numbers()` dynamically calculates number width | A 10-line file uses 2-digit numbers, a 1000-line file uses 4-digit numbers. Numbers always align cleanly | Hard-code width to 4: wastes space for small files and breaks for files over 9999 lines |
+| `file_summary()` takes `lines` as a parameter instead of reading the file itself | Avoids reading the file twice. `read_file_lines()` handles I/O; `file_summary()` handles analysis | Read the file inside `file_summary()`: duplicates I/O logic and reads the file a second time |
+| Returns `"(empty file)"` for empty input | A clear message is better than blank output, which might make the user think something is broken | Return an empty string: technically correct but confusing for beginners |
 
 ## Alternative approaches
 
@@ -165,7 +165,7 @@ def file_summary(filepath: str, lines: list) -> dict:
 
 | Scenario | What happens | Prevention |
 |----------|-------------|------------|
-| File does not exist | `open()` raises `FileNotFoundError`, caught by the try/except in `__main__` — shows a helpful message | Already handled |
+| File does not exist | `open()` raises `FileNotFoundError`, caught by the try/except in `__main__`: shows a helpful message | Already handled |
 | File is empty (0 bytes) | `read_file_lines()` returns `[]`. `format_with_line_numbers([])` returns `"(empty file)"`. `file_summary()` shows 0 lines, 0 words | Already handled |
 | File has a different encoding (e.g. Latin-1) | `open(..., encoding="utf-8")` raises `UnicodeDecodeError` for bytes that are not valid UTF-8 | Add a try/except for `UnicodeDecodeError` and suggest trying a different encoding |
 | File path has spaces (e.g. "My Documents/file.txt") | Python handles spaces in paths fine. No issue | No fix needed |
@@ -174,6 +174,6 @@ def file_summary(filepath: str, lines: list) -> dict:
 ## Key takeaways
 
 1. **Always use `with open(...)` to read files.** The `with` statement guarantees the file is closed even if an error occurs. Forgetting to close files leads to data corruption and resource leaks. This is non-negotiable in Python.
-2. **Specify `encoding="utf-8"` explicitly.** Python's default encoding varies by operating system. Being explicit prevents bugs that only appear on certain machines — a common source of "works on my computer" problems.
-3. **Separate I/O from logic.** `read_file_lines()` handles file access; `format_with_line_numbers()` and `file_summary()` handle processing. This separation makes the processing functions testable with fake data — no real files needed.
+2. **Specify `encoding="utf-8"` explicitly.** Python's default encoding varies by operating system. Being explicit prevents bugs that only appear on certain machines: a common source of "works on my computer" problems.
+3. **Separate I/O from logic.** `read_file_lines()` handles file access; `format_with_line_numbers()` and `file_summary()` handle processing. This separation makes the processing functions testable with fake data: no real files needed.
 4. **`enumerate()` gives you both the index and the value in a loop.** Instead of manually tracking `i = 0; i += 1`, `enumerate(lines, start=1)` gives you `(1, "first line"), (2, "second line"), ...` automatically. This is the standard Python way to loop with an index.

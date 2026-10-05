@@ -60,7 +60,7 @@ An attacker injects JavaScript into your web page through user input. If user in
 
 ### 3. Cross-Site Request Forgery (CSRF)
 
-An attacker tricks a logged-in user into making a request they did not intend. The attacker hosts a form that submits to your site — the browser automatically includes the user's cookies.
+An attacker tricks a logged-in user into making a request they did not intend. The attacker hosts a form that submits to your site; the browser automatically includes the user's cookies.
 
 **Protection:** Use CSRF tokens in every form. Django includes CSRF protection by default. FastAPI with forms should use a CSRF middleware or token pattern.
 
@@ -233,12 +233,12 @@ logger.info("Login attempt: user=%s", username)
 Client-side validation (JavaScript in the browser) improves user experience but provides zero security. An attacker can bypass it completely. Always validate on the server.
 
 **Committing secrets to git:**
-If you accidentally commit an API key or password, it lives in the git history forever — even if you delete the file later. You must rotate (change) any exposed credentials immediately. Prevention is key: set up `.gitignore` before your first commit.
+If you accidentally commit an API key or password, it lives in the git history forever, even if you delete the file later. You must rotate (change) any exposed credentials immediately. Prevention is key: set up `.gitignore` before your first commit.
 
 ## Practice
 
-- [Module 04 FastAPI Web](../projects/modules/04-fastapi-web/) — authentication and input validation
-- [Module 06 Databases & ORM](../projects/modules/06-databases-orm/) — parameterized queries
+- [Module 04 FastAPI Web](../projects/modules/04-fastapi-web/): authentication and input validation
+- [Module 06 Databases & ORM](../projects/modules/06-databases-orm/): parameterized queries
 - [Elite Track / 04 Secure Auth Gateway](../projects/elite-track/04-secure-auth-gateway/README.md)
 - [Elite Track / 08 Policy Compliance Engine](../projects/elite-track/08-policy-compliance-engine/README.md)
 
@@ -249,7 +249,7 @@ If you accidentally commit an API key or password, it lives in the git history f
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Python Security Best Practices (docs.python.org)](https://docs.python.org/3/library/security_warnings.html)
-- [Bandit — Python security linter](https://bandit.readthedocs.io/)
+- [Bandit: Python security linter](https://bandit.readthedocs.io/)
 - [pip-audit documentation](https://pypi.org/project/pip-audit/)
 
 ---

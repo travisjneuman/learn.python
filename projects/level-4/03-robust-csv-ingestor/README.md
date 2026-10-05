@@ -41,9 +41,9 @@ pytest -q
 ```
 
 ## Expected artifacts
-- `data/output/clean_data.csv` — rows that passed validation
-- `data/output/quarantined_rows.csv` — bad rows with row numbers
-- `data/output/ingestion_report.json` — summary with error details
+- `data/output/clean_data.csv`: rows that passed validation
+- `data/output/quarantined_rows.csv`: bad rows with row numbers
+- `data/output/ingestion_report.json`: summary with error details
 - Passing tests
 - Updated `notes.md`
 
@@ -58,17 +58,17 @@ Before writing code, sketch your approach in `notes.md`:
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. What early-stopping condition would be useful for very bad input files?
 2. Can you add a validation rule for a specific column's data type?
 3. Write a parametrized test for your new validation.
 
-## Break it (required) — Core
+## Break it (required): Core
 1. What happens when the CSV structure itself is unusual (no headers, weird quoting)?
-2. Try embedding tricky characters inside fields — does the parser handle them?
+2. Try embedding tricky characters inside fields: does the parser handle them?
 3. Find an edge case that confuses the row counting logic.
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Make the tool configurable for the structural issue you found.
 2. Ensure error reporting includes enough context to fix the source data.
 3. Re-run until all tests pass.

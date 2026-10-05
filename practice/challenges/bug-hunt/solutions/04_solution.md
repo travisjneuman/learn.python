@@ -1,6 +1,6 @@
 # Solution: Key and Attribute Errors
 
-## Bug 1 — `print_display_names` crashes on missing key
+## Bug 1: `print_display_names` crashes on missing key
 
 **Problem:** Bob's record has no `"display_name"` key. `user['display_name']`
 raises `KeyError`. Eve's `display_name` is `None`, which prints as "None".
@@ -14,7 +14,7 @@ def print_display_names(users):
         print(f"  {name}")
 ```
 
-## Bug 2 — `count_by_type` crashes on missing key and wrong initialization
+## Bug 2: `count_by_type` crashes on missing key and wrong initialization
 
 **Lines:** `user["type"]` and `counts[user_type] + 1`
 
@@ -33,7 +33,7 @@ def count_by_type(users):
     return counts
 ```
 
-## Bug 3 — `most_recent_user` crashes on None date
+## Bug 3: `most_recent_user` crashes on None date
 
 **Problem:** Eve's `last_login` is `None`. `datetime.strptime(None, ...)`
 raises `TypeError`.
@@ -45,7 +45,7 @@ if user["last_login"] is None:
     continue
 ```
 
-## Bug 4 — `most_recent_user` uses attribute access on a dict
+## Bug 4: `most_recent_user` uses attribute access on a dict
 
 **Line:** `latest_user = user.username`
 

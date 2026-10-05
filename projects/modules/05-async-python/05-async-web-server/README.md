@@ -1,4 +1,4 @@
-# Module 05 / Project 05 — Async Web Server
+# Module 05 / Project 05: Async Web Server
 
 Home: [README](../../../../README.md) · Module: [Async Python](../README.md)
 
@@ -21,7 +21,7 @@ Home: [README](../../../../README.md) · Module: [Async Python](../README.md)
 
 ## Why this project exists
 
-FastAPI is async by default. This project brings together everything from this module — async functions, concurrent operations, queues — into a real web server. You will see how async makes web servers handle many requests without blocking.
+FastAPI is async by default. This project brings together everything from this module (async functions, concurrent operations, queues) into a real web server. You will see how async makes web servers handle many requests without blocking.
 
 ## Run
 
@@ -86,4 +86,4 @@ You can move on when you can:
 
 ## Next
 
-Go back to [Module index](../README.md) or continue to [Module 06 — Databases & ORM](../../06-databases-orm/).
+Go back to [Module index](../README.md) or continue to [Module 06: Databases & ORM](../../06-databases-orm/).

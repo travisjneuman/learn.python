@@ -1,4 +1,4 @@
-# Notes — Docker Compose
+# Notes: Docker Compose
 
 ## What I learned
 

@@ -1,4 +1,4 @@
-# Creator Kit — Make Content About learn.python
+# Creator Kit: Make Content About learn.python
 
 Home: [README](./README.md)
 
@@ -13,9 +13,9 @@ learn.python is a free, open-source Python curriculum with 246 hands-on projects
 **Key selling points for your audience:**
 
 - Free and open-source (MIT license)
-- No videos required — entirely text-based and self-paced
+- No videos required: entirely text-based and self-paced
 - 246 real projects, not toy examples
-- Every document links to the next — learners never get lost
+- Every document links to the next, so learners never get lost
 - Includes tests, quizzes, flashcards, and coding challenges
 - Works on Windows, macOS, and Linux
 
@@ -28,7 +28,7 @@ learn.python is a free, open-source Python curriculum with 246 hands-on projects
 | Topic | Curriculum Link | Format Suggestion |
 |-------|----------------|-------------------|
 | "I Tried Learning Python From Zero" | Level 00 exercises | Vlog / screen recording |
-| "Python in 10 Minutes — First Script" | [01-first-steps](./projects/level-00-absolute-beginner/01-first-steps/) | Tutorial |
+| "Python in 10 Minutes: First Script" | [01-first-steps](./projects/level-00-absolute-beginner/01-first-steps/) | Tutorial |
 | "What Happens When You Run Python?" | [00_COMPUTER_LITERACY_PRIMER.md](./00_COMPUTER_LITERACY_PRIMER.md) | Explainer |
 | "Variables Explained (No CS Degree Needed)" | [What Is a Variable](./concepts/what-is-a-variable.md) | Explainer |
 | "Your First Passing Test in Python" | [01-terminal-hello-lab](./projects/level-0/01-terminal-hello-lab/) | Tutorial |
@@ -39,7 +39,7 @@ learn.python is a free, open-source Python curriculum with 246 hands-on projects
 |-------|----------------|-------------------|
 | "Build a Calculator in Python" | [02-calculator-basics](./projects/level-0/02-calculator-basics/) | Code-along |
 | "Reading Files in Python (Beginner)" | [07-first-file-reader](./projects/level-0/07-first-file-reader/) | Tutorial |
-| "CSV Files in Python — First Reader" | [05-csv-first-reader](./projects/level-1/05-csv-first-reader/) | Tutorial |
+| "CSV Files in Python: First Reader" | [05-csv-first-reader](./projects/level-1/05-csv-first-reader/) | Tutorial |
 | "Password Strength Checker in Python" | [02-password-strength-checker](./projects/level-1/02-password-strength-checker/) | Build video |
 | "Python Loops Explained With Projects" | [How Loops Work](./concepts/how-loops-work.md) | Explainer |
 

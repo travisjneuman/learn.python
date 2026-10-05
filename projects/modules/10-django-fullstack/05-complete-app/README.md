@@ -1,4 +1,4 @@
-# Module 10 / Project 05 — Complete App
+# Module 10 / Project 05: Complete App
 
 Home: [README](../../../../README.md)
 
@@ -33,13 +33,13 @@ python manage.py runserver
 
 Then open your browser to:
 
-- **http://127.0.0.1:8000/books/** — browse all books (HTML)
-- **http://127.0.0.1:8000/books/add/** — add a book (requires login)
-- **http://127.0.0.1:8000/api/books/** — REST API (JSON, browsable)
-- **http://127.0.0.1:8000/api/authors/** — REST API for authors
-- **http://127.0.0.1:8000/admin/** — Django admin interface
-- **http://127.0.0.1:8000/register/** — create a user account
-- **http://127.0.0.1:8000/login/** — log in
+- **http://127.0.0.1:8000/books/**: browse all books (HTML)
+- **http://127.0.0.1:8000/books/add/**: add a book (requires login)
+- **http://127.0.0.1:8000/api/books/**: REST API (JSON, browsable)
+- **http://127.0.0.1:8000/api/authors/**: REST API for authors
+- **http://127.0.0.1:8000/admin/**: Django admin interface
+- **http://127.0.0.1:8000/register/**: create a user account
+- **http://127.0.0.1:8000/login/**: log in
 
 To run the tests:
 
@@ -75,13 +75,13 @@ The application serves both an HTML interface (for browsers) and a JSON API (for
 ## Break it
 
 1. In `tests.py`, change an `assertEqual` assertion to check for the wrong value. Run the tests. Read the failure output and understand what Django tells you.
-2. Remove `select_related("author")` from the `BookViewSet` queryset. The app still works, but run the tests — do they still pass? (Yes, but performance degrades silently. This is why N+1 query detection tools exist.)
+2. Remove `select_related("author")` from the `BookViewSet` queryset. The app still works, but run the tests. Do they still pass? (Yes, but performance degrades silently. This is why N+1 query detection tools exist.)
 3. Comment out the CSRF middleware in `settings.py`. Submit a form. What changes?
 
 ## Fix it
 
 1. Fix the assertion back to the correct value. Test failure output shows the expected vs actual values, which makes debugging straightforward.
-2. Add `select_related("author")` back. The tests pass either way because correctness is not affected — only performance. In production, tools like `django-debug-toolbar` or `nplusone` detect these issues.
+2. Add `select_related("author")` back. The tests pass either way because correctness is not affected, only performance. In production, tools like `django-debug-toolbar` or `nplusone` detect these issues.
 3. Uncomment the CSRF middleware. Without it, your site is vulnerable to Cross-Site Request Forgery attacks. The middleware and `{% csrf_token %}` work together to verify that POST requests originate from your site.
 
 ## Explain it

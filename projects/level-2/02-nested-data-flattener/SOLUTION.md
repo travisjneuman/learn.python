@@ -1,4 +1,4 @@
-# Nested Data Flattener — Annotated Solution
+# Nested Data Flattener: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) before reading the solution.
 
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
 | Decision | Why |
 |----------|-----|
-| Recursion for flattening | Nested data has arbitrary depth. Recursion naturally mirrors the structure — each level handles its own children and delegates deeper nesting to recursive calls. |
+| Recursion for flattening | Nested data has arbitrary depth. Recursion naturally mirrors the structure: each level handles its own children and delegates deeper nesting to recursive calls. |
 | `separator` as a parameter | Different systems use different separators (`.` for JSON paths, `/` for filesystem paths, `__` for environment variables). Making it configurable costs nothing and adds flexibility. |
 | `setdefault` in unflatten | `setdefault` atomically checks "does this key exist?" and creates it if not, all in one call. This avoids the common `if key not in dict: dict[key] = {}` pattern. |
 | Type guard in `flatten_from_file` | A JSON file whose root is an array `[1,2,3]` would cause `flatten()` to crash with a confusing `AttributeError`. Checking early produces a clear error message. |
@@ -180,8 +180,8 @@ For production data work, `pandas.json_normalize()` flattens nested JSON into a 
 
 ## Common Pitfalls
 
-1. **Keys containing the separator character** — If an original key is `"a.b"` and the separator is `"."`, the flattened key `"a.b"` becomes ambiguous (is it a nested path or a literal key?). The unflatten step will incorrectly split it into `{"a": {"b": value}}`. Real systems escape the separator or use a character that never appears in keys.
+1. **Keys containing the separator character**: If an original key is `"a.b"` and the separator is `"."`, the flattened key `"a.b"` becomes ambiguous (is it a nested path or a literal key?). The unflatten step will incorrectly split it into `{"a": {"b": value}}`. Real systems escape the separator or use a character that never appears in keys.
 
-2. **Assuming roundtrip fidelity** — Flatten then unflatten does not always produce the original structure. Lists become dicts with numeric string keys (`{"0": "a", "1": "b"}` instead of `["a", "b"]`). If you need perfect roundtrips, you must store type metadata alongside the flat keys.
+2. **Assuming roundtrip fidelity**: Flatten then unflatten does not always produce the original structure. Lists become dicts with numeric string keys (`{"0": "a", "1": "b"}` instead of `["a", "b"]`). If you need perfect roundtrips, you must store type metadata alongside the flat keys.
 
-3. **Infinite recursion from circular references** — If a dict contains a reference to itself (rare in JSON, possible in Python), `flatten()` will recurse forever and hit the stack limit. JSON files cannot have circular references, but programmatic dicts can.
+3. **Infinite recursion from circular references**: If a dict contains a reference to itself (rare in JSON, possible in Python), `flatten()` will recurse forever and hit the stack limit. JSON files cannot have circular references, but programmatic dicts can.

@@ -1,4 +1,4 @@
-# Level 3 Mini Capstone: Project Health Dashboard — Step-by-Step Walkthrough
+# Level 3 Mini Capstone: Project Health Dashboard (Step-by-Step Walkthrough)
 
 [<- Back to Project README](./README.md) · [Solution](./SOLUTION.md)
 

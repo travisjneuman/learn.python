@@ -14,9 +14,9 @@
 
 ## Why This Matters
 
-You will see `*args` and `**kwargs` in almost every Python library. Understanding them is essential for writing decorators, creating wrapper functions, and understanding how frameworks like Flask and pytest work under the hood. They also appear in function signatures on docs.python.org — you need to read them confidently.
+You will see `*args` and `**kwargs` in almost every Python library. Understanding them is essential for writing decorators, creating wrapper functions, and understanding how frameworks like Flask and pytest work under the hood. They also appear in function signatures on docs.python.org, so you need to read them confidently.
 
-## `*args` — variable positional arguments
+## `*args`: variable positional arguments
 
 The `*` before a parameter name collects all extra positional arguments into a tuple:
 
@@ -31,7 +31,7 @@ add_all(10, 20)             # 30
 add_all()                   # 0
 ```
 
-The name `args` is a convention — you can use any name. The `*` is what matters:
+The name `args` is a convention; you can use any name. The `*` is what matters:
 
 ```python
 def greet(*names):
@@ -41,7 +41,7 @@ def greet(*names):
 greet("Alice", "Bob", "Charlie")
 ```
 
-## `**kwargs` — variable keyword arguments
+## `**kwargs`: variable keyword arguments
 
 The `**` before a parameter name collects all extra keyword arguments into a dictionary:
 
@@ -77,7 +77,7 @@ The order must be: regular parameters, then `*args`, then `**kwargs`.
 
 ## Unpacking with `*` and `**`
 
-The `*` and `**` operators also work in the opposite direction — unpacking a sequence or dictionary into function arguments:
+The `*` and `**` operators also work in the opposite direction: unpacking a sequence or dictionary into function arguments:
 
 ```python
 def add(a, b, c):
@@ -115,7 +115,7 @@ greet("Alice", greeting="Hi")    # OK: "Hi, Alice!"
 greet(name="Alice")              # TypeError! name is positional-only
 ```
 
-Everything before `/` must be passed by position, not by name. You see this in built-in functions like `len()` — you cannot write `len(obj=[1,2,3])`.
+Everything before `/` must be passed by position, not by name. You see this in built-in functions like `len()`: you cannot write `len(obj=[1,2,3])`.
 
 ## Keyword-only parameters (`*`)
 
@@ -232,8 +232,8 @@ bad("a", "b", name="Alice")    # OK
 ## Practice
 
 - [Level 2 / 01 JSON Explorer](../projects/level-2/01-json-explorer/README.md)
-- [Module 02 CLI Tools](../projects/modules/02-cli-tools/) — Click/Typer use these patterns
-- [Module 04 FastAPI Web](../projects/modules/04-fastapi-web/) — endpoint parameter handling
+- [Module 02 CLI Tools](../projects/modules/02-cli-tools/): Click/Typer use these patterns
+- [Module 04 FastAPI Web](../projects/modules/04-fastapi-web/): endpoint parameter handling
 
 **Quick check:** [Take the quiz](quizzes/args-kwargs-explained-quiz.py) *(coming soon)*
 
@@ -243,8 +243,8 @@ bad("a", "b", name="Alice")    # OK
 ## Further Reading
 
 - [More on Defining Functions (Python tutorial)](https://docs.python.org/3/tutorial/controlflow.html#more-on-defining-functions)
-- [PEP 570 — Positional-Only Parameters](https://peps.python.org/pep-0570/)
-- [PEP 3102 — Keyword-Only Arguments](https://peps.python.org/pep-3102/)
+- [PEP 570: Positional-Only Parameters](https://peps.python.org/pep-0570/)
+- [PEP 3102: Keyword-Only Arguments](https://peps.python.org/pep-3102/)
 
 ---
 

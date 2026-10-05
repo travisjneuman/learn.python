@@ -50,17 +50,17 @@ Issues (2):
 
 **Checkpoint:** Baseline code runs and all tests pass. Commit your work before continuing.
 
-## Alter it (required) — Extension
+## Alter it (required): Extension
 1. Add CSV export of audit results with columns: filename, size, last_modified, status.
 2. Add a `--recursive` flag to scan subdirectories.
 3. Add a `check_encoding` function that flags non-UTF-8 files.
 
-## Break it (required) — Core
-1. Point the auditor at a file instead of a directory — what error appears?
-2. Audit a directory with no files — does the summary handle zero files?
-3. Use a glob pattern that matches nothing — what does the report show?
+## Break it (required): Core
+1. Point the auditor at a file instead of a directory: what error appears?
+2. Audit a directory with no files: does the summary handle zero files?
+3. Use a glob pattern that matches nothing: what does the report show?
 
-## Fix it (required) — Core
+## Fix it (required): Core
 1. Add a clear error message for non-directory input.
 2. Handle permission errors when scanning protected directories.
 3. Show "No files match pattern" instead of an empty report.

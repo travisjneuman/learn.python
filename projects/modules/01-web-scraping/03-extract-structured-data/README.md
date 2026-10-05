@@ -1,4 +1,4 @@
-# Module 01 / Project 03 — Extract Structured Data
+# Module 01 / Project 03: Extract Structured Data
 
 [README](../../../../README.md) · [Module Index](../README.md)
 
@@ -21,7 +21,7 @@
 
 ## Why this project exists
 
-Scraping one field at a time is useful for learning, but real scraping tasks require extracting multiple fields per item and organizing them into structured data. This project teaches you to build a list of dictionaries — the standard Python data structure for tabular data — from a scraped page. You will extract title, price, rating, and availability for every book on the page.
+Scraping one field at a time is useful for learning, but real scraping tasks require extracting multiple fields per item and organizing them into structured data. This project teaches you to build a list of dictionaries (the standard Python data structure for tabular data) from a scraped page. You will extract title, price, rating, and availability for every book on the page.
 
 ## Run
 
@@ -52,7 +52,7 @@ Done.
 
 1. Add a fifth field: the book's detail page URL (the `href` attribute). Include it in each dictionary and print it as an extra column.
 2. Filter the output to only show books rated 4 or 5 stars. Print how many books were filtered out.
-3. Sort the books by price (lowest first) before printing. You will need to convert the price string to a float — strip the pound sign first.
+3. Sort the books by price (lowest first) before printing. You will need to convert the price string to a float. Strip the pound sign first.
 
 ## Break it
 
@@ -94,4 +94,4 @@ You can move on when you can:
 
 ## Next
 
-[Project 04 — Multi-Page Scraper](../04-multi-page-scraper/)
+[Project 04: Multi-Page Scraper](../04-multi-page-scraper/)

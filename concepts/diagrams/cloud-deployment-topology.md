@@ -1,4 +1,4 @@
-# Cloud Deployment Topology — Diagrams
+# Cloud Deployment Topology: Diagrams
 
 [<- Back to Diagram Index](../../guides/DIAGRAM_INDEX.md)
 

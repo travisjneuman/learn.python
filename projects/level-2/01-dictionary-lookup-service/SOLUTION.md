@@ -1,4 +1,4 @@
-# Dictionary Lookup Service — Annotated Solution
+# Dictionary Lookup Service: Annotated Solution
 
 > **STOP!** Try solving this yourself first. Use the [project README](./README.md) and [walkthrough](./WALKTHROUGH.md) before reading the solution.
 
@@ -199,8 +199,8 @@ For more complex dictionary files (quoted values, multi-line entries), Python's 
 
 ## Common Pitfalls
 
-1. **Splitting on every `=` sign** — Using `line.split("=")` without the `maxsplit=1` argument will break definitions containing `=`. For example, `url=https://example.com/a=b` would incorrectly split into three parts instead of two.
+1. **Splitting on every `=` sign**: Using `line.split("=")` without the `maxsplit=1` argument will break definitions containing `=`. For example, `url=https://example.com/a=b` would incorrectly split into three parts instead of two.
 
-2. **Forgetting to normalise input** — If you normalise keys to lowercase at load time but forget to lowercase the search term, "Python" will not match "python". Always normalise both sides of a comparison.
+2. **Forgetting to normalise input**: If you normalise keys to lowercase at load time but forget to lowercase the search term, "Python" will not match "python". Always normalise both sides of a comparison.
 
-3. **Bare `except:` instead of `except KeyError`** — Catching all exceptions hides real bugs (like `TypeError` from passing a non-string key). Always catch the most specific exception type you expect.
+3. **Bare `except:` instead of `except KeyError`**: Catching all exceptions hides real bugs (like `TypeError` from passing a non-string key). Always catch the most specific exception type you expect.
