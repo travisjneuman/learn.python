@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/travisjneuman/travisjneuman/main/showcase/schema/showcase-v1.json",
+  "id": "learn-python",
+  "name": "Learn Python",
+  "status": "active",
+  "statusNote": null,
+  "summary": "Open-source, project-based Python curriculum from first terminal commands to deployed applications.",
+  "visibility": "public",
+  "links": {
+    "live": "https://python.learn.neuman.dev",
+    "repo": "https://github.com/travisjneuman/learn.python"
+  },
+  "stack": [
+    "Python",
+    "pytest",
+    "Pyodide",
+    "GitHub Template"
+  ],
+  "metrics": [
+    {
+      "value": "250+",
+      "label": "Projects",
+      "source": "find projects/level-* -mindepth 1 -maxdepth 1 -type d | wc -l; find projects/modules -mindepth 2 -maxdepth 2 -type d | wc -l; find projects/elite-track projects/capstones -mindepth 1 -maxdepth 1 -type d | wc -l (sum; 254 on 2026-10-05)",
+      "round": "floor-2sig",
+      "asOf": "2026-10-05"
+    },
+    {
+      "value": "13",
+      "label": "Levels",
+      "source": "manual: ls -d projects/level-* (12) + elite track",
+      "round": "exact",
+      "asOf": "2026-10-05"
+    },
+    {
+      "value": "12",
+      "label": "Modules",
+      "source": "ls -d projects/modules/*/ | wc -l",
+      "round": "exact",
+      "asOf": "2026-10-05"
+    }
+  ],
+  "updated": "2026-10-05"
+}
