@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/Projects-274-2ea44f?style=for-the-badge" alt="274 Projects">
+  <img src="https://img.shields.io/badge/Projects-250%2B-2ea44f?style=for-the-badge" alt="250+ Projects">
   <img src="https://img.shields.io/badge/Levels-13-ff6f00?style=for-the-badge" alt="13 Levels">
   <img src="https://img.shields.io/badge/Concept_Guides-34-7c4dff?style=for-the-badge" alt="34 Concept Guides">
   <img src="https://img.shields.io/badge/Quizzes-34-e53935?style=for-the-badge" alt="34 Quizzes">
@@ -31,7 +31,7 @@ I wanted to learn Python. When I looked for resources, I hit the same wall a lot
 
 So I built the curriculum I wished existed. Then I open-sourced it, because if it helps me learn Python, maybe it helps you too.
 
-**This is a complete, hands-on Python curriculum. From "what is a terminal?" to deploying production applications. 274 projects. Every learning style supported. Go at your own pace.**
+**This is a complete, hands-on Python curriculum. From "what is a terminal?" to deploying production applications. 250+ projects. Every learning style supported. Go at your own pace.**
 
 ---
 
@@ -39,7 +39,7 @@ So I built the curriculum I wished existed. Then I open-sourced it, because if i
 
 **Every learning style is first-class.** Read concepts, build projects, watch walkthroughs, test with quizzes, review with flashcards, visualize with diagrams, or try code in the browser — all following the same path. However you learn best, there's a way through this curriculum for you.
 
-**You build real things.** 274 projects, not toy examples. Every project has tests, starter code, and challenges that force you past copy-paste into actual understanding.
+**You build real things.** 250+ projects, not toy examples. Every project has tests, starter code, and challenges that force you past copy-paste into actual understanding.
 
 **You go at your own pace.** This isn't a bootcamp with deadlines. Follow the click chain, take breaks, come back. The spaced repetition system tracks what you've forgotten so you can review efficiently.
 
@@ -102,9 +102,9 @@ The curriculum is a straight line from zero experience to production-grade engin
 | **Professional Practices** | 10-12 | Packages, logging, refactoring, dependency management | 45 projects |
 | **Operations & Integration** | 13-15 | Scheduling, monitoring, ETL, caching, APIs | 45 projects |
 | **Elite Track** | Curriculum 16-50 | Architecture, observability, resilience, security, cost modeling | 10 projects |
-| **Expansion Modules** | 12 modules | Web scraping through cloud deployment — real libraries, real tools | 56 projects |
+| **Expansion Modules** | 12 modules | Web scraping through cloud deployment — real libraries, real tools | 59 projects |
 
-**Total: 274 projects across 13 levels and 12 technology modules.**
+**Total: 250+ projects across 13 levels and 12 technology modules** (254 project folders as of 2026-10-05; see `showcase.json` for the counting command).
 
 See the full [Curriculum Map](./CURRICULUM_MAP.md) for a dependency diagram and every project listed at a glance.
 
