@@ -34,3 +34,6 @@ data/streak.json
 
 # macOS metadata
 .DS_Store
+
+# MkDocs Material privacy plugin download cache
+.cache/

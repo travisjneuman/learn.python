@@ -52,6 +52,9 @@ theme:
 
 plugins:
   - search
+  # Downloads Google Fonts and other external assets at build time and serves them
+  # from the site, so page views send no visitor IPs to third parties (GDPR).
+  - privacy
 
 markdown_extensions:
   - pymdownx.highlight:
