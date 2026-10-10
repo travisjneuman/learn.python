@@ -18,26 +18,29 @@
   ],
   "metrics": [
     {
-      "value": "250+",
+      "key": "projects",
+      "value": "253",
       "label": "Projects",
-      "source": "find projects/level-* -mindepth 1 -maxdepth 1 -type d | wc -l; find projects/modules -mindepth 2 -maxdepth 2 -type d | wc -l; find projects/elite-track projects/capstones -mindepth 1 -maxdepth 1 -type d | wc -l (sum; 254 on 2026-10-05)",
-      "round": "floor-2sig",
-      "asOf": "2026-10-05"
+      "source": "manual: github.com/travisjneuman/learn.python at 5d0043730f274a09c596d6aa2b311fed7442f881; reviewed tracked projects/ curriculum project README paths and projects/level-00-absolute-beginner/README.md (SHA256 c89284f92d52b60f9ee56ca032f0b1533e51faad55b47bfc0944020fab673766) exercise inventory: 181 across 12 level directories, 59 module projects, 10 elite-track projects, 3 capstones. Excludes projects/level-1/browser alternate delivery container and all module/level/data containers; counts beginner exercises once, not translations separately. Corrects historical 254 container overcount",
+      "round": "exact",
+      "asOf": "2026-10-10"
     },
     {
+      "key": "levels",
       "value": "13",
       "label": "Levels",
-      "source": "manual: ls -d projects/level-* (12) + elite track",
+      "source": "manual: github.com/travisjneuman/learn.python at 5d0043730f274a09c596d6aa2b311fed7442f881; reviewed tracked projects/level-*/README.md paths: 12 level directories (level-00-absolute-beginner and level-0 through level-10), plus projects/elite-track; capstones and modules are not levels",
       "round": "exact",
-      "asOf": "2026-10-05"
+      "asOf": "2026-10-10"
     },
     {
+      "key": "modules",
       "value": "12",
       "label": "Modules",
-      "source": "ls -d projects/modules/*/ | wc -l",
+      "source": "manual: github.com/travisjneuman/learn.python at 5d0043730f274a09c596d6aa2b311fed7442f881; reviewed 12 numbered module directories with tracked project README files under projects/modules against projects/modules/README.md (pre-correction SHA256 94c17808d19f2acfdfb13df8f76f98073bb14f897c7593b2c98d6be62e774361); stale table project counts were not used",
       "round": "exact",
-      "asOf": "2026-10-05"
+      "asOf": "2026-10-10"
     }
   ],
-  "updated": "2026-10-05"
+  "updated": "2026-10-10"
 }
